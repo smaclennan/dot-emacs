@@ -1,0 +1,18 @@
+/* XPM */
+static char * slash_xpm[] = {
+"18 13 2 1",
+" 	s None c None",
+"X	c purple",
+"                  ",
+"                  ",
+"           XXX    ",
+"          XXX     ",
+"         XXX      ",
+"        XXX       ",
+"       XXX        ",
+"      XXX    XX   ",
+"     XXX    XXXX  ",
+"    XXX     XXXX  ",
+"   XXX       XX   ",
+"                  ",
+"                  "};
