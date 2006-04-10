@@ -95,3 +95,10 @@ Nil defaults to the currently running kernel.")
   '(lambda () (interactive) (insert pika-dir "/user/")))
 (define-key read-file-name-map [f8]
   '(lambda () (interactive) (insert pika-dir "/kernel/")))
+
+
+(defun pika-setup-smerge ()
+  (interactive)
+  (require 'smerge)
+  (loop for ignore in '(".cvsignore" ".depend" "TAGS" "*.so" "*.rc") do
+    (add-to-list 'smerge-diff-excludes ignore t)))
