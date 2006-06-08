@@ -117,6 +117,11 @@
       (setq uname (substring uname (match-end 0))))
     (nreverse list)))
 
+(when (would-like 'http)
+  ;; Setup http to use curl rather than wget
+  (setq http-wget-program "curl")
+  (setq http-wget-options '("-i")))
+
 ;;}}}
 
 ;;{{{ Windowing System Customization
@@ -254,11 +259,21 @@
 (if (fboundp 'display-time) (display-time))
 
 ;; Start *after* display-time
-(when nil
+(when t
 (when (and window-system (would-like 'slashdot))
-  ;; Disable caching
   ;; madpenguin.org does not work if User-Agent is Wget
-  (setq slashdot-wget-options (append http-wget-options '("-Coff" "-U" "Mozilla")))
+  (setq slashdot-wget-options (append http-wget-options '("-A" "Mozilla")))
+  ;; If you edit this, run (slashdot-load-headings)
+  (setq slashdot-url-alist
+	'(
+	  ("Slashdot" . "http://rss.slashdot.org/Slashdot/slashdot/to")
+	  ;; ("The Register" . "http://www.theregister.co.uk/tonys/slashdot.rdf")
+	  ;; ("Freshmeat" . "http://freshmeat.net/backend/fm.rdf")
+	  ;; ("NewsForge" . "http://newsforge.com/newsforge.rdf")
+	  ;; ("OS news" . "http://osnews.com/files/recent.rdf")
+	  ;; ("MadPenguin" . "http://www.madpenguin.org/backend.php")
+	  ("Kerneltrap" . "http://kerneltrap.org/node/feed")
+	  ))
   (slashdot-start))
 )
 ;;}}}
@@ -1071,6 +1086,9 @@ We ignore the 3rd number."
 	vm-mosaic-program "dillo"
 	vm-url-browser 'vm-mouse-send-url-to-mosaic))
  ;; SAM
+ ((exec-installed-p "firefox")
+  (setq browse-url-browser-function 'browse-url-firefox
+	vm-url-browser 'vm-mouse-send-url-to-mozilla))
  ((exec-installed-p "mozilla")
   (setq browse-url-browser-function 'browse-url-mozilla
 	vm-url-browser 'vm-mouse-send-url-to-mozilla))
