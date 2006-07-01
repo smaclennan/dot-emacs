@@ -21,7 +21,7 @@ Nil defaults to the currently running kernel.")
 
 ;; -------------------------------------------------------------------
 
-(setq pika-cflags "-DUSE_POOL=0")
+(setq pika-cflags "-DPIKA_DEVEL -DUSE_POOL=0")
 
 ;; -------------------------------------------------------------------
 ;; Some evil troll decided that code should be unreadable and declared
