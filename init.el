@@ -441,11 +441,6 @@ instead, uses tag around or before point."
   ;; my style - linux with a smaller tab size
   (c-add-style "sam" '("linux" (c-basic-offset . 4)))
 
-  (when nil
-  (when (would-like 'c-comment-edit)
-    ;; c-comment-edit: for editing multi-line comments
-    (define-key c-mode-base-map "\C-cc" 'c-comment-edit))
-
   ;; ctype: for adding user defined types
   (require 'ctypes)
   ;;(ctypes-read-file nil nil t t)
@@ -461,7 +456,6 @@ instead, uses tag around or before point."
     (setq c-macro-shrink-window-flag t)
     (define-key c-mode-map "\C-c\C-e"  'c-macro-expand-at-point)
     (define-key c++-mode-map "\C-c\C-e"  'c-macro-expand-at-point))
-  )
   )
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
 

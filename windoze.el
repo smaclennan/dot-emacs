@@ -3,6 +3,7 @@
 
 ;; For Windoze, the HOME and DOMAINNAME environment variables *must* be set
 
+(when t
 (setq directory-sep-char ?/)
 
 (defadvice call-process (around windowize activate)
@@ -21,13 +22,23 @@
   (let ((directory-sep-char ?\\))
     ad-do-it
     ))
+)
+
+;; Different excludes for windows
+(setq smerge-diff-excludes
+      '("*.obj" "*.lib" "*.dll" "*.sbr" ".svn" "*.scc"
+	"*.plg" "*.pdb" "*.dep" "*.ncb" "*.opt"
+	"*.log" "*.wrn" "*.err"
+	"*.mak"
+	"objchk*" "objfre*"
+	"debug" "release" "Debug" "Release"))
 
 ;; NT uses nmake and findstr
 (set-variable 'grep-command "findstr -n ")
 (setq compile-command "nmake ")
 (setq make-clean-command "nmake clean all")
 ;; Make sure we get the right find. This was only a problem after reinstalling w2k
-(setq igrep-find-program "e:/cygwin/bin/find")
+; SAM (setq igrep-find-program "c:/cygwin/bin/find")
 
 (setq local-compile-command "cl /Ot /W3")
 

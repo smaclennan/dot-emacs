@@ -30,7 +30,7 @@ Nil defaults to the currently running kernel.")
 
 (c-add-style "pika" '("linux" (c-basic-offset . 2)))
 
-(defun pika-c-mode (dir arg)
+(defun pika-c-mode ()
   (when pika-kernel
     (setq compile-command
 	  (format "%s KERNEL=%s" compile-command pika-kernel)))
@@ -39,6 +39,10 @@ Nil defaults to the currently running kernel.")
 	indent-tabs-mode nil
 	tab-width 2)
   (force-mode-line-update))
+
+;; For windows assume we are always editing pika code
+(when running-windoze
+  (add-hook 'c-mode-common-hook 'pika-c-mode 'append))
 
 ;; -------------------------------------------------------------------
 (defun set-pika-dir (dir)
