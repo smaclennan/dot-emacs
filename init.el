@@ -448,9 +448,9 @@ instead, uses tag around or before point."
   (c-set-style "sam")
   (c-toggle-hungry-state 1)  ;; hungry delete
   (setq c-tab-always-indent 'other ;; real tabs in strings and comments
-	indent-tabs-mode t ;; use tabs to indent
+	;; indent-tabs-mode t ;; use tabs to indent
 	tab-width 4	;; this must match `c-basic-offset'
-	c-recognize-knr-p nil
+	;; c-recognize-knr-p nil
 	))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
@@ -1055,12 +1055,12 @@ We ignore the 3rd number."
 ;; browse-url and vm-url-browser
 (cond
  ;; SAM
- ((exec-installed-p "dillo")
-  (setq browse-url-mosaic-program "dillo"
-	browse-url-mosaic-pidfile "~/.mosaicpid"
-	browse-url-browser-function 'browse-url-mosaic
-	vm-mosaic-program "dillo"
-	vm-url-browser 'vm-mouse-send-url-to-mosaic))
+ ;((exec-installed-p "dillo")
+ ; (setq browse-url-mosaic-program "dillo"
+ ;	browse-url-mosaic-pidfile "~/.mosaicpid"
+ ;	browse-url-browser-function 'browse-url-mosaic
+ ;	vm-mosaic-program "dillo"
+ ;	vm-url-browser 'vm-mouse-send-url-to-mosaic))
  ;; SAM
  ((exec-installed-p "firefox")
   (setq browse-url-browser-function 'browse-url-firefox
