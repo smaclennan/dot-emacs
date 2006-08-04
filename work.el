@@ -30,14 +30,16 @@ Nil defaults to the currently running kernel.")
 
 (c-add-style "pika" '("linux" (c-basic-offset . 2)))
 
-(defun pika-c-mode ()
+;; When called from my-compile-command is passed two args.
+;; When called from c-mode-common-hook gets none.
+(defun pika-c-mode (&optional dir arg)
   (when pika-kernel
     (setq compile-command
 	  (format "%s KERNEL=%s" compile-command pika-kernel)))
   (c-set-style "pika")
-  (setq mode-name (concat "PIKA-" mode-name)
-	indent-tabs-mode nil
-	tab-width 2)
+  (setq mode-name (concat "PIKA-" mode-name))
+  (setq indent-tabs-mode nil)
+  (setq tab-width 2)
   (force-mode-line-update))
 
 ;; For windows assume we are always editing pika code
@@ -89,7 +91,11 @@ Nil defaults to the currently running kernel.")
   (add-to-list
    'copylefts-to-hide
    '(" \\* IF YOU DO NOT AGREE WITH THE FOLLOWING" .
-     " \\* -----------------------------------------------------------------")))
+     " \\* -----------------------------------------------------------------"))
+  (add-to-list
+   'copylefts-to-hide
+   '(" \\* IF YOU DO NOT AGREE WITH THE FOLLOWING" .
+     " \\* =================================================================")))
 
 ;; -------------------------------------------------------------------
 

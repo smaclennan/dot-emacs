@@ -440,22 +440,6 @@ instead, uses tag around or before point."
 (defun my-c-initialization-hook ()
   ;; my style - linux with a smaller tab size
   (c-add-style "sam" '("linux" (c-basic-offset . 4)))
-
-  ;; ctype: for adding user defined types
-  (require 'ctypes)
-  ;;(ctypes-read-file nil nil t t)
-  ;; Libc-mode - lookup functions/types/files in gnu libc info
-  (when (would-like 'libc-mode)
-    (setq libc-mode-string "")
-    (add-hook 'c-mode-common-hook 'turn-on-libc-mode))
-  (when (would-like 'xcscope)
-    (setq cscope-truncate-lines t)
-    (setq cscope-indexing-script
-	  "/home/xemacs/packages/lisp/site-lisp/cscope-indexer"))
-  (when (would-like 'cmacexp)
-    (setq c-macro-shrink-window-flag t)
-    (define-key c-mode-map "\C-c\C-e"  'c-macro-expand-at-point)
-    (define-key c++-mode-map "\C-c\C-e"  'c-macro-expand-at-point))
   )
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
 
@@ -463,9 +447,7 @@ instead, uses tag around or before point."
 (defun my-c-mode-common-hook ()
   (c-set-style "sam")
   (c-toggle-hungry-state 1)  ;; hungry delete
-  (setq case-fold-search nil   ;; make search case insensitive
-	case-replace nil     ;; make replace case sensitive
-	c-tab-always-indent 'other ;; real tabs in strings and comments
+  (setq c-tab-always-indent 'other ;; real tabs in strings and comments
 	indent-tabs-mode t ;; use tabs to indent
 	tab-width 4	;; this must match `c-basic-offset'
 	c-recognize-knr-p nil
