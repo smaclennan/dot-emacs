@@ -448,7 +448,6 @@ instead, uses tag around or before point."
   (c-set-style "sam")
   (c-toggle-hungry-state 1)  ;; hungry delete
   (setq c-tab-always-indent 'other ;; real tabs in strings and comments
-	;; indent-tabs-mode t ;; use tabs to indent
 	tab-width 4	;; this must match `c-basic-offset'
 	;; c-recognize-knr-p nil
 	))
