@@ -447,10 +447,9 @@ instead, uses tag around or before point."
 (defun my-c-mode-common-hook ()
   (c-set-style "sam")
   (c-toggle-hungry-state 1)  ;; hungry delete
-  (setq c-tab-always-indent 'other ;; real tabs in strings and comments
-	tab-width 4	;; this must match `c-basic-offset'
-	;; c-recognize-knr-p nil
-	))
+  (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
+  (setq tab-width 4)	;; this must match `c-basic-offset'
+  )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 ;;; -------------------------------------------------------------------------

@@ -40,6 +40,9 @@ Nil defaults to the currently running kernel.")
   (setq mode-name (concat "PIKA-" mode-name))
   (setq indent-tabs-mode nil)
   (setq tab-width 2)
+  (setq lxr-url "http://alice.pikatech.com/lxr/http"
+	lxr-version "monza"
+	lxr-base pika-dir)
   (force-mode-line-update))
 
 ;; For windows assume we are always editing pika code
