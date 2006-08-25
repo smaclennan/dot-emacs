@@ -62,6 +62,9 @@ Nil defaults to the currently running kernel.")
   (setenv "PIKA_CFLAGS" pika-cflags)
   (setenv "PIKA_KERNEL_CFLAGS" pika-kernel-cflags)
 
+  (when (eq (getenv "LD_LIBRARY_PATH") nil)
+    (setenv "LD_LIBRARY_PATH" (concat pika-dir "/user/libs")))
+
   ;; Reset my-compile-dir-list
   (setq my-compile-dir-list my-compile-dir-linux)
 
