@@ -13,9 +13,9 @@ Nil defaults to the currently running kernel.")
   "* Set any extra kernel flags you want to pass to all the kernel drivers.")
 
 (defvar pika-subdirs '("user"
-		       "kernel/hsp" "kernel/primenet" "kernel"
-		       "applications/monzatest" "applications"
-		       "artstests"
+		       "kernel"
+		       "applications/aohtest" "applications"
+		       "../testing/artstests" "../testing/arts"
 		       )
   "* Pika sub-directories to handle specially.")
 
@@ -26,9 +26,11 @@ Nil defaults to the currently running kernel.")
 ;; -------------------------------------------------------------------
 ;; Some evil troll decided that code should be unreadable and declared
 ;; tabs to be 2 characters. To make matters worse, they decided they
-;; must be spaces so we cannot adjust ourselves.....
+;; must be spaces so we cannot adjust the spacing ourselves.....
 
-(c-add-style "pika" '("linux" (c-basic-offset . 2)))
+(defun pika-c-initialization-hook ()
+  (c-add-style "pika" '("linux" (c-basic-offset . 2))))
+(add-hook 'c-initialization-hook 'pika-c-initialization-hook)
 
 ;; When called from my-compile-command is passed two args.
 ;; When called from c-mode-common-hook gets none.
@@ -68,24 +70,27 @@ Nil defaults to the currently running kernel.")
   ;; Reset my-compile-dir-list
   (setq my-compile-dir-list my-compile-dir-linux)
 
-  ;; Add pika-dir unless the standard catch will get it
-  (unless (string= (file-name-nondirectory pika-dir) "monza")
-    (loop for subdir in pika-subdirs do
+  (let (dir)
+    ;; Add pika-dir unless the standard catch will get it
+    (unless (string-match "/monza/software$" pika-dir)
+      (loop for subdir in pika-subdirs do
+	(setq dir (file-truename (concat pika-dir "/" subdir "/")))
+	(setq my-compile-dir-list
+	      (append my-compile-dir-list
+		      (list (list (concat "^" dir) nil 'pika-c-mode)))))
       (setq my-compile-dir-list
 	    (append my-compile-dir-list
-		    (list (list (format "^%s/%s/" pika-dir subdir) nil 'pika-c-mode)))))
-    (setq my-compile-dir-list
-	  (append my-compile-dir-list
-		  (list (list (format "^%s/" pika-dir) nil 'pika-c-mode)))))
+		    (list (list (format "^%s/" pika-dir) nil 'pika-c-mode)))))
 
-  ;; Try to catch the 99% case
-  (loop for subdir in pika-subdirs do
+    ;; Try to catch the 99% case
+    (loop for subdir in pika-subdirs do
+      (setq dir (file-truename (concat "/monza/software/" subdir "/")))
+      (setq my-compile-dir-list
+	    (append my-compile-dir-list
+		    (list (list (concat "^.*" dir) nil 'pika-c-mode)))))
     (setq my-compile-dir-list
 	  (append my-compile-dir-list
-		  (list (list (format "^.*/monza/%s/" subdir) nil 'pika-c-mode)))))
-    (setq my-compile-dir-list
-	  (append my-compile-dir-list
-		  '(("^.*/monza/" nil pika-c-mode))))
+		  '(("^.*/monza/" nil pika-c-mode)))))
   )
 
 ;; Now default it
@@ -107,10 +112,6 @@ Nil defaults to the currently running kernel.")
 
 (define-key read-file-name-map [f5]
   '(lambda () (interactive) (insert pika-dir "/")))
-(define-key read-file-name-map [f6]
-  '(lambda () (interactive) (insert pika-dir "/user/")))
-(define-key read-file-name-map [f8]
-  '(lambda () (interactive) (insert pika-dir "/kernel/")))
 
 
 (defun pika-setup-smerge ()

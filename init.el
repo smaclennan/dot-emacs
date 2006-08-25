@@ -455,14 +455,13 @@ instead, uses tag around or before point."
 ;;; -------------------------------------------------------------------------
 
 (defvar my-compile-dir-linux
-  (list
-   ;; 2.4 kernels need bzImage and modules for drivers
-   ;; I am assuming /usr/src/linux points to a 2.4 kernel for now...
-   (list (file-truename "/usr/src/linux/") "bzImage modules")
-   (list (file-truename "/usr/src/linux-2.4.[0-9]+/") "bzImage modules")
-   ;; 2.6 kernels just work
-   (list (file-truename "/usr/src/linux-2.6.[0-9]+/"))
-   )
+  '(;; 2.6 kernels just work
+    ("/usr/src/linux-2.6[^/]*/")
+    ;; 2.4 kernels need bzImage and modules for drivers
+    ("/usr/src/linux-2.4[^/]*/" "bzImage modules")
+    ;; Assume /usr/src/linux is 2.4
+    ("/usr/src/linux/" "bzImage modules")
+    )
   "My default Linux directories.")
 
 ;; WARNING: Completely overridden in work.el
