@@ -383,7 +383,8 @@ instead, uses tag around or before point."
 ;; Change a couple of faces
 (make-face-bold 'font-lock-function-name-face)
 (set-face-foreground 'font-lock-function-name-face "blue")
-(set-face-foreground 'font-lock-string-face "green4")
+;; Um, this is the default
+;(set-face-foreground 'font-lock-string-face "green4")
 (if window-system
     (set-face-foreground 'font-lock-comment-face "FireBrick")
   ;; Consoles have less colors to play with
