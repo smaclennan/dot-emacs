@@ -249,7 +249,9 @@
   ;; -------
   ;; MISC
 
-  ;; Handy function that was hard to work out
+  ;; Handy functions that where hard to work out
+  (defun my-get-face-foreground (face)
+    (cdr (specifier-specs (face-foreground face) 'global)))
   (defun my-get-face-background (face)
     (cdr (specifier-specs (face-background face) 'global)))
   ;; (my-get-face-background 'default)
@@ -388,9 +390,32 @@ instead, uses tag around or before point."
 (if window-system
     (set-face-foreground 'font-lock-comment-face "FireBrick")
   ;; Consoles have less colors to play with
-  (set-face-foreground 'font-lock-comment-face "yellow")
-  (set-face-foreground 'font-lock-string-face "cyan")
-  (set-face-foreground 'font-lock-keyword-face "white"))
+  (set-face-foreground 'font-lock-comment-face "red")
+  (set-face-foreground 'font-lock-string-face "green")
+  (set-face-foreground 'font-lock-keyword-face "blue")
+  (add-hook 'ediff-load-hook 'my-ediff-colours)
+  )
+
+(defun my-set-face (face fg bg &optional prop)
+  (set-face-foreground face fg)
+  (set-face-background face bg)
+  (when prop
+    (set-face-property face prop t))
+  )
+
+(defun my-ediff-colours ()
+  ;; Ediff is really bad
+  (my-set-face 'ediff-current-diff-A "black" "yellow")
+  (my-set-face 'ediff-current-diff-B "black" "yellow")
+  (my-set-face 'ediff-current-diff-C "black" "yellow")
+  (my-set-face 'ediff-fine-diff-A    "red"   "yellow")
+  (my-set-face 'ediff-fine-diff-B    "red"   "yellow")
+  (my-set-face 'ediff-fine-diff-C    "red"   "yellow")
+  (my-set-face 'ediff-odd-diff-A     "black" "white" 'highlight)
+  (my-set-face 'ediff-odd-diff-B     "black" "white" 'highlight)
+  (my-set-face 'ediff-even-diff-A    "black" "white" 'highlight)
+  (my-set-face 'ediff-even-diff-B    "black" "white" 'highlight)
+  )
 
 ;; SAM (add-hook 'font-lock-mode-hook 'turn-on-lazy-shot)
 
