@@ -10,6 +10,8 @@
 
 (defvar running-gtk-xemacs (fboundp 'default-gtk-device))
 
+(defvar running-as-root (string= (user-login-name) "root"))
+
 (setq inhibit-default-init t)
 
 ;; With the new package system, there is a greater chance a
@@ -261,8 +263,7 @@
 (if (fboundp 'display-time) (display-time))
 
 ;; Start *after* display-time
-(when t
-(when (and window-system (would-like 'slashdot))
+(when (and window-system (not running-as-root) (would-like 'slashdot))
   ;; madpenguin.org does not work if User-Agent is Wget
   (setq slashdot-wget-options (append http-wget-options '("-A" "Mozilla")))
   ;; If you edit this, run (slashdot-load-headings)
@@ -272,12 +273,11 @@
 	  ;; ("The Register" . "http://www.theregister.co.uk/tonys/slashdot.rdf")
 	  ;; ("Freshmeat" . "http://freshmeat.net/backend/fm.rdf")
 	  ;; ("NewsForge" . "http://newsforge.com/newsforge.rdf")
-	  ;; ("OS news" . "http://osnews.com/files/recent.rdf")
+	  ("OS news" . "http://osnews.com/files/recent.rdf")
 	  ;; ("MadPenguin" . "http://www.madpenguin.org/backend.php")
 	  ("Kerneltrap" . "http://kerneltrap.org/node/feed")
 	  ))
   (slashdot-start))
-)
 ;;}}}
 
 ;;{{{ Keys
@@ -999,7 +999,7 @@ We ignore the 3rd number."
 
 ;;; ------------------------------------------------------------
 ;; Start the server program
-(unless running-windoze
+(unless (or running-windoze running-as-root)
   (gnuserv-start)
   (setq gnuserv-frame (selected-frame)))
 
