@@ -33,6 +33,8 @@
 	"objchk*" "objfre*"
 	"debug" "release" "Debug" "Release"))
 
+(setq smerge-ediff-options "-w")
+
 ;; NT uses nmake and findstr
 (set-variable 'grep-command "findstr -n ")
 (setq compile-command "nmake ")
