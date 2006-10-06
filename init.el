@@ -277,7 +277,9 @@
 	  ;; ("MadPenguin" . "http://www.madpenguin.org/backend.php")
 	  ("Kerneltrap" . "http://kerneltrap.org/node/feed")
 	  ))
-  (slashdot-start))
+    ;; (slashdot-start) - started in user-init.el
+  )
+
 ;;}}}
 
 ;;{{{ Keys
@@ -851,6 +853,8 @@ A negative arg comments out the `new' line[s]."
 
 ;;{{{ Packages
 
+(when (would-like 'folding) (folding-mode nil t))
+
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 
@@ -1115,6 +1119,10 @@ We ignore the 3rd number."
 ;; For work
 (load "~/.xemacs/work" t)
 
+;; I use a common init.el across many machines. The `user-init' file
+;; allows for user/machine specific initialization.
+(load "~/.xemacs/user-init" t)
+
 ;;{{{ Final results
 
 (setq debug-on-error nil)
@@ -1137,5 +1145,10 @@ We ignore the 3rd number."
 ")
 
 ;;}}}
+
+;; Local variables:
+;; folded-file: t
+;; folding-internal-margins: nil
+;; end:
 
 ;; end of .emacs "May the `(' be with `)'"
