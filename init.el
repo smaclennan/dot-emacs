@@ -1082,12 +1082,12 @@ We ignore the 3rd number."
 ;; browse-url and vm-url-browser
 (cond
  ;; SAM
- ;((exec-installed-p "dillo")
- ; (setq browse-url-mosaic-program "dillo"
- ;	browse-url-mosaic-pidfile "~/.mosaicpid"
- ;	browse-url-browser-function 'browse-url-mosaic
- ;	vm-mosaic-program "dillo"
- ;	vm-url-browser 'vm-mouse-send-url-to-mosaic))
+ ((exec-installed-p "dillo")
+  (setq browse-url-mosaic-program "dillo"
+ 	browse-url-mosaic-pidfile "~/.mosaicpid"
+ 	browse-url-browser-function 'browse-url-mosaic
+ 	vm-mosaic-program "dillo"
+ 	vm-url-browser 'vm-mouse-send-url-to-mosaic))
  ;; SAM
  ((exec-installed-p "firefox")
   (setq browse-url-browser-function 'browse-url-firefox
