@@ -101,12 +101,8 @@ Nil defaults to the currently running kernel.")
 (when (would-like 'hide-copyleft)
   (add-to-list
    'copylefts-to-hide
-   '("[ /]\\* IF YOU DO NOT AGREE WITH THE FOLLOWING" .
-     " \\* -----------------------------------------------------------------"))
-  (add-to-list
-   'copylefts-to-hide
-   '("[ /]\\* IF YOU DO NOT AGREE WITH THE FOLLOWING" .
-     " \\* =================================================================")))
+   '("^.. IF YOU DO NOT AGREE WITH THE FOLLOWING" .
+     "\\(----------\\|===========\\)")))
 
 ;; -------------------------------------------------------------------
 
