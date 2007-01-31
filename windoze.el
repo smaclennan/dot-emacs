@@ -134,8 +134,10 @@ See also `auto-save-file-name-p'."
 
 
 ;; Setup ddk environment
-(if (would-like 'ddk-setenv)
-    (ddk-setenv))
+(when (would-like 'ddk-setenv)
+      ;; (setq ddk-target-os 'WinXP)
+      (setq ddk-free nil)
+      (ddk-setenv))
 
 
 ;; From: "Mike Alexander" <mta@arbortext.com>
