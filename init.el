@@ -165,7 +165,7 @@
 
   ;; -------
   ;; Title bar - almost every window system supports a title bar
-  (if nil
+  (if t
       ;; hostname
       (setq frame-title-format
 	    '("XEmacs " emacs-program-version "  " host-name ":"
@@ -308,6 +308,12 @@ instead, uses tag around or before point."
   (loop for key in keys do
     (global-set-key key func)))
 
+(defun my-toggle-case-search ()
+  (interactive)
+  (setq case-fold-search (not case-fold-search))
+  (when (interactive-p)
+    (message "Case sensitive search %s." (if case-fold-search "off" "on"))))
+
 ;;;; Function keys. Only f1 is bound in XEmacs. We move to shift-f1.
 (global-set-keys '([(shift f1)] [XF86_Switch_VT_1]) (global-key-binding [f1]))
 (global-set-key [f1]            'find-file)
@@ -325,6 +331,7 @@ instead, uses tag around or before point."
 (global-set-key [(control f7)]	'my-set-compile)
 (global-set-key [f8]		'grep)
 (global-set-key [f9]		'my-isearch-word-forward)
+(global-set-keys '([(shift f9)] [XF86_Switch_VT_9]) 'my-toggle-case-search)
 (global-set-key [f10]		'find-tag-at-point)
 (global-set-keys '([(shift f10)] [XF86_Switch_VT_10]) 'pop-tag-mark)
 (global-set-key [(control f10)]	'lxr-at-point)
@@ -481,6 +488,7 @@ instead, uses tag around or before point."
   (c-toggle-hungry-state 1)  ;; hungry delete
   (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
   (setq tab-width 4)	;; this must match `c-basic-offset'
+  (setq case-fold-search nil) ;; C is case sensitive
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
