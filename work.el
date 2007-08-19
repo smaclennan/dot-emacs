@@ -115,3 +115,7 @@ Nil defaults to the currently running kernel.")
   (require 'smerge)
   (loop for ignore in '(".cvsignore" ".depend" "TAGS" "*.so" "*.rc") do
     (add-to-list 'smerge-diff-excludes ignore t)))
+
+(let ((ipp "/opt/intel/ipp/5.1/ia32"))
+  (when (file-exists-p ipp)
+    (setenv "IPP" ipp)))
