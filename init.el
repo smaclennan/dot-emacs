@@ -865,7 +865,9 @@ A negative arg comments out the `new' line[s]."
 
 ;;{{{ Packages
 
-(when (would-like 'folding) (folding-mode nil t))
+;; SAM For some reason this causes a compile window to pop up.
+;;     I don't use it, so just leave it off.
+;; (when (would-like 'folding) (folding-mode nil t))
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
@@ -1159,7 +1161,7 @@ We ignore the 3rd number."
 ;;}}}
 
 ;; Local variables:
-;; folded-file: t
+;; folded-file: nil
 ;; folding-internal-margins: nil
 ;; end:
 
