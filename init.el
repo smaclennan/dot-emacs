@@ -204,10 +204,7 @@
   ;; -------
   ;; Toolbar
   (if t
-      (progn
-	(set-specifier default-toolbar-visible-p nil)
-	;;(set-specifier scrollbar-on-left-p t)
-	)
+      (set-specifier default-toolbar-visible-p nil)
     (set-default-toolbar-position 'left)
     (when (emacs-version>= 21 5)
       (set-specifier default-toolbar-border-width 1))
@@ -223,8 +220,8 @@
 
   ;; -------
   ;; Gutter - turn it off
-  (if (boundp 'default-gutter-visible-p)
-      (set-specifier default-gutter-visible-p nil))
+  (when (and (boundp 'default-gutter-visible-p) nil)
+    (set-specifier default-gutter-visible-p nil))
 
   ;; -------
   ;; Pointer used during garbage collection.
