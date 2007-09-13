@@ -23,6 +23,10 @@ Nil defaults to the currently running kernel.")
 
 (setq pika-cflags "-DPIKA_DEVEL -DUSE_POOL=0")
 
+(when (would-like 'ppc-env)
+  (setq ppc-kernel-dir (expand-file-name "~/taco/linux-ppc/")))
+
+
 ;; -------------------------------------------------------------------
 ;; Some evil troll decided that code should be unreadable and declared
 ;; tabs to be 2 characters. To make matters worse, they decided they
@@ -69,6 +73,13 @@ Nil defaults to the currently running kernel.")
 
   ;; Reset my-compile-dir-list
   (setq my-compile-dir-list my-compile-dir-linux)
+
+  ;; For appliance
+  (when (file-exists-p "~/taco/linux-ppc")
+    (setq my-compile-dir-list
+	    (append my-compile-dir-list
+		    (list (list (expand-file-name"~/taco/linux-ppc/"))))))
+
 
   (let (dir)
     ;; Add pika-dir unless the standard catch will get it
