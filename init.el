@@ -1132,7 +1132,8 @@ We ignore the 3rd number."
 
 ;; I use a common init.el across many machines. The `user-init' file
 ;; allows for user/machine specific initialization.
-(load "~/.xemacs/user-init" t)
+;; Load the login user name in case of sudo xemacs.
+(load (concat "~" (user-login-name) "/.xemacs/user-init") t)
 
 ;;{{{ Final results
 
