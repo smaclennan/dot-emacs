@@ -9,7 +9,7 @@ Nil defaults to the currently running kernel.")
 (defvar pika-cflags (getenv "PIKA_CFLAGS")
   "* Set any extra kernel flags you want to pass to user mode.")
 
-(defvar pika-kernel-cflags (or (getenv "PIKA_KERNEL_CFLAGS") "-g")
+(defvar pika-kernel-cflags (getenv "PIKA_KERNEL_CFLAGS")
   "* Set any extra kernel flags you want to pass to all the kernel drivers.")
 
 (defvar pika-subdirs '("user"
