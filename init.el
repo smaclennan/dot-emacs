@@ -226,16 +226,17 @@
   ;; -------
   ;; Pointer used during garbage collection.
   ;; .xbm not supported under windoze
-  (if (and (file-exists-p "~/.xemacs/recycle-image.xbm")
-	   (file-exists-p "~/.xemacs/recycle-mask.xbm")
-	   (not running-windoze))
-      (set-glyph-image gc-pointer-glyph
-		       (vector 'xbm
-			       :file "~/.xemacs/recycle-image.xbm"
-			       :mask-file "~/.xemacs/recycle-mask.xbm"
-			       :foreground "black"
-			       :background "chartreuse1"))
-    (set-glyph-image gc-pointer-glyph "recycle2.xpm"))
+  (let ((img  (locate-data-file "recycle-image.xbm"))
+	(mask (locate-data-file "recycle-mask.xbm")))
+    (if (and (file-exists-p img) (file-exists-p mask)
+	     (not running-windoze))
+	(set-glyph-image gc-pointer-glyph
+			 (vector 'xbm
+				 :file img
+				 :mask-file mask
+				 :foreground "black"
+				 :background "chartreuse1"))
+      (set-glyph-image gc-pointer-glyph "recycle2.xpm")))
 
   ;; -------
   ;; I consider sound to be a "windows" thing
@@ -731,6 +732,9 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
     ;; end of symbol-near-point
     (c-macro-expand start end subst)))
 
+;;; -------------------------------------------------------------------------
+(would-like 'svn)
+
 ;;}}}
 
 ;;{{{ Handy Dandy(tm) Functions
@@ -1092,14 +1096,6 @@ We ignore the 3rd number."
 
 ;; browse-url and vm-url-browser
 (cond
- ;; SAM
- ((exec-installed-p "dillo")
-  (setq browse-url-mosaic-program "dillo"
- 	browse-url-mosaic-pidfile "~/.mosaicpid"
- 	browse-url-browser-function 'browse-url-mosaic
- 	vm-mosaic-program "dillo"
- 	vm-url-browser 'vm-mouse-send-url-to-mosaic))
- ;; SAM
  ((exec-installed-p "firefox")
   (setq browse-url-browser-function 'browse-url-firefox
 	vm-url-browser 'vm-mouse-send-url-to-mozilla))
