@@ -733,7 +733,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
     (c-macro-expand start end subst)))
 
 ;;; -------------------------------------------------------------------------
-(would-like 'svn)
+(unless running-windoze (would-like 'svn))
 
 ;;}}}
 
