@@ -472,15 +472,19 @@ instead, uses tag around or before point."
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
+(defun linux-style (dir arg)
+  (c-set-style "linux")
+  (setq tab-width 8))
+
 ;;; -------------------------------------------------------------------------
 
 (defvar my-compile-dir-linux
   '(;; 2.6 kernels just work
-    ("/usr/src/linux-2.6[^/]*/")
+    ("/usr/src/linux-2.6[^/]*/" nil linux-style)
     ;; 2.4 kernels need bzImage and modules for drivers
-    ("/usr/src/linux-2.4[^/]*/" "bzImage modules")
+    ("/usr/src/linux-2.4[^/]*/" "bzImage modules" linux-style)
     ;; Assume /usr/src/linux is 2.4
-    ("/usr/src/linux/" "bzImage modules")
+    ("/usr/src/linux/" "bzImage modules" linux-style)
     )
   "My default Linux directories.")
 
@@ -492,7 +496,8 @@ the compile command.
 Each match is a list. The first, and only required, element is a
 regexp for the directory. The second element is an optional target to
 pass to make. The third element is an optional lisp function to
-call.
+call. The lisp function will be passed the directory matched and the
+target as parameters.
 
 Only the first match is used so order is important.")
 
@@ -552,7 +557,7 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 
 (when (would-like 'smerge)
   (setq smerge-diff-excludes
-	'("*.o" "*.obj" "*.a" "*.lib" "*~" ".#*" "CVS" ".svn"
+	'("*.o" "*.obj" "*.a" "*.lib" "*~" ".#*" "CVS" ".svn" ".git"
 	  "*.cmd" "*.lo" "*.ko" ".tmp_versions" "*.Plo"))
   (setq smerge-diff-options "-w"))
 
