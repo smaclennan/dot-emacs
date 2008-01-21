@@ -19,6 +19,12 @@ Nil defaults to the currently running kernel.")
 		       )
   "* Pika sub-directories to handle specially.")
 
+(if nil
+    ;; ELDK
+    (setq ppc-toolchain-dir "/usr/src/eldk")
+  ;; PADS
+  (setq ppc-toolchain-dir (expand-file-name "~/work/pads/toolchain")))
+
 ;; -------------------------------------------------------------------
 
 (setq pika-cflags "-DPIKA_DEVEL -DUSE_POOL=0")
