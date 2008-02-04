@@ -30,7 +30,8 @@ Nil defaults to the currently running kernel.")
 (setq pika-cflags "-DPIKA_DEVEL -DUSE_POOL=0")
 
 (when (would-like 'ppc-env)
-  (setq ppc-kernel-dir (expand-file-name "~/taco/for-2.6.25/")))
+  (setq ppc-kernel-dir (expand-file-name "~/taco/for-2.6.25/"))
+  (setq ppc-u-boot-dir (expand-file-name "~/taco/u-boot/")))
 
 
 ;; -------------------------------------------------------------------
