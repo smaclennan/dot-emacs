@@ -1,4 +1,4 @@
-(defvar pika-dir (or (getenv "PIKA_DIR") "~/monza/software")
+(defvar pika-dir (or (getenv "PIKA_DIR") "~work/monza/software")
   "* Root of the PIKA source tree.
 Use `set-pika-dir' to change this.")
 
@@ -23,15 +23,15 @@ Nil defaults to the currently running kernel.")
     ;; ELDK
     (setq ppc-toolchain-dir "/usr/src/eldk")
   ;; PADS
-  (setq ppc-toolchain-dir (expand-file-name "~/work/pads/toolchain")))
+  (setq ppc-toolchain-dir (expand-file-name "~work/pads/toolchain")))
 
 ;; -------------------------------------------------------------------
 
-(setq pika-cflags "-DPIKA_DEVEL -DUSE_POOL=0")
+(setq pika-cflags "-DPIKA_DEVEL -Wall")
 
 (when (would-like 'ppc-env)
-  (setq ppc-kernel-dir (expand-file-name "~/taco/for-2.6.25/"))
-  (setq ppc-u-boot-dir (expand-file-name "~/taco/u-boot/")))
+  (setq ppc-kernel-dir (expand-file-name "~work/taco/for-2.6.25/"))
+  (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
 
 
 ;; -------------------------------------------------------------------
@@ -46,6 +46,7 @@ Nil defaults to the currently running kernel.")
 ;; When called from my-compile-command is passed two args.
 ;; When called from c-mode-common-hook gets none.
 (defun pika-c-mode (&optional dir arg)
+  (interactive)
   (when pika-kernel
     (setq compile-command
 	  (format "%s KERNEL=%s" compile-command pika-kernel)))
@@ -130,3 +131,12 @@ Nil defaults to the currently running kernel.")
 (let ((ipp "/opt/intel/ipp/5.1/ia32"))
   (when (file-exists-p ipp)
     (setenv "IPP" ipp)))
+
+(setq signed-off-by-sig (concat user-full-name " <smaclennan@pikatech.com>"))
+
+;; For grandprix
+(setenv "AOH_LIB" (concat pika-dir "/user/libs"))
+(setenv "AOH_INC" (concat pika-dir "/include"))
+
+;; For chan_pika
+;(setenv "AOH_INC" (concat pika-dir "/sdk/include"))
