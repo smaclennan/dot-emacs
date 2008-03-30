@@ -60,7 +60,7 @@
 (when (not (emacs-version>= 21 2))
   (setq temp-buffer-shrink-to-fit t))
 
-(require 'redo) ;; edit-utils
+(would-like 'redo) ;; edit-utils
 (would-like 'uncompress) ;; os-utils
 
 ;; Needed by ediff - exists in `efs'
@@ -183,7 +183,6 @@
 
   ;; -------
   ;; Menubar
-  ;; SAM (require 'big-menubar)
   (setq menu-accelerator-enabled 'menu-fallback
 	menu-accelerator-modifiers '(alt))
 
@@ -261,6 +260,7 @@
 (if (fboundp 'display-time) (display-time))
 
 ;;}}}
+
 
 ;;{{{ Keys
 
@@ -343,7 +343,11 @@ instead, uses tag around or before point."
 (define-key read-file-name-map [f3]
   '(lambda () (interactive) (insert linux-dir "include/asm/")))
 
-(would-like 'intellimouse)
+(if (fboundp 'mwheel-install)
+    (progn
+      (mwheel-install)
+      (setq mwheel-follow-mouse t))
+  (would-like 'intellimouse))
 
 ;; -------------------------------------------------------
 ;; The standard blows away emacs just a little to easily
@@ -373,7 +377,8 @@ instead, uses tag around or before point."
 
 ;; Maximum colour but minimum chatter
 (setq-default font-lock-maximum-decoration t
-	      font-lock-verbose nil)
+	      font-lock-verbose nil
+	      font-lock-maximum-size nil)
 
 ;; Change a couple of faces
 (make-face-bold 'font-lock-function-name-face)
@@ -480,6 +485,7 @@ instead, uses tag around or before point."
 
 (defvar my-compile-dir-linux
   '(;; 2.6 kernels just work
+    ("/usr/src/git-2.6/" nil linux-style)
     ("/usr/src/linux-2.6[^/]*/" nil linux-style)
     ;; 2.4 kernels need bzImage and modules for drivers
     ("/usr/src/linux-2.4[^/]*/" "bzImage modules" linux-style)
@@ -592,7 +598,6 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
     (set (make-local-variable 'compile-command) cmd)))
 
 ;;; -------------------------------------------------------------------------
-;; CVS version control
 (when (would-like 'vc)
   (setq vc-diff-switches "-u")
   (when (would-like 'vc-ediff)
@@ -721,6 +726,15 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;;; -------------------------------------------------------------------------
 (unless running-windoze (would-like 'svn))
+
+(defvar signed-off-by-sig (concat user-full-name " <" user-mail-address ">")
+  "* Signature used by `signed-off-by' function.")
+
+(defun signed-off-by ()
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (insert (concat "Signed-off-by: " signed-off-by-sig "\n\n"))))
 
 ;;}}}
 
