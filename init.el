@@ -867,6 +867,9 @@ A negative arg comments out the `new' line[s]."
 
 ;;{{{ Packages
 
+;; C-h =
+(would-like 'introspector)
+
 ;; SAM For some reason this causes a compile window to pop up.
 ;;     I don't use it, so just leave it off.
 ;; (when (would-like 'folding) (folding-mode nil t))
