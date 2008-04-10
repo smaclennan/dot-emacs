@@ -257,7 +257,9 @@
   );; window-system
 
 ;; Do this *after* setting the modeline colours
-(if (fboundp 'display-time) (display-time))
+(when (fboundp 'display-time)
+  (setq display-time-mail-file (expand-file-name "~/Mail/NewLog"))
+  (display-time))
 
 ;;}}}
 
