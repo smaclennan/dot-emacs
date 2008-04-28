@@ -34,6 +34,12 @@ Nil defaults to the currently running kernel.")
   (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
 
 
+;; Add some other kernels
+(dolist (kernel '("~work/taco/for-2.6.25" "~work/taco/for-2.6.26"))
+  (setq my-compile-dir-list
+	(add-to-list 'my-compile-dir-list
+		     (list (expand-file-name kernel) nil 'linux-style))))
+
 ;; -------------------------------------------------------------------
 ;; Some evil troll decided that code should be unreadable and declared
 ;; tabs to be 2 characters. To make matters worse, they decided they
@@ -66,9 +72,7 @@ Nil defaults to the currently running kernel.")
 ;; -------------------------------------------------------------------
 (defun set-pika-dir (dir)
   (interactive "Dpika-dir: ")
-  (setq pika-dir (expand-file-name dir))
-  (when (string-match "/$" pika-dir)
-    (setq pika-dir (replace-match "" nil nil pika-dir)))
+  (setq pika-dir (my-expand-dir-name dir))
   (setenv "PIKA_DIR" pika-dir)
 
   ;; Note: if these are nil, setenv will remove them
@@ -103,6 +107,11 @@ Nil defaults to the currently running kernel.")
     (setq my-compile-dir-list
 	  (append my-compile-dir-list
 		  '(("^.*/monza/" nil pika-c-mode)))))
+
+  ;; add samtest
+  (setq my-compile-dir-list
+	(append my-compile-dir-list
+		'((".*/samtest/" nil linux-style))))
   )
 
 ;; Now default it
