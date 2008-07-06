@@ -26,21 +26,6 @@ Nil defaults to the currently running kernel.")
   (setq ppc-toolchain-dir (expand-file-name "~work/pads/toolchain")))
 
 ;; -------------------------------------------------------------------
-
-(setq pika-cflags "-DPIKA_DEVEL -Wall")
-
-(when (would-like 'ppc-env)
-  (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-2.6/"))
-  (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
-
-
-;; Add some other kernels
-(dolist (kernel '("~work/taco/for-2.6.25" "~work/taco/for-2.6.26"))
-  (setq my-compile-dir-list
-	(add-to-list 'my-compile-dir-list
-		     (list (expand-file-name kernel) nil 'linux-style))))
-
-;; -------------------------------------------------------------------
 ;; Some evil troll decided that code should be unreadable and declared
 ;; tabs to be 2 characters. To make matters worse, they decided they
 ;; must be spaces so we cannot adjust the spacing ourselves.....
@@ -116,6 +101,23 @@ Nil defaults to the currently running kernel.")
 
 ;; Now default it
 (set-pika-dir pika-dir)
+
+;; -------------------------------------------------------------------
+
+(setq pika-cflags "-DPIKA_DEVEL -Wall")
+
+(when (would-like 'ppc-env)
+  (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-2.6/"))
+  (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
+
+
+;; Add some other kernels
+(dolist (kernel '("~work/taco/linux-2.6"
+		  "~work/taco/for-2.6.[0-9]+"))
+  (setq my-compile-dir-list
+	(add-to-list 'my-compile-dir-list
+		     (list (expand-file-name kernel) nil 'linux-style)
+		     t)))
 
 ;; -------------------------------------------------------------------
 

@@ -193,22 +193,27 @@ This is guaranteed not to have a / at the end."
 
   ;; -------
   ;; Menubar
-  (setq menu-accelerator-enabled 'menu-fallback
-	menu-accelerator-modifiers '(alt))
+  ;; -------
+  (if nil
+      ;; Menubar - turn it off to save space
+      (set-specifier menubar-visible-p nil)
 
-  ;; popup gnus ala toolbar
-  (if (packagep 'gnus t)
-      (add-menu-item '("Apps") "Usenet News" 'toolbar-gnus t))
+    (setq menu-accelerator-enabled 'menu-fallback
+	  menu-accelerator-modifiers '(alt))
 
-  ;; add speedbar
-  (when (packagep 'speedbar t)
-    (add-menu-button '("Tools")
-		     ["Speedbar" speedbar-frame-mode
-		      :style toggle
-		      :selected (and (boundp 'speedbar-frame)
-				     (frame-live-p speedbar-frame)
-				     (frame-visible-p speedbar-frame))]
-		     "--"))
+    ;; popup gnus ala toolbar
+    (if (packagep 'gnus t)
+	(add-menu-item '("Apps") "Usenet News" 'toolbar-gnus t))
+
+    ;; add speedbar
+    (when (packagep 'speedbar t)
+      (add-menu-button '("Tools")
+		       ["Speedbar" speedbar-frame-mode
+			:style toggle
+			:selected (and (boundp 'speedbar-frame)
+				       (frame-live-p speedbar-frame)
+				       (frame-visible-p speedbar-frame))]
+		       "--")))
 
   ;; -------
   ;; Toolbar
@@ -229,8 +234,12 @@ This is guaranteed not to have a / at the end."
 
   ;; -------
   ;; Gutter - turn it off
+  ;; Old way
   (when (and (boundp 'default-gutter-visible-p) nil)
     (set-specifier default-gutter-visible-p nil))
+  ;; New way
+  (when (boundp 'gutter-buffers-tab-enabled)
+    (setq gutter-buffers-tab-enabled nil))
 
   ;; -------
   ;; Pointer used during garbage collection.
@@ -747,7 +756,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (interactive)
   (save-excursion
     (beginning-of-line)
-    (insert (concat "Signed-off-by: " signed-off-by-sig "\n\n"))))
+    (insert (concat "Signed-off-by: " signed-off-by-sig "\n---\n\n"))))
 
 ;;}}}
 
