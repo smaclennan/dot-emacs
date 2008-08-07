@@ -41,13 +41,17 @@ Nil defaults to the currently running kernel.")
   (when pika-kernel
     (setq compile-command
 	  (format "%s KERNEL=%s" compile-command pika-kernel)))
-  (c-set-style "pika")
-  (setq mode-name (concat "PIKA-" mode-name))
-  (setq indent-tabs-mode nil)
-  (setq tab-width 2)
-  (setq lxr-url "http://alice.pikatech.com/lxr/http"
-	lxr-version "monza"
-	lxr-base pika-dir)
+  (if (and dir (string-match "/kernel/" dir))
+      (progn
+	(c-set-style "linux")
+	(setq mode-name (concat "PK-" mode-name))
+	(setq indent-tabs-mode t)
+	(setq tab-width 8))
+    (c-set-style "pika")
+    (setq mode-name (concat "PIKA-" mode-name))
+    (setq indent-tabs-mode nil)
+    (setq tab-width 2)
+    )
   (force-mode-line-update))
 
 ;; For windows assume we are always editing pika code
@@ -112,7 +116,7 @@ Nil defaults to the currently running kernel.")
 
 
 ;; Add some other kernels
-(dolist (kernel '("~work/taco/linux-2.6"
+(dolist (kernel '("~work/taco/linux-"
 		  "~work/taco/for-2.6.[0-9]+"))
   (setq my-compile-dir-list
 	(add-to-list 'my-compile-dir-list
