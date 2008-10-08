@@ -490,10 +490,10 @@ instead, uses tag around or before point."
 
 ;; This hook is run for all the modes handled by cc-mode
 (defun my-c-mode-common-hook ()
-  (c-set-style "sam")
+  (c-set-style "linux")
   (c-toggle-hungry-state 1)  ;; hungry delete
   (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
-  (setq tab-width 4)	;; this must match `c-basic-offset'
+  ;; SAM (setq tab-width 4)	;; this must match `c-basic-offset'
   (setq case-fold-search nil) ;; C is case sensitive
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
@@ -756,7 +756,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (interactive)
   (save-excursion
     (beginning-of-line)
-    (insert (concat "Signed-off-by: " signed-off-by-sig "\n---\n\n"))))
+    (insert (concat "Signed-off-by: " signed-off-by-sig "\n---\n"))))
 
 ;;}}}
 

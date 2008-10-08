@@ -116,7 +116,7 @@ Nil defaults to the currently running kernel.")
 
 
 ;; Add some other kernels
-(dolist (kernel '("~work/taco/linux-"
+(dolist (kernel '("~work/taco/linux-[^/]+"
 		  "~work/taco/for-2.6.[0-9]+"))
   (setq my-compile-dir-list
 	(add-to-list 'my-compile-dir-list

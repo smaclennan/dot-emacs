@@ -12,7 +12,7 @@
 	  ("OS news" . "http://www.osnews.com/files/recent.xml")
 	  ;; ("MadPenguin" . "http://www.madpenguin.org/backend.php")
 	  ("Kerneltrap" . "http://kerneltrap.org/node/feed")
-	  ("Weather" . "http://www.weatheroffice.gc.ca/rss/city/on-118_e.xml")
+	  ;; ("Weather" . "http://www.weatheroffice.gc.ca/rss/city/on-118_e.xml")
 	  ))
     (slashdot-start)
   )
