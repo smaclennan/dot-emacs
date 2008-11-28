@@ -436,6 +436,12 @@ instead, uses tag around or before point."
   (my-set-face 'ediff-even-diff-B    "black" "white" 'highlight)
   )
 
+;; Ediff 1.76 bug - coding system was set to 'emacs-internal which
+;; doesn't seem to exist. You see it with ediff-buffers but not
+;; ediff-files.
+(unless (find-coding-system 'emacs-internal)
+  (setq ediff-coding-system-for-write 'no-conversion))
+
 ;; SAM (add-hook 'font-lock-mode-hook 'turn-on-lazy-shot)
 
 ;; Of all the modes, font-lock *least* needs a modeline
