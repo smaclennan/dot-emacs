@@ -6,6 +6,9 @@
 
 ;;{{{ Configuration variables / functions
 
+(unless (boundp 'running-sxemacs)
+  (defvar running-sxemacs nil "Non-nil when the current emacs is SXEmacs."))
+
 (defvar running-windoze (eq system-type 'windows-nt))
 
 (defvar running-gtk-xemacs (fboundp 'default-gtk-device))
@@ -177,10 +180,13 @@ This is guaranteed not to have a / at the end."
 
   ;; -------
   ;; Title bar - almost every window system supports a title bar
-  (setq frame-title-format
-	'((if running-sxemacs "S") "XEmacs "
-	  emacs-program-version "  " host-name ":"
-	  (buffer-file-name "%f" "%b")))
+  (if running-sxemacs
+      (setq frame-title-format
+	    '("SXEmacs " emacs-program-version "  " host-name ":"
+	      (buffer-file-name "%f" "%b")))
+    (setq frame-title-format
+	  '("XEmacs " emacs-program-version "  " host-name ":"
+	    (buffer-file-name "%f" "%b"))))
 
   ;; -------
   ;; Menubar
