@@ -1,5 +1,5 @@
-;; XEmacs setup -*- Mode:emacs-lisp -*-
-;; This file should work with XEmacs 2x.x
+;; S?XEmacs setup -*- Mode:emacs-lisp -*-
+;; This file should work with XEmacs 2x.x or SXEmacs
 
 ;; Assumes at least the following packages:
 ;;	xemacs-base, edit-utils, cc-mode, pc
@@ -11,6 +11,10 @@
 (defvar running-gtk-xemacs (fboundp 'default-gtk-device))
 
 (defvar running-as-root (string= (user-login-name) "root"))
+
+(defvar dot-xemacs
+  (expand-file-name (if running-sxemacs "~/.sxemacs/" "~/.xemacs/"))
+  "The base .xemacs directory.")
 
 (setq inhibit-default-init t)
 
@@ -50,7 +54,8 @@
       find-file-compare-truenames t
       signal-error-on-buffer-boundary nil)
 
-(when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
+(setq custom-file (concat dot-xemacs "custom.el"))
+(when (file-exists-p custom-file)
   (load-file custom-file))
 
 (put 'narrow-to-region 'disabled nil)
@@ -100,9 +105,6 @@
   ;; system-name is host-name
   (setq host-name system-name
 	domain-name (getenv "DOMAINNAME"))))
-
-(add-to-list 'paths-default-info-directories "/home/xemacs/packages/info")
-(add-to-list 'paths-default-info-directories "~/.xemacs/packages/info")
 
 ;; These are missing
 (unless (boundp 'lpr-command)
@@ -175,21 +177,10 @@ This is guaranteed not to have a / at the end."
 
   ;; -------
   ;; Title bar - almost every window system supports a title bar
-  (if t
-      ;; hostname
-      (setq frame-title-format
-	    '("XEmacs " emacs-program-version "  " host-name ":"
-	      (buffer-file-name "%f" "%b")))
-    ;; no hostname
-    (setq frame-title-format
-	  '("XEmacs " emacs-program-version "  "
-	    (buffer-file-name "%f" "%b"))))
-
-
-  ;; for pwm - add host name to buffers with file names
-  (defconst full-host-name (concat host-name ": "))
-  (setq frame-icon-title-format
-	'((buffer-file-name full-host-name "") "%b"))
+  (setq frame-title-format
+	'((if running-sxemacs "S") "XEmacs "
+	  emacs-program-version "  " host-name ":"
+	  (buffer-file-name "%f" "%b")))
 
   ;; -------
   ;; Menubar
@@ -439,7 +430,7 @@ instead, uses tag around or before point."
 ;; Ediff 1.76 bug - coding system was set to 'emacs-internal which
 ;; doesn't seem to exist. You see it with ediff-buffers but not
 ;; ediff-files.
-(unless (find-coding-system 'emacs-internal)
+(unless (and (not running-sxemacs) (find-coding-system 'emacs-internal))
   (setq ediff-coding-system-for-write 'no-conversion))
 
 ;; SAM (add-hook 'font-lock-mode-hook 'turn-on-lazy-shot)
@@ -864,7 +855,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 (defvar excuse-phrase-file
   (or (locate-data-file "excuses.lines")
-      (expand-file-name "~/.xemacs/excuses.lines"))
+      (concat dot-xemacs "excuses.lines"))
   "*File containing excuses")
 
 (defun excuse (&optional insert)
@@ -1118,13 +1109,13 @@ We ignore the 3rd number."
 ;;(setq smtpmail-debug-info t)
 
 ;; Domain specific mail
-(let ((domain-specific-init (concat "~/.xemacs/mail-" domain-name)))
+(let ((domain-specific-init (concat dot-xemacs "mail-" domain-name)))
   (when (file-exists-p domain-specific-init)
     (load domain-specific-init)))
 
 ;; Move the .vm init file to .xemacs
-(setq vm-init-file "~/.xemacs/vm-init.el"
-      vm-folders-summary-database "~/.xemacs/.vm.folders.db")
+(setq vm-init-file (concat dot-xemacs "vm-init.el")
+      vm-folders-summary-database (concat dot-xemacs ".vm.folders.db"))
 
 ;; browse-url and vm-url-browser
 (cond
@@ -1145,7 +1136,7 @@ We ignore the 3rd number."
   (setq browse-url-browser-function 'browse-url-lynx-emacs)))
 
 ;; GNUS
-(setq gnus-init-file "~/.xemacs/gnus.el")
+(setq gnus-init-file (concat dot-xemacs "gnus.el"))
 
 ;; html
 ;;(defcustom html-helper-htmldtd-version "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
@@ -1153,15 +1144,17 @@ We ignore the 3rd number."
 ;;}}}
 
 (when running-windoze
-  (load "~/.xemacs/windoze" t))
+  (load (concat dot-xemacs "windoze") t))
 
 ;; For work
-(load "~/.xemacs/work" t)
+(load (concat dot-xemacs "work") t)
 
 ;; I use a common init.el across many machines. The `user-init' file
 ;; allows for user/machine specific initialization.
 ;; Load the login user name in case of sudo xemacs.
-(load (concat "~" (user-login-name) "/.xemacs/user-init") t)
+(load (concat "~" (user-login-name)
+	      (if running-sxemacs ".sxemacs" ".xemacs")
+	      "/user-init") t)
 
 ;;{{{ Final results
 
