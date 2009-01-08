@@ -1159,7 +1159,7 @@ We ignore the 3rd number."
 ;; allows for user/machine specific initialization.
 ;; Load the login user name in case of sudo xemacs.
 (load (concat "~" (user-login-name)
-	      (if running-sxemacs ".sxemacs" ".xemacs")
+	      (if running-sxemacs "/.sxemacs" "/.xemacs")
 	      "/user-init") t)
 
 ;;{{{ Final results
