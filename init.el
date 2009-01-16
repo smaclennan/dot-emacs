@@ -50,6 +50,7 @@
 ;;{{{ Basic Customization
 
 (setq debug-on-error t
+      debug-on-signal t
       track-eol t
       kill-whole-line t
       next-line-add-newlines nil
@@ -138,6 +139,11 @@ This is guaranteed not to have a / at the end."
   (while (string-match "//+" name)
     (setq name (replace-match "/" nil nil name)))
   name)
+
+;; cl-loop required for packages like etags under SXEmacs, but require does
+;; not seem to work in 22.1.9. So explicitly load the module.
+(when running-sxemacs
+  (load-module "cl-loop"))
 
 ;;}}}
 
