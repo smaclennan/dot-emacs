@@ -280,7 +280,6 @@ This is guaranteed not to have a / at the end."
 
 ;; Do this *after* setting the modeline colours
 (when (fboundp 'display-time)
-  (setq display-time-mail-file (expand-file-name "~/Mail/NewLog"))
   (display-time))
 
 ;;}}}
@@ -1171,6 +1170,7 @@ We ignore the 3rd number."
 ;;{{{ Final results
 
 (setq debug-on-error nil)
+(setq debug-on-signal nil)
 
 (if would-have-liked-list
     ;; Warn that some features not found
