@@ -593,8 +593,9 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 
 (when (would-like 'smerge)
   (setq smerge-diff-excludes
-	'("*.o" "*.obj" "*.a" "*.lib" "*~" ".#*" "CVS" ".svn" ".git"
-	  "*.cmd" "*.lo" "*.ko" ".tmp_versions" "*.Plo" "modules.order"))
+	'("*.o" "*.obj" "*.a" "*.lib" "*~" ".#*" "CVS" ".svn"
+	  ".git" "*.cmd" "*.lo" "*.ko" ".tmp_versions" "*.Plo"
+	  "modules.order" "*.elc"))
   (setq smerge-diff-options "-w"))
 
 ;;; -------------------------------------------------------------------------

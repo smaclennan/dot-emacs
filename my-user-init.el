@@ -3,6 +3,3 @@
   ;; madpenguin.org does not work if User-Agent is Wget
   (setq slashdot-wget-options (append http-wget-options '("-A" "Mozilla")))
   (slashdot-start))
-
-(setq zenirc-server-alist
-      '(("irc.ipv6.oftc.net" nil nil nil nil)))
