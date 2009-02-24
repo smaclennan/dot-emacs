@@ -238,7 +238,7 @@ This is guaranteed not to have a / at the end."
 	      '("XEmacs " emacs-program-version "  " host-name ":"
 		(buffer-file-name "%f" "%b")))
       (setq frame-title-format
-	    '("Emacs " emacs-program-version "  " host-name ":"
+	    '("Emacs " emacs-version "  " host-name ":"
 	      (buffer-file-name "%f" "%b")))))
 
   ;; -------
