@@ -1,23 +1,29 @@
-;; S?XEmacs setup -*- Mode:emacs-lisp -*-
-;; This file should work with XEmacs 2x.x or SXEmacs
+;; S?X?Emacs setup -*- Mode:emacs-lisp -*-
+;; This file should work with XEmacs 2x.x, Emacs 22.x, or SXEmacs
 
 ;; Assumes at least the following packages:
 ;;	xemacs-base, edit-utils, cc-mode, pc
 
 ;;{{{ Configuration variables / functions
 
+(unless (boundp 'running-xemacs)
+  (defvar running-xemacs nil
+    "Non-nil when the current emacs is XEmacs."))
 (unless (boundp 'running-sxemacs)
-  (defvar running-sxemacs nil "Non-nil when the current emacs is SXEmacs."))
+  (defvar running-sxemacs nil
+    "Non-nil when the current emacs is SXEmacs."))
+(defvar running-gnu-emacs (not running-xemacs)
+  "Non-nil when the current emacs is GNU Emacs.")
 
-(defvar running-windoze (eq system-type 'windows-nt))
+(defvar running-windoze (eq system-type 'windows-nt)
+  "Non-nil if running Windows.")
 
-(defvar running-gtk-xemacs (fboundp 'default-gtk-device))
+(defvar running-as-root (string= (user-login-name) "root")
+  "Non-nil if running as root.")
 
-(defvar running-as-root (string= (user-login-name) "root"))
-
-(defvar dot-xemacs
-  (expand-file-name (if running-sxemacs "~/.sxemacs/" "~/.xemacs/"))
-  "The base .xemacs directory.")
+(defvar dot-dir
+  (file-name-directory user-init-file)
+  "The init file directory.")
 
 (setq inhibit-default-init t)
 
@@ -38,19 +44,26 @@
      nil)))
 
 (defun packagep (package &optional no-list)
-  (if (assq package packages-package-list)
-      t
-    (unless no-list (add-to-list 'would-have-liked-list package))
-    nil))
+  (if running-xemacs
+      (if (assq package packages-package-list)
+	  t
+	(unless no-list (add-to-list 'would-have-liked-list package))
+	nil)
+    (would-like package no-list)))
 
 (defvar have-sound nil)
+
+(unless (fboundp 'emacs-version>=)
+  (defun emacs-version>= (major minor)
+    (or (> major emacs-major-version)
+	(and (= major emacs-major-version)
+	     (>= minor emacs-minor-version)))))
 
 ;;}}}
 
 ;;{{{ Basic Customization
 
 (setq debug-on-error t
-      debug-on-signal t
       track-eol t
       kill-whole-line t
       next-line-add-newlines nil
@@ -58,7 +71,11 @@
       find-file-compare-truenames t
       signal-error-on-buffer-boundary nil)
 
-(setq custom-file (concat dot-xemacs "custom.el"))
+(when running-gnu-emacs
+  (setq inhibit-startup-message t)
+  (setq inhibit-startup-echo-area-message "seanm"))
+
+(setq custom-file (concat dot-dir "custom.el"))
 (when (file-exists-p custom-file)
   (load-file custom-file))
 
@@ -69,8 +86,10 @@
 (when (not (emacs-version>= 21 2))
   (setq temp-buffer-shrink-to-fit t))
 
-(would-like 'redo) ;; edit-utils
-(would-like 'uncompress) ;; os-utils
+(would-like 'redo running-gnu-emacs) ;; edit-utils
+
+;; (would-like 'uncompress) ;; os-utils
+(auto-compression-mode 1)
 
 ;; Needed by ediff - exists in `efs'
 (or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
@@ -82,7 +101,9 @@
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
 
-(paren-set-mode 'paren t)
+(if running-xemacs
+    (paren-set-mode 'paren t)
+  (show-paren-mode t))
 
 ;; This is defined in apel - here is a simple version
 (unless (fboundp 'exec-installed-p)
@@ -95,8 +116,11 @@
 	t
       (catch 'found
 	(dolist (path exec-path)
-	  (when (file-exists-p (concat path file))
-	    (throw 'found (concat path file))))))))
+	  (when (string-match "/+$" path)
+	    (setq path (replace-match "" nil nil path)))
+	  (setq path (concat path "/" file))
+	  (when (file-exists-p path)
+	    (throw 'found path)))))))
 
 ;; Split the system-name up into host and domain name.
 (defvar host-name nil)
@@ -114,6 +138,18 @@
 (unless (boundp 'lpr-command)
   (setq lpr-command "lpr"
 	lpr-switches nil))
+
+;; SAM move this to esp?
+(unless running-xemacs
+  (defun exec-to-string (cmd)
+    (let ((buff (generate-new-buffer "exec"))
+	  str)
+      (shell-command cmd buff)
+      (save-excursion
+	(set-buffer buff)
+	(setq str (buffer-substring (point-min) (point-max))))
+      (kill-buffer buff)
+      str)))
 
 (defun uname (&optional arg)
   "`uname arg' as a list. arg defaults to -a"
@@ -139,6 +175,10 @@ This is guaranteed not to have a / at the end."
   (while (string-match "//+" name)
     (setq name (replace-match "/" nil nil name)))
   name)
+
+(unless (fboundp 'locate-data-file)
+  (defun locate-data-file (file)
+    (locate-file file data-directory)))
 
 ;; cl-loop required for packages like etags under SXEmacs, but require does
 ;; not seem to work in 22.1.9. So explicitly load the module.
@@ -179,61 +219,48 @@ This is guaranteed not to have a / at the end."
 	  (turn-on-pending-delete)))
     ;; use pc-select
     (when (would-like 'pc-select)
-      (pc-select-mode t)
+      (if running-xemacs
+	  (pc-select-mode t)
+	(pc-selection-mode t))
       (setq pc-select-modeline-string ""
 	    pending-delete-modeline-string ""
 	    pc-select-keep-regions t)))
 
   ;; -------
   ;; Title bar - almost every window system supports a title bar
+  ;; The first element must be a string... sighhh.
   (if running-sxemacs
       (setq frame-title-format
 	    '("SXEmacs " emacs-program-version "  " host-name ":"
 	      (buffer-file-name "%f" "%b")))
-    (setq frame-title-format
-	  '("XEmacs " emacs-program-version "  " host-name ":"
-	    (buffer-file-name "%f" "%b"))))
+    (if running-xemacs
+	(setq frame-title-format
+	      '("XEmacs " emacs-program-version "  " host-name ":"
+		(buffer-file-name "%f" "%b")))
+      (setq frame-title-format
+	    '("Emacs " emacs-program-version "  " host-name ":"
+	      (buffer-file-name "%f" "%b")))))
 
   ;; -------
   ;; Menubar
-  ;; -------
-  (if nil
-      ;; Menubar - turn it off to save space
-      (set-specifier menubar-visible-p nil)
+  (setq menu-accelerator-enabled 'menu-fallback
+	menu-accelerator-modifiers '(alt))
 
-    (setq menu-accelerator-enabled 'menu-fallback
-	  menu-accelerator-modifiers '(alt))
-
-    ;; popup gnus ala toolbar
-    (if (packagep 'gnus t)
-	(add-menu-item '("Apps") "Usenet News" 'toolbar-gnus t))
-
-    ;; add speedbar
-    (when (packagep 'speedbar t)
-      (add-menu-button '("Tools")
-		       ["Speedbar" speedbar-frame-mode
-			:style toggle
-			:selected (and (boundp 'speedbar-frame)
-				       (frame-live-p speedbar-frame)
-				       (frame-visible-p speedbar-frame))]
-		       "--")))
+  ;; add speedbar
+  (when (and running-xemacs (packagep 'speedbar t))
+    (add-menu-button '("Tools")
+		     ["Speedbar" speedbar-frame-mode
+		      :style toggle
+		      :selected (and (boundp 'speedbar-frame)
+				     (frame-live-p speedbar-frame)
+				     (frame-visible-p speedbar-frame))]
+		     "--"))
 
   ;; -------
   ;; Toolbar
-  (if t
+  (if running-xemacs
       (set-specifier default-toolbar-visible-p nil)
-    (set-default-toolbar-position 'left)
-    (when (emacs-version>= 21 5)
-      (set-specifier default-toolbar-border-width 1))
-    (custom-set-variables '(toolbar-mail-reader (quote vm)))
-    (unless running-gtk-xemacs
-      (set-specifier toolbar-buttons-captioned-p nil)
-      (when (and nil (fboundp 'init-fancy-toolbar))
-	;;(init-fancy-toolbar nil)
-	;;(init-fancy-toolbar 'color)
-	(init-fancy-toolbar 'next)
-	))
-    )
+    (tool-bar-mode 0))
 
   ;; -------
   ;; Gutter - turn it off
@@ -247,25 +274,18 @@ This is guaranteed not to have a / at the end."
   ;; -------
   ;; Pointer used during garbage collection.
   ;; .xbm not supported under windoze
-  (let ((img  (locate-data-file "recycle-image.xbm"))
-	(mask (locate-data-file "recycle-mask.xbm")))
-    (if (and (file-exists-p img) (file-exists-p mask)
-	     (not running-windoze))
-	(set-glyph-image gc-pointer-glyph
-			 (vector 'xbm
-				 :file img
-				 :mask-file mask
-				 :foreground "black"
-				 :background "chartreuse1"))
-      (set-glyph-image gc-pointer-glyph "recycle2.xpm")))
-
-  ;; -------
-  ;; I consider sound to be a "windows" thing
-  (when nil
-    (load-default-sounds)
-    (add-to-list 'default-sound-directory-list "~/sounds")
-    (setq have-sound t)
-    )
+  (when running-xemacs
+    (let ((img  (locate-data-file "recycle-image.xbm"))
+	  (mask (locate-data-file "recycle-mask.xbm")))
+      (if (and img mask (file-exists-p img) (file-exists-p mask)
+	       (not running-windoze))
+	  (set-glyph-image gc-pointer-glyph
+			   (vector 'xbm
+				   :file img
+				   :mask-file mask
+				   :foreground "black"
+				   :background "chartreuse1"))
+	(set-glyph-image gc-pointer-glyph "recycle2.xpm"))))
 
   ;; -------
   ;; MISC
@@ -303,13 +323,10 @@ instead, uses tag around or before point."
   (message "%s:%s" host-name
 	   (if buffer-file-name buffer-file-name (buffer-name))))
 
-;; This should always do the right thing?
-(global-set-key [(return)] 'newline-and-indent)
-(global-set-key [(linefeed)] 'newline)
-
-(defun global-set-keys (keys func)
-  (loop for key in keys do
-    (global-set-key key func)))
+;; This should always do the right thing
+(when running-xemacs
+  (global-set-key [(return)] 'newline-and-indent)
+  (global-set-key [(linefeed)] 'newline))
 
 (defun my-toggle-case-search ()
   (interactive)
@@ -318,31 +335,45 @@ instead, uses tag around or before point."
     (message "Case sensitive search %s." (if case-fold-search "off" "on"))))
 
 ;;;; Function keys. Only f1 is bound in XEmacs. We move to shift-f1.
-(global-set-keys '([(shift f1)] [XF86_Switch_VT_1]) (global-key-binding [f1]))
+(global-set-key [(shift f1)]    (global-key-binding [f1]))
+(global-set-key [XF86_Switch_VT_1] (global-key-binding [f1]))
 (global-set-key [f1]            'find-file)
 (global-set-key [f2] 		'undo)
-(global-set-keys '([(shift f2)]	[XF86_Switch_VT_2]) 'redo)
+(global-set-key [(shift f2)]	'redo)
+(global-set-key [XF86_Switch_VT_2] 'redo)
 (global-set-key [f3]		'isearch-repeat-forward)
-(global-set-keys '([(shift f3)] [XF86_Switch_VT_3]) 'isearch-repeat-backward)
+(global-set-key [(shift f3)]    'isearch-repeat-backward)
+(global-set-key [XF86_Switch_VT_3] 'isearch-repeat-backward)
 (global-set-key [f4]		'next-error)
 (global-set-key [f5]		'query-replace)
-(global-set-keys '([(shift f5)] [XF86_Switch_VT_5]) 'query-replace-regexp)
+(global-set-key [(shift f5)]    'query-replace-regexp)
+(global-set-key [XF86_Switch_VT_5] 'query-replace-regexp)
 (global-set-key [f6]		'ff-find-other-file)
-(global-set-keys '([(shift f6)] XF86_Switch_VT_6) 'my-buffer-file-name)
+(global-set-key [(shift f6)]    'my-buffer-file-name)
+(global-set-key [XF86_Switch_VT_6] 'my-buffer-file-name)
 (global-set-key [f7]		'compile)
-(global-set-keys '([(shift f7)] [XF86_Switch_VT_7]) 'make-clean)
+(global-set-key [(shift f7)]    'make-clean)
+(global-set-key [XF86_Switch_VT_7] 'make-clean)
 (global-set-key [(control f7)]	'my-set-compile)
 (global-set-key [f8]		'grep)
 (global-set-key [f9]		'my-isearch-word-forward)
-(global-set-keys '([(shift f9)] [XF86_Switch_VT_9]) 'my-toggle-case-search)
+(global-set-key [(shift f9)]    'my-toggle-case-search)
+(global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
 (global-set-key [f10]		'find-tag-at-point)
-(global-set-keys '([(shift f10)] [XF86_Switch_VT_10]) 'pop-tag-mark)
+(global-set-key [(shift f10)]   'pop-tag-mark)
+(global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
 (global-set-key [(control f10)]	'lxr-at-point)
 ;; I keep f11 free for temporary bindings
 (global-set-key [f12]		'revert-buffer)
 
+;; SAM HACK - period key broken on lappy
+(global-set-key [f6] ".")
+(global-set-key [(shift f6)] ">")
+
 ;; iswitchb
-(iswitchb-default-keybindings)
+(if running-xemacs
+    (iswitchb-default-keybindings)
+  (iswitchb-mode 1))
 (global-set-key "\C-x\C-b"	'iswitchb-buffer)
 (global-set-key "\C-x\C-l"	'list-buffers)
 
@@ -358,13 +389,6 @@ instead, uses tag around or before point."
 
 ;; Add some standard directory bindings
 (defvar linux-dir (concat "/usr/src/linux-" (car (uname "-r")) "/"))
-
-(define-key read-file-name-map [f1]
-  '(lambda () (interactive) (insert linux-dir)))
-(define-key read-file-name-map [f2]
-  '(lambda () (interactive) (insert linux-dir "include/linux/")))
-(define-key read-file-name-map [f3]
-  '(lambda () (interactive) (insert linux-dir "include/asm/")))
 
 (if (fboundp 'mwheel-install)
     (progn
@@ -440,22 +464,20 @@ instead, uses tag around or before point."
 
 ;; Ediff 1.76 bug - coding system was set to 'emacs-internal which
 ;; doesn't seem to exist. You see it with ediff-buffers but not
-;; ediff-files.
-(unless (and (not running-sxemacs) (find-coding-system 'emacs-internal))
-  (setq ediff-coding-system-for-write 'no-conversion))
+;; ediff-files. Just set it back to no-conversion.
+(setq ediff-coding-system-for-write 'no-conversion)
 
-;; SAM (add-hook 'font-lock-mode-hook 'turn-on-lazy-shot)
-
-;; Of all the modes, font-lock *least* needs a modeline
-;; indicator. If the buffer is colourful, font-lock is on.
-;; The only thing you lose is the ability to toggle it.
-(let ((el (assq 'font-lock-mode minor-mode-alist)))
-  (if el (setcdr el '(""))))
+(when running-xemacs
+  ;; Of all the modes, font-lock *least* needs a modeline
+  ;; indicator. If the buffer is colourful, font-lock is on.
+  ;; The only thing you lose is the ability to toggle it.
+  (let ((el (assq 'font-lock-mode minor-mode-alist)))
+    (if el (setcdr el '("")))))
 
 ;; -------------------------------------------------------------------------
 ;; font-lock-extras
 ;; I want all comments with my initials (SAM) at the start to be very bold
-(when (would-like 'font-lock-extras)
+(when (and running-xemacs (would-like 'font-lock-extras))
   (defun my-font-lock-extras-hook ()
     (cond ((eq major-mode 'emacs-lisp-mode)
 	   (setq font-lock-comment-warn-regexp "; ?\\<SAM\\>"))
@@ -867,7 +889,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 (defvar excuse-phrase-file
   (or (locate-data-file "excuses.lines")
-      (concat dot-xemacs "excuses.lines"))
+      (concat dot-dir "excuses.lines"))
   "*File containing excuses")
 
 (defun excuse (&optional insert)
@@ -899,7 +921,8 @@ A negative arg comments out the `new' line[s]."
 ;;{{{ Packages
 
 ;; C-h =
-(would-like 'introspector)
+(when running-xemacs
+  (would-like 'introspector))
 
 ;; SAM For some reason this causes a compile window to pop up.
 ;;     I don't use it, so just leave it off.
@@ -955,7 +978,7 @@ We ignore the 3rd number."
 ;; -------------------
 
 ;; So ftp will work
-(when (would-like 'efs)
+(when (would-like 'efs running-gnu-emacs)
   (setq efs-ftp-program-args (append efs-ftp-program-args '("-p"))))
 
 ;; for pui-list-packages
@@ -975,13 +998,13 @@ We ignore the 3rd number."
 ;; # Cleanup the autosave and backup directories (24 * 7 = 168)
 ;; 0 4 * * * /usr/sbin/tmpwatch 168 $HOME/.autosave $HOME/.backup
 
-(when (would-like 'auto-save)
+(when (and running-xemacs (would-like 'auto-save))
   (setq auto-save-directory "~/.autosave/")
   ;; Now that we have auto-save-timeout, let's crank this up
   ;; for better interactive response.
-  (setq auto-save-interval 2000))
+  (setq auto-save-interval 2000)
 
-(would-like 'backup)
+  (would-like 'backup))
 
 ;;; -------------------------------------------------------------------------
 ;;; Filladapt is a syntax-highlighting package.  When it is enabled it
@@ -1054,8 +1077,11 @@ We ignore the 3rd number."
 ;;; ------------------------------------------------------------
 ;; Start the server program
 (unless (or running-windoze running-as-root)
-  (gnuserv-start)
-  (setq gnuserv-frame (selected-frame)))
+  (if running-xemacs
+      (progn
+	(gnuserv-start)
+	(setq gnuserv-frame (selected-frame)))
+    (server-start)))
 
 ;;; ----------------------------------------------
 ;; Whitespace mode handy for tabs - ignore spaces
@@ -1121,13 +1147,13 @@ We ignore the 3rd number."
 ;;(setq smtpmail-debug-info t)
 
 ;; Domain specific mail
-(let ((domain-specific-init (concat dot-xemacs "mail-" domain-name)))
+(let ((domain-specific-init (concat dot-dir "mail-" domain-name)))
   (when (file-exists-p domain-specific-init)
     (load domain-specific-init)))
 
 ;; Move the .vm init file to .xemacs
-(setq vm-init-file (concat dot-xemacs "vm-init.el")
-      vm-folders-summary-database (concat dot-xemacs ".vm.folders.db"))
+(setq vm-init-file (concat dot-dir "vm-init.el")
+      vm-folders-summary-database (concat dot-dir ".vm.folders.db"))
 
 ;; browse-url and vm-url-browser
 (cond
@@ -1148,7 +1174,7 @@ We ignore the 3rd number."
   (setq browse-url-browser-function 'browse-url-lynx-emacs)))
 
 ;; GNUS
-(setq gnus-init-file (concat dot-xemacs "gnus.el"))
+(setq gnus-init-file (concat dot-dir "gnus.el"))
 
 ;; html
 ;;(defcustom html-helper-htmldtd-version "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
@@ -1156,22 +1182,19 @@ We ignore the 3rd number."
 ;;}}}
 
 (when running-windoze
-  (load (concat dot-xemacs "windoze") t))
+  (load (concat dot-dir "windoze") t))
 
 ;; For work
-(load (concat dot-xemacs "work") t)
+(load (concat dot-dir "work") t)
 
 ;; I use a common init.el across many machines. The `user-init' file
 ;; allows for user/machine specific initialization.
-;; Load the login user name in case of sudo xemacs.
-(load (concat "~" (user-login-name)
-	      (if running-sxemacs "/.sxemacs" "/.xemacs")
-	      "/user-init") t)
+(unless running-as-root
+  (load (concat dot-dir "user-init") t))
 
 ;;{{{ Final results
 
 (setq debug-on-error nil)
-(setq debug-on-signal nil)
 
 (if would-have-liked-list
     ;; Warn that some features not found
@@ -1191,10 +1214,5 @@ We ignore the 3rd number."
 ")
 
 ;;}}}
-
-;; Local variables:
-;; folded-file: nil
-;; folding-internal-margins: nil
-;; end:
 
 ;; end of .emacs "May the `(' be with `)'"

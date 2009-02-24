@@ -78,7 +78,7 @@ Nil defaults to the currently running kernel.")
   (let (dir)
     ;; Add pika-dir unless the standard catch will get it
     (unless (string-match "/monza/software$" pika-dir)
-      (loop for subdir in pika-subdirs do
+      (dolist (subdir pika-subdirs)
 	(setq dir (file-truename (concat pika-dir "/" subdir "/")))
 	(setq my-compile-dir-list
 	      (append my-compile-dir-list
@@ -88,7 +88,7 @@ Nil defaults to the currently running kernel.")
 		    (list (list (format "^%s/" pika-dir) nil 'pika-c-mode)))))
 
     ;; Try to catch the 99% case
-    (loop for subdir in pika-subdirs do
+    (dolist (subdir pika-subdirs)
       (setq dir (file-truename (concat "/monza/software/" subdir "/")))
       (setq my-compile-dir-list
 	    (append my-compile-dir-list
@@ -133,8 +133,9 @@ Nil defaults to the currently running kernel.")
 
 ;; -------------------------------------------------------------------
 
-(define-key read-file-name-map [f5]
-  '(lambda () (interactive) (insert pika-dir "/")))
+(when running-xemacs
+  (define-key read-file-name-map [f5]
+    '(lambda () (interactive) (insert pika-dir "/"))))
 
 
 (defun pika-setup-smerge ()
