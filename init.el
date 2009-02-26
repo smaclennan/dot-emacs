@@ -185,6 +185,12 @@ This is guaranteed not to have a / at the end."
 (when running-sxemacs
   (load-module "cl-loop"))
 
+(when running-gnu-emacs
+  (defun region-exists-p ()
+    (if mark-active
+	(setq deactivate-mark t)
+      nil)))
+
 ;;}}}
 
 ;;{{{ Windowing System Customization
@@ -369,6 +375,22 @@ instead, uses tag around or before point."
 ;; SAM HACK - period key broken on lappy
 (global-set-key [f6] ".")
 (global-set-key [(shift f6)] ">")
+
+;; Cut and paste
+(setq interprogram-cut-function nil)
+(setq interprogram-paste-function nil)
+
+(when running-gnu-emacs
+  (global-set-key [(shift insert)] 'x-clipboard-yank)
+
+  (defun my-clipboard-copy (beg end)
+    (interactive "r")
+    (let ((text (buffer-substring beg end)))
+      (x-set-selection 'CLIPBOARD text) ;; for C-v
+      (x-set-selection 'PRIMARY text) ;; for mouse paste
+      (copy-region-as-kill beg end))) ;; and the kill buffer
+
+  (global-set-key [(control insert)] 'my-clipboard-copy))
 
 ;; iswitchb
 (if running-xemacs
@@ -850,7 +872,9 @@ Use region if it exists. My replacement for isearch-yank-word."
 		  (buffer-substring (region-beginning) (region-end))
 		(current-word))))
     (forward-char 1) ;; make sure we are not on first char of word
-    (isearch-yank word)))
+    (if running-xemacs
+	(isearch-yank word)
+      (isearch-yank-string word))))
 
 ;; Warning: If you change this binding, change `my-isearch-word-forward'
 (define-key isearch-mode-map "\C-w"		'my-isearch-yank-word)
@@ -861,10 +885,12 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 (defun my-isearch-word-forward (&optional regexp-p)
   "Search for current word. Region is used if set."
-  (interactive "_P")
+  (interactive "P")
   ;; Push the C-w and call 'isearch-forward'
   (setq unread-command-events
-	(list (make-event 'key-press '(key ?w modifiers (control)))))
+	(if running-xemacs
+	    (list (make-event 'key-press '(key ?w modifiers (control))))
+	  (listify-key-sequence "\C-w")))
   (isearch-mode t (not (null regexp-p)) nil (not (interactive-p))))
 
 ;;; -------------------------------------------------------------------------
