@@ -497,37 +497,74 @@ instead, uses tag around or before point."
     (if el (setcdr el '("")))))
 
 ;; -------------------------------------------------------------------------
-;; font-lock-extras
+;; font-lock-comment-warn
 ;; I want all comments with my initials (SAM) at the start to be very bold
-(when (and running-xemacs (would-like 'font-lock-extras))
-  (defun my-font-lock-extras-hook ()
-    (cond ((eq major-mode 'emacs-lisp-mode)
-	   (setq font-lock-comment-warn-regexp "; ?\\<SAM\\>"))
-	  ((or (eq major-mode 'makefile-mode)
-	       (eq major-mode 'sh-mode))
-	   (setq font-lock-comment-warn-regexp "# ?\\<SAM\\>"))
-	  (t ;; cc-modes
-	   (setq font-lock-comment-warn-regexp "\\(/\\*\\|//\\) ?\\<SAM\\>")))
-    (make-local-variable 'font-lock-fontify-region-function)
-    (setq font-lock-fontify-region-function
-	  'my-font-lock-fontify-region))
-  (add-hook 'emacs-lisp-mode-hook 'my-font-lock-extras-hook)
-  (add-hook 'makefile-mode-hook   'my-font-lock-extras-hook)
-  (add-hook 'sh-mode-hook         'my-font-lock-extras-hook)
-  (add-hook 'c-mode-common-hook   'my-font-lock-extras-hook)
+(defface font-lock-comment-warn-face
+  '((((class color))  (:foreground "red" :bold t :italic t))
+    (((class grayscale) (background light))
+     (:foreground "DimGray" :bold t :italic t))
+    (((class grayscale) (background dark))
+     (:foreground "LightGray" :bold t :italic t))
+    (t (:bold t)))
+  "Font Lock mode face used to highlight warning comments."
+  :group 'font-lock-faces)
 
-  ;; Perl, as always, is different :-)
-  ;; Only do this once!
-  (defun my-cperl-mode-hook ()
-    (unless cperl-faces-init
-      (cperl-init-faces))
-    (setq perl-font-lock-keywords-2
-	  (append
-	   '(("^# ?SAM .*$" 0 font-lock-comment-warn-face t))
-	   perl-font-lock-keywords-2))
-    (remove-hook 'cperl-mode-hook 'my-cperl-mode-hook))
+(if running-xemacs
+    (progn
+      (defun setup-font-lock-keywords ()
+	(let ((c-regexp "\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)"))
+	  (setq c-font-lock-keywords-1
+		(append c-font-lock-keywords-1
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  (setq c-font-lock-keywords-2
+		(append c-font-lock-keywords-2
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  (setq c-font-lock-keywords-3
+		(append c-font-lock-keywords-3
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
 
-  (add-hook 'cperl-mode-hook 'my-cperl-mode-hook))
+	  (setq c++-font-lock-keywords-1
+		(append c++-font-lock-keywords-1
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  (setq c++-font-lock-keywords-2
+		(append c++-font-lock-keywords-2
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  (setq c++-font-lock-keywords-3
+		(append c++-font-lock-keywords-3
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  ))
+
+      (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
+	(setq lisp-font-lock-keywords-1
+	      (append lisp-font-lock-keywords-1
+		      (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
+	(setq lisp-font-lock-keywords-2
+	      (append lisp-font-lock-keywords-2
+		      (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
+	)
+      )
+
+  ;; SAM This *should* work for XEmacs too since XEmacs supports
+  ;; font-lock-add-keywords but even the example doesn't work.
+  (defun setup-font-lock-keywords ()
+    (font-lock-add-keywords
+     'c-mode
+     '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t)))
+    (font-lock-add-keywords
+     'c++-mode
+     '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t))))
+
+  (font-lock-add-keywords
+   'emacs-lisp-mode
+   '(("; ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+
+  (font-lock-add-keywords
+   'sh-mode
+   '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+  (font-lock-add-keywords
+   'makefile-mode
+   '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+  )
 
 ;;; -------------------------------------------------------------------------
 ;; CC-MODE
@@ -535,6 +572,8 @@ instead, uses tag around or before point."
 
 ;; This hook is run once when cc-mode initializes
 (defun my-c-initialization-hook ()
+  ;; Do this after cc-mode loaded for XEmacs
+  (setup-font-lock-keywords)
   ;; my style - linux with a smaller tab size
   (c-add-style "sam" '("linux" (c-basic-offset . 4)))
   )
