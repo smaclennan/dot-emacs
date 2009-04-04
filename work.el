@@ -106,6 +106,10 @@ Nil defaults to the currently running kernel.")
 ;; Now default it
 (set-pika-dir pika-dir)
 
+(defun warp-use-stock-kernel ()
+  (interactive)
+  (setenv "KERNELSRCDIR" "~work/taco/linux-warped"))
+
 ;; -------------------------------------------------------------------
 
 (setq pika-cflags "-DPIKA_DEVEL -Wall")
@@ -141,7 +145,7 @@ Nil defaults to the currently running kernel.")
 (defun pika-setup-smerge ()
   (interactive)
   (require 'smerge)
-  (loop for ignore in '(".cvsignore" ".depend" "TAGS" "*.so" "*.rc") do
+  (loop for ignore in '(".cvsignore" ".depend" "TAGS" "*.so" "*.rc" "pksystemver.h") do
     (add-to-list 'smerge-diff-excludes ignore t)))
 
 (let ((ipp "/opt/intel/ipp/5.1/ia32"))
