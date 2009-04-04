@@ -59,6 +59,8 @@
 	(and (= major emacs-major-version)
 	     (>= minor emacs-minor-version)))))
 
+(setq modeline-buffer-id (list (cons modeline-buffer-id-extent (buffer-name))))
+
 ;;}}}
 
 ;;{{{ Basic Customization
@@ -75,9 +77,9 @@
   (setq inhibit-startup-message t)
   (setq inhibit-startup-echo-area-message "seanm"))
 
-(setq custom-file (concat dot-dir "custom.el"))
-(when (file-exists-p custom-file)
-  (load-file custom-file))
+(let ((custom-file (concat dot-dir "custom.el")))
+  (when (file-exists-p custom-file)
+    (load-file custom-file)))
 
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
