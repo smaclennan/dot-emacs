@@ -145,7 +145,10 @@ Nil defaults to the currently running kernel.")
 (defun pika-setup-smerge ()
   (interactive)
   (require 'smerge)
-  (loop for ignore in '(".cvsignore" ".depend" "TAGS" "*.so" "*.rc" "pksystemver.h") do
+  (loop for ignore in '(".cvsignore" ".depend" "TAGS" "*.so" "*.rc"
+			"pksystemver.h" "*.mod.c" "*.so.2*"
+			"aohtest" "pikalm" "pikadaemon" "Module.symvers")
+    do
     (add-to-list 'smerge-diff-excludes ignore t)))
 
 (let ((ipp "/opt/intel/ipp/5.1/ia32"))
