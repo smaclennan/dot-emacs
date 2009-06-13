@@ -856,9 +856,10 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;;{{{ Handy Dandy(tm) Functions
 
-(defun uptime ()
+(defun uptime (&optional time)
   (interactive)
-  (let* ((upminutes (/ (truncate (caddr (current-process-time))) 60))
+  (unless time (setq time (truncate (caddr (current-process-time)))))
+  (let* ((upminutes (/ time 60))
 	 (minutes (% upminutes 60))
 	 (hours   (% (/ upminutes 60) 24))
 	 (days  (/ upminutes 1440)))
