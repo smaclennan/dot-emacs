@@ -25,6 +25,9 @@ Nil defaults to the currently running kernel.")
   ;; PADS
   (setq ppc-toolchain-dir (expand-file-name "~work/pads/toolchain")))
 
+(defvar pika-gp-dir (or (getenv "PIKA_GP_DIR") "~work/grandprix/software")
+  "* Root of the PIKA Grandprix source tree.")
+
 ;; -------------------------------------------------------------------
 ;; Some evil troll decided that code should be unreadable and declared
 ;; tabs to be 2 characters. To make matters worse, they decided they
@@ -147,7 +150,7 @@ Nil defaults to the currently running kernel.")
   (require 'smerge)
   (loop for ignore in '(".cvsignore" ".depend" "TAGS" "*.so" "*.rc"
 			"pksystemver.h" "*.mod.c" "*.so.2*"
-			"aohtest" "pikalm" "pikadaemon" "Module.symvers")
+			"Module.symvers")
     do
     (add-to-list 'smerge-diff-excludes ignore t)))
 
