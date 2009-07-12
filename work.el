@@ -65,7 +65,7 @@ Nil defaults to the currently running kernel.")
 (defun set-pika-dir (&optional dir)
   (interactive)
   (when (interactive-p)
-    (setq dir (read-directory-name "pika-dir: " pika-dir)))
+    (setq dir (read-directory-name "pika-dir: " pika-dir pika-dir)))
   (setq pika-dir (my-expand-dir-name dir))
   (setenv "PIKA_DIR" pika-dir)
 
@@ -82,7 +82,7 @@ Nil defaults to the currently running kernel.")
 
   (let (dir)
     ;; Add pika-dir unless the standard catch will get it
-    (unless (string-match "/monza/software$" pika-dir)
+    (unless (string-match "/[a-z-]*monza" pika-dir)
       (dolist (subdir pika-subdirs)
 	(setq dir (file-truename (concat pika-dir "/" subdir "/")))
 	(setq my-compile-dir-list
@@ -94,18 +94,20 @@ Nil defaults to the currently running kernel.")
 
     ;; Try to catch the 99% case
     (dolist (subdir pika-subdirs)
-      (setq dir (file-truename (concat "/monza/software/" subdir "/")))
+      (setq dir (concat "/[a-z-]*monza/software/" subdir "/"))
       (setq my-compile-dir-list
 	    (append my-compile-dir-list
 		    (list (list (concat "^.*" dir) nil 'pika-c-mode)))))
+
+    (dolist (subdir pika-subdirs)
+      (setq dir (concat "/[a-z-]*monza/" subdir "/"))
+      (setq my-compile-dir-list
+	    (append my-compile-dir-list
+		    (list (list (concat "^.*" dir) nil 'pika-c-mode)))))
+
     (setq my-compile-dir-list
 	  (append my-compile-dir-list
-		  '(("^.*/monza/" nil pika-c-mode)))))
-
-  ;; add samtest
-  (setq my-compile-dir-list
-	(append my-compile-dir-list
-		'((".*/samtest/" nil linux-style))))
+		  '(("^.*/[a-z-]*monza/" nil pika-c-mode)))))
   )
 
 ;; Now default it
