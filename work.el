@@ -15,7 +15,6 @@ Nil defaults to the currently running kernel.")
 (defvar pika-subdirs '("user"
 		       "kernel"
 		       "applications/aohtest" "applications"
-		       "../testing/artstests" "../testing/arts"
 		       )
   "* Pika sub-directories to handle specially.")
 
@@ -100,6 +99,12 @@ Nil defaults to the currently running kernel.")
 		    (list (list (concat "^.*" dir) nil 'pika-c-mode)))))
 
     (dolist (subdir pika-subdirs)
+      (setq dir (concat "/[a-z-]*monza/" subdir "/"))
+      (setq my-compile-dir-list
+	    (append my-compile-dir-list
+		    (list (list (concat "^.*" dir) nil 'pika-c-mode)))))
+
+    (dolist (subdir '("testing/artstests" "testing/arts"))
       (setq dir (concat "/[a-z-]*monza/" subdir "/"))
       (setq my-compile-dir-list
 	    (append my-compile-dir-list
