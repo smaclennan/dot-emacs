@@ -62,8 +62,10 @@ Nil defaults to the currently running kernel.")
   (add-hook 'c-mode-common-hook 'pika-c-mode 'append))
 
 ;; -------------------------------------------------------------------
-(defun set-pika-dir (dir)
-  (interactive "Dpika-dir: ")
+(defun set-pika-dir (&optional dir)
+  (interactive)
+  (when (interactive-p)
+    (setq dir (read-directory-name "pika-dir: " pika-dir)))
   (setq pika-dir (my-expand-dir-name dir))
   (setenv "PIKA_DIR" pika-dir)
 
