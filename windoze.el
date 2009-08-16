@@ -6,6 +6,11 @@
 (when t
 (setq directory-sep-char ?/)
 
+(if (string= user-full-name "")
+    (if (string= (user-login-name) "seanm")
+	(setq user-full-name "Sean MacLennan")
+      (setq user-full-name (user-login-name))))
+
 (defadvice call-process (around windowize activate)
   (let ((directory-sep-char ?\\))
     ad-do-it
@@ -106,7 +111,8 @@ See also `auto-save-file-name-p'."
 ;; -----------------------------------------------------------
 ;; aspell for nt - will not work with ispell.el 3.3 or 3.4
 (when (would-like 'ispell)
-  (setq ispell-program-name "e:/aspell/aspell")
+  (when (file-exists-p "e:/aspell/aspell")
+    (setq ispell-program-name "e:/aspell/aspell"))
   ;;(setq ispell-extra-args '("--conf=d:/aspell/aspell.conf" "--dict-dir=d:/aspell/dict"))
   (when (string-match "3.0" ispell-version)
     (setq ispell-extra-args '("--reverse"))))
