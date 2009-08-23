@@ -1,0 +1,10 @@
+#!/bin/sh
+
+VERSION=`grep "^VERSION=" xemacs.SlackBuild | cut -d= -f2`
+echo "Version '$VERSION'"
+
+sudo rm -rf package-xemacs*
+sudo rm -rf xemacs-$VERSION
+
+sudo rm -rf xemacs
+sudo rm -f slackbuilds.tar.gz
