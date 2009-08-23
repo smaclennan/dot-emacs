@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+xemacs-lisp: xemacs-lisp (XEmacs Lisp source files)
+xemacs-lisp:
+xemacs-lisp: This package contains source code for the parts of XEmacs that are
+xemacs-lisp: written in XEmacs Lisp.  *.el files are XEmacs Lisp source, and the
+xemacs-lisp: corresponding *.elc files are byte-compiled versions.
+xemacs-lisp:
+xemacs-lisp: The xemacs package contains all of the *.el files that emacs
+xemacs-lisp: requires to run, but these are probably good to have if you've got
+xemacs-lisp: the space on your hard drive.
+xemacs-lisp:
+xemacs-lisp:

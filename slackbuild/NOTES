@@ -1,0 +1,23 @@
+Fairly stock XEmacs with the following changes:
+
+	* added my X11 shift modifier patch
+	* patches to allow it to build when XEmacs installed
+
+Builds four packages (mimics the emacs packages):
+
+	* xemacs - core with basic packages needed to run
+	* xemacs-info - the info files (recommended)
+	* xemacs-lisp - the source lisp files (optional)
+	* xemacs-misc - various other files (very optional)
+
+Since XEmacs is big, I do not provide the files. Go to the
+http://xemacs.org/ site and download the following from a mirror:
+
+        * xemacs-21.4.15.tar.bz2
+	* packages/xemacs-base-1.86-pkg.tar.gz
+	* packages/efs-1.32-pkg.tar.gz
+
+The exact versions can be tweaked in the xemacs.SlackBuild file.
+
+
+http://xemacs.org/

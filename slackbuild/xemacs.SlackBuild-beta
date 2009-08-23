@@ -1,0 +1,227 @@
+#!/bin/sh
+# Created by Sean MacLennan
+
+CWD=`pwd`
+TMP=${TMP:-/tmp}
+
+VERSION=21.5.28
+BUILD=1sam
+ARCH=i486
+
+BASE_VERSION=2.10
+EFS_VERSION=1.33
+
+#datadir=usr/share
+datadir=usr/lib
+
+DO_UNTAR=0
+DO_BUILD=0
+
+# Let's be nice and warn upfront if things are missing
+ok=1
+for f in xemacs-$VERSION.tar.gz \
+	xemacs-base-$BASE_VERSION-pkg.tar.gz \
+	efs-$EFS_VERSION-pkg.tar.gz \
+	check-features.patch \
+	dump-paths.patch \
+	mod-shift.patch ; do
+    [ -f ./$f ] || { echo "$f missing"; ok=0; }
+done
+[ $ok = 1 ] || exit 2
+
+[ -d $TMP ] || mkdir -p $TMP
+PKG=$TMP/package-xemacs
+rm -rf $PKG
+mkdir -p $PKG || exit 1
+
+
+cd $TMP
+if [ $DO_UNTAR -eq 1 ] ; then
+    rm -rf xemacs-$VERSION
+    tar xzf $CWD/xemacs-$VERSION.tar.gz || exit 1
+
+    cd xemacs-$VERSION
+
+    # These patches allow building xemacs with xemacs installed
+    # dump-paths patch from Enrico Scholz
+# SAM    patch -p1 < $CWD/dump-paths.patch || exit 1
+# SAM    patch -p1 < $CWD/check-features.patch || exit 1
+
+    # Obsolete in Xorg 6.9.0
+    patch -p1 < $CWD/mod-shift.patch || exit 1
+else
+    cd xemacs-$VERSION || exit 1
+    echo "Skipping untar...."
+fi
+
+if [ $DO_BUILD -eq 1 ] ; then
+    ./configure --prefix=/usr \
+		--datadir=/$datadir \
+		--with-sound=none \
+		--with-file-coding \
+		--with-xft=emacs,menubars,tabs,gauges \
+		$ARCH-slackware-linux || exit 1
+
+#	--package-path=/$datadir/xemacs/xemacs-packages \
+
+    make || exit 1
+else
+    echo "Skipping build...."
+fi
+
+
+make prefix=$PKG/usr datadir=$PKG/$datadir install || exit 1
+#make prefix=$PKG/usr datadir=$PKG/$datadir gzip-el
+
+(   # Add minimal packages to allow package tools to work
+    mkdir -p $PKG/$datadir/xemacs/xemacs-packages
+    cd $PKG/$datadir/xemacs/xemacs-packages
+    tar zxf $CWD/xemacs-base-$BASE_VERSION-pkg.tar.gz || exit 1
+    tar zxf $CWD/efs-$EFS_VERSION-pkg.tar.gz || exit 1
+    # Make sure the .elc files are newer
+    find . -name \*.elc -exec touch {} \;
+)
+
+# What is this 2.3M for?????
+rm -rf $PKG/usr/lib/xemacs-$VERSION/$ARCH-slackware-linux/include
+
+strip_bins () {
+    for f in $1/*; do
+        if file $f | fgrep -q "not stripped" ; then
+	    strip $f
+        fi
+    done
+}
+
+strip_bins $PKG/usr/bin
+strip_bins $PKG/usr/lib/xemacs-$VERSION/$ARCH-slackware-linux
+
+[ -d $PKG/usr/share/info ] && mv $PKG/usr/share/info $PKG/usr/info
+rm $PKG/usr/info/dir
+gzip $PKG/usr/info/*
+
+[ -d $PKG/usr/share/man ] && mv $PKG/usr/share/man $PKG/usr/man
+gzip $PKG/usr/man/*/*
+
+rmdir $PKG/usr/share || { echo "/usr/share not empty"; exit 1; }
+
+# Some documentation
+mkdir -p $PKG/usr/doc/xemacs-$VERSION
+cp BUGS CHANGES-release COPYING ChangeLog \
+    Installation PROBLEMS README README.packages \
+    $PKG/usr/doc/xemacs-$VERSION
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+# For lp.n
+chown -R root.root $PKG
+#chown -R root.bin $PKG/usr/bin
+
+cat <<EOF >$PKG/install/doinst.sh
+#!/bin/sh
+
+# Make sure the elc files are newer than the el files
+touch $datadir/xemacs-$VERSION/lisp/*.elc
+touch $datadir/xemacs-$VERSION/lisp/*/*.elc
+touch $datadir/xemacs/xemacs-packages/lisp/xemacs-base/*.elc
+touch $datadir/xemacs/xemacs-packages/lisp/efs/*.elc
+
+EOF
+
+# And add the slackbuild
+install -D -m664 $CWD/xemacs.SlackBuild $PKG/usr/src/slackbuilds/xemacs.SlackBuild
+
+########################################################################
+
+cd $PKG
+
+if [ $datadir = "usr/share" ] ; then
+  ( cd usr/bin
+    XBIN=../share/xemacs-$VERSION/bin
+    mkdir -p $XBIN || exit 1
+    mv xemacs-$VERSION xemacs*.dmp $XBIN || exit 1
+    rm xemacs
+    ln -s $XBIN/xemacs-$VERSION xemacs
+  ) || exit 3
+fi
+
+########################################################################
+# Split out info package
+rm -rf $PKG-info
+INFODIR=$datadir/xemacs-$VERSION/info
+mkdir -p $PKG-info/$INFODIR
+mkdir -p $PKG-info/install
+cat $CWD/slack-desc-info > $PKG-info/install/slack-desc
+
+mv $INFODIR/* $PKG-info/$INFODIR
+gzip $PKG-info/$INFODIR/*
+
+# DO NOT gzip the dir file - it screws up XEmacs
+gunzip $PKG-info/$INFODIR/dir.gz
+
+########################################################################
+# Split out lisp package
+rm -rf $PKG-lisp
+LISPDIR=$datadir/xemacs-$VERSION/lisp
+mkdir -p $PKG-lisp/$LISPDIR
+mkdir -p $PKG-lisp/install
+cat $CWD/slack-desc-lisp > $PKG-lisp/install/slack-desc
+
+# Taken from gzip-el.sh in lib-src dir
+find "$LISPDIR" -type f -name "*.el" -print |
+    while read file; do
+	if [ -s "${file}c" ] ; then
+	    install -D -m 644 "$file" "$PKG-lisp/$file"
+	    rm "$file"
+	fi
+    done
+
+cat <<EOF >$PKG-lisp/install/doinst.sh
+#!/bin/sh
+
+# Make sure the .elc files are newer
+find $LISPDIR -name \*.elc -exec touch {} \;
+EOF
+
+########################################################################
+# Split out misc package
+rm -rf $PKG-misc
+ETCDIR=$datadir/xemacs-$VERSION/etc
+mkdir -p $PKG-misc/$ETCDIR
+mkdir -p $PKG-misc/install
+cat $CWD/slack-desc-misc > $PKG-misc/install/slack-desc
+
+cp -a $ETCDIR/photos $PKG-misc/$ETCDIR
+rm -rf $ETCDIR/photos
+
+cp -a $ETCDIR/sparcworks $PKG-misc/$ETCDIR
+rm -rf $ETCDIR/sparcworks
+
+cp -a $ETCDIR/tests $PKG-misc/$ETCDIR
+rm -rf $ETCDIR/tests
+
+for f in $ETCDIR/* ; do
+    [ -f $f ] && mv $f $PKG-misc/$ETCDIR
+done
+
+# This is required - put it back
+mv $PKG-misc/$ETCDIR/package-index.LATEST.gpg $PKG/$ETCDIR
+
+########################################################################
+# Build the packages
+
+cd $PKG
+makepkg -l y -c n $TMP/xemacs-$VERSION-$ARCH-$BUILD.tgz
+cd $PKG-info
+makepkg -l n -c n $TMP/xemacs-info-$VERSION-noarch-$BUILD.tgz
+cd $PKG-lisp
+makepkg -l n -c n $TMP/xemacs-lisp-$VERSION-noarch-$BUILD.tgz
+cd $PKG-misc
+makepkg -l n -c n $TMP/xemacs-misc-$VERSION-noarch-$BUILD.tgz
+
+# Clean up the extra stuff:
+if [ "$1" = "--cleanup" ]; then
+  rm -rf $TMP/xemacs-${VERSION}
+  rm -rf $PKG $PKG-info $PKG-lisp $PKG-misc
+fi

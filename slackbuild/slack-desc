@@ -1,0 +1,12 @@
+      |-----handy-ruler------------------------------------------------------|
+xemacs: xemacs (XEmacs)
+xemacs:
+xemacs: Base binaries and support files for the XEmacs editor/environment.
+xemacs: This version requires X libraries installed but will run in a non-X
+xemacs: mode.
+xemacs:
+xemacs: XEmacs is a highly customizable open source text editor and app-
+xemacs: lication development system. It is protected under the GNU Public
+xemacs: License and related to other versions of Emacs, in particular GNU
+xemacs: Emacs. Its emphasis is on modern graphical user interface support
+xemacs: and an open software development model, similar to Linux.
