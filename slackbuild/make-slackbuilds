@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e
+
+rm -rf xemacs
+mkdir -p xemacs
+
+sed 's/DO_SLACKBUILDS=0/DO_SLACKBUILDS=1/' xemacs.SlackBuild > xemacs/xemacs.SlackBuild
+
+cp README xemacs
+cp *.patch xemacs
+cp slack-desc* xemacs
+
+VERSION=`grep "^VERSION=" xemacs.SlackBuild | cut -d= -f2`
+echo "Version '$VERSION'"
+
+MD5SUM=`md5sum xemacs-$VERSION.tar.bz2 | cut -d" " -f1`
+
+cat << EOF > xemacs/xemacs.info
+PRGNAM="xemacs"
+VERSION="$VERSION"
+HOMEPAGE="http://xemacs.org/"
+DOWNLOAD="http://ftp.xemacs.org/pub/xemacs/stable/xemacs-$VERSION.tar.bz2"
+MD5SUM="$MD5SUM"
+MAINTAINER="Sean MacLennan"
+EMAIL="xemacs@seanm.ca"
+EOF
+
+tar zcf slackbuilds.tar.gz xemacs

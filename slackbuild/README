@@ -1,0 +1,54 @@
+XEmacs
+------
+
+Base binaries and support files for the XEmacs editor/environment.
+This version requires X libraries installed but will run in a non-X
+mode.
+
+XEmacs is a highly customizable open source text editor and app-
+lication development system. It is protected under the GNU Public
+License and related to other versions of Emacs, in particular GNU
+Emacs. Its emphasis is on modern graphical user interface support and
+an open software development model, similar to Linux.
+
+
+Requirements
+------------
+
+The xemacs.SlackBuild requires two XEmacs packages to build: efs and
+xemacs-base. Here are links to the two packages:
+
+http://ftp.xemacs.org/pub/xemacs/packages/efs-1.34-pkg.tar.gz
+http://ftp.xemacs.org/pub/xemacs/packages/xemacs-base-2.19-pkg.tar.gz
+
+Newer versions of these files are fine. Just update the BASE_VERSION
+and EFS_VERSION defines in the xemacs.SlackBuild as required to match
+the versions you downloaded.
+
+
+Notes
+-----
+
+Fairly stock XEmacs with the following changes:
+
+	* added my X11 shift modifier patch
+	* patches to allow it to build when XEmacs installed
+
+Builds four packages (mimics the emacs packages):
+
+	* xemacs - core with basic packages needed to run
+	* xemacs-info - the info files (recommended)
+	* xemacs-lisp - the source lisp files (optional)
+	* xemacs-misc - various other files (very optional)
+
+Since XEmacs is big, I do not provide the files. Go to the
+http://xemacs.org/ site and download the following from a mirror:
+
+        * xemacs-21.4.15.tar.bz2
+	* packages/xemacs-base-1.86-pkg.tar.gz
+	* packages/efs-1.32-pkg.tar.gz
+
+The exact versions can be tweaked in the xemacs.SlackBuild file.
+
+
+http://xemacs.org/
