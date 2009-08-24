@@ -304,6 +304,13 @@ This is guaranteed not to have a / at the end."
   (defun my-get-face-background (face)
     (cdr (specifier-specs (face-background face) 'global)))
   ;; (my-get-face-background 'default)
+
+  (defun hack-modeline-background ()
+    (let ((bg (face-background-instance 'modeline)))
+      (when (color-instance-p bg)
+        (set-face-background 'modeline bg))))
+  (add-hook 'after-init-hook 'hack-modeline-background)
+
   );; window-system
 
 ;; Do this *after* setting the modeline colours
