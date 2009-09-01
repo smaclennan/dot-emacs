@@ -25,11 +25,14 @@ if false; then # SlackBuilds
 # That said, with Slackware 12.2 and 13.0 a quick sanity check of the
 # xemacs with the i486 options worked.
 if [ "$ARCH" = "i486" ]; then
-   SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+    SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+    LIBDIRSUFFIX=""
 elif [ "$ARCH" = "i686" ]; then
-   SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+    SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+    LIBDIRSUFFIX=""
 elif [ "$ARCH" = "x86_64" ]; then
-   SLKCFLAGS="-O2 -fPIC"
+    SLKCFLAGS="-O2 -fPIC"
+    LIBDIRSUFFIX="64"
 fi
 fi
 
@@ -74,6 +77,7 @@ if [ $DO_BUILD -eq 1 ] ; then
     if [ -n "$SLKCFLAGS" ] ; then
     CFLAGS="$SLKCFLAGS" ./configure \
 		--prefix=/usr \
+		--libdir=/usr/lib$LIBDIRSUFFIX \
 		--datadir=/$DATADIR \
 		--with-sound=none \
 		--with-file-coding \
@@ -81,6 +85,7 @@ if [ $DO_BUILD -eq 1 ] ; then
     else
     ./configure \
 		--prefix=/usr \
+		--libdir=/usr/lib$LIBDIRSUFFIX \
 		--datadir=/$DATADIR \
 		--with-sound=none \
 		--with-file-coding \
@@ -93,8 +98,9 @@ else
 fi
 
 
-make prefix=$PKG/usr datadir=$PKG/$DATADIR install || exit 1
-#make prefix=$PKG/usr datadir=$PKG/$DATADIR gzip-el
+make prefix=$PKG/usr \
+    datadir=$PKG/$DATADIR \
+    libdir=$PKG/usr/lib$LIBDIRSUFFIX install || exit 1
 
 (   # Add minimal packages to allow package tools to work
     mkdir -p $PKG/$DATADIR/xemacs/xemacs-packages
@@ -238,6 +244,6 @@ makepkg -l n -c n $OUTPUT/xemacs-misc-$VERSION-noarch-$BUILD$TAG.tgz
 
 # Clean up the extra stuff:
 if [ "$1" = "--cleanup" ]; then
-  rm -rf $TMP/xemacs-${VERSION}
-  rm -rf $PKG $PKG-info $PKG-lisp $PKG-misc
+    rm -rf $TMP/xemacs-${VERSION}
+    rm -rf $PKG $PKG-info $PKG-lisp $PKG-misc
 fi
