@@ -5,7 +5,10 @@ set -e
 rm -rf xemacs
 mkdir -p xemacs
 
-sed 's/DO_SLACKBUILDS=0/DO_SLACKBUILDS=1/' xemacs.SlackBuild > xemacs/xemacs.SlackBuild
+sed 's/^TAG=.*/TAG=${TAG:-_SBo}/' xemacs.SlackBuild > xemacs/xemacs.SlackBuild
+sed -i 's/^OUTPUT=.*/OUTPUT=${OUTPUT:-\/tmp}/' xemacs/xemacs.SlackBuild
+sed -i 's/^if false; then # SlackBuilds/if true; then/' xemacs/xemacs.SlackBuild
+chmod +x xemacs/xemacs.SlackBuild
 
 cp README xemacs
 cp *.patch xemacs

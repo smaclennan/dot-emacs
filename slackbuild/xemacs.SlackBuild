@@ -2,32 +2,28 @@
 # Slackware build script for XEmacs
 # Created by Sean MacLennan <xemacs@seanm.ca>
 
-CWD=`pwd`
-
 DO_UNTAR=1
 DO_BUILD=1
-DO_SLACKBUILDS=0
 
 VERSION=21.4.22
 BASE_VERSION=2.19
 EFS_VERSION=1.34
 ARCH=${ARCH:-i486}
 BUILD=${BUILD:-2}
+TAG=${TAG:-sam}
 
-if [ $DO_SLACKBUILDS -eq 1 ] ; then
+CWD=$(pwd)
 TMP=${TMP:-/tmp/SBo}
-TAG=${TAG:-_SBo}
-OUTPUT=${OUTPUT:-/tmp}
+PKG=$TMP/package-xemacs
+OUTPUT=$TMP
 
+if false; then # SlackBuilds
 # This is required for slackbuilds. I recommend turning this off since
 # XEmacs quite often needs to be built at specific optimization
 # levels. You are much better off trusting the XEmacs Makefile ;)
 #
-# That said, with Slackware 12.2 a quick sanity check of the xemacs
-# with the i486 options worked.
-#
-# To turn it off, change the true below to false
-if true; then
+# That said, with Slackware 12.2 and 13.0 a quick sanity check of the
+# xemacs with the i486 options worked.
 if [ "$ARCH" = "i486" ]; then
    SLKCFLAGS="-O2 -march=i486 -mtune=i686"
 elif [ "$ARCH" = "i686" ]; then
@@ -35,12 +31,6 @@ elif [ "$ARCH" = "i686" ]; then
 elif [ "$ARCH" = "x86_64" ]; then
    SLKCFLAGS="-O2 -fPIC"
 fi
-fi
-
-else
-TMP=${TMP:-/tmp}
-TAG=${TAG:-sam}
-OUTPUT=$TMP
 fi
 
 #DATADIR=usr/share
@@ -58,7 +48,6 @@ for f in xemacs-$VERSION.tar.bz2 \
 done
 [ $ok = 1 ] || exit 2
 
-PKG=$TMP/package-xemacs
 rm -rf $PKG
 mkdir -p $TMP $OUPUT $PKG || exit 1
 
@@ -74,7 +63,7 @@ if [ $DO_UNTAR -eq 1 ] ; then
     patch -p1 < $CWD/dump-paths.patch || exit 1
     patch -p1 < $CWD/check-features.patch || exit 1
 
-    # Obsolete in Xorg 6.9.0
+    # Sighhhhhh.....
     patch -p1 < $CWD/mod-shift.patch || exit 1
 else
     cd xemacs-$VERSION || exit 1
