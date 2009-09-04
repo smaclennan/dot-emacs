@@ -7,4 +7,4 @@ sudo rm -rf package-xemacs*
 sudo rm -rf xemacs-$VERSION
 
 sudo rm -rf xemacs
-sudo rm -f slackbuilds.tar.gz
+sudo rm -f slackbuilds-xemacs.tar.gz

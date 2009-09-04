@@ -29,4 +29,4 @@ MAINTAINER="Sean MacLennan"
 EMAIL="xemacs@seanm.ca"
 EOF
 
-tar zcf slackbuilds.tar.gz xemacs
+tar zcf slackbuilds-xemacs.tar.gz xemacs
