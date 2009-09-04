@@ -62,6 +62,9 @@ if [ $DO_BUILD -eq 1 ] ; then
 		--with-xft=emacs,menubars,tabs,gauges \
 		$ARCH-slackware-linux || exit 1
 
+# Add this for speed?
+#		--without-widgets
+
 #	--package-path=/$datadir/xemacs/xemacs-packages \
 
     make || exit 1
