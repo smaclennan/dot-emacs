@@ -2,6 +2,9 @@
 
 set -e
 
+URL_BASE=http://ftp.xemacs.org/pub/xemacs
+PKG_BASE=$URL_BASE/packages
+
 rm -rf xemacs
 mkdir -p xemacs
 
@@ -15,18 +18,29 @@ cp *.patch xemacs
 cp slack-desc* xemacs
 
 VERSION=`grep "^VERSION=" xemacs.SlackBuild | cut -d= -f2`
-echo "Version '$VERSION'"
-
 MD5SUM=`md5sum xemacs-$VERSION.tar.bz2 | cut -d" " -f1`
+
+EFS_VERS=`grep "^EFS_VERSION=" xemacs.SlackBuild | cut -d= -f2`
+EFS_FILE=efs-$EFS_VERS-pkg.tar.gz
+MD5_EFS=`md5sum $EFS_FILE | cut -d" " -f1`
+
+BASE_VERS=`grep "^BASE_VERSION=" xemacs.SlackBuild | cut -d= -f2`
+BASE_FILE=xemacs-base-$BASE_VERS-pkg.tar.gz
+MD5_BASE=`md5sum $BASE_FILE | cut -d" " -f1`
+
+echo "Version '$VERSION'"
 
 cat << EOF > xemacs/xemacs.info
 PRGNAM="xemacs"
 VERSION="$VERSION"
 HOMEPAGE="http://xemacs.org/"
-DOWNLOAD="http://ftp.xemacs.org/pub/xemacs/stable/xemacs-$VERSION.tar.bz2"
-MD5SUM="$MD5SUM"
+DOWNLOAD="$URL_BASE/stable/xemacs-$VERSION.tar.bz2 $PKG_BASE/$EFS_FILE $PKG_BASE/$BASE_FILE"
+MD5SUM="$MD5SUM $MD5_EFS $MD5_BASE"
+DOWNLOAD_x86_64=""
+MD5SUM_x86_64=""
 MAINTAINER="Sean MacLennan"
 EMAIL="xemacs@seanm.ca"
 EOF
 
-tar zcf slackbuilds-xemacs.tar.gz xemacs
+# Must be called this or the upload fails
+tar zcf xemacs.tar.gz xemacs
