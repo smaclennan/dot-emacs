@@ -52,6 +52,8 @@ for f in $PRGNAM-$VERSION.tar.bz2 \
 done
 [ $ok = 1 ] || exit 2
 
+set -e
+
 rm -rf $PKG
 mkdir -p $TMP $OUPUT $PKG || exit 1
 
