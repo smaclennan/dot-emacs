@@ -15,7 +15,7 @@ chmod +x xemacs/xemacs.SlackBuild
 
 cp README xemacs
 cp *.patch xemacs
-cp slack-desc* xemacs
+cp slack-desc xemacs
 
 VERSION=`grep "^VERSION=" xemacs.SlackBuild | cut -d= -f2`
 MD5SUM=`md5sum xemacs-$VERSION.tar.bz2 | cut -d" " -f1`

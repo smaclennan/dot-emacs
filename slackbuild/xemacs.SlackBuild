@@ -5,16 +5,17 @@
 DO_UNTAR=1
 DO_BUILD=1
 
+PRGNAM=xemacs
 VERSION=21.4.22
 BASE_VERSION=2.19
 EFS_VERSION=1.34
 ARCH=${ARCH:-i486}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-4}
 TAG=${TAG:-sam}
 
 CWD=$(pwd)
 TMP=${TMP:-/tmp/SBo}
-PKG=$TMP/package-xemacs
+PKG=$TMP/package-$PRGNAM
 OUTPUT=$TMP
 
 if false; then # SlackBuilds
@@ -41,7 +42,7 @@ DATADIR=usr/lib
 
 # Let's be nice and warn upfront if things are missing
 ok=1
-for f in xemacs-$VERSION.tar.bz2 \
+for f in $PRGNAM-$VERSION.tar.bz2 \
 	xemacs-base-$BASE_VERSION-pkg.tar.gz \
 	efs-$EFS_VERSION-pkg.tar.gz \
 	check-features.patch \
@@ -56,10 +57,11 @@ mkdir -p $TMP $OUPUT $PKG || exit 1
 
 cd $TMP
 if [ $DO_UNTAR -eq 1 ] ; then
-    rm -rf xemacs-$VERSION
-    tar xjf $CWD/xemacs-$VERSION.tar.bz2 || exit 1
+    rm -rf $PRGNAM-$VERSION
+    tar xjf $CWD/$PRGNAM-$VERSION.tar.bz2 || exit 1
 
-    cd xemacs-$VERSION
+    cd $PRGNAM-$VERSION
+    chown -R root.root .
 
     # These patches allow building xemacs with xemacs installed
     # dump-paths patch from Enrico Scholz
@@ -69,7 +71,7 @@ if [ $DO_UNTAR -eq 1 ] ; then
     # Sighhhhhh.....
     patch -p1 < $CWD/mod-shift.patch || exit 1
 else
-    cd xemacs-$VERSION || exit 1
+    cd $PRGNAM-$VERSION || exit 1
     echo "Skipping untar...."
 fi
 
@@ -97,7 +99,6 @@ else
     echo "Skipping build...."
 fi
 
-
 make prefix=$PKG/usr \
     datadir=$PKG/$DATADIR \
     libdir=$PKG/usr/lib$LIBDIRSUFFIX install || exit 1
@@ -110,6 +111,8 @@ make prefix=$PKG/usr \
     # Make sure the .elc files are newer
     find . -name \*.elc -exec touch {} \;
 )
+
+make datadir=$PKG/$DATADIR gzip-el || exit 1
 
 # What is this 2.3M for?????
 rm -rf $PKG/usr/lib/xemacs-$VERSION/$ARCH-slackware-linux/include
@@ -128,17 +131,13 @@ strip_bins $PKG/usr/lib/xemacs-$VERSION/$ARCH-slackware-linux
 gzip $PKG/usr/man/*/*
 
 # Some documentation
-mkdir -p $PKG/usr/doc/xemacs-$VERSION
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp BUGS CHANGES-release COPYING ChangeLog \
     Installation PROBLEMS README README.packages \
-    $PKG/usr/doc/xemacs-$VERSION
+    $PKG/usr/doc/$PRGNAM-$VERSION
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-
-# For lp.n
-chown -R root.root $PKG
-#chown -R root.bin $PKG/usr/bin
 
 cat <<EOF >$PKG/install/doinst.sh
 #!/bin/sh
@@ -150,9 +149,6 @@ touch $DATADIR/xemacs/xemacs-packages/lisp/xemacs-base/*.elc
 touch $DATADIR/xemacs/xemacs-packages/lisp/efs/*.elc
 
 EOF
-
-# And add the slackbuild
-install -D -m664 $CWD/xemacs.SlackBuild $PKG/usr/src/slackbuilds/xemacs.SlackBuild
 
 ########################################################################
 
@@ -169,81 +165,19 @@ if [ $DATADIR = "usr/share" ] ; then
 fi
 
 ########################################################################
-# Split out info package
-rm -rf $PKG-info
+
 INFODIR=$DATADIR/xemacs-$VERSION/info
-mkdir -p $PKG-info/$INFODIR
-mkdir -p $PKG-info/install
-cat $CWD/slack-desc-info > $PKG-info/install/slack-desc
-
-mv $INFODIR/* $PKG-info/$INFODIR
-gzip $PKG-info/$INFODIR/*
-
+gzip $PKG/$INFODIR/*
 # DO NOT gzip the dir file - it screws up XEmacs
-gunzip $PKG-info/$INFODIR/dir.gz
+gunzip $PKG/$INFODIR/dir.gz
 
 ########################################################################
-# Split out lisp package
-rm -rf $PKG-lisp
-LISPDIR=$DATADIR/xemacs-$VERSION/lisp
-mkdir -p $PKG-lisp/$LISPDIR
-mkdir -p $PKG-lisp/install
-cat $CWD/slack-desc-lisp > $PKG-lisp/install/slack-desc
-
-# Taken from gzip-el.sh in lib-src dir
-find "$LISPDIR" -type f -name "*.el" -print |
-    while read file; do
-	if [ -s "${file}c" ] ; then
-	    install -D -m 644 "$file" "$PKG-lisp/$file"
-	    rm "$file"
-	fi
-    done
-
-cat <<EOF >$PKG-lisp/install/doinst.sh
-#!/bin/sh
-
-# Make sure the .elc files are newer
-find $LISPDIR -name \*.elc -exec touch {} \;
-EOF
-
-########################################################################
-# Split out misc package
-rm -rf $PKG-misc
-ETCDIR=$DATADIR/xemacs-$VERSION/etc
-mkdir -p $PKG-misc/$ETCDIR
-mkdir -p $PKG-misc/install
-cat $CWD/slack-desc-misc > $PKG-misc/install/slack-desc
-
-cp -a $ETCDIR/photos $PKG-misc/$ETCDIR
-rm -rf $ETCDIR/photos
-
-cp -a $ETCDIR/sparcworks $PKG-misc/$ETCDIR
-rm -rf $ETCDIR/sparcworks
-
-cp -a $ETCDIR/tests $PKG-misc/$ETCDIR
-rm -rf $ETCDIR/tests
-
-for f in $ETCDIR/* ; do
-    [ -f $f ] && mv $f $PKG-misc/$ETCDIR
-done
-
-# This is required - put it back
-mv $PKG-misc/$ETCDIR/package-index.LATEST.gpg $PKG/$ETCDIR
-
-########################################################################
-# Build the packages
 
 cd $PKG
-makepkg -l y -c n $OUTPUT/xemacs-$VERSION-$ARCH-$BUILD$TAG.tgz
-cd $PKG-info
-makepkg -l n -c n $OUTPUT/xemacs-info-$VERSION-noarch-$BUILD$TAG.tgz
-cd $PKG-lisp
-makepkg -l n -c n $OUTPUT/xemacs-lisp-$VERSION-noarch-$BUILD$TAG.tgz
-cd $PKG-misc
-makepkg -l n -c n $OUTPUT/xemacs-misc-$VERSION-noarch-$BUILD$TAG.tgz
+makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.tgz
 
 # Clean up the extra stuff:
 if [ "$1" = "--cleanup" ]; then
-    rm -rf $TMP/xemacs-${VERSION}
-    rm -rf $PKG $PKG-info $PKG-lisp $PKG-misc
+    rm -rf $TMP/$PRGNAM-${VERSION}
+    rm -rf $PKG
 fi
