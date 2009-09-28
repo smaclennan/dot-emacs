@@ -17,6 +17,7 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=$TMP
+DATADIR=usr/lib
 
 if false; then # SlackBuilds
 # This is required for slackbuilds. I recommend turning this off since
@@ -36,9 +37,6 @@ elif [ "$ARCH" = "x86_64" ]; then
     LIBDIRSUFFIX="64"
 fi
 fi
-
-#DATADIR=usr/share
-DATADIR=usr/lib
 
 # Let's be nice and warn upfront if things are missing
 ok=1
@@ -132,6 +130,11 @@ strip_bins $PKG/usr/lib/xemacs-$VERSION/$ARCH-slackware-linux
 
 gzip $PKG/usr/man/*/*
 
+INFODIR=$DATADIR/xemacs-$VERSION/info
+gzip $PKG/$INFODIR/*
+# DO NOT gzip the dir file - it screws up XEmacs
+gunzip $PKG/$INFODIR/dir.gz
+
 # Some documentation
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp BUGS CHANGES-release COPYING ChangeLog \
@@ -151,29 +154,6 @@ touch $DATADIR/xemacs/xemacs-packages/lisp/xemacs-base/*.elc
 touch $DATADIR/xemacs/xemacs-packages/lisp/efs/*.elc
 
 EOF
-
-########################################################################
-
-cd $PKG
-
-if [ $DATADIR = "usr/share" ] ; then
-  ( cd usr/bin
-    XBIN=../share/xemacs-$VERSION/bin
-    mkdir -p $XBIN || exit 1
-    mv xemacs-$VERSION xemacs*.dmp $XBIN || exit 1
-    rm xemacs
-    ln -s $XBIN/xemacs-$VERSION xemacs
-  ) || exit 3
-fi
-
-########################################################################
-
-INFODIR=$DATADIR/xemacs-$VERSION/info
-gzip $PKG/$INFODIR/*
-# DO NOT gzip the dir file - it screws up XEmacs
-gunzip $PKG/$INFODIR/dir.gz
-
-########################################################################
 
 cd $PKG
 makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.tgz
