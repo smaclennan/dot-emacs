@@ -59,7 +59,8 @@
 	(and (= major emacs-major-version)
 	     (>= minor emacs-minor-version)))))
 
-(setq modeline-buffer-id (list (cons modeline-buffer-id-extent (buffer-name))))
+(when running-xemacs
+  (setq modeline-buffer-id (list (cons modeline-buffer-id-extent (buffer-name)))))
 
 ;;}}}
 
@@ -305,11 +306,12 @@ This is guaranteed not to have a / at the end."
     (cdr (specifier-specs (face-background face) 'global)))
   ;; (my-get-face-background 'default)
 
-  (defun hack-modeline-background ()
-    (let ((bg (face-background-instance 'modeline)))
-      (when (color-instance-p bg)
-        (set-face-background 'modeline bg))))
-  (add-hook 'after-init-hook 'hack-modeline-background)
+  (when running-xemacs
+    (defun hack-modeline-background ()
+      (let ((bg (face-background-instance 'modeline)))
+	(when (color-instance-p bg)
+	  (set-face-background 'modeline bg))))
+    (add-hook 'after-init-hook 'hack-modeline-background))
 
   );; window-system
 
