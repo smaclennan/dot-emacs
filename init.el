@@ -771,24 +771,30 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;;; -------------------------------------------------------------------------
 ;; Audible compilation completion
-(defvar loud-compile t "* If t, `ding' when compile finished.")
-(defvar compile-ok     nil "*Sound for compile ok")
-(defvar compile-failed nil "*Sound for compile failed")
+(defvar loud-compile	nil "* If t, `ding' when compile finished.")
+(defvar compile-ok	nil "*Sound for compile ok")
+(defvar compile-failed	nil "*Sound for compile failed")
 
-(when have-sound
-  (condition-case nil
-      (progn
-	(load-sound-file "Snicker" 'compile-failed)
-	(load-sound-file "YouTheMan" 'compile-ok))
-    (error
-     (push "Sound" would-have-liked-list))))
+(if (and running-xemacs have-sound)
+    (progn
+      (condition-case nil
+	  (progn
+	    (load-sound-file "Snicker" 'compile-failed)
+	    (load-sound-file "YouTheMan" 'compile-ok))
+	(error
+	 (push "Sound" would-have-liked-list)))
 
-(defun loud-finish (buff, exit)
-  "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
-  (when loud-compile
-    (if (string= exit "finished\n")
-	(ding nil 'compile-ok)
-      (ding nil 'compile-failed))))
+      (defun loud-finish (buff, exit)
+	"If `loud-compile', `ding'. Assign to `compilation-finish-function'."
+	(when loud-compile
+	  (if (string= exit "finished\n")
+	      (ding nil 'compile-ok)
+	    (ding nil 'compile-failed))))
+      )
+  (defun loud-finish (buff, exit)
+    "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
+    (when loud-compile (ding)))
+  )
 
 (setq compilation-finish-function 'loud-finish)
 
