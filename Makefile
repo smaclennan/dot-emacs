@@ -1,13 +1,18 @@
-ifeq ($(shell basename $(PWD)),.sxemacs)
-EMACS:=sxemacs
+BASE=$(shell basename $(PWD))
+ifeq ($(BASE),.sxemacs)
+EMACS := sxemacs
+else ifeq ($(BASE),.xemacs)
+EMACS := xemacs
 else
-EMACS:=xemacs
+EMACS := emacs
 endif
 
 all:
 	make EMACS=$(EMACS) -C site-packages/lisp/sam
-	make EMACS=$(EMACS) -C site-packages/lisp/introspector
 	make EMACS=$(EMACS) -C site-packages/lisp/anti-gnus
+ifneq ($(BASE),.emacs.d)
+	make EMACS=$(EMACS) -C site-packages/lisp/introspector
+endif
 
 clean:
 	make -C site-packages/lisp/sam clean
