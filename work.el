@@ -163,6 +163,24 @@ Nil defaults to the currently running kernel.")
     do
     (add-to-list 'smerge-diff-excludes ignore t)))
 
+(defun smerge-monza ()
+  (interactive)
+  (let ((svn-dir (expand-file-name "~work/svn-monza"))
+	(git-dir (expand-file-name "~work/git-monza")))
+    (when (file-directory-p (concat svn-dir "/software"))
+      (setq svn-dir (concat svn-dir "/software")))
+    (when (file-directory-p (concat git-dir "/software"))
+      (setq git-dir (concat git-dir "/software")))
+
+    (unless (file-directory-p svn-dir)
+      (error "%s not a directory" svn-dir))
+    (unless (file-directory-p git-dir)
+      (error "%s not a directory" git-dir))
+
+    (pika-setup-smerge)
+
+    (smerge nil svn-dir git-dir)))
+
 (let ((ipp "/opt/intel/ipp/5.1/ia32"))
   (when (file-exists-p ipp)
     (setenv "IPP" ipp)))
