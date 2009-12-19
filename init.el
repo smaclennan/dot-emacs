@@ -62,6 +62,9 @@
 (when running-xemacs
   (setq modeline-buffer-id (list (cons modeline-buffer-id-extent (buffer-name)))))
 
+;; Required for Emacs, doesn't hurt under XEmacs
+(require 'cl)
+
 ;;}}}
 
 ;;{{{ Basic Customization
