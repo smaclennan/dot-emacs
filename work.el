@@ -65,7 +65,15 @@ Nil defaults to the currently running kernel.")
   (interactive)
   (when (interactive-p)
     (setq dir (read-directory-name "pika-dir: " pika-dir pika-dir)))
-  (setq pika-dir (my-expand-dir-name dir))
+  (setq dir (my-expand-dir-name dir))
+  (let ((maybe-dir (concat dir "/software")))
+    (if (file-directory-p dir)
+	(if (file-directory-p maybe-dir)
+	  (if (y-or-n-p (concat "Do you want " maybe-dir "? "))
+	      (setq dir maybe-dir)))
+      (error "%s not a directory." dir)))
+
+  (setq pika-dir dir)
   (setenv "PIKA_DIR" pika-dir)
 
   ;; Note: if these are nil, setenv will remove them
@@ -113,7 +121,8 @@ Nil defaults to the currently running kernel.")
     (setq my-compile-dir-list
 	  (append my-compile-dir-list
 		  '(("^.*/[a-z-]*monza/" nil pika-c-mode)))))
-  )
+
+  (message "PIKA_DIR %s" pika-dir))
 
 ;; Now default it
 (set-pika-dir pika-dir)
