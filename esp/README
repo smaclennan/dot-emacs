@@ -1,0 +1,4 @@
+ESP - Emacs Special Package
+
+This directory contains files for compatibility between Emacs and
+XEmacs. DO NOT use these under XEmacs.
