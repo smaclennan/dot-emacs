@@ -1,2 +1,5 @@
 *.elc
 user_init.el
+auto-autoloads.el
+custom-load.el
+slashdots
