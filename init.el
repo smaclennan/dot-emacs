@@ -397,6 +397,8 @@ instead, uses tag around or before point."
 (global-set-key [f6] ".")
 (global-set-key [(shift f6)] ">")
 
+(would-like 'lxr)
+
 ;; Cut and paste
 (setq interprogram-cut-function nil)
 (setq interprogram-paste-function nil)
