@@ -662,15 +662,6 @@ function will be called after the compile command is set."
 ;; Make sure we are *after* my-c-mode-common-hook
 (add-hook 'c-mode-common-hook 'my-compile-command 'append)
 
-(defun linux-lxr (dir &optional arg)
-  "Things to do in a linux directory"
-  ;; lxr
-  (set (make-local-variable 'lxr-url) "http://lxr.linux.no/source/")
-  (set (make-local-variable 'lxr-base) dir)
-  (set (make-local-variable 'lxr-version) nil)
-  (set (make-local-variable 'lxr-arch) nil)
-  )
-
 (defun string-match-list (match list &optional case-sensitive)
   "Lookup an element in a list using string-match.
 If found, returns the matching list entry with the car of the list replaced

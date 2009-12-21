@@ -54,11 +54,20 @@ Nil defaults to the currently running kernel.")
     (setq indent-tabs-mode nil)
     (setq tab-width 2)
     )
+  (pika-monza-lxr)
   (force-mode-line-update))
 
 ;; For windows assume we are always editing pika code
 (when running-windoze
   (add-hook 'c-mode-common-hook 'pika-c-mode 'append))
+
+(defun pika-monza-lxr ()
+  (setq lxr-url "http://alice.pikatech.com/lxr/http/"
+	lxr-base pika-dir
+	lxr-version "git-monza"
+	lxr-arch nil
+	))
+
 
 ;; -------------------------------------------------------------------
 (defun set-pika-dir (&optional dir)
@@ -139,13 +148,21 @@ Nil defaults to the currently running kernel.")
   (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-2.6/"))
   (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
 
+(defun pika-linux (dir &optional arg)
+  (linux-style)
+  (setq lxr-url "http://alice.pikatech.com/lxr/http/"
+	lxr-base dir
+	lxr-version nil
+	lxr-arch nil
+	))
 
 ;; Add some other kernels
-(dolist (kernel '("~work/taco/linux-[^/]+"
+(dolist (kernel '("~work/linux-[^/]+"
+		  "~work/taco/linux-[^/]+"
 		  "~work/taco/for-2.6.[0-9]+"))
   (setq my-compile-dir-list
 	(add-to-list 'my-compile-dir-list
-		     (list (expand-file-name kernel) nil 'linux-style)
+		     (list (expand-file-name kernel) nil 'pika-linux)
 		     t)))
 
 ;; -------------------------------------------------------------------
