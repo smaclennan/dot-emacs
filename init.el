@@ -27,6 +27,16 @@
 
 (setq inhibit-default-init t)
 
+;; Required for Emacs, doesn't hurt under XEmacs
+(require 'cl)
+
+(when running-gnu-emacs
+  (add-to-list 'load-path (concat dot-dir "esp"))
+  ;; Add the local site-packages
+  (let ((lisp-dir (concat dot-dir "site-packages/lisp")))
+    (loop for dir in (directory-files lisp-dir t "^[^.i]") do
+	  (add-to-list 'load-path dir))))
+
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
 ;; package to a list of missing packages and move on.
@@ -61,9 +71,6 @@
 
 (when running-xemacs
   (setq modeline-buffer-id (list (cons modeline-buffer-id-extent (buffer-name)))))
-
-;; Required for Emacs, doesn't hurt under XEmacs
-(require 'cl)
 
 ;;}}}
 

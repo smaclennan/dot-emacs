@@ -8,13 +8,16 @@ EMACS := emacs
 endif
 
 all:
-	make EMACS=$(EMACS) -C site-packages/lisp/sam
-	make EMACS=$(EMACS) -C site-packages/lisp/anti-gnus
-ifneq ($(BASE),.emacs.d)
+ifeq ($(BASE),.emacs.d)
+	make EMACS=$(EMACS) -C esp
+else
 	make EMACS=$(EMACS) -C site-packages/lisp/introspector
 endif
+	make EMACS=$(EMACS) -C site-packages/lisp/sam
+	make EMACS=$(EMACS) -C site-packages/lisp/anti-gnus
 
 clean:
 	make -C site-packages/lisp/sam clean
 	make -C site-packages/lisp/introspector clean
 	make -C site-packages/lisp/anti-gnus clean
+	make -C esp clean
