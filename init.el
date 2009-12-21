@@ -450,6 +450,7 @@ instead, uses tag around or before point."
 (global-set-key "\C-xw" 	'what-line)
 
 ;;(global-set-key "\C-cd"		'dup-line)
+(would-like 'calc)
 (global-set-key "\M-#"		'my-calc)
 
 (global-set-key [(iso-left-tab)] 'tab-to-tab-stop)
