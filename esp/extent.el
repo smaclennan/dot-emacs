@@ -110,4 +110,11 @@
 ;; complete
 (defun event-buffer (event) (current-buffer))
 
+;; No optional args supported except a buff
+(defun extent-list (&optional buff)
+  (save-excursion
+    (when buff (set-buffer buff))
+    (let ((lists (overlay-lists)))
+      (nconc (car lists) (cdr lists)))))
+
 (provide 'extent)
