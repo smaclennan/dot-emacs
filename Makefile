@@ -17,6 +17,7 @@ endif
 	make EMACS=$(EMACS) -C site-packages/lisp/anti-gnus
 
 clean:
+	rm -f *.elc
 	make -C site-packages/lisp/sam clean
 	make -C site-packages/lisp/introspector clean
 	make -C site-packages/lisp/anti-gnus clean

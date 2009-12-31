@@ -392,6 +392,9 @@ instead, uses tag around or before point."
 (global-set-key [(control f10)]	'lxr-at-point)
 ;; I keep f11 free for temporary bindings
 (global-set-key [f12]		'revert-buffer)
+(global-set-key [(shift f12)]	'lxr-next-defined)
+(global-set-key [XF86_Switch_VT_12] 'lxr-next-defined)
+(global-set-key [(control f12)] 'lxr-defined-at-point)
 
 ;; SAM HACK - period key broken on lappy
 (global-set-key [f6] ".")
