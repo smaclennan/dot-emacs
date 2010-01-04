@@ -837,6 +837,13 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
       tags-auto-read-changed-tag-files t)
 
 ;;; -------------------------------------------------------------------------
+;; GNU global - gtags
+(let ((gtag-dir "/usr/share/gtags")) ;; default install location
+  (when (file-directory-p gtag-dir)
+    (add-to-list 'load-path gtag-dir)
+    (autoload 'gtags-mode "gtags" "" t)))
+
+;;; -------------------------------------------------------------------------
 ;; c macro expansion
 
 (defun c-macro-expand-at-point (subst)
