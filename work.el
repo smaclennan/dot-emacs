@@ -187,7 +187,9 @@ Nil defaults to the currently running kernel.")
 			"pksystemver.h" "*.mod.c" "*.so.2*"
 			"Module.symvers")
     do
-    (add-to-list 'smerge-diff-excludes ignore t)))
+    (add-to-list 'smerge-diff-excludes ignore t))
+  ;; We need to make sure hspapps.lib stays up to date!
+  (delete "*.lib" smerge-diff-excludes))
 
 (defun smerge-monza ()
   (interactive)
