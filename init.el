@@ -19,7 +19,10 @@
 (defvar dot-dir
   (if user-init-file
       (file-name-directory user-init-file)
-    (pwd)) ;; for batch mode
+    ;; for batch mode
+    (let ((dir (pwd)))
+      (when (string-match "^Directory " dir)
+	(replace-match "" nil nil dir))))
   "The init file directory.")
 
 (defconst emacs-start-time (current-time)
@@ -139,7 +142,7 @@ Each clause is (PACKAGE BODY...)."
 (would-like 'redo (featurep 'emacs)) ;; edit-utils
 
 ;; (would-like 'uncompress) ;; os-utils
-(unless (noninteractive) (auto-compression-mode 1))
+(unless noninteractive (auto-compression-mode 1))
 
 ;; Needed by ediff - exists in `efs'
 (or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
@@ -189,8 +192,8 @@ Each clause is (PACKAGE BODY...)."
   (setq lpr-command "lpr"
 	lpr-switches nil))
 
-;; SAM move this to esp?
-(unless running-xemacs
+(my-feature-cond
+ (emacs
   (defun exec-to-string (cmd)
     (let ((buff (generate-new-buffer "exec"))
 	  str)
@@ -199,7 +202,7 @@ Each clause is (PACKAGE BODY...)."
 	(set-buffer buff)
 	(setq str (buffer-substring (point-min) (point-max))))
       (kill-buffer buff)
-      str)))
+      str))))
 
 (defun uname (&optional arg)
   "`uname arg' as a list. arg defaults to -a"
@@ -266,12 +269,11 @@ This is guaranteed not to have a / at the end."
   (setq interprogram-cut-function nil
 	interprogram-paste-function nil)
 
-  (eval-when-compile (would-like 'pending-del))
-
   ;; 21.2.? and up
   (my-bound-cond
    (shifted-motion-keys-select-region
     (setq shifted-motion-keys-select-region t)
+    (eval-when-compile (would-like 'pending-del))
     (when (would-like 'pending-del)
       (setq pending-delete-modeline-string "")
       (turn-on-pending-delete)))
@@ -484,7 +486,8 @@ instead, uses tag around or before point."
 (define-key global-map [(control h) w] 'hyper-where-is)
 
 ;; Add some standard directory bindings
-(defvar linux-dir (concat "/usr/src/linux-" (car (uname "-r")) "/"))
+;; SAM no longer used...
+;; (defvar linux-dir (concat "/usr/src/linux-" (car (uname "-r")) "/"))
 
 (if (fboundp 'mwheel-install)
     (progn
@@ -1354,7 +1357,7 @@ We ignore the 3rd number."
     ;; Warn that some features not found
     (progn (ding) (message "Features not found: %S" would-have-liked-list))
   ;; Else display a friendly message
-  (unless (noninteractive)
+  (unless noninteractive
     (let ((hour (nth 2 (decode-time))))
       (message "Good %s %s"
 	       (cond ((< hour 12) "morning")
