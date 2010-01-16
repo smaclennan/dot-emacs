@@ -1339,16 +1339,16 @@ We ignore the 3rd number."
 
 ;;}}}
 
-(when running-windoze
-  (load (concat dot-dir "windoze") t))
+(unless noninteractive
+  (when running-windoze
+    (load (concat dot-dir "windoze") t))
 
-;; For work
-(load (concat dot-dir "work") t)
+  (load (concat dot-dir "work") t)
 
 ;; I use a common init.el across many machines. The `user-init' file
 ;; allows for user/machine specific initialization.
-(unless running-as-root
-  (load (concat dot-dir "user-init") t))
+  (unless running-as-root
+    (load (concat dot-dir "user-init") t)))
 
 ;;{{{ Final results
 
