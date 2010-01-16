@@ -17,7 +17,9 @@
   "Non-nil if running as root.")
 
 (defvar dot-dir
-  (file-name-directory user-init-file)
+  (if user-init-file
+      (file-name-directory user-init-file)
+    (pwd)) ;; for batch mode
   "The init file directory.")
 
 (defconst emacs-start-time (current-time)
@@ -137,7 +139,7 @@ Each clause is (PACKAGE BODY...)."
 (would-like 'redo (featurep 'emacs)) ;; edit-utils
 
 ;; (would-like 'uncompress) ;; os-utils
-(auto-compression-mode 1)
+(unless (noninteractive) (auto-compression-mode 1))
 
 ;; Needed by ediff - exists in `efs'
 (or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
@@ -263,6 +265,8 @@ This is guaranteed not to have a / at the end."
   ;; Use C-Insert and Shift-Insert for clipboard
   (setq interprogram-cut-function nil
 	interprogram-paste-function nil)
+
+  (eval-when-compile (would-like 'pending-del))
 
   ;; 21.2.? and up
   (my-bound-cond
@@ -1350,12 +1354,13 @@ We ignore the 3rd number."
     ;; Warn that some features not found
     (progn (ding) (message "Features not found: %S" would-have-liked-list))
   ;; Else display a friendly message
-  (let ((hour (nth 2 (decode-time))))
-    (message "Good %s %s"
-	     (cond ((< hour 12) "morning")
-		   ((< hour 18) "afternoon")
-		   (t           "evening"))
-	     (user-full-name))))
+  (unless (noninteractive)
+    (let ((hour (nth 2 (decode-time))))
+      (message "Good %s %s"
+	       (cond ((< hour 12) "morning")
+		     ((< hour 18) "afternoon")
+		     (t           "evening"))
+	       (user-full-name)))))
 
 (setq initial-scratch-message
       ";; This buffer is for goofing around in.
