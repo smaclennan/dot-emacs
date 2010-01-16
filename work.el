@@ -133,7 +133,8 @@ Nil defaults to the currently running kernel.")
 	  (append my-compile-dir-list
 		  '(("^.*/[a-z-]*monza/" nil pika-c-mode)))))
 
-  (message "PIKA_DIR %s" pika-dir))
+  (unless noninteractive
+    (message "PIKA_DIR %s" pika-dir)))
 
 ;; Now default it
 (set-pika-dir pika-dir)
