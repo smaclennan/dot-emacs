@@ -9,11 +9,6 @@
 (unless (boundp 'running-xemacs)
   (defvar running-xemacs nil
     "Non-nil when the current emacs is XEmacs."))
-(unless (boundp 'running-sxemacs)
-  (defvar running-sxemacs nil
-    "Non-nil when the current emacs is SXEmacs."))
-(defvar running-gnu-emacs (not running-xemacs)
-  "Non-nil when the current emacs is GNU Emacs.")
 
 (defvar running-windoze (eq system-type 'windows-nt)
   "Non-nil if running Windows.")
@@ -25,17 +20,55 @@
   (file-name-directory user-init-file)
   "The init file directory.")
 
+(defconst emacs-start-time (current-time)
+  "The time emacs started.")
+
 (setq inhibit-default-init t)
 
 ;; Required for Emacs, doesn't hurt under XEmacs
 (require 'cl)
 
-(when running-gnu-emacs
+;; GNU emacs sets emacs
+;; XEmacs sets xemacs
+;; SXEmacs sets sxemacs and xemacs
+(defmacro my-feature-cond (&rest clauses)
+  "Test CLAUSES for feature at compile time.
+Each clause is (FEATURE BODY...)."
+  (dolist (x clauses)
+    (let ((feature (car x))
+	  (body (cdr x)))
+      (when (or (eq feature t)
+		(featurep feature))
+	(return (cons 'progn body))))))
+
+(defmacro my-bound-cond (&rest clauses)
+  "Test CLAUSES for binding at compile time.
+Each clause is (BOUND BODY...)."
+  (dolist (x clauses)
+    (let ((feature (car x))
+	  (body (cdr x)))
+      (when (or (eq feature t)
+		(boundp feature)
+		(fboundp feature))
+	(return (cons 'progn body))))))
+
+(defmacro my-package-cond (&rest clauses)
+  "Test CLAUSES for package at compile time.
+Each clause is (PACKAGE BODY...)."
+  (dolist (x clauses)
+    (let ((feature (car x))
+	  (body (cdr x)))
+      (when (or (eq feature t)
+		(packagep feature))
+	(return (cons 'progn body))))))
+
+(my-feature-cond
+ (emacs
   (add-to-list 'load-path (concat dot-dir "esp"))
   ;; Add the local site-packages
   (let ((lisp-dir (concat dot-dir "site-packages/lisp")))
     (loop for dir in (directory-files lisp-dir t "^[^.i]") do
-	  (add-to-list 'load-path dir))))
+      (add-to-list 'load-path dir)))))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -54,12 +87,12 @@
      nil)))
 
 (defun packagep (package &optional no-list)
-  (if running-xemacs
-      (if (assq package packages-package-list)
-	  t
-	(unless no-list (add-to-list 'would-have-liked-list package))
-	nil)
-    (would-like package no-list)))
+  (my-feature-cond
+   (xemacs (if (assq package packages-package-list)
+	       t
+	     (unless no-list (add-to-list 'would-have-liked-list package))
+	     nil))
+   (emacs (would-like package no-list))))
 
 (defvar have-sound nil)
 
@@ -69,8 +102,9 @@
 	(and (= major emacs-major-version)
 	     (>= minor emacs-minor-version)))))
 
-(when running-xemacs
-  (setq modeline-buffer-id (list (cons modeline-buffer-id-extent (buffer-name)))))
+(my-feature-cond
+ (xemacs
+  (setq modeline-buffer-id (list (cons modeline-buffer-id-extent (buffer-name))))))
 
 ;;}}}
 
@@ -84,9 +118,10 @@
       find-file-compare-truenames t
       signal-error-on-buffer-boundary nil)
 
-(when running-gnu-emacs
+(my-feature-cond
+ (emacs
   (setq inhibit-startup-message t)
-  (setq inhibit-startup-echo-area-message "seanm"))
+  (setq inhibit-startup-echo-area-message "seanm")))
 
 (let ((custom-file (concat dot-dir "custom.el")))
   (when (file-exists-p custom-file)
@@ -99,7 +134,7 @@
 (when (not (emacs-version>= 21 2))
   (setq temp-buffer-shrink-to-fit t))
 
-(would-like 'redo running-gnu-emacs) ;; edit-utils
+(would-like 'redo (featurep 'emacs)) ;; edit-utils
 
 ;; (would-like 'uncompress) ;; os-utils
 (auto-compression-mode 1)
@@ -114,9 +149,9 @@
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
 
-(if running-xemacs
-    (paren-set-mode 'paren t)
-  (show-paren-mode t))
+(my-feature-cond
+ (xemacs (paren-set-mode 'paren t))
+ (t (show-paren-mode t)))
 
 ;; This is defined in apel - here is a simple version
 (unless (fboundp 'exec-installed-p)
@@ -195,14 +230,14 @@ This is guaranteed not to have a / at the end."
 
 ;; cl-loop required for packages like etags under SXEmacs, but require does
 ;; not seem to work in 22.1.9. So explicitly load the module.
-(when running-sxemacs
-  (load-module "cl-loop"))
+(my-feature-cond (sxemacs (load-module "cl-loop")))
 
-(when running-gnu-emacs
+(my-feature-cond
+ (emacs
   (defun region-exists-p ()
     (if mark-active
 	(setq deactivate-mark t)
-      nil)))
+      nil))))
 
 ;;}}}
 
@@ -230,35 +265,40 @@ This is guaranteed not to have a / at the end."
 	interprogram-paste-function nil)
 
   ;; 21.2.? and up
-  (if (boundp 'shifted-motion-keys-select-region)
-      (progn
-	(setq shifted-motion-keys-select-region t)
-	(when (would-like 'pending-del)
-	  (setq pending-delete-modeline-string "")
-	  (turn-on-pending-delete)))
-    ;; use pc-select
-    (when (would-like 'pc-select)
-      (if running-xemacs
-	  (pc-select-mode t)
-	(pc-selection-mode t))
-      (setq pc-select-modeline-string ""
-	    pending-delete-modeline-string ""
-	    pc-select-keep-regions t)))
+  (my-bound-cond
+   (shifted-motion-keys-select-region
+    (setq shifted-motion-keys-select-region t)
+    (when (would-like 'pending-del)
+      (setq pending-delete-modeline-string "")
+      (turn-on-pending-delete)))
+   ;; use pc-select
+   (t (when (would-like 'pc-select)
+	(my-feature-cond
+	 (xemacs (pc-select-mode t))
+	 (t (pc-selection-mode t)))
+	(setq pc-select-modeline-string ""
+	      pending-delete-modeline-string ""
+	      pc-select-keep-regions t))))
 
   ;; -------
   ;; Title bar - almost every window system supports a title bar
   ;; The first element must be a string... sighhh.
-  (if running-sxemacs
-      (setq frame-title-format
-	    '("SXEmacs " emacs-program-version "  " host-name ":"
-	      (buffer-file-name "%f" "%b")))
-    (if running-xemacs
-	(setq frame-title-format
-	      '("XEmacs " emacs-program-version "  " host-name ":"
-		(buffer-file-name "%f" "%b")))
-      (setq frame-title-format
-	    '("Emacs " emacs-version "  " host-name ":"
-	      (buffer-file-name "%f" "%b")))))
+  (my-feature-cond
+   (xemacs
+    (setq frame-title-format
+	  '("XEmacs " emacs-program-version "  " host-name ":"
+	    (buffer-file-name "%f" "%b"))))
+   (sxemacs
+    (setq frame-title-format
+	  '("SXEmacs " emacs-program-version "  " host-name ":"
+	    (buffer-file-name "%f" "%b"))))
+   (emacs
+    (setq frame-title-format
+	  '("Emacs " emacs-version "  " host-name ":"
+	    (buffer-file-name "%f" "%b"))))
+   (t
+    (setq frame-title-format
+	  '("???? " host-name ":" (buffer-file-name "%f" "%b")))))
 
   ;; -------
   ;; Menubar
@@ -266,26 +306,28 @@ This is guaranteed not to have a / at the end."
 	menu-accelerator-modifiers '(alt))
 
   ;; add speedbar
-  (when (and running-xemacs (packagep 'speedbar t))
-    (add-menu-button '("Tools")
-		     ["Speedbar" speedbar-frame-mode
-		      :style toggle
-		      :selected (and (boundp 'speedbar-frame)
-				     (frame-live-p speedbar-frame)
-				     (frame-visible-p speedbar-frame))]
-		     "--"))
+  (my-feature-cond
+   (xemacs
+    (when (packagep 'speedbar t)
+      (add-menu-button '("Tools")
+		       ["Speedbar" speedbar-frame-mode
+			:style toggle
+			:selected (and (boundp 'speedbar-frame)
+				       (frame-live-p speedbar-frame)
+				       (frame-visible-p speedbar-frame))]
+		       "--"))))
 
   ;; -------
   ;; Toolbar
-  (if running-xemacs
-      (set-specifier default-toolbar-visible-p nil)
-    (tool-bar-mode 0))
+  (my-feature-cond
+   (xemacs (set-specifier default-toolbar-visible-p nil))
+   (t (tool-bar-mode 0)))
 
   ;; -------
   ;; Gutter - turn it off
   ;; Old way
-  (when (and (boundp 'default-gutter-visible-p) nil)
-    (set-specifier default-gutter-visible-p nil))
+  ;(when (boundp 'default-gutter-visible-p)
+  ;  (set-specifier default-gutter-visible-p nil))
   ;; New way
   (when (boundp 'gutter-buffers-tab-enabled)
     (setq gutter-buffers-tab-enabled nil))
@@ -293,7 +335,8 @@ This is guaranteed not to have a / at the end."
   ;; -------
   ;; Pointer used during garbage collection.
   ;; .xbm not supported under windoze
-  (when running-xemacs
+  (my-feature-cond
+   (xemacs
     (let ((img  (locate-data-file "recycle-image.xbm"))
 	  (mask (locate-data-file "recycle-mask.xbm")))
       (if (and img mask (file-exists-p img) (file-exists-p mask)
@@ -304,24 +347,25 @@ This is guaranteed not to have a / at the end."
 				   :mask-file mask
 				   :foreground "black"
 				   :background "chartreuse1"))
-	(set-glyph-image gc-pointer-glyph "recycle2.xpm"))))
+	(set-glyph-image gc-pointer-glyph "recycle2.xpm")))))
 
   ;; -------
   ;; MISC
 
-  ;; Handy functions that where hard to work out
-  (defun my-get-face-foreground (face)
-    (cdr (specifier-specs (face-foreground face) 'global)))
-  (defun my-get-face-background (face)
-    (cdr (specifier-specs (face-background face) 'global)))
-  ;; (my-get-face-background 'default)
+  (my-feature-cond
+   (xemacs
+    ;; Handy functions that where hard to work out
+    (defun my-get-face-foreground (face)
+      (cdr (specifier-specs (face-foreground face) 'global)))
+    (defun my-get-face-background (face)
+      (cdr (specifier-specs (face-background face) 'global)))
+    ;; (my-get-face-background 'default)
 
-  (when running-xemacs
     (defun hack-modeline-background ()
       (let ((bg (face-background-instance 'modeline)))
 	(when (color-instance-p bg)
 	  (set-face-background 'modeline bg))))
-    (add-hook 'after-init-hook 'hack-modeline-background))
+    (add-hook 'after-init-hook 'hack-modeline-background)))
 
   );; window-system
 
@@ -406,9 +450,8 @@ instead, uses tag around or before point."
 (setq interprogram-cut-function nil)
 (setq interprogram-paste-function nil)
 
-(when running-gnu-emacs
-  (global-set-key [(shift insert)] 'x-clipboard-yank)
-
+(my-feature-cond
+ (emacs
   (defun my-clipboard-copy (beg end)
     (interactive "r")
     (let ((text (buffer-substring beg end)))
@@ -416,12 +459,13 @@ instead, uses tag around or before point."
       (x-set-selection 'PRIMARY text) ;; for mouse paste
       (copy-region-as-kill beg end))) ;; and the kill buffer
 
-  (global-set-key [(control insert)] 'my-clipboard-copy))
+  (global-set-key [(shift insert)] 'x-clipboard-yank)
+  (global-set-key [(control insert)] 'my-clipboard-copy)))
 
 ;; iswitchb
-(if running-xemacs
-    (iswitchb-default-keybindings)
-  (iswitchb-mode 1))
+(my-feature-cond
+ (xemacs (iswitchb-default-keybindings))
+ (t (iswitchb-mode 1)))
 (global-set-key "\C-x\C-b"	'iswitchb-buffer)
 (global-set-key "\C-x\C-l"	'list-buffers)
 
@@ -494,8 +538,11 @@ instead, uses tag around or before point."
   (set-face-foreground face fg)
   (set-face-background face bg)
   (when prop
-    (set-face-property face prop t))
-  )
+    (my-feature-cond
+     (xemacs (set-face-property face prop t))
+     ;; Hack - assumes prop is 'highlight
+     (t (set-face-attribute face nil :weight 'bold)))
+    ))
 
 (defun my-ediff-colours ()
   ;; Ediff is really bad
@@ -536,62 +583,62 @@ instead, uses tag around or before point."
   "Font Lock mode face used to highlight warning comments."
   :group 'font-lock-faces)
 
-(if running-xemacs
-    (progn
-      (defun setup-font-lock-keywords ()
-	(let ((c-regexp "\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)"))
-	  (setq c-font-lock-keywords-1
-		(append c-font-lock-keywords-1
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
-	  (setq c-font-lock-keywords-2
-		(append c-font-lock-keywords-2
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
-	  (setq c-font-lock-keywords-3
-		(append c-font-lock-keywords-3
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
-
-	  (setq c++-font-lock-keywords-1
-		(append c++-font-lock-keywords-1
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
-	  (setq c++-font-lock-keywords-2
-		(append c++-font-lock-keywords-2
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
-	  (setq c++-font-lock-keywords-3
-		(append c++-font-lock-keywords-3
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
-	  ))
-
-      (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
-	(setq lisp-font-lock-keywords-1
-	      (append lisp-font-lock-keywords-1
-		      (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
-	(setq lisp-font-lock-keywords-2
-	      (append lisp-font-lock-keywords-2
-		      (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
-	)
-      )
-
-  ;; SAM This *should* work for XEmacs too since XEmacs supports
-  ;; font-lock-add-keywords but even the example doesn't work.
+(my-feature-cond
+ (xemacs
   (defun setup-font-lock-keywords ()
-    (font-lock-add-keywords
-     'c-mode
-     '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t)))
-    (font-lock-add-keywords
-     'c++-mode
-     '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t))))
+    (let ((c-regexp "\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)"))
+      (setq c-font-lock-keywords-1
+	    (append c-font-lock-keywords-1
+		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+      (setq c-font-lock-keywords-2
+	    (append c-font-lock-keywords-2
+		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+      (setq c-font-lock-keywords-3
+	    (append c-font-lock-keywords-3
+		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
 
-  (font-lock-add-keywords
-   'emacs-lisp-mode
-   '(("; ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+      (setq c++-font-lock-keywords-1
+	    (append c++-font-lock-keywords-1
+		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+      (setq c++-font-lock-keywords-2
+	    (append c++-font-lock-keywords-2
+		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+      (setq c++-font-lock-keywords-3
+	    (append c++-font-lock-keywords-3
+		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+      ))
 
-  (font-lock-add-keywords
-   'sh-mode
-   '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
-  (font-lock-add-keywords
-   'makefile-mode
-   '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
-  )
+  (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
+    (setq lisp-font-lock-keywords-1
+	  (append lisp-font-lock-keywords-1
+		  (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
+    (setq lisp-font-lock-keywords-2
+	  (append lisp-font-lock-keywords-2
+		  (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
+    )
+  ) ;; xemacs
+
+(t ;; GNU emacs
+ ;; SAM This *should* work for XEmacs too since XEmacs supports
+ ;; font-lock-add-keywords but even the example doesn't work.
+ (defun setup-font-lock-keywords ()
+   (font-lock-add-keywords
+    'c-mode
+    '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t)))
+   (font-lock-add-keywords
+    'c++-mode
+    '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t))))
+
+ (font-lock-add-keywords
+  'emacs-lisp-mode
+  '(("; ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+ (font-lock-add-keywords
+  'sh-mode
+  '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+ (font-lock-add-keywords
+  'makefile-mode
+  '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+ ))
 
 ;;; -------------------------------------------------------------------------
 ;; CC-MODE
@@ -605,6 +652,8 @@ instead, uses tag around or before point."
   (c-add-style "sam" '("linux" (c-basic-offset . 4)))
   )
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
+
+(eval-when-compile (require 'cc-mode))
 
 ;; This hook is run for all the modes handled by cc-mode
 (defun my-c-mode-common-hook ()
@@ -763,6 +812,13 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
       compilation-error-regexp-systems-list (list 'gnu)
       compile-command "make ")
 
+(defun my-do-compile (cmd)
+  (save-some-buffers (not compilation-ask-about-save) nil)
+  (my-feature-cond
+   (xemacs (compile-internal cmd "No more errors"))
+   (emacs  (compilation-start cmd))))
+
+
 ;; This gives the compilation buffer its own frame
 ;;(push "*compilation*" special-display-buffer-names)
 
@@ -772,9 +828,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (let ((cmd (read-string "Compile Command: " compile-command)))
     (make-local-variable 'compile-command)
     (setq compile-command cmd)
-    (save-some-buffers (not compilation-ask-about-save) nil)
-    (compile-internal compile-command "No more errors")))
-
+    (my-do-compile compile-command)))
 
 ;;; -------------------------------------------------------------------------
 ;; Audible compilation completion
@@ -782,28 +836,24 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 (defvar compile-ok	nil "*Sound for compile ok")
 (defvar compile-failed	nil "*Sound for compile failed")
 
-(if (and running-xemacs have-sound)
-    (progn
-      (condition-case nil
-	  (progn
-	    (load-sound-file "Snicker" 'compile-failed)
-	    (load-sound-file "YouTheMan" 'compile-ok))
-	(error
-	 (push "Sound" would-have-liked-list)))
+(my-feature-cond
+ (xemacs
+  (when have-sound
+    (condition-case nil
+	(progn
+	  (load-sound-file "Snicker" 'compile-failed)
+	  (load-sound-file "YouTheMan" 'compile-ok))
+      (error
+       (push "Sound" would-have-liked-list)))
 
-      (defun loud-finish (buff, exit)
-	"If `loud-compile', `ding'. Assign to `compilation-finish-function'."
-	(when loud-compile
-	  (if (string= exit "finished\n")
-	      (ding nil 'compile-ok)
-	    (ding nil 'compile-failed))))
-      )
-  (defun loud-finish (buff, exit)
-    "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
-    (when loud-compile (ding)))
-  )
+    (defun loud-finish (buff, exit)
+      "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
+      (when loud-compile
+	(if (string= exit "finished\n")
+	    (ding nil 'compile-ok)
+	  (ding nil 'compile-failed))))
 
-(setq compilation-finish-function 'loud-finish)
+    (setq compilation-finish-function 'loud-finish))))
 
 ;;----------------------------------------------------------------
 (defvar make-clean-command "make clean all"
@@ -815,8 +865,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (require 'compile) ;; needed for compile-internal
   (if arg
       (setq make-clean-command (read-string "Command: " make-clean-command)))
-  (save-some-buffers (not compilation-ask-about-save) nil)
-  (compile-internal make-clean-command "No more errors"))
+  (my-do-compile make-clean-command))
 
 ;;; -------------------------------------------------------------------------
 ;; hide-copyleft
@@ -885,9 +934,16 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;;{{{ Handy Dandy(tm) Functions
 
+(defun my-process-time ()
+  "Process time in seconds"
+  (my-feature-cond
+   (xemacs (truncate (caddr (current-process-time))))
+   (emacs (let ((time (time-since emacs-start-time)))
+	    (+ (* (car time) 65535) (cadr time))))))
+
 (defun uptime (&optional time)
   (interactive)
-  (unless time (setq time (truncate (caddr (current-process-time)))))
+  (unless time (setq time (my-process-time)))
   (let* ((upminutes (/ time 60))
 	 (minutes (% upminutes 60))
 	 (hours   (% (/ upminutes 60) 24))
@@ -943,9 +999,9 @@ Use region if it exists. My replacement for isearch-yank-word."
 		  (buffer-substring (region-beginning) (region-end))
 		(current-word))))
     (forward-char 1) ;; make sure we are not on first char of word
-    (if running-xemacs
-	(isearch-yank word)
-      (isearch-yank-string word))))
+    (my-feature-cond
+     (xemacs (isearch-yank word))
+     (t (isearch-yank-string word)))))
 
 ;; Warning: If you change this binding, change `my-isearch-word-forward'
 (define-key isearch-mode-map "\C-w"		'my-isearch-yank-word)
@@ -959,9 +1015,10 @@ Use region if it exists. My replacement for isearch-yank-word."
   (interactive "P")
   ;; Push the C-w and call 'isearch-forward'
   (setq unread-command-events
-	(if running-xemacs
-	    (list (make-event 'key-press '(key ?w modifiers (control))))
-	  (listify-key-sequence "\C-w")))
+	(my-feature-cond
+	 (xemacs
+	  (list (make-event 'key-press '(key ?w modifiers (control)))))
+	 (t (listify-key-sequence "\C-w"))))
   (isearch-mode t (not (null regexp-p)) nil (not (interactive-p))))
 
 ;;; -------------------------------------------------------------------------
@@ -1058,6 +1115,7 @@ We ignore the 3rd number."
     (list (- t1-hi t2-hi) (- t1-lo t2-lo)))))
 
 ;; -------------------
+(when nil ;; SAM doesn't seem to be needed any more
 ;; Hack to put the ediff control in the window (rather than off it)
 ;; Needed for window manager like PWM that do not honor the window move
 ;; request. The window will look strange until XEmacs updates it.
@@ -1072,11 +1130,14 @@ We ignore the 3rd number."
 	(nconc ediff-control-frame-parameters ediff-control-frame-position)))
 
 (add-hook 'ediff-load-hook 'ediff-control-frame-hack)
+)
 ;; -------------------
 
 ;; So ftp will work
-(when (would-like 'efs running-gnu-emacs)
-  (setq efs-ftp-program-args (append efs-ftp-program-args '("-p"))))
+(my-feature-cond
+ (xemacs
+  (when (would-like 'efs)
+    (setq efs-ftp-program-args (append efs-ftp-program-args '("-p"))))))
 
 ;; for pui-list-packages
 ;;(if t
@@ -1095,13 +1156,14 @@ We ignore the 3rd number."
 ;; # Cleanup the autosave and backup directories (24 * 7 = 168)
 ;; 0 4 * * * /usr/sbin/tmpwatch 168 $HOME/.autosave $HOME/.backup
 
-(when (and running-xemacs (would-like 'auto-save))
-  (setq auto-save-directory "~/.autosave/")
-  ;; Now that we have auto-save-timeout, let's crank this up
-  ;; for better interactive response.
-  (setq auto-save-interval 2000)
-
-  (would-like 'backup))
+(my-feature-cond
+ (xemacs
+  (when (would-like 'auto-save)
+    (setq auto-save-directory "~/.autosave/")
+    ;; Now that we have auto-save-timeout, let's crank this up
+    ;; for better interactive response.
+    (setq auto-save-interval 2000))
+  (would-like 'backup)))
 
 ;;; -------------------------------------------------------------------------
 ;;; Filladapt is a syntax-highlighting package.  When it is enabled it
@@ -1115,6 +1177,8 @@ We ignore the 3rd number."
 ;;; ----------------------------------------------
 ;; Calendar
 
+(eval-when-compile (would-like 'holidays))
+
 ;; Where in the world is Ottawa?
 ;; Source: http://www.infoplease.com/ipa/A0001796.html
 (setq calendar-location-name "Ottawa, ON"
@@ -1126,17 +1190,6 @@ We ignore the 3rd number."
       islamic-holidays nil
       oriental-holidays nil)
 
-;; Use the function holiday-easter-etc to get easter monday
-;; Look at `holiday-easter-etc' to see why I don't calculate by hand.
-(defun easter-monday ()
-  (if (or (< displayed-month 3) (> displayed-month 5))
-      nil
-    (let* ((all-christian-calendar-holidays nil)
-	   (date (holiday-easter-etc)))
-      (while (cdr date) (setq date (cdr date))) ;; find easter sunday
-      (list (list (list 4 (+ (nth 1 (caar date)) 1) displayed-year)
-		  "Easter Monday")))))
-
 ;; Standard holidays too UScentric
 (setq general-holidays
       '((holiday-fixed  1  1	"New Year's Day")
@@ -1144,41 +1197,40 @@ We ignore the 3rd number."
 	(holiday-fixed  2 14	"Valentine's Day")
 	(holiday-fixed  3 17	"St. Patrick's Day")
 	(holiday-fixed  4  1	"April Fools' Day")
-	(easter-monday)
+	(holiday-easter-etc 1	"Easter Monday")
 	(holiday-float  5  0  2	"Mother's Day")
 	(holiday-float  5  1 -1	"Victoria Day" 24)
 	(holiday-float  6  0  3	"Father's Day")
 	(holiday-fixed  7  1	"Canada Day")
-	(holiday-fixed  7 17    "Slackware 1.00 1993")
-	(holiday-float  8  1  1 "Civic Holiday")
-	(holiday-fixed  8 16    "Debian 1993")
-	(holiday-fixed  8 18    "Jeanine's Birthday")
+	(holiday-fixed  7 17	"Slackware 1.00 1993")
+	(holiday-float  8  1  1	"Civic Holiday")
+	(holiday-fixed  8 16	"Debian 1993")
+	(holiday-fixed  8 18	"Jeanine's Birthday")
 	(holiday-float  9  1  1	"Labour Day")
 	(holiday-fixed  9 17	"Linux 0.01 1991")
 	(holiday-float 10  1  2	"Thanksgiving")
 	(holiday-fixed 10 31	"Halloween")
-	(holiday-fixed 11  3    "Unix V1 1971")
+	(holiday-fixed 11  3	"Unix V1 1971")
 	(holiday-fixed 11 11	"Rememberance Day")
 	(holiday-fixed 12 25	"Christmas")
 	(holiday-fixed 12 26	"Boxing Day")
 	))
 
-(setq mark-holidays-in-calendar t)
+  (setq mark-holidays-in-calendar t)
+
+  ;; Diary stuff
+  (setq diary-file "~/.dear-diary")
 
 ;; Show today as '**'
 ;;(add-hook 'today-visible-calendar-hook 'calendar-star-date)
 
-;; Diary stuff
-(setq diary-file "~/.dear-diary")
-
 ;;; ------------------------------------------------------------
 ;; Start the server program
 (unless (or running-windoze running-as-root)
-  (if running-xemacs
-      (progn
-	(gnuserv-start)
-	(setq gnuserv-frame (selected-frame)))
-    (server-start)))
+  (my-feature-cond
+   (xemacs (gnuserv-start)
+	   (setq gnuserv-frame (selected-frame)))
+   (t (server-start))))
 
 ;;; ----------------------------------------------
 ;; Whitespace mode handy for tabs - ignore spaces
@@ -1217,14 +1269,15 @@ We ignore the 3rd number."
 
 (defun oo-browser-start ()
   (interactive)
-  (unless (packagep 'oo-browser) (error "oo-browser not installed"))
-  (dolist (path load-path)
-    (if (string-match "/oo-browser/$" path)
-	(append-to-list 'load-path (concat path "hypb/"))))
-  (require 'br-start)
-  (global-set-key "\C-c\C-o" 'oo-browser)
-  (oo-browser))
-
+  (my-package-cond
+   (oo-browser
+    (dolist (path load-path)
+      (if (string-match "/oo-browser/$" path)
+	  (append-to-list 'load-path (concat path "hypb/"))))
+    (require 'br-start)
+    (global-set-key "\C-c\C-o" 'oo-browser)
+    (oo-browser))
+   (t (error "oo-browser not installed."))))
 (global-set-key "\C-c\C-o" 'oo-browser-start)
 
 ;;}}}
