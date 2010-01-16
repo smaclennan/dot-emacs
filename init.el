@@ -269,8 +269,8 @@ This is guaranteed not to have a / at the end."
   (setq interprogram-cut-function nil
 	interprogram-paste-function nil)
 
-  ;; 21.2.? and up
   (my-bound-cond
+   ;; 21.2.? and up
    (shifted-motion-keys-select-region
     (setq shifted-motion-keys-select-region t)
     (eval-when-compile (would-like 'pending-del))
@@ -280,11 +280,11 @@ This is guaranteed not to have a / at the end."
    ;; use pc-select
    (t (when (would-like 'pc-select)
 	(my-feature-cond
-	 (xemacs (pc-select-mode t))
-	 (t (pc-selection-mode t)))
-	(setq pc-select-modeline-string ""
-	      pending-delete-modeline-string ""
-	      pc-select-keep-regions t))))
+	 (xemacs (pc-select-mode t)
+		 (setq pc-select-modeline-string ""
+		       pending-delete-modeline-string ""
+		       pc-select-keep-regions t))
+	 (t (pc-selection-mode t))))))
 
   ;; -------
   ;; Title bar - almost every window system supports a title bar
