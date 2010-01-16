@@ -308,8 +308,9 @@ This is guaranteed not to have a / at the end."
 
   ;; -------
   ;; Menubar
-  (setq menu-accelerator-enabled 'menu-fallback
-	menu-accelerator-modifiers '(alt))
+  (my-feature-cond
+   (xemacs (setq menu-accelerator-enabled 'menu-fallback
+		 menu-accelerator-modifiers '(alt))))
 
   ;; add speedbar
   (my-feature-cond
