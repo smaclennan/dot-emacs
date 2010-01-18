@@ -1,7 +1,7 @@
 ;;; extent.el - extent compatibility for Emacs
 
-;; Copyright (C) 2002-2009 Sean MacLennan
-;; Revision:   1.1
+;; Copyright (C) 2002-2010 Sean MacLennan
+;; Revision:   1.2
 ;; Emacs
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -24,18 +24,13 @@
 
 (require 'overlay)
 
-;; SAM Can these be defalias?
-
 ;; complete - except that we do not support strings
-(defun make-extent (from to &optional buffer-or-string)
-  (and buffer-or-string (not (bufferp buffer-or-string))
-       (error "make-extent: third arg must be a buffer"))
-  (make-overlay from to buffer-or-string))
+(defalias 'make-extent 'make-overlay)
 
 ;; complete
-(defun extent-start-position (extent) (overlay-start extent))
-(defun extent-end-position (extent) (overlay-end extent))
-(defun extentp (object) (overlayp object))
+(defalias 'extent-start-position 'overlay-start)
+(defalias 'extent-end-position 'overlay-end)
+(defalias 'extentp 'overlayp)
 
 ;; Currently only returns first overlay in list...
 ;; Not correct but works for slashdot.el and lxr.el
@@ -49,8 +44,7 @@
       (car overlays))))
 
 ;; complete
-(defun set-extent-property (extent property value)
-  (overlay-put extent property value))
+(defalias 'set-extent-property 'overlay-put)
 
 ;; complete
 (defun extent-property (extent property &optional default)
@@ -86,9 +80,22 @@
       )
     overlay))
 
+;; Does not support optional object
+(defalias 'next-extent-change 'next-overlay-change)
+
+;; Does not support optional object
+(defalias 'previous-extent-change 'previous-overlay-change)
+
 ;; complete
 (defun extent-string (extent)
   (buffer-substring (overlay-start extent) (overlay-end extent)))
+
+;; No optional args supported except a buff
+(defun extent-list (&optional buff)
+  (save-excursion
+    (when buff (set-buffer buff))
+    (let ((lists (overlay-lists)))
+      (nconc (car lists) (cdr lists)))))
 
 ;; These should really not be here. But I use it with extents.
 ;; complete
@@ -109,12 +116,5 @@
 
 ;; complete
 (defun event-buffer (event) (current-buffer))
-
-;; No optional args supported except a buff
-(defun extent-list (&optional buff)
-  (save-excursion
-    (when buff (set-buffer buff))
-    (let ((lists (overlay-lists)))
-      (nconc (car lists) (cdr lists)))))
 
 (provide 'extent)
