@@ -1,8 +1,18 @@
-;; X?Emacs setup -*- Mode:emacs-lisp -*-
-;; This file should work with Emacs 21.2.x/XEmacs 21.4.x
+;; S?X?Emacs setup -*- Mode:emacs-lisp -*-
+;; This file should work with Emacs 21.2.x/XEmacs 21.4.x/SXEmacs
 
-(unless (boundp 'running-xemacs)
-  (defvar running-xemacs nil))
+;; GNU emacs sets emacs
+;; XEmacs sets xemacs
+;; SXEmacs sets sxemacs and xemacs
+(defmacro my-feature-cond (&rest clauses)
+  "Test CLAUSES for feature at compile time.
+Each clause is (FEATURE BODY...)."
+  (dolist (x clauses)
+    (let ((feature (car x))
+	  (body (cdr x)))
+      (when (or (eq feature t)
+		(featurep feature))
+	(return (cons 'progn body))))))
 
 (setq track-eol t)
 (setq kill-whole-line t)
@@ -11,19 +21,18 @@
 (put 'narrow-to-region 'disabled nil)
 
 ;; Turn on parenthesis matching mode
-(if running-xemacs
-    (paren-set-mode 'paren t)
-  (show-paren-mode))
+(my-feature-cond
+ (xemacs (paren-set-mode 'paren t))
+ (t (show-paren-mode)))
 
 ;; This gives a PC like shift to select. If you select text and then
 ;; insert, the selected text is killed.
-(if running-xemacs
-    (progn
-      (setq shifted-motion-keys-select-region t)
-      (require 'pending-del)
-      (setq pending-delete-modeline-string "")
-      (turn-on-pending-delete))
-  (pc-selection-mode))
+(my-feature-cond
+ (xemacs (setq shifted-motion-keys-select-region t)
+	 (require 'pending-del)
+	 (setq pending-delete-modeline-string "")
+	 (turn-on-pending-delete))
+  (t (pc-selection-mode)))
 
 ;;; ------------------------------------------------------------------
 ;; Key Bindings
@@ -61,8 +70,7 @@
 
 (require 'font-lock)
 
-(unless running-xemacs
-  (global-font-lock-mode))
+(my-feature-cond (emacs (global-font-lock-mode)))
 
 ;; Maximum colour but minimum chatter
 (setq-default font-lock-maximum-decoration t
@@ -71,6 +79,8 @@
 ;;; ------------------------------------------------------------------
 ;; CC-MODE
 ;; Customizations for c-mode, c++-mode, java-mode, etc.
+
+(eval-when-compile (require 'cc-mode)) ;; for GNU Emacs
 
 ;; This hook is run once when cc-mode initializes
 (defun my-c-initialization-hook ()
@@ -94,12 +104,11 @@
 ;;; ------------------------------------------------------------------
 ;; igrep mode - Use f4 to walk through the results.
 
-(when running-xemacs
-  (require 'igrep)
-  ;;(igrep-insinuate)
-  (global-set-key [f8] 'igrep)
-  (global-set-key [(shift f8)] 'igrep-find)
-  (setq igrep-verbose-prompts nil)
-  (put 'igrep-files-default 'c-mode (lambda () "*.[ch]"))
-  (put 'igrep-files-default 'emacs-lisp-mode (lambda () "*.el")))
-
+(my-feature-cond
+ (xemacs (require 'igrep)
+	 ;;(igrep-insinuate)
+	 (global-set-key [f8] 'igrep)
+	 (global-set-key [(shift f8)] 'igrep-find)
+	 (setq igrep-verbose-prompts nil)
+	 (put 'igrep-files-default 'c-mode (lambda () "*.[ch]"))
+	 (put 'igrep-files-default 'emacs-lisp-mode (lambda () "*.el"))))
