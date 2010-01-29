@@ -866,9 +866,6 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 (my-feature-cond
  (xemacs
-  (defvar compile-ok nil "*Sound for compile ok")
-  (defvar compile-failed nil "*Sound for compile failed")
-
   ;; Note: XEmacs 21.5 will ding the visible bell if this funciton
   ;; returns nil, which it will on a failure.
   (defun loud-finish-fancy (buff exit)
