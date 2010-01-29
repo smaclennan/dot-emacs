@@ -2,7 +2,7 @@
 ;; This file should work with XEmacs 2x.x, Emacs 22.x, or SXEmacs
 
 ;; Assumes at least the following packages:
-;;	xemacs-base, edit-utils, cc-mode, pc
+;;	xemacs-base, edit-utils, cc-mode, ediff, pc
 
 ;;{{{ Configuration variables / functions
 
@@ -142,7 +142,9 @@ Each clause is (PACKAGE BODY...)."
 (would-like 'redo (featurep 'emacs)) ;; edit-utils
 
 ;; (would-like 'uncompress) ;; os-utils
-(unless noninteractive (auto-compression-mode 1))
+(and (not noninteractive)
+     (would-like 'jka-compr)
+     (auto-compression-mode 1))
 
 ;; Needed by ediff - exists in `efs'
 (or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
@@ -1296,13 +1298,14 @@ We ignore the 3rd number."
 ;; However, this is done up front so things like `build-report' will work
 ;; Authorization in .authrc
 
-(require 'smtpmail)
-(setq send-mail-function 'smtpmail-send-it) ; for `sendmail' (vm)
-(setq message-send-mail-function 'smtpmail-send-it) ; for `message' (gnus)
-(setq user-mail-address (concat (user-login-name) "@" domain-name))
-(setq smtpmail-smtp-server "mail.dsl.ca")
-(setq smtpmail-local-domain domain-name)
-;;(setq smtpmail-debug-info t)
+(when (would-like 'smtpmail)
+  (setq mail-user-agent 'sendmail-user-agent)
+  (setq user-mail-address (concat (user-login-name) "@" domain-name))
+  (setq send-mail-function 'smtpmail-send-it)
+  (setq smtpmail-smtp-server (concat "mail." domain-name))
+  (setq smtpmail-local-domain domain-name)
+  ;;(setq smtpmail-debug-info t)
+  )
 
 ;; Domain specific mail
 (let ((domain-specific-init (concat dot-dir "mail-" domain-name)))
