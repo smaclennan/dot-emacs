@@ -99,7 +99,10 @@ Each clause is (PACKAGE BODY...)."
 	     nil))
    (emacs (would-like package no-list))))
 
-(defvar have-sound nil)
+(defvar have-sound
+  (and (fboundp 'device-sound-enabled-p)
+       (device-sound-enabled-p))
+  "* Non-nil if sound is enabled. XEmacs defaults this correctly, GNU Emacs cannot.")
 
 (unless (fboundp 'emacs-version>=)
   (defun emacs-version>= (major minor)
@@ -130,6 +133,8 @@ Each clause is (PACKAGE BODY...)."
       delete-key-deletes-forward t
       find-file-compare-truenames t
       signal-error-on-buffer-boundary nil)
+
+(setq visible-bell t)
 
 (my-feature-cond
  (emacs
@@ -850,28 +855,39 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;;; -------------------------------------------------------------------------
 ;; Audible compilation completion
-(defvar loud-compile	nil "* If t, `ding' when compile finished.")
-(defvar compile-ok	nil "*Sound for compile ok")
-(defvar compile-failed	nil "*Sound for compile failed")
+(defvar loud-compile    t   "* If t, `ding' when compile finished.")
+
+(defun loud-finish (buff exit)
+  "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
+  (and loud-compile
+       (not (string= exit "finished\n"))
+       (ding)))
+(setq compilation-finish-function 'loud-finish)
 
 (my-feature-cond
  (xemacs
+  (defvar compile-ok nil "*Sound for compile ok")
+  (defvar compile-failed nil "*Sound for compile failed")
+
+  ;; Note: XEmacs 21.5 will ding the visible bell if this funciton
+  ;; returns nil, which it will on a failure.
+  (defun loud-finish-fancy (buff exit)
+    "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
+    (when loud-compile
+      (let ((visible-bell nil))
+	(if (string= exit "finished\n")
+	    (ding nil 'compile-ok)
+	  (ding nil 'compile-failed)))))
+
   (when have-sound
     (condition-case nil
 	(progn
+	  (load-sound-file "YouTheMan" 'compile-ok)
 	  (load-sound-file "Snicker" 'compile-failed)
-	  (load-sound-file "YouTheMan" 'compile-ok))
+	  (setq compilation-finish-function 'loud-finish-fancy)
+	  (setq loud-compile t))
       (error
-       (push "Sound" would-have-liked-list)))
-
-    (defun loud-finish (buff, exit)
-      "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
-      (when loud-compile
-	(if (string= exit "finished\n")
-	    (ding nil 'compile-ok)
-	  (ding nil 'compile-failed))))
-
-    (setq compilation-finish-function 'loud-finish))))
+       (push "Sound" would-have-liked-list))))))
 
 ;;----------------------------------------------------------------
 (defvar make-clean-command "make clean all"
