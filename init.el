@@ -671,8 +671,6 @@ instead, uses tag around or before point."
 (defun my-c-initialization-hook ()
   ;; Do this after cc-mode loaded for XEmacs
   (setup-font-lock-keywords)
-  ;; my style - linux with a smaller tab size
-  (c-add-style "sam" '("linux" (c-basic-offset . 4)))
   )
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
 
@@ -683,39 +681,31 @@ instead, uses tag around or before point."
   (c-set-style "linux")
   (c-toggle-hungry-state 1)  ;; hungry delete
   (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
-  ;; SAM (setq tab-width 4)	;; this must match `c-basic-offset'
   (setq case-fold-search nil) ;; C is case sensitive
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
-(defun linux-style (&optional dir arg)
-  (interactive)
-  (c-set-style "linux")
-  (setq tab-width 8))
-
 ;;; -------------------------------------------------------------------------
 
-(defvar my-compile-dir-linux
-  '(;; 2.6 kernels just work
-    ("/usr/src/git-2.6/" nil linux-style)
-    ("/usr/src/linux-2.6[^/]*/" nil linux-style)
-    ;; 2.4 kernels need bzImage and modules for drivers
-    ("/usr/src/linux-2.4[^/]*/" "bzImage modules" linux-style)
-    ;; Assume /usr/src/linux is 2.4
-    ("/usr/src/linux/" "bzImage modules" linux-style)
-    )
-  "My default Linux directories.")
-
-;; WARNING: Completely overridden in work.el
-(defvar my-compile-dir-list my-compile-dir-linux
+;; WARNING: Overridden in work.el
+(defvar my-compile-dir-list
+  '(;; 2.4 kernels need bzImage and modules for drivers
+    ("/usr/src/linux-2.4[^/]*/" "bzImage modules" "linux")
+    ;; 2.6 kernels just work
+    ("/usr/src/linux[^/]*/" nil "linux")
+    ("/usr/src/git-2.6/" nil "linux")
+    ;; emacs needs gnu
+    (".*/[sx]?emacs[^/]*/src/" nil "gnu")
+    (".*/[sx]?emacs[^/]*/" nil "gnu"))
   "A list of directory matches used by `my-compile-command' to set
 the compile command.
 
 Each match is a list. The first, and only required, element is a
 regexp for the directory. The second element is an optional target to
-pass to make. The third element is an optional lisp function to
-call. The lisp function will be passed the directory matched and the
-target as parameters.
+pass to make. The third element is either an optional string which
+defines the style to use, or an optional lisp function to call. The
+lisp function will be passed the directory matched and the target as
+parameters.
 
 Only the first match is used so order is important.")
 
@@ -728,14 +718,17 @@ third argument is an optional function to call. The optional
 function will be called after the compile command is set."
   (interactive)
   (let ((list (string-match-list default-directory my-compile-dir-list))
-	dir arg func)
+	dir arg func-or-style)
     (when list
       (setq dir  (nth 0 list)
 	    arg  (nth 1 list)
-	    func (nth 2 list))
+	    func-or-style (nth 2 list))
+      ; (message "=> %s %s" dir) ;; SAM DBG
       (set (make-local-variable 'compile-command)
 	   (concat "make -C " dir " " arg))
-      (when (fboundp func) (funcall func dir arg)))))
+      (cond
+       ((stringp func-or-style) (c-set-style func-or-style))
+       ((fboundp func-or-style) (funcall func-or-style dir arg))))))
 ;; Make sure we are *after* my-c-mode-common-hook
 (add-hook 'c-mode-common-hook 'my-compile-command 'append)
 
@@ -1319,12 +1312,12 @@ We ignore the 3rd number."
 ;; However, this is done up front so things like `build-report' will work
 ;; Authorization in .authrc
 
-(when (would-like 'smtpmail)
+(when (would-like 'sendmail)
   (setq mail-user-agent 'sendmail-user-agent)
   (setq user-mail-address (concat (user-login-name) "@" domain-name))
-  (setq send-mail-function 'smtpmail-send-it)
-  (setq smtpmail-smtp-server (concat "mail." domain-name))
-  (setq smtpmail-local-domain domain-name)
+; SAM  (setq send-mail-function 'smtpmail-send-it)
+; SAM (setq smtpmail-smtp-server (concat "mail." domain-name))
+; SAM (setq smtpmail-local-domain domain-name)
   ;;(setq smtpmail-debug-info t)
   )
 

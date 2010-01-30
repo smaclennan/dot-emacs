@@ -72,6 +72,8 @@ Nil defaults to the currently running kernel.")
 
 
 ;; -------------------------------------------------------------------
+(defvar default-compile-dirs nil "Local var. Do not touch.")
+
 (defun set-pika-dir (&optional dir)
   (interactive)
   (when (interactive-p)
@@ -95,8 +97,12 @@ Nil defaults to the currently running kernel.")
   (when (eq (getenv "LD_LIBRARY_PATH") nil)
     (setenv "LD_LIBRARY_PATH" (concat pika-dir "/user/libs")))
 
+  ;; Save them the first time
+  (unless default-compile-dirs
+    (setq default-compile-dirs my-compile-dir-list))
+
   ;; Reset my-compile-dir-list
-  (setq my-compile-dir-list my-compile-dir-linux)
+  (setq my-compile-dir-list default-compile-dirs)
 
   (let (dir)
     ;; Add pika-dir unless the standard catch will get it
@@ -152,7 +158,7 @@ Nil defaults to the currently running kernel.")
   (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
 
 (defun pika-linux (dir &optional arg)
-  (linux-style)
+  (c-set-style "linux")
   (setq lxr-url "http://alice.pikatech.com/lxr/http/"
 	lxr-base dir
 	lxr-version nil
@@ -160,9 +166,7 @@ Nil defaults to the currently running kernel.")
 	))
 
 ;; Add some other kernels
-(dolist (kernel '("~work/linux-[^/]+"
-		  "~work/taco/linux-[^/]+"
-		  "~work/taco/for-2.6.[0-9]+"))
+(dolist (kernel '("~work/linux[^/]+" "~work/taco/linux[^/]+"))
   (setq my-compile-dir-list
 	(add-to-list 'my-compile-dir-list
 		     (list (expand-file-name kernel) nil 'pika-linux)
