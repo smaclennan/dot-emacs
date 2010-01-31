@@ -182,10 +182,10 @@ Nil defaults to the currently running kernel.")
 
 ;; -------------------------------------------------------------------
 
-(when running-xemacs
+(my-feature-cond
+ (xemacs
   (define-key read-file-name-map [f5]
-    '(lambda () (interactive) (insert pika-dir "/"))))
-
+    '(lambda () (interactive) (insert pika-dir "/")))))
 
 (defun pika-setup-smerge ()
   (interactive)
