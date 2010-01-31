@@ -163,8 +163,9 @@ Each clause is (PACKAGE BODY...)."
 (or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
 
 ;; Turn off some modes/functions if they are missing
-(mapc '(lambda (func) (or (fboundp func) (fset func 'ignore)))
-      (list 'sh-mode 'html-mode))
+;; SAM This causes grief in xemacs 21.5
+;; SAM (mapc '(lambda (func) (or (fboundp func) (fset func 'ignore)))
+;; SAM      (list 'sh-mode 'html-mode))
 
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
@@ -557,18 +558,28 @@ instead, uses tag around or before point."
   (add-hook 'ediff-load-hook 'my-ediff-colours)
   )
 
+(my-feature-cond
+ (emacs
+  (defun set-face-property (face prop arg)
+    "Converts XEmacs set-face-property to `set-face-attribute'.
+Not all properties are supported."
+    (cond
+     ((eq prop 'highlight) (setq prop :weight arg (if arg 'bold 'normal)))
+     ((eq prop 'dim) (setq prop :weight arg 'light))
+     ((eq prop 'underline) (setq prop :underline))
+     ((eq prop 'strikethru) (setq prop :strike-through))
+     ((eq prop 'reverse) (setq prop :inverse-video))
+     ;; Should this be an error?
+     (t (error "set-face-property prop %S not supported" prop)))
+    (set-face-attribute face nil prop arg))))
+
 (defun my-set-face (face fg bg &optional prop)
   (set-face-foreground face fg)
   (set-face-background face bg)
-  (when prop
-    (my-feature-cond
-     (xemacs (set-face-property face prop t))
-     ;; Hack - assumes prop is 'highlight
-     (t (set-face-attribute face nil :weight 'bold)))
-    ))
+  (when prop (set-face-property face prop t)))
 
 (defun my-ediff-colours ()
-  ;; Ediff is really bad
+  ;; Ediff is really bad under tty
   (my-set-face 'ediff-current-diff-A "black" "yellow")
   (my-set-face 'ediff-current-diff-B "black" "yellow")
   (my-set-face 'ediff-current-diff-C "black" "yellow")
@@ -855,7 +866,9 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (and loud-compile
        (not (string= exit "finished\n"))
        (ding)))
-(setq compilation-finish-function 'loud-finish)
+(my-feature-cond
+ (xemacs (setq compilation-finish-function 'loud-finish))
+ (t (add-to-list 'compilation-finish-functions 'loud-finish)))
 
 (my-feature-cond
  (xemacs
