@@ -1,5 +1,5 @@
 ;; S?X?Emacs setup -*- Mode:emacs-lisp -*-
-;; This file should work with XEmacs 2x.x, Emacs 22.x, or SXEmacs
+;; This file should work with XEmacs 2x.x, Emacs 21.x, or SXEmacs
 
 ;; Assumes at least the following packages:
 ;;	xemacs-base, edit-utils, cc-mode, ediff, pc
@@ -24,6 +24,11 @@
       (when (string-match "^Directory " dir)
 	(replace-match "" nil nil dir))))
   "The init file directory.")
+
+;; Check for older (21.x) GNU Emacs
+(unless (or (featurep 'xemacs) (featurep 'emacs))
+  (provide 'emacs)
+  (setq dot-dir (concat dot-dir ".emacs.d/")))
 
 (defconst emacs-start-time (current-time)
   "The time emacs started.")
@@ -246,8 +251,13 @@ This is guaranteed not to have a / at the end."
   name)
 
 (unless (fboundp 'locate-data-file)
-  (defun locate-data-file (file)
-    (locate-file file data-directory)))
+  (defun locate-data-file (name)
+    ;; Try local first
+    (let ((file (concat dot-dir "site-packages/etc/" name)))
+      (if (file-exists-p file)
+	  file
+	(setq file (concat data-directory name))
+	(if (file-exists-p file) file nil)))))
 
 ;; cl-loop required for packages like etags under SXEmacs, but require does
 ;; not seem to work in 22.1.9. So explicitly load the module.
@@ -300,7 +310,7 @@ This is guaranteed not to have a / at the end."
 		 (setq pc-select-modeline-string ""
 		       pending-delete-modeline-string ""
 		       pc-select-keep-regions t))
-	 (t (pc-selection-mode t))))))
+	 (t (pc-selection-mode))))))
 
   ;; -------
   ;; Title bar - almost every window system supports a title bar
@@ -578,19 +588,33 @@ Not all properties are supported."
   (set-face-background face bg)
   (when prop (set-face-property face prop t)))
 
+;; Ediff is really bad under tty
 (defun my-ediff-colours ()
-  ;; Ediff is really bad under tty
-  (my-set-face 'ediff-current-diff-A "black" "yellow")
-  (my-set-face 'ediff-current-diff-B "black" "yellow")
-  (my-set-face 'ediff-current-diff-C "black" "yellow")
-  (my-set-face 'ediff-fine-diff-A    "red"   "yellow")
-  (my-set-face 'ediff-fine-diff-B    "red"   "yellow")
-  (my-set-face 'ediff-fine-diff-C    "red"   "yellow")
-  (my-set-face 'ediff-odd-diff-A     "black" "white" 'highlight)
-  (my-set-face 'ediff-odd-diff-B     "black" "white" 'highlight)
-  (my-set-face 'ediff-even-diff-A    "black" "white" 'highlight)
-  (my-set-face 'ediff-even-diff-B    "black" "white" 'highlight)
-  )
+  (if (or (featurep 'xemacs) (>= emacs-major-version 22))
+      (progn
+	(my-set-face 'ediff-current-diff-A "black" "yellow")
+	(my-set-face 'ediff-current-diff-B "black" "yellow")
+	(my-set-face 'ediff-current-diff-C "black" "yellow")
+	(my-set-face 'ediff-fine-diff-A    "red"   "yellow")
+	(my-set-face 'ediff-fine-diff-B    "red"   "yellow")
+	(my-set-face 'ediff-fine-diff-C    "red"   "yellow")
+	(my-set-face 'ediff-odd-diff-A     "black" "white" 'highlight)
+	(my-set-face 'ediff-odd-diff-B     "black" "white" 'highlight)
+	(my-set-face 'ediff-even-diff-A    "black" "white" 'highlight)
+	(my-set-face 'ediff-even-diff-B    "black" "white" 'highlight)
+	)
+    ; SAM not yet
+    ;(my-set-face 'ediff-current-diff-face-A "black" "yellow")
+    ;(my-set-face 'ediff-current-diff-face-B "black" "yellow")
+    ;(my-set-face 'ediff-current-diff-face-C "black" "yellow")
+    ;(my-set-face 'ediff-fine-diff-face-A    "red"   "yellow")
+    ;(my-set-face 'ediff-fine-diff-face-B    "red"   "yellow")
+    ;(my-set-face 'ediff-fine-diff-face-C    "red"   "yellow")
+    ;(my-set-face 'ediff-odd-diff-face-A     "black" "white" 'highlight)
+    ;(my-set-face 'ediff-odd-diff-face-B     "black" "white" 'highlight)
+    ;(my-set-face 'ediff-even-diff-face-A    "black" "white" 'highlight)
+    ;(my-set-face 'ediff-even-diff-face-B    "black" "white" 'highlight)
+    ))
 
 ;; Ediff 1.76 bug - coding system was set to 'emacs-internal which
 ;; doesn't seem to exist. You see it with ediff-buffers but not
@@ -1080,7 +1104,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 (defvar excuse-phrase-file
   (or (locate-data-file "excuses.lines")
-      (concat dot-dir "excuses.lines"))
+      (concat dot-dir "site-packages/etc/excuses.lines"))
   "*File containing excuses")
 
 (defun excuse (&optional insert)
