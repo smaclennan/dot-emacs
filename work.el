@@ -216,6 +216,24 @@ Nil defaults to the currently running kernel.")
 
     (smerge nil svn-dir git-dir)))
 
+(defun smerge-arts ()
+  (interactive)
+  (let ((svn-dir (expand-file-name "~work/svn-monza"))
+	(git-dir (expand-file-name "~work/ARTS")))
+    (when (file-directory-p (concat svn-dir "/testing"))
+      (setq svn-dir (concat svn-dir "/testing")))
+    (when (file-directory-p (concat git-dir "/testing"))
+      (setq git-dir (concat git-dir "/testing")))
+
+    (unless (file-directory-p svn-dir)
+      (error "%s not a directory" svn-dir))
+    (unless (file-directory-p git-dir)
+      (error "%s not a directory" git-dir))
+
+    (pika-setup-smerge)
+
+    (smerge nil svn-dir git-dir)))
+
 (let ((ipp "/opt/intel/ipp/5.1/ia32"))
   (when (file-exists-p ipp)
     (setenv "IPP" ipp)))
