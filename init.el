@@ -565,6 +565,7 @@ instead, uses tag around or before point."
   (set-face-foreground 'font-lock-comment-face "red")
   (set-face-foreground 'font-lock-string-face "green")
   (set-face-foreground 'font-lock-keyword-face "blue")
+  (set-face-foreground 'font-lock-variable-name-face "purple")
   (add-hook 'ediff-load-hook 'my-ediff-colours)
   )
 
