@@ -570,6 +570,8 @@ instead, uses tag around or before point."
 
 (my-feature-cond
  (emacs
+  (global-font-lock-mode 1) ;; For 21.x
+
   (defun set-face-property (face prop arg)
     "Converts XEmacs set-face-property to `set-face-attribute'.
 Not all properties are supported."
