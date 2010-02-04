@@ -7,7 +7,7 @@ else
 EMACS := emacs
 endif
 
-all: init.elc work.elc
+all:
 ifeq ($(BASE),.emacs.d)
 	make EMACS=$(EMACS) -C esp
 else
