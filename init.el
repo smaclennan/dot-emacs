@@ -1102,6 +1102,13 @@ Use region if it exists. My replacement for isearch-yank-word."
 (when (exec-installed-p "aspell")
   (setq-default ispell-program-name "aspell"))
 
+;; For flyspell
+(when (would-like 'flyspell)
+  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
+  (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  )
+
 ;;; -------------------------------------------------------------------------
 ;; For when you need a good excuse...
 
