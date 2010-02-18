@@ -836,7 +836,10 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 (when (would-like 'vc)
   (setq vc-diff-switches "-u")
   (when (would-like 'vc-ediff)
-    (vc-ediff-menubar-init)))
+    (vc-ediff-menubar-init))
+  ;; From vc-git.el
+  (setq git-commits-coding-system nil)
+  )
 
 ;; -------------------------------------------------------------------------
 ;; LISP MODE
