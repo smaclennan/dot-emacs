@@ -1,4 +1,4 @@
-(defvar pika-dir (or (getenv "PIKA_DIR") "~work/monza/software")
+(defvar pika-dir (getenv "PIKA_DIR")
   "* Root of the PIKA source tree.
 Use `set-pika-dir' to change this.")
 
@@ -143,7 +143,9 @@ Nil defaults to the currently running kernel.")
     (message "PIKA_DIR %s" pika-dir)))
 
 ;; Now default it
-(set-pika-dir pika-dir)
+(if pika-dir
+    (set-pika-dir pika-dir)
+  (message "\nWARNING: pika-dir not set.\n"))
 
 (defun warp-use-stock-kernel ()
   (interactive)
