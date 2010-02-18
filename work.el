@@ -198,41 +198,35 @@ Nil defaults to the currently running kernel.")
   ;; We need to make sure hspapps.lib stays up to date!
   (delete "*.lib" smerge-diff-excludes))
 
+(defun smerge-pika (svn-dir git-dir &optional subdir)
+  (setq svn-dir (expand-file-name svn-dir))
+  (setq git-dir (expand-file-name git-dir))
+
+  (unless (file-directory-p svn-dir)
+    (error "%s not a directory" svn-dir))
+  (unless (file-directory-p git-dir)
+    (error "%s not a directory" git-dir))
+
+  (when subdir
+    (let (test-dir)
+      (setq test-dir (expand-file-name (concat svn-dir "/" subdir)))
+      (when (file-directory-p test-dir)
+	(setq svn-dir test-dir))
+      (setq test-dir (expand-file-name (concat git-dir "/" subdir)))
+      (when (file-directory-p test-dir)
+	(setq git-dir test-dir))))
+
+  (pika-setup-smerge)
+
+  (smerge nil svn-dir git-dir))
+
 (defun smerge-monza ()
   (interactive)
-  (let ((svn-dir (expand-file-name "~work/svn-monza"))
-	(git-dir (expand-file-name "~work/git-monza")))
-    (when (file-directory-p (concat svn-dir "/software"))
-      (setq svn-dir (concat svn-dir "/software")))
-    (when (file-directory-p (concat git-dir "/software"))
-      (setq git-dir (concat git-dir "/software")))
-
-    (unless (file-directory-p svn-dir)
-      (error "%s not a directory" svn-dir))
-    (unless (file-directory-p git-dir)
-      (error "%s not a directory" git-dir))
-
-    (pika-setup-smerge)
-
-    (smerge nil svn-dir git-dir)))
+  (smerge-pika "~work/svn-monza" "~work/git-monza" "software"))
 
 (defun smerge-arts ()
   (interactive)
-  (let ((svn-dir (expand-file-name "~work/svn-monza"))
-	(git-dir (expand-file-name "~work/ARTS")))
-    (when (file-directory-p (concat svn-dir "/testing"))
-      (setq svn-dir (concat svn-dir "/testing")))
-    (when (file-directory-p (concat git-dir "/testing"))
-      (setq git-dir (concat git-dir "/testing")))
-
-    (unless (file-directory-p svn-dir)
-      (error "%s not a directory" svn-dir))
-    (unless (file-directory-p git-dir)
-      (error "%s not a directory" git-dir))
-
-    (pika-setup-smerge)
-
-    (smerge nil svn-dir git-dir)))
+  (smerge-pika "~work/svn-monza/testing" "~work/ARTS/testing"))
 
 (let ((ipp "/opt/intel/ipp/5.1/ia32"))
   (when (file-exists-p ipp)
