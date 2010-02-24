@@ -137,13 +137,13 @@ Each clause is (PACKAGE BODY...)."
       next-line-add-newlines nil
       delete-key-deletes-forward t
       find-file-compare-truenames t
-      signal-error-on-buffer-boundary nil)
+      signal-error-on-buffer-boundary nil
+      inhibit-startup-message t)
 
 (setq visible-bell t)
 
 (my-feature-cond
  (emacs
-  (setq inhibit-startup-message t)
   (setq inhibit-startup-echo-area-message "seanm")))
 
 (let ((custom-file (concat dot-dir "custom.el")))
