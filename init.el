@@ -137,13 +137,13 @@ Each clause is (PACKAGE BODY...)."
       next-line-add-newlines nil
       delete-key-deletes-forward t
       find-file-compare-truenames t
-      signal-error-on-buffer-boundary nil)
+      signal-error-on-buffer-boundary nil
+      inhibit-startup-message t)
 
 (setq visible-bell t)
 
 (my-feature-cond
  (emacs
-  (setq inhibit-startup-message t)
   (setq inhibit-startup-echo-area-message "seanm")))
 
 (let ((custom-file (concat dot-dir "custom.el")))
@@ -533,7 +533,7 @@ instead, uses tag around or before point."
 (global-set-key "\C-xw" 	'what-line)
 
 ;;(global-set-key "\C-cd"		'dup-line)
-(would-like 'calc)
+(would-like 'my-calc)
 (global-set-key "\M-#"		'my-calc)
 
 (global-set-key [(iso-left-tab)] 'tab-to-tab-stop)
@@ -836,7 +836,10 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 (when (would-like 'vc)
   (setq vc-diff-switches "-u")
   (when (would-like 'vc-ediff)
-    (vc-ediff-menubar-init)))
+    (vc-ediff-menubar-init))
+  ;; From vc-git.el
+  (setq git-commits-coding-system nil)
+  )
 
 ;; -------------------------------------------------------------------------
 ;; LISP MODE
@@ -1101,6 +1104,13 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; For aspell
 (when (exec-installed-p "aspell")
   (setq-default ispell-program-name "aspell"))
+
+;; For flyspell
+(when (would-like 'flyspell)
+  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
+  (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  )
 
 ;;; -------------------------------------------------------------------------
 ;; For when you need a good excuse...
