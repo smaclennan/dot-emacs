@@ -74,6 +74,12 @@ Nil defaults to the currently running kernel.")
 ;; -------------------------------------------------------------------
 (defvar default-compile-dirs nil "Local var. Do not touch.")
 
+;; Handy little function.
+(defsubst pika-compile-dir-append (regexp)
+  (setq my-compile-dir-list
+	(append my-compile-dir-list
+		(list (list regexp nil 'pika-c-mode)))))
+
 (defun set-pika-dir (&optional dir)
   (interactive)
   (when (interactive-p)
@@ -104,40 +110,25 @@ Nil defaults to the currently running kernel.")
   ;; Reset my-compile-dir-list
   (setq my-compile-dir-list default-compile-dirs)
 
-  (let (dir)
-    ;; Add pika-dir unless the standard catch will get it
-    (unless (string-match "/[a-z-]*monza" pika-dir)
+  ;; Add pika-dir unless the standard catch will get it
+  (unless (string-match "/[a-z-]*monza" pika-dir)
+    (let (dir)
       (dolist (subdir pika-subdirs)
 	(setq dir (file-truename (concat pika-dir "/" subdir "/")))
-	(setq my-compile-dir-list
-	      (append my-compile-dir-list
-		      (list (list (concat "^" dir) nil 'pika-c-mode)))))
-      (setq my-compile-dir-list
-	    (append my-compile-dir-list
-		    (list (list (format "^%s/" pika-dir) nil 'pika-c-mode)))))
+	(pika-compile-dir-append (concat "^" dir))))
+    (pika-compile-dir-append (format "^%s/" pika-dir)))
 
-    ;; Try to catch the 99% case
-    (dolist (subdir pika-subdirs)
-      (setq dir (concat "/[a-z-]*monza/software/" subdir "/"))
-      (setq my-compile-dir-list
-	    (append my-compile-dir-list
-		    (list (list (concat "^.*" dir) nil 'pika-c-mode)))))
+  ;; Try to catch the 99% case
+  (dolist (subdir pika-subdirs)
+    (pika-compile-dir-append (concat "^.*/[a-z-]*monza/software/" subdir "/")))
 
-    (dolist (subdir pika-subdirs)
-      (setq dir (concat "/[a-z-]*monza/" subdir "/"))
-      (setq my-compile-dir-list
-	    (append my-compile-dir-list
-		    (list (list (concat "^.*" dir) nil 'pika-c-mode)))))
+  (dolist (subdir pika-subdirs)
+    (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
-    (dolist (subdir '("testing/artstests" "testing/arts"))
-      (setq dir (concat "/[a-z-]*monza/" subdir "/"))
-      (setq my-compile-dir-list
-	    (append my-compile-dir-list
-		    (list (list (concat "^.*" dir) nil 'pika-c-mode)))))
+  (dolist (subdir '("testing/artstests" "testing/arts"))
+    (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
-    (setq my-compile-dir-list
-	  (append my-compile-dir-list
-		  '(("^.*/[a-z-]*monza/" nil pika-c-mode)))))
+  (pika-compile-dir-append "^.*/[a-z-]*monza/")
 
   (unless noninteractive
     (message "PIKA_DIR %s" pika-dir)))
