@@ -130,6 +130,13 @@ Nil defaults to the currently running kernel.")
 
   (pika-compile-dir-append "^.*/[a-z-]*monza/")
 
+  ;; SAM Hack for now
+  (let ((dir (file-truename "~work/open_warp/libpri/trunk/dahdi/linux")))
+    (when (file-directory-p dir)
+      (setq my-compile-dir-list
+	    (append my-compile-dir-list
+		    (list (list (concat "^" dir "/")))))))
+
   (unless noninteractive
     (message "PIKA_DIR %s" pika-dir)))
 
