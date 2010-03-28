@@ -1,7 +1,7 @@
 *.elc
 user-init.el
 auto-autoloads.el
-custom-load.el
+custom.el
 slashdots
 *~
 package-index.LATEST.gpg

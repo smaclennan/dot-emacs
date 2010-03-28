@@ -146,9 +146,8 @@ Each clause is (PACKAGE BODY...)."
  (emacs
   (setq inhibit-startup-echo-area-message "seanm")))
 
-(let ((custom-file (concat dot-dir "custom.el")))
-  (when (file-exists-p custom-file)
-    (load-file custom-file)))
+(setq custom-file (concat dot-dir "custom.el"))
+(load custom-file t)
 
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
