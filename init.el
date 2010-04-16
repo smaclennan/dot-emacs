@@ -17,18 +17,21 @@
   "Non-nil if running as root.")
 
 (defvar dot-dir
-  (if user-init-file
-      (file-name-directory user-init-file)
-    ;; for batch mode
-    (let ((dir (pwd)))
-      (when (string-match "^Directory " dir)
-	(replace-match "" nil nil dir))))
+  ;; When called from load
+  (if load-file-name
+      (file-name-directory load-file-name)
+    (if user-init-file
+	(file-name-directory user-init-file)
+      ;; for batch mode
+      (let ((dir (pwd)))
+	(when (string-match "^Directory " dir)
+	  (replace-match "" nil nil dir)))))
   "The init file directory.")
 
 ;; Check for older (21.x) GNU Emacs
 (unless (or (featurep 'xemacs) (featurep 'emacs))
-  (provide 'emacs)
-  (setq dot-dir (concat dot-dir ".emacs.d/")))
+  (provide 'emacs))
+;;  (setq dot-dir (concat dot-dir ".emacs.d/")))
 
 (defconst emacs-start-time (current-time)
   "The time emacs started.")
