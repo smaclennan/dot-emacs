@@ -890,7 +890,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;;; -------------------------------------------------------------------------
 ;; Audible compilation completion
-(defvar loud-compile    t   "* If t, `ding' when compile finished.")
+(defvar loud-compile    nil   "* If t, `ding' when compile finished.")
 
 (defun loud-finish (buff exit)
   "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
