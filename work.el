@@ -228,9 +228,14 @@ Nil defaults to the currently running kernel.")
   (interactive)
   (smerge-pika "~work/svn-monza/testing" "~work/ARTS/testing"))
 
+;; For backwards compatibility with pre 2.9
 (let ((ipp "/opt/intel/ipp/5.1/ia32"))
   (when (file-exists-p ipp)
     (setenv "IPP" ipp)))
+
+;; Grab the latest version....
+(let ((ipp-list (directory-files "/opt/intel/ipp" t "6\.1.*" nil 'dir)))
+  (dolist (ipp ipp-list) (setenv "IPP61" ipp)))
 
 (setq signed-off-by-sig (concat user-full-name " <smaclennan@pikatech.com>"))
 
