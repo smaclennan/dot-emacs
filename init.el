@@ -1263,6 +1263,7 @@ We ignore the 3rd number."
 (setq christian-holidays nil
       hebrew-holidays nil
       islamic-holidays nil
+      bahai-holidays nil
       oriental-holidays nil)
 
 ;; Standard holidays too UScentric
