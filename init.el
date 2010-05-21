@@ -17,18 +17,21 @@
   "Non-nil if running as root.")
 
 (defvar dot-dir
-  (if user-init-file
-      (file-name-directory user-init-file)
-    ;; for batch mode
-    (let ((dir (pwd)))
-      (when (string-match "^Directory " dir)
-	(replace-match "" nil nil dir))))
+  ;; When called from load
+  (if load-file-name
+      (file-name-directory load-file-name)
+    (if user-init-file
+	(file-name-directory user-init-file)
+      ;; for batch mode
+      (let ((dir (pwd)))
+	(when (string-match "^Directory " dir)
+	  (replace-match "" nil nil dir)))))
   "The init file directory.")
 
 ;; Check for older (21.x) GNU Emacs
 (unless (or (featurep 'xemacs) (featurep 'emacs))
-  (provide 'emacs)
-  (setq dot-dir (concat dot-dir ".emacs.d/")))
+  (provide 'emacs))
+;;  (setq dot-dir (concat dot-dir ".emacs.d/")))
 
 (defconst emacs-start-time (current-time)
   "The time emacs started.")
@@ -146,9 +149,8 @@ Each clause is (PACKAGE BODY...)."
  (emacs
   (setq inhibit-startup-echo-area-message "seanm")))
 
-(let ((custom-file (concat dot-dir "custom.el")))
-  (when (file-exists-p custom-file)
-    (load-file custom-file)))
+(setq custom-file (concat dot-dir "custom.el"))
+(load custom-file t)
 
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -888,7 +890,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;;; -------------------------------------------------------------------------
 ;; Audible compilation completion
-(defvar loud-compile    t   "* If t, `ding' when compile finished.")
+(defvar loud-compile    nil   "* If t, `ding' when compile finished.")
 
 (defun loud-finish (buff exit)
   "If `loud-compile', `ding'. Assign to `compilation-finish-function'."

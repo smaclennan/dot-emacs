@@ -1,0 +1,21 @@
+This directory tree contains my config files and packages for XEmacs,
+SXEmacs, and GNU Emacs.
+
+A brief rundown:
+
+* The config files are in the top level.
+
+* The esp directory contains the "Emacs Special Packages". These are
+  files needed only for GNU Emacs. They are in a non-standard place so
+  that XEmacs will not automagically pick them up.
+
+* The site-packages directory is laid out as per XEmacs. It should be
+  automagically used. There is code in init.el to handle the GNU Emacs
+  case.
+
+* The slackbuild directory contains the files needed to build a
+  Slackware package for XEmacs.
+
+
+For more information see http://xemacs.seanm.ca/ or you can email me
+at xemacs@seanm.ca.
