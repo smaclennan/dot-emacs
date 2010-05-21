@@ -195,6 +195,9 @@ Nil defaults to the currently running kernel.")
 			"Module.symvers")
     do
     (add-to-list 'smerge-diff-excludes ignore t))
+  (delete "*.cmd" smerge-diff-excludes)
+  (add-to-list 'smerge-diff-excludes "*.o.cmd")
+  (add-to-list 'smerge-diff-excludes "*.ko.cmd")
   ;; We need to make sure hspapps.lib stays up to date!
   (delete "*.lib" smerge-diff-excludes))
 
