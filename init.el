@@ -1267,7 +1267,8 @@ We ignore the 3rd number."
       oriental-holidays nil)
 
 ;; Standard holidays too UScentric
-(setq general-holidays
+;;(setq general-holidays
+(setq calendar-holidays
       '((holiday-fixed  1  1	"New Year's Day")
 	(holiday-fixed  2  2	"Groundhog Day")
 	(holiday-fixed  2 14	"Valentine's Day")

@@ -192,9 +192,10 @@ Nil defaults to the currently running kernel.")
   (require 'smerge)
   (loop for ignore in '(".cvsignore" ".depend" "TAGS" "*.so" "*.rc"
 			"pksystemver.h" "*.mod.c" "*.so.2*"
-			"Module.symvers")
-    do
-    (add-to-list 'smerge-diff-excludes ignore t))
+			"Module.symvers" "*.o.cmd" "*.ko.cmd")
+    do (add-to-list 'smerge-diff-excludes ignore t))
+  ;; For build.cmd
+  (delete "*.cmd" smerge-diff-excludes)
   ;; We need to make sure hspapps.lib stays up to date!
   (delete "*.lib" smerge-diff-excludes))
 
@@ -218,7 +219,11 @@ Nil defaults to the currently running kernel.")
 
   (pika-setup-smerge)
 
-  (smerge nil svn-dir git-dir))
+  ;; Ignore .gitignore
+  (add-to-list 'smerge-diff-excludes ".gitignore")
+  (smerge nil svn-dir git-dir)
+  (setq smerge-diff-excludes (delete ".gitignore" smerge-diff-excludes))
+  )
 
 (defun smerge-monza ()
   (interactive)
