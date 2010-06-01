@@ -128,6 +128,10 @@ Nil defaults to the currently running kernel.")
   (dolist (subdir '("testing/artstests" "testing/arts"))
     (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
+  ;; Special case for git ARTS directory
+  (dolist (subdir '("testing/artstests" "testing/arts"))
+    (pika-compile-dir-append (concat "^.*/ARTS/" subdir "/")))
+
   (pika-compile-dir-append "^.*/[a-z-]*monza/")
 
   ;; SAM Hack for now
