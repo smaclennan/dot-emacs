@@ -225,7 +225,10 @@ Nil defaults to the currently running kernel.")
 
   (pika-setup-smerge)
 
-  (smerge nil svn-dir git-dir))
+  (add-to-list 'smerge-diff-excludes ".gitignore")
+  (smerge nil svn-dir git-dir)
+  (delete ".gitignore" smerge-diff-excludes)
+  )
 
 (defun smerge-monza ()
   (interactive)
