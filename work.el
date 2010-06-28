@@ -158,7 +158,7 @@ Nil defaults to the currently running kernel.")
 (setq pika-cflags "-DPIKA_DEVEL -Wall")
 
 (when (would-like 'ppc-env)
-  (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-2.6/"))
+  (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-warped/"))
   (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
 
 (defun pika-linux (dir &optional arg)
