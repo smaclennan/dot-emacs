@@ -95,6 +95,10 @@ Nil defaults to the currently running kernel.")
   (setq pika-dir dir)
   (setenv "PIKA_DIR" pika-dir)
 
+  ;; For ARTS
+  (setenv "PIKA_INC" (concat pika-dir "/include"))
+  (setenv "PIKA_LIB" (concat pika-dir "/user/libs"))
+
   ;; Note: if these are nil, setenv will remove them
   (setenv "PIKA_KERNEL" pika-kernel)
   (setenv "PIKA_CFLAGS" pika-cflags)
