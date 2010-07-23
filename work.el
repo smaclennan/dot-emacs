@@ -132,6 +132,10 @@ Nil defaults to the currently running kernel.")
   (dolist (subdir '("testing/artstests" "testing/arts"))
     (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
+  ;; Special case for git ARTS directory
+  (dolist (subdir '("testing/artstests" "testing/arts"))
+    (pika-compile-dir-append (concat "^.*/ARTS/" subdir "/")))
+
   (pika-compile-dir-append "^.*/[a-z-]*monza/")
 
   ;; SAM Hack for now
@@ -158,7 +162,7 @@ Nil defaults to the currently running kernel.")
 (setq pika-cflags "-DPIKA_DEVEL -Wall")
 
 (when (would-like 'ppc-env)
-  (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-2.6/"))
+  (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-warped/"))
   (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
 
 (defun pika-linux (dir &optional arg)
@@ -225,7 +229,10 @@ Nil defaults to the currently running kernel.")
 
   (pika-setup-smerge)
 
-  (smerge nil svn-dir git-dir))
+  (add-to-list 'smerge-diff-excludes ".gitignore")
+  (smerge nil svn-dir git-dir)
+  (delete ".gitignore" smerge-diff-excludes)
+  )
 
 (defun smerge-monza ()
   (interactive)
