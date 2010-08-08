@@ -75,10 +75,12 @@ Nil defaults to the currently running kernel.")
 (defvar default-compile-dirs nil "Local var. Do not touch.")
 
 ;; Handy little function.
-(defsubst pika-compile-dir-append (regexp)
+(defsubst pika-compile-dir-append (regexp &optional no-j)
   (setq my-compile-dir-list
 	(append my-compile-dir-list
-		(list (list regexp nil 'pika-c-mode)))))
+		(list (list regexp
+			    (if no-j nil make-j)
+			    'pika-c-mode)))))
 
 (defun set-pika-dir (&optional dir)
   (interactive)
@@ -129,21 +131,15 @@ Nil defaults to the currently running kernel.")
   (dolist (subdir pika-subdirs)
     (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
+  ;; ARTS does not support -j
   (dolist (subdir '("testing/artstests" "testing/arts"))
-    (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
+    (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/") t))
 
   ;; Special case for git ARTS directory
   (dolist (subdir '("testing/artstests" "testing/arts"))
-    (pika-compile-dir-append (concat "^.*/ARTS/" subdir "/")))
+    (pika-compile-dir-append (concat "^.*/ARTS/" subdir "/") t))
 
   (pika-compile-dir-append "^.*/[a-z-]*monza/")
-
-  ;; SAM Hack for now
-  (let ((dir (file-truename "~work/open_warp/libpri/trunk/dahdi/linux")))
-    (when (file-directory-p dir)
-      (setq my-compile-dir-list
-	    (append my-compile-dir-list
-		    (list (list (concat "^" dir "/")))))))
 
   (unless noninteractive
     (message "PIKA_DIR %s" pika-dir)))
@@ -177,7 +173,7 @@ Nil defaults to the currently running kernel.")
 (dolist (kernel '("~work/linux[^/]+" "~work/taco/linux[^/]+"))
   (setq my-compile-dir-list
 	(add-to-list 'my-compile-dir-list
-		     (list (expand-file-name kernel) nil 'pika-linux)
+		     (list (expand-file-name kernel) make-j 'pika-linux)
 		     t)))
 
 ;; -------------------------------------------------------------------

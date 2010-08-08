@@ -727,28 +727,32 @@ Not all properties are supported."
 
 ;;; -------------------------------------------------------------------------
 
+(defvar make-j (format "-j%d" (* (car (cpuinfo-num-cores)) 2))
+  "* -Jn value to pass to makes.")
+
 ;; WARNING: Overridden in work.el
 (defvar my-compile-dir-list
-  '(;; 2.4 kernels need bzImage and modules for drivers
-    ("/usr/src/linux-2.4[^/]*/" "bzImage modules" "linux")
-    ;; 2.6 kernels just work
-    ("/usr/src/linux[^/]*/" nil "linux")
-    ("/usr/src/git-2.6/" nil "linux")
-    ;; emacs needs gnu
-    (".*/[sx]?emacs[^/]*/src/" nil "gnu")
-    (".*/[sx]?emacs[^/]*/" nil "gnu"))
-  "A list of directory matches used by `my-compile-command' to set
+  (list
+   ;; 2.4 kernels need bzImage and modules for drivers
+   (list "/usr/src/linux-2.4[^/]*/" (concat make-j " bzImage modules") "linux")
+   ;; 2.6 kernels just work
+   (list "/usr/src/linux[^/]*/" make-j "linux")
+   (list "/usr/src/git-2.6/" make-j "linux")
+   ;; emacs needs gnu
+   (list ".*/[sx]?emacs[^/]*/src/" make-j "gnu")
+   (list ".*/[sx]?emacs[^/]*/" make-j "gnu"))
+  "*A list of directory matches used by `my-compile-command' to set
 the compile command.
 
-Each match is a list. The first, and only required, element is a
-regexp for the directory. The second element is an optional target to
-pass to make. The third element is either an optional string which
-defines the style to use, or an optional lisp function to call. The
-lisp function will be passed the directory matched and the target as
-parameters.
+Each match is a list, only the first element is required:
+
+  * The first element is a regexp for the directory.
+  * The second element is an arg string to pass to make.
+  * The third element is either a string which defines the style to
+    use, or a lisp function to call. The lisp function will be passed
+    the directory matched and the target as parameters.
 
 Only the first match is used so order is important.")
-
 
 (defun my-compile-command ()
   "Set the compile command for the current file.
