@@ -536,7 +536,6 @@ instead, uses tag around or before point."
 (global-set-key "\C-xw" 	'what-line)
 
 ;;(global-set-key "\C-cd"		'dup-line)
-(would-like 'my-calc)
 (global-set-key "\M-#"		'my-calc)
 
 (global-set-key [(iso-left-tab)] 'tab-to-tab-stop)
@@ -1164,10 +1163,6 @@ A negative arg comments out the `new' line[s]."
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
-
-(when (would-like 'ediff-hook)
-  ;;(ediff-toggle-use-toolbar)
-  )
 
 (when (would-like 'browse-kill-ring)
   (global-set-key (kbd "C-c k") 'browse-kill-ring))
