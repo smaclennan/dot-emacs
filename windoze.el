@@ -4,12 +4,12 @@
 ;; For Windoze, the HOME and DOMAINNAME environment variables *must* be set
 
 (when t
-(setq directory-sep-char ?/)
+  (if (string= user-full-name "")
+      (if (string= (user-login-name) "seanm")
+	  (setq user-full-name "Sean MacLennan")
+	(setq user-full-name (user-login-name)))))
 
-(if (string= user-full-name "")
-    (if (string= (user-login-name) "seanm")
-	(setq user-full-name "Sean MacLennan")
-      (setq user-full-name (user-login-name))))
+(setq directory-sep-char ?/)
 
 (defadvice call-process (around windowize activate)
   (let ((directory-sep-char ?\\))
@@ -27,7 +27,6 @@
   (let ((directory-sep-char ?\\))
     ad-do-it
     ))
-)
 
 ;; Different excludes for windows
 (setq smerge-diff-excludes
@@ -44,13 +43,8 @@
 (set-variable 'grep-command "findstr -n ")
 (setq compile-command "nmake ")
 (setq make-clean-command "nmake clean all")
-;; Make sure we get the right find. This was only a problem after reinstalling w2k
-; SAM (setq igrep-find-program "c:/cygwin/bin/find")
 
 (setq local-compile-command "cl /Ot /W3")
-
-;; Also set in `vm-init.el'
-(setq display-time-mail-file "c:/tmp/slurp.file")
 
 ;; SAM SAM SAM
 ;; For windoze only hashing seems to work with auto-save
@@ -103,10 +97,6 @@ See also `auto-save-file-name-p'."
 ;; Position the frames
 (setq initial-frame-plist '(top 1 left 486 width 90 height 59)
       default-frame-plist '(top 1 left   1 width 90 height 59))
-;;(setq initial-frame-plist '(top 1 left 480 width 80 height 48)
-;;      default-frame-plist '(top 1 left   1 width 90 height 48))
-;;(setq initial-frame-plist '(top 1 left 540 width 90 height 58)
-;;      default-frame-plist '(top 1 left   1 width 90 height 58))
 
 ;; -----------------------------------------------------------
 ;; aspell for nt - will not work with ispell.el 3.3 or 3.4
@@ -144,12 +134,3 @@ See also `auto-save-file-name-p'."
       (setq ddk-target-os 'WinXP)
       (setq ddk-free nil)
       (ddk-setenv))
-
-
-;; From: "Mike Alexander" <mta@arbortext.com>
-;; Date: Wed, 5 Sep 2001 00:22:50 -0400
-;; If you have a value for width or height on default-frame-plist, you also
-;; need to set default-msprinter-frame-plist with values for height and
-;; width. Normally you would set them to nil:  to get the printer code to
-;; calculate the appropriate size.
-;; (setq default-msprinter-frame-plist height nil width nil)
