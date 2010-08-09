@@ -81,7 +81,8 @@ Each clause is (PACKAGE BODY...)."
   ;; Add the local site-packages
   (let ((lisp-dir (concat dot-dir "site-packages/lisp")))
     (loop for dir in (directory-files lisp-dir t "^[^.i]") do
-      (add-to-list 'load-path dir)))))
+      (add-to-list 'load-path dir)))
+  (load "sam-loaddefs")))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
