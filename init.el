@@ -920,8 +920,8 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (when have-sound
     (condition-case nil
 	(progn
-	  (load-sound-file "YouTheMan" 'compile-ok)
-	  (load-sound-file "Snicker" 'compile-failed)
+	  (load-sound-file "YouTheMan.au" 'compile-ok)
+	  (load-sound-file "Snicker.au" 'compile-failed)
 	  (setq compilation-finish-function 'loud-finish-fancy)
 	  (setq loud-compile t))
       (error
