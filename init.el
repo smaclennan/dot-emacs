@@ -123,11 +123,6 @@ Each clause is (PACKAGE BODY...)."
 
 ;;{{{ Basic Customization
 
-;; SAM why was this needed?
-;;(my-feature-cond
-;; (xemacs
-;;  (setq modeline-buffer-id (list (cons modeline-buffer-id-extent (buffer-name))))))
-
 ;; Only in XEmacs 21.5...
 (my-bound-cond
  (modeline-buffer-id-left
@@ -171,9 +166,6 @@ Each clause is (PACKAGE BODY...)."
 (or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
 
 ;; Turn off some modes/functions if they are missing
-;; SAM This causes grief in xemacs 21.5
-;; SAM (mapc '(lambda (func) (or (fboundp func) (fset func 'ignore)))
-;; SAM      (list 'sh-mode 'html-mode))
 
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
@@ -1167,10 +1159,6 @@ A negative arg comments out the `new' line[s]."
 (when (would-like 'browse-kill-ring)
   (global-set-key (kbd "C-c k") 'browse-kill-ring))
 
-;; SAM (when (would-like 'tramp)
-;; SAM  (setq tramp-default-method "sm")
-;; SAM  )
-
 ;; tramp needs this
 ;; (subtract-time '(13818 19266) '(13818 19145))
 ;; => (0 121)
@@ -1368,9 +1356,6 @@ We ignore the 3rd number."
 (when (would-like 'sendmail)
   (setq mail-user-agent 'sendmail-user-agent)
   (setq user-mail-address (concat (user-login-name) "@" domain-name))
-; SAM  (setq send-mail-function 'smtpmail-send-it)
-; SAM (setq smtpmail-smtp-server (concat "mail." domain-name))
-; SAM (setq smtpmail-local-domain domain-name)
   ;;(setq smtpmail-debug-info t)
   )
 
