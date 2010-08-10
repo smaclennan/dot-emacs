@@ -719,7 +719,7 @@ Not all properties are supported."
 
 ;;; -------------------------------------------------------------------------
 
-(defvar make-j (format "-j%d" (* (car (cpuinfo-num-cores)) 2))
+(defvar make-j (format "-j%d" (* (cpuinfo-num-processors) 2))
   "* -Jn value to pass to makes.")
 
 ;; WARNING: Overridden in work.el
