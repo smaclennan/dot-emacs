@@ -135,13 +135,9 @@ Nil defaults to the currently running kernel.")
   (dolist (subdir pika-subdirs)
     (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
-  ;; ARTS does not support -j
+  ;; ARTS
   (dolist (subdir '("testing/artstests" "testing/arts"))
-    (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/") t))
-
-  ;; Special case for git ARTS directory
-  (dolist (subdir '("testing/artstests" "testing/arts"))
-    (pika-compile-dir-append (concat "^.*/ARTS/" subdir "/") t))
+    (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
   (pika-compile-dir-append "^.*/[a-z-]*monza/")
 
@@ -253,10 +249,6 @@ Nil defaults to the currently running kernel.")
 (defun smerge-monza ()
   (interactive)
   (smerge-pika "~work/svn-monza" "~work/git-monza" "software"))
-
-(defun smerge-arts ()
-  (interactive)
-  (smerge-pika "~work/svn-monza/testing" "~work/ARTS/testing"))
 
 ;; For backwards compatibility with pre 2.9
 (let ((ipp "/opt/intel/ipp/5.1/ia32"))
