@@ -131,9 +131,9 @@ Nil defaults to the currently running kernel.")
   (dolist (subdir pika-subdirs)
     (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
-  ;; ARTS does not support -j
+  ;; ARTS
   (dolist (subdir '("testing/artstests" "testing/arts"))
-    (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/") t))
+    (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
   (pika-compile-dir-append "^.*/[a-z-]*monza/")
 
