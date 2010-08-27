@@ -26,11 +26,16 @@
 
 ;; complete - except that we do not support strings
 (defalias 'make-extent 'make-overlay)
+(defalias 'set-extent-endpoints 'move-overlay)
 
 ;; complete
+(defalias 'delete-extent 'delete-overlay)
 (defalias 'extent-start-position 'overlay-start)
 (defalias 'extent-end-position 'overlay-end)
 (defalias 'extentp 'overlayp)
+
+(defun extent-live-p (extent)
+  (and (overlayp extent) (overlay-start extent)))
 
 ;; Currently only returns first overlay in list...
 ;; Not correct but works for slashdot.el and lxr.el
