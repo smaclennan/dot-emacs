@@ -455,6 +455,8 @@ instead, uses tag around or before point."
 (global-set-key [XF86_Switch_VT_7] 'make-clean)
 (global-set-key [(control f7)]	'my-set-compile)
 (global-set-key [f8]		'grep)
+;; shift f8 taken
+(global-set-key [(control f8)]	'my-checkpatch)
 (global-set-key [f9]		'my-isearch-word-forward)
 (global-set-key [(shift f9)]    'my-toggle-case-search)
 (global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
@@ -799,6 +801,27 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 	  ".git" "*.cmd" "*.lo" "*.ko" ".tmp_versions" "*.Plo"
 	  "modules.order" "*.elc" "*.mod.c" "TAGS"))
   (setq smerge-diff-options "-w"))
+
+(defun my-checkpatch ()
+  "Run checkpatch against the current buffer. Output goes to the
+compilation buffer so that `next-error' will work."
+  (interactive)
+  (let ((fname (buffer-file-name)))
+    (unless fname (error "Buffer has no file name."))
+    ;; This must be a set since it is accessed outside the let binding
+    (setq compilation-finish-function 'my-checkpatch-cleanup)
+    (compile (concat "checkpatch --emacs --file " fname))))
+
+(defun my-checkpatch-cleanup (buf status)
+  "Massage the checkpatch compilation buffer. This removes a final
+false match."
+  (save-excursion
+    (set-buffer buf)
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^total:" nil t)
+	(replace-match "total"))))
+  (setq compilation-finish-function nil))
 
 ;;; -------------------------------------------------------------------------
 (defvar local-compile-command "gcc -O3 -Wall")
