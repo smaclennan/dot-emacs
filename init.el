@@ -1126,7 +1126,9 @@ line with `next-error'."
 	       (set-buffer buf)
 	       (save-excursion
 		 (goto-char (point-min))
-		 (when (re-search-forward "^Igrep finished at .*$" nil t)
+		 ;; Emacs has a "started" line and will have text
+		 ;; after "finished" and before "at".
+		 (while (re-search-forward "^Igrep \\(started\\|finished\\) .*$" nil t)
 		   (replace-match ""))))
 	     (setq compilation-finish-function nil))))
 )
