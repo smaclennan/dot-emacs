@@ -2,6 +2,10 @@
   "* Root of the PIKA source tree.
 Use `set-pika-dir' to change this.")
 
+(defvar pads-dir (getenv "PADS_DIR")
+  "* Root of the PIKA PADS dir.
+Use `set-pads-dir' to change this.")
+
 (defvar pika-kernel (getenv "PIKA_KERNEL")
   "* Set this to compile for a different kernel version.
 Nil defaults to the currently running kernel.")
@@ -144,6 +148,22 @@ Nil defaults to the currently running kernel.")
 (if pika-dir
     (set-pika-dir pika-dir)
   (message "\nWARNING: pika-dir not set.\n"))
+
+(defun set-pads-dir (&optional dir)
+  (interactive)
+  (when (interactive-p)
+    (setq dir (read-directory-name "pads-dir: " pads-dir pads-dir)))
+  (setq dir (my-expand-dir-name dir))
+  (unless (file-directory-p dir)
+    (error "%s not a directory." dir))
+  (unless (file-directory-p (concat dir "/package"))
+    (warn "%s does not look like a pads dir" dir))
+
+  (setq pads-dir dir)
+  (setenv "PADS_DIR" pads-dir)
+
+  (unless noninteractive
+    (message "PADS_DIR %s" pads-dir)))
 
 (defun warp-use-stock-kernel ()
   (interactive)
