@@ -1115,7 +1115,21 @@ Use region if it exists. My replacement for isearch-yank-word."
   (global-set-key [(shift f8)] 'igrep-find)
   (setq igrep-verbose-prompts nil)
   (put 'igrep-files-default 'c-mode (lambda () "*.[ch]"))
-  (put 'igrep-files-default 'emacs-lisp-mode (lambda () "*.el")))
+  (put 'igrep-files-default 'emacs-lisp-mode (lambda () "*.el"))
+
+  (defadvice igrep (before windowize activate)
+    "This removes a final false match from `igrep' on the finished
+line with `next-error'."
+    (setq compilation-finish-function
+	  '(lambda (buf status)
+	     (save-excursion
+	       (set-buffer buf)
+	       (save-excursion
+		 (goto-char (point-min))
+		 (when (re-search-forward "^Igrep finished at .*$" nil t)
+		   (replace-match ""))))
+	     (setq compilation-finish-function nil))))
+)
 
 ;; For ispell
 (setq ispell-silently-savep t
