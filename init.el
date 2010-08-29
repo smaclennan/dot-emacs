@@ -17,18 +17,21 @@
   "Non-nil if running as root.")
 
 (defvar dot-dir
-  (if user-init-file
-      (file-name-directory user-init-file)
-    ;; for batch mode
-    (let ((dir (pwd)))
-      (when (string-match "^Directory " dir)
-	(replace-match "" nil nil dir))))
+  ;; When called from load
+  (if load-file-name
+      (file-name-directory load-file-name)
+    (if user-init-file
+	(file-name-directory user-init-file)
+      ;; for batch mode
+      (let ((dir (pwd)))
+	(when (string-match "^Directory " dir)
+	  (replace-match "" nil nil dir)))))
   "The init file directory.")
 
 ;; Check for older (21.x) GNU Emacs
 (unless (or (featurep 'xemacs) (featurep 'emacs))
-  (provide 'emacs)
-  (setq dot-dir (concat dot-dir ".emacs.d/")))
+  (provide 'emacs))
+;;  (setq dot-dir (concat dot-dir ".emacs.d/")))
 
 (defconst emacs-start-time (current-time)
   "The time emacs started.")
@@ -78,7 +81,8 @@ Each clause is (PACKAGE BODY...)."
   ;; Add the local site-packages
   (let ((lisp-dir (concat dot-dir "site-packages/lisp")))
     (loop for dir in (directory-files lisp-dir t "^[^.i]") do
-      (add-to-list 'load-path dir)))))
+      (add-to-list 'load-path dir)))
+  (load "sam-loaddefs")))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -118,11 +122,6 @@ Each clause is (PACKAGE BODY...)."
 ;;}}}
 
 ;;{{{ Basic Customization
-
-;; SAM why was this needed?
-;;(my-feature-cond
-;; (xemacs
-;;  (setq modeline-buffer-id (list (cons modeline-buffer-id-extent (buffer-name))))))
 
 ;; Only in XEmacs 21.5...
 (my-bound-cond
@@ -167,9 +166,6 @@ Each clause is (PACKAGE BODY...)."
 (or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
 
 ;; Turn off some modes/functions if they are missing
-;; SAM This causes grief in xemacs 21.5
-;; SAM (mapc '(lambda (func) (or (fboundp func) (fset func 'ignore)))
-;; SAM      (list 'sh-mode 'html-mode))
 
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
@@ -459,6 +455,8 @@ instead, uses tag around or before point."
 (global-set-key [XF86_Switch_VT_7] 'make-clean)
 (global-set-key [(control f7)]	'my-set-compile)
 (global-set-key [f8]		'grep)
+;; shift f8 taken
+(global-set-key [(control f8)]	'my-checkpatch)
 (global-set-key [f9]		'my-isearch-word-forward)
 (global-set-key [(shift f9)]    'my-toggle-case-search)
 (global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
@@ -532,7 +530,6 @@ instead, uses tag around or before point."
 (global-set-key "\C-xw" 	'what-line)
 
 ;;(global-set-key "\C-cd"		'dup-line)
-(would-like 'my-calc)
 (global-set-key "\M-#"		'my-calc)
 
 (global-set-key [(iso-left-tab)] 'tab-to-tab-stop)
@@ -724,28 +721,32 @@ Not all properties are supported."
 
 ;;; -------------------------------------------------------------------------
 
+(defvar make-j (format "-j%d" (* (cpuinfo-num-processors) 2))
+  "* -Jn value to pass to makes.")
+
 ;; WARNING: Overridden in work.el
 (defvar my-compile-dir-list
-  '(;; 2.4 kernels need bzImage and modules for drivers
-    ("/usr/src/linux-2.4[^/]*/" "bzImage modules" "linux")
-    ;; 2.6 kernels just work
-    ("/usr/src/linux[^/]*/" nil "linux")
-    ("/usr/src/git-2.6/" nil "linux")
-    ;; emacs needs gnu
-    (".*/[sx]?emacs[^/]*/src/" nil "gnu")
-    (".*/[sx]?emacs[^/]*/" nil "gnu"))
-  "A list of directory matches used by `my-compile-command' to set
+  (list
+   ;; 2.4 kernels need bzImage and modules for drivers
+   (list "/usr/src/linux-2.4[^/]*/" (concat make-j " bzImage modules") "linux")
+   ;; 2.6 kernels just work
+   (list "/usr/src/linux[^/]*/" make-j "linux")
+   (list "/usr/src/git-2.6/" make-j "linux")
+   ;; emacs needs gnu
+   (list ".*/[sx]?emacs[^/]*/src/" make-j "gnu")
+   (list ".*/[sx]?emacs[^/]*/" make-j "gnu"))
+  "*A list of directory matches used by `my-compile-command' to set
 the compile command.
 
-Each match is a list. The first, and only required, element is a
-regexp for the directory. The second element is an optional target to
-pass to make. The third element is either an optional string which
-defines the style to use, or an optional lisp function to call. The
-lisp function will be passed the directory matched and the target as
-parameters.
+Each match is a list, only the first element is required:
+
+  * The first element is a regexp for the directory.
+  * The second element is an arg string to pass to make.
+  * The third element is either a string which defines the style to
+    use, or a lisp function to call. The lisp function will be passed
+    the directory matched and the target as parameters.
 
 Only the first match is used so order is important.")
-
 
 (defun my-compile-command ()
   "Set the compile command for the current file.
@@ -800,6 +801,27 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 	  ".git" "*.cmd" "*.lo" "*.ko" ".tmp_versions" "*.Plo"
 	  "modules.order" "*.elc" "*.mod.c" "TAGS"))
   (setq smerge-diff-options "-w"))
+
+(defun my-checkpatch ()
+  "Run checkpatch against the current buffer. Output goes to the
+compilation buffer so that `next-error' will work."
+  (interactive)
+  (let ((fname (buffer-file-name)))
+    (unless fname (error "Buffer has no file name."))
+    ;; This must be a set since it is accessed outside the let binding
+    (setq compilation-finish-function 'my-checkpatch-cleanup)
+    (compile (concat "checkpatch --emacs --file " fname))))
+
+(defun my-checkpatch-cleanup (buf status)
+  "Massage the checkpatch compilation buffer. This removes a final
+false match."
+  (save-excursion
+    (set-buffer buf)
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^total:" nil t)
+	(replace-match "total"))))
+  (setq compilation-finish-function nil))
 
 ;;; -------------------------------------------------------------------------
 (defvar local-compile-command "gcc -O3 -Wall")
@@ -887,7 +909,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;;; -------------------------------------------------------------------------
 ;; Audible compilation completion
-(defvar loud-compile    t   "* If t, `ding' when compile finished.")
+(defvar loud-compile    nil   "* If t, `ding' when compile finished.")
 
 (defun loud-finish (buff exit)
   "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
@@ -913,8 +935,8 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (when have-sound
     (condition-case nil
 	(progn
-	  (load-sound-file "YouTheMan" 'compile-ok)
-	  (load-sound-file "Snicker" 'compile-failed)
+	  (load-sound-file "YouTheMan.au" 'compile-ok)
+	  (load-sound-file "Snicker.au" 'compile-failed)
 	  (setq compilation-finish-function 'loud-finish-fancy)
 	  (setq loud-compile t))
       (error
@@ -1093,7 +1115,23 @@ Use region if it exists. My replacement for isearch-yank-word."
   (global-set-key [(shift f8)] 'igrep-find)
   (setq igrep-verbose-prompts nil)
   (put 'igrep-files-default 'c-mode (lambda () "*.[ch]"))
-  (put 'igrep-files-default 'emacs-lisp-mode (lambda () "*.el")))
+  (put 'igrep-files-default 'emacs-lisp-mode (lambda () "*.el"))
+
+  (defadvice igrep (before windowize activate)
+    "This removes a final false match from `igrep' on the finished
+line with `next-error'."
+    (setq compilation-finish-function
+	  '(lambda (buf status)
+	     (save-excursion
+	       (set-buffer buf)
+	       (save-excursion
+		 (goto-char (point-min))
+		 ;; Emacs has a "started" line and will have text
+		 ;; after "finished" and before "at".
+		 (while (re-search-forward "^Igrep \\(started\\|finished\\) .*$" nil t)
+		   (replace-match ""))))
+	     (setq compilation-finish-function nil))))
+)
 
 ;; For ispell
 (setq ispell-silently-savep t
@@ -1157,16 +1195,8 @@ A negative arg comments out the `new' line[s]."
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 
-(when (would-like 'ediff-hook)
-  ;;(ediff-toggle-use-toolbar)
-  )
-
 (when (would-like 'browse-kill-ring)
   (global-set-key (kbd "C-c k") 'browse-kill-ring))
-
-;; SAM (when (would-like 'tramp)
-;; SAM  (setq tramp-default-method "sm")
-;; SAM  )
 
 ;; tramp needs this
 ;; (subtract-time '(13818 19266) '(13818 19145))
@@ -1260,10 +1290,12 @@ We ignore the 3rd number."
 (setq christian-holidays nil
       hebrew-holidays nil
       islamic-holidays nil
+      bahai-holidays nil
       oriental-holidays nil)
 
 ;; Standard holidays too UScentric
-(setq general-holidays
+;;(setq general-holidays
+(setq calendar-holidays
       '((holiday-fixed  1  1	"New Year's Day")
 	(holiday-fixed  2  2	"Groundhog Day")
 	(holiday-fixed  2 14	"Valentine's Day")
@@ -1363,9 +1395,6 @@ We ignore the 3rd number."
 (when (would-like 'sendmail)
   (setq mail-user-agent 'sendmail-user-agent)
   (setq user-mail-address (concat (user-login-name) "@" domain-name))
-; SAM  (setq send-mail-function 'smtpmail-send-it)
-; SAM (setq smtpmail-smtp-server (concat "mail." domain-name))
-; SAM (setq smtpmail-local-domain domain-name)
   ;;(setq smtpmail-debug-info t)
   )
 

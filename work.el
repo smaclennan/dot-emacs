@@ -2,6 +2,10 @@
   "* Root of the PIKA source tree.
 Use `set-pika-dir' to change this.")
 
+(defvar pads-dir (getenv "PADS_DIR")
+  "* Root of the PIKA PADS dir.
+Use `set-pads-dir' to change this.")
+
 (defvar pika-kernel (getenv "PIKA_KERNEL")
   "* Set this to compile for a different kernel version.
 Nil defaults to the currently running kernel.")
@@ -75,10 +79,12 @@ Nil defaults to the currently running kernel.")
 (defvar default-compile-dirs nil "Local var. Do not touch.")
 
 ;; Handy little function.
-(defsubst pika-compile-dir-append (regexp)
+(defsubst pika-compile-dir-append (regexp &optional no-j)
   (setq my-compile-dir-list
 	(append my-compile-dir-list
-		(list (list regexp nil 'pika-c-mode)))))
+		(list (list regexp
+			    (if no-j nil make-j)
+			    'pika-c-mode)))))
 
 (defun set-pika-dir (&optional dir)
   (interactive)
@@ -94,6 +100,10 @@ Nil defaults to the currently running kernel.")
 
   (setq pika-dir dir)
   (setenv "PIKA_DIR" pika-dir)
+
+  ;; For ARTS
+  (setenv "PIKA_INC" (concat pika-dir "/include"))
+  (setenv "PIKA_LIB" (concat pika-dir "/user/libs"))
 
   ;; Note: if these are nil, setenv will remove them
   (setenv "PIKA_KERNEL" pika-kernel)
@@ -125,17 +135,11 @@ Nil defaults to the currently running kernel.")
   (dolist (subdir pika-subdirs)
     (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
+  ;; ARTS
   (dolist (subdir '("testing/artstests" "testing/arts"))
     (pika-compile-dir-append (concat "^.*/[a-z-]*monza/" subdir "/")))
 
   (pika-compile-dir-append "^.*/[a-z-]*monza/")
-
-  ;; SAM Hack for now
-  (let ((dir (file-truename "~work/open_warp/libpri/trunk/dahdi/linux")))
-    (when (file-directory-p dir)
-      (setq my-compile-dir-list
-	    (append my-compile-dir-list
-		    (list (list (concat "^" dir "/")))))))
 
   (unless noninteractive
     (message "PIKA_DIR %s" pika-dir)))
@@ -144,6 +148,22 @@ Nil defaults to the currently running kernel.")
 (if pika-dir
     (set-pika-dir pika-dir)
   (message "\nWARNING: pika-dir not set.\n"))
+
+(defun set-pads-dir (&optional dir)
+  (interactive)
+  (when (interactive-p)
+    (setq dir (read-directory-name "pads-dir: " pads-dir pads-dir)))
+  (setq dir (my-expand-dir-name dir))
+  (unless (file-directory-p dir)
+    (error "%s not a directory." dir))
+  (unless (file-directory-p (concat dir "/package"))
+    (warn "%s does not look like a pads dir" dir))
+
+  (setq pads-dir dir)
+  (setenv "PADS_DIR" pads-dir)
+
+  (unless noninteractive
+    (message "PADS_DIR %s" pads-dir)))
 
 (defun warp-use-stock-kernel ()
   (interactive)
@@ -154,7 +174,7 @@ Nil defaults to the currently running kernel.")
 (setq pika-cflags "-DPIKA_DEVEL -Wall")
 
 (when (would-like 'ppc-env)
-  (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-2.6/"))
+  (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-warped/"))
   (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
 
 (defun pika-linux (dir &optional arg)
@@ -169,7 +189,7 @@ Nil defaults to the currently running kernel.")
 (dolist (kernel '("~work/linux[^/]+" "~work/taco/linux[^/]+"))
   (setq my-compile-dir-list
 	(add-to-list 'my-compile-dir-list
-		     (list (expand-file-name kernel) nil 'pika-linux)
+		     (list (expand-file-name kernel) make-j 'pika-linux)
 		     t)))
 
 ;; -------------------------------------------------------------------
@@ -195,6 +215,9 @@ Nil defaults to the currently running kernel.")
 			"Module.symvers")
     do
     (add-to-list 'smerge-diff-excludes ignore t))
+  (delete "*.cmd" smerge-diff-excludes)
+  (add-to-list 'smerge-diff-excludes "*.o.cmd")
+  (add-to-list 'smerge-diff-excludes "*.ko.cmd")
   ;; We need to make sure hspapps.lib stays up to date!
   (delete "*.lib" smerge-diff-excludes))
 
@@ -218,19 +241,24 @@ Nil defaults to the currently running kernel.")
 
   (pika-setup-smerge)
 
-  (smerge nil svn-dir git-dir))
+  (add-to-list 'smerge-diff-excludes ".gitignore")
+  (smerge nil svn-dir git-dir)
+  (delete ".gitignore" smerge-diff-excludes)
+  )
 
 (defun smerge-monza ()
   (interactive)
   (smerge-pika "~work/svn-monza" "~work/git-monza" "software"))
 
-(defun smerge-arts ()
-  (interactive)
-  (smerge-pika "~work/svn-monza/testing" "~work/ARTS/testing"))
+(when (file-exists-p "/opt/intel/ipp")
+  ;; For backwards compatibility with pre 2.9
+  (let ((ipp "/opt/intel/ipp/5.1/ia32"))
+    (when (file-exists-p ipp)
+      (setenv "IPP" ipp)))
 
-(let ((ipp "/opt/intel/ipp/5.1/ia32"))
-  (when (file-exists-p ipp)
-    (setenv "IPP" ipp)))
+  ;; Grab the latest version....
+  (let ((ipp-list (directory-files "/opt/intel/ipp" t "6\.1.*" nil)))
+    (dolist (ipp ipp-list) (setenv "IPP61" ipp))))
 
 (setq signed-off-by-sig (concat user-full-name " <smaclennan@pikatech.com>"))
 
