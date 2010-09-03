@@ -886,7 +886,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 (setq compilation-read-command   nil
       compilation-ask-about-save nil
       compilation-window-height  10
-      compilation-error-regexp-systems-list (list 'gnu)
+      compilation-error-regexp-systems-list '(gnu)
       compile-command "make ")
 
 (defun my-do-compile (cmd)

@@ -60,7 +60,7 @@
 	    '()))
 
 ;; Strip down the error regexp for speed.
-(setq compilation-error-regexp-systems-list (list 'msft))
+(setq compilation-error-regexp-systems-list '(msft))
 
 ;; SAM This binding is broken in later betas
 (if (eq (key-binding [(shift insert)]) 'x-yank-clipboard-selection)
