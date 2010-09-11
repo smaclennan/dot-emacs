@@ -887,7 +887,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
       compilation-ask-about-save nil
       compilation-window-height  10
       compilation-error-regexp-systems-list '(gnu)
-      compile-command "make ")
+      compile-command (concat "make " make-j " "))
 
 (defun my-do-compile (cmd)
   (save-some-buffers (not compilation-ask-about-save) nil)
