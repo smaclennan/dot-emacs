@@ -1148,6 +1148,15 @@ line with `next-error'."
   (add-hook 'text-mode-hook 'flyspell-mode)
   )
 
+(defvar commit-name "COMMIT_EDITMSG"
+  "* Name of the commit buffer.")
+
+(defun check-for-commit ()
+  "If this is a commit buffer, set to text mode."
+  (when (string= (buffer-name) commit-name)
+    (text-mode)))
+(add-hook 'find-file-hooks 'check-for-commit t)
+
 ;;; -------------------------------------------------------------------------
 ;; For when you need a good excuse...
 
