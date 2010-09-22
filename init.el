@@ -1148,13 +1148,16 @@ line with `next-error'."
   (add-hook 'text-mode-hook 'flyspell-mode)
   )
 
-(defvar commit-name "COMMIT_EDITMSG"
-  "* Name of the commit buffer.")
+(defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
+  "* List of commit buffer names.")
 
 (defun check-for-commit ()
   "If this is a commit buffer, set to text mode."
-  (when (string= (buffer-name) commit-name)
-    (text-mode)))
+  (when (eq major-mode 'fundamental-mode)
+    (let ((buff (buffer-name)))
+      (dolist (name commit-names)
+	(when (string= buff name)
+	  (text-mode))))))
 (add-hook 'find-file-hooks 'check-for-commit t)
 
 ;;; -------------------------------------------------------------------------
