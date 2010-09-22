@@ -885,7 +885,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 ;; compile variables
 (setq compilation-read-command   nil
       compilation-ask-about-save nil
-      compilation-window-height  10
+      compilation-window-height  12
       compilation-error-regexp-systems-list '(gnu)
       compile-command (concat "make " make-j " "))
 
