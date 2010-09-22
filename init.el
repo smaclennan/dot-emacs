@@ -810,7 +810,7 @@ compilation buffer so that `next-error' will work."
     (unless fname (error "Buffer has no file name."))
     ;; This must be a set since it is accessed outside the let binding
     (setq compilation-finish-function 'my-checkpatch-cleanup)
-    (compile (concat "checkpatch --emacs --file " fname))))
+    (compilation-start (concat "checkpatch --emacs --file " fname))))
 
 (defun my-checkpatch-cleanup (buf status)
   "Massage the checkpatch compilation buffer. This removes a final
