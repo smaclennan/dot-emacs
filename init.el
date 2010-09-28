@@ -806,11 +806,18 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
   "Run checkpatch against the current buffer. Output goes to the
 compilation buffer so that `next-error' will work."
   (interactive)
-  (let ((fname (buffer-file-name)))
+  (let* ((fname (buffer-file-name))
+	 (checkpatch (concat "checkpatch --emacs --file " fname)))
     (unless fname (error "Buffer has no file name."))
     ;; This must be a set since it is accessed outside the let binding
     (setq compilation-finish-function 'my-checkpatch-cleanup)
-    (compilation-start (concat "checkpatch --emacs --file " fname))))
+
+    (save-some-buffers (not compilation-ask-about-save) nil)
+
+    ;; We cannot call `compile' here since it sets the compile command
+    (my-feature-cond
+     (emacs (compilation-start checkpatch))
+     (xemacs (compile-internal checkpatch "No more errors")))))
 
 (defun my-checkpatch-cleanup (buf status)
   "Massage the checkpatch compilation buffer. This removes a final
