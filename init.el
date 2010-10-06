@@ -830,6 +830,24 @@ false match."
 	(replace-match "total"))))
   (setq compilation-finish-function nil))
 
+(defvar my-sprarse-args nil
+  "* Args to pass to sparse")
+
+(defun my-sparse (&optional arg)
+  "Run sparse against the current buffer. Output goes to the
+compilation buffer so that `next-error' will work."
+  (interactive)
+  (let* ((fname (buffer-file-name))
+	 (sparse (concat "sparse " my-sparse-args " " arg " " fname)))
+    (unless fname (error "Buffer has no file name."))
+
+    (save-some-buffers (not compilation-ask-about-save) nil)
+
+    ;; We cannot call `compile' here since it sets the compile command
+    (my-feature-cond
+     (emacs (compilation-start sparse))
+     (xemacs (compile-internal sparse "No more errors")))))
+
 ;;; -------------------------------------------------------------------------
 (defvar local-compile-command "gcc -O3 -Wall")
 
