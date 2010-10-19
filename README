@@ -16,6 +16,12 @@ A brief rundown:
 * The slackbuild directory contains the files needed to build a
   Slackware package for XEmacs.
 
+Running an old emacs?
+
+If you are running an old emacs that does not support the .emacs.d
+directory, create the following one line .emacs file:
+
+(load "~/.emacs.d/init")
 
 For more information see http://xemacs.seanm.ca/ or you can email me
 at xemacs@seanm.ca.

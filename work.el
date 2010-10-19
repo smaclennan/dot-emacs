@@ -105,6 +105,10 @@ Nil defaults to the currently running kernel.")
   (setenv "PIKA_INC" (concat pika-dir "/include"))
   (setenv "PIKA_LIB" (concat pika-dir "/user/libs"))
 
+  ;; For Grandprix
+  (setenv "AOH_INC" (concat pika-dir "/include"))
+  (setenv "AOH_LIB" (concat pika-dir "/user/libs"))
+
   ;; Note: if these are nil, setenv will remove them
   (setenv "PIKA_KERNEL" pika-kernel)
   (setenv "PIKA_CFLAGS" pika-cflags)
@@ -261,10 +265,6 @@ Nil defaults to the currently running kernel.")
     (dolist (ipp ipp-list) (setenv "IPP61" ipp))))
 
 (setq signed-off-by-sig (concat user-full-name " <smaclennan@pikatech.com>"))
-
-;; For grandprix
-(setenv "AOH_LIB" (concat pika-dir "/user/libs"))
-(setenv "AOH_INC" (concat pika-dir "/include"))
 
 ;; For chan_pika
 ;(setenv "AOH_INC" (concat pika-dir "/sdk/include"))
