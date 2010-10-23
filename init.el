@@ -701,6 +701,8 @@ Not all properties are supported."
 ;; CC-MODE
 ;; Customizations for c-mode, c++-mode, java-mode, etc.
 
+(require 'my-compile)
+
 ;; This hook is run once when cc-mode initializes
 (defun my-c-initialization-hook ()
   ;; Do this after cc-mode loaded for XEmacs
