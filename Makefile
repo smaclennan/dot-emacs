@@ -8,13 +8,10 @@ EMACS := emacs
 endif
 
 all:
-ifeq ($(BASE),.emacs.d)
+ifeq ($(EMACS),emacs)
 	make EMACS=$(EMACS) -C esp
-else
-	make EMACS=$(EMACS) -C site-packages/lisp/introspector
 endif
-	make EMACS=$(EMACS) -C site-packages/lisp/sam
-	make EMACS=$(EMACS) -C site-packages/lisp/anti-gnus
+	make EMACS=$(EMACS) -C site-packages/lisp
 
 init.elc: init.el
 	$(EMACS) -l init.el -batch -f batch-byte-compile $<
@@ -24,7 +21,5 @@ work.elc: work.el
 
 clean:
 	rm -f *.elc
-	make -C site-packages/lisp/sam clean
-	make -C site-packages/lisp/introspector clean
-	make -C site-packages/lisp/anti-gnus clean
+	make -C site-packages/lisp clean
 	make -C esp clean
