@@ -2,6 +2,7 @@
 user-init.el
 auto-autoloads.el
 sam-loaddefs.el
+misc-loaddefs.el
 custom.el
 slashdots
 *~
