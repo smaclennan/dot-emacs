@@ -220,25 +220,6 @@ Nil defaults to the currently running kernel.")
   (add-to-list 'smerge-diff-excludes "*.ko.cmd")
   ;; We need to make sure hspapps.lib stays up to date!
   (delete "*.lib" smerge-diff-excludes)
-
-  (setq smerge-only-in-excludes
-	;; compiled only
-	'("^applications/aohtest/aohtest$"
-	  "^applications/pikalm/pikalm$"
-	  "^include/pk_basetypes.h$"
-	  "^sdk/"
-	  "^user/cti/isdn/linux/\\(dep\\|include\\|srcfiles\\|srclist\\|obj-ppc_4xxFP\\)"
-	  "^user/lib"
-	  "^user/sip/osip/"
-	  ;; git monza only
-	  "^kernel/failsafe$"
-	  "^kernel/virt$"
-	  "^release$"
-	  ;; svn monza only
-	  "^kernel/hsp/hspapps/redist/"
-	  "^kernel/hsp/win32/kslib$"
-	  "^user/cti/isdn/docs$"
-	  ))
   )
 
 (defun smerge-pika (svn-dir git-dir &optional subdir)
@@ -268,7 +249,25 @@ Nil defaults to the currently running kernel.")
 
 (defun smerge-monza ()
   (interactive)
-  (smerge-pika "~work/svn-monza" "~work/git-monza" "software"))
+  (let ((smerge-only-in-excludes
+	 ;; compiled only
+	 '("^applications/aohtest/aohtest$"
+	   "^applications/pikalm/pikalm$"
+	   "^include/pk_basetypes.h$"
+	   "^sdk/"
+	   "^user/cti/isdn/linux/\\(dep\\|include\\|srcfiles\\|srclist\\|obj-ppc_4xxFP\\)"
+	   "^user/lib"
+	   "^user/sip/osip/"
+	   ;; git monza only
+	   "^kernel/failsafe$"
+	   "^kernel/virt$"
+	   "^release$"
+	   ;; svn monza only
+	   "^kernel/hsp/hspapps/redist/"
+	   "^kernel/hsp/win32/kslib$"
+	   "^user/cti/isdn/docs$"
+	   )))
+    (smerge-pika "~work/svn-monza" "~work/git-monza" "software")))
 
 (when (file-exists-p "/opt/intel/ipp")
   ;; For backwards compatibility with pre 2.9
