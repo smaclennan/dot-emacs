@@ -721,55 +721,6 @@ Not all properties are supported."
 
 ;;; -------------------------------------------------------------------------
 
-(defvar make-j (format "-j%d" (* (cpuinfo-num-processors) 2))
-  "* -Jn value to pass to makes.")
-
-;; WARNING: Overridden in work.el
-(defvar my-compile-dir-list
-  (list
-   ;; 2.4 kernels need bzImage and modules for drivers
-   (list "/usr/src/linux-2.4[^/]*/" (concat make-j " bzImage modules") "linux")
-   ;; 2.6 kernels just work
-   (list "/usr/src/linux[^/]*/" make-j "linux")
-   (list "/usr/src/git-2.6/" make-j "linux")
-   ;; emacs needs gnu
-   (list ".*/[sx]?emacs[^/]*/src/" make-j "gnu")
-   (list ".*/[sx]?emacs[^/]*/" make-j "gnu"))
-  "*A list of directory matches used by `my-compile-command' to set
-the compile command.
-
-Each match is a list, only the first element is required:
-
-  * The first element is a regexp for the directory.
-  * The second element is an arg string to pass to make.
-  * The third element is either a string which defines the style to
-    use, or a lisp function to call. The lisp function will be passed
-    the directory matched and the target as parameters.
-
-Only the first match is used so order is important.")
-
-(defun my-compile-command ()
-  "Set the compile command for the current file.
-Go through the 'my-compile-dir-list' looking for a match.
-If we match, the second element is an optional target and the
-third argument is an optional function to call. The optional
-function will be called after the compile command is set."
-  (interactive)
-  (let ((list (string-match-list default-directory my-compile-dir-list))
-	dir arg func-or-style)
-    (when list
-      (setq dir  (nth 0 list)
-	    arg  (nth 1 list)
-	    func-or-style (nth 2 list))
-      ; (message "=> %s %s" dir) ;; SAM DBG
-      (set (make-local-variable 'compile-command)
-	   (concat "make -C " dir " " arg))
-      (cond
-       ((stringp func-or-style) (c-set-style func-or-style))
-       ((fboundp func-or-style) (funcall func-or-style dir arg))))))
-;; Make sure we are *after* my-c-mode-common-hook
-(add-hook 'c-mode-common-hook 'my-compile-command 'append)
-
 (defun string-match-list (match list &optional case-sensitive)
   "Lookup an element in a list using string-match.
 If found, returns the matching list entry with the car of the list replaced
