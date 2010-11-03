@@ -707,6 +707,16 @@ Not all properties are supported."
 (defun my-c-initialization-hook ()
   ;; Do this after cc-mode loaded for XEmacs
   (setup-font-lock-keywords)
+
+  (let ((lxr-menu
+	 `("----"
+	   ["lxr" lxr-at-point lxr-url]
+	   ["lxr defined" lxr-defined-at-point lxr-url]
+	   ["lxr next" lxr-next-defined lxr-url])))
+
+    (nconc c-c-menu lxr-menu)
+    (nconc c-c++-menu lxr-menu)
+    )
   )
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
 
@@ -718,6 +728,9 @@ Not all properties are supported."
   (c-toggle-hungry-state 1)  ;; hungry delete
   (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
   (setq case-fold-search nil) ;; C is case sensitive
+
+;  (easy-menu-add-item nil '("C") "----")
+;  (easy-menu-add-item nil '("C") ["lxr" lxr-at-point lxr-url])
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
