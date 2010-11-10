@@ -179,7 +179,23 @@ Nil defaults to the currently running kernel.")
 
 (when (would-like 'ppc-env)
   (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-warped/"))
-  (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/")))
+  (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/"))
+
+  (setq ppc-env-list
+	(list
+	 (list "IPP" nil)
+	 ;; The USE_BRI and PIKA_WARP are *required* for Grandprix
+	 (list "PIKA_CFLAGS" "-DPIKA_DEVEL -fPIC -DUSE_BRI -DPIKA_WARP")
+	 ;; For Grandprix
+	 (list "AOH_LIB" (concat pika-dir "/user/libs"))
+	 (list "AOH_INC" (concat pika-dir "/include"))
+	 (list "PIKA_WARP_DEF" "-DPIKA_WARP")
+	 (list "PIKA_LIB" pika-gp-dir)
+	 (list "PIKA_INC" (concat
+			   pika-gp-dir "/include"
+			   " -I" pika-dir "/include"))
+	 ))
+  )
 
 (defun pika-linux (dir &optional arg)
   (c-set-style "linux")
