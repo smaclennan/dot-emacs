@@ -801,16 +801,6 @@ false match."
 	(replace-match "total"))))
   (setq compilation-finish-function nil))
 
-(defvar my-sparse-args nil
-  "* Args to pass to sparse")
-
-(defun my-sparse (&optional arg)
-  "Run sparse against the current buffer. Output goes to the
-compilation buffer so that `next-error' will work."
-  (interactive)
-  (my-call-compile
-   (concat "sparse " my-sparse-args " " arg " " (buffer-file-name))))
-
 ;;; -------------------------------------------------------------------------
 (defvar local-compile-command "gcc -O3 -Wall")
 
