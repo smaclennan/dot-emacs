@@ -1,3 +1,4 @@
+ifeq ($(EMACS),)
 BASE=$(shell basename $(PWD))
 ifeq ($(BASE),.sxemacs)
 EMACS := sxemacs
@@ -5,6 +6,7 @@ else ifeq ($(BASE),.xemacs)
 EMACS := xemacs
 else
 EMACS := emacs
+endif
 endif
 
 all:
