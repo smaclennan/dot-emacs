@@ -801,6 +801,8 @@ false match."
 	(replace-match "total"))))
   (setq compilation-finish-function nil))
 
+(would-like 'my-sparse)
+
 ;;; -------------------------------------------------------------------------
 (defvar local-compile-command "gcc -O3 -Wall")
 
