@@ -301,5 +301,9 @@ Nil defaults to the currently running kernel.")
 
 (setq signed-off-by-sig (concat user-full-name " <smaclennan@pikatech.com>"))
 
+;; For good ol' Monty
+(unless (getenv "MONTY_DIR")
+  (setenv "MONTY_DIR" (expand-file-name "~work/work/monty")))
+
 ;; For chan_pika
 ;(setenv "AOH_INC" (concat pika-dir "/sdk/include"))
