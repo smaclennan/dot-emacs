@@ -9,7 +9,7 @@ EMACS := emacs
 endif
 endif
 
-all:
+all: init.elc $(patsubst %.el,%.elc,$(wildcard work.el))
 ifeq ($(EMACS),emacs)
 	make EMACS=$(EMACS) -C esp
 endif
