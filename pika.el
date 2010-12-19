@@ -22,14 +22,6 @@ Nil defaults to the currently running kernel.")
 		       )
   "* Pika sub-directories to handle specially.")
 
-(eval-when-compile (would-like 'ppc-env))
-
-(if nil
-    ;; ELDK
-    (setq ppc-toolchain-dir "/usr/src/eldk")
-  ;; PADS
-  (setq ppc-toolchain-dir (expand-file-name "~work/pads/toolchain")))
-
 (defvar pika-gp-dir (or (getenv "PIKA_GP_DIR") "~work/grandprix/software")
   "* Root of the PIKA Grandprix source tree.")
 
@@ -177,26 +169,6 @@ Nil defaults to the currently running kernel.")
 
 (setq pika-cflags "-DPIKA_DEVEL -Wall")
 
-(when (would-like 'ppc-env)
-  (setq ppc-kernel-dir (expand-file-name "~work/taco/linux-warped/"))
-  (setq ppc-u-boot-dir (expand-file-name "~work/taco/u-boot/"))
-
-  (setq ppc-env-list
-	(list
-	 (list "IPP" nil)
-	 ;; The USE_BRI and PIKA_WARP are *required* for Grandprix
-	 (list "PIKA_CFLAGS" "-DPIKA_DEVEL -fPIC -DUSE_BRI -DPIKA_WARP")
-	 ;; For Grandprix
-	 (list "AOH_LIB" (concat pika-dir "/user/libs"))
-	 (list "AOH_INC" (concat pika-dir "/include"))
-	 (list "PIKA_WARP_DEF" "-DPIKA_WARP")
-	 (list "PIKA_LIB" pika-gp-dir)
-	 (list "PIKA_INC" (concat
-			   pika-gp-dir "/include"
-			   " -I" pika-dir "/include"))
-	 ))
-  )
-
 (defun pika-linux (dir &optional arg)
   (c-set-style "linux")
   (setq lxr-url "http://alice.pikatech.com/lxr/http/"
@@ -211,6 +183,47 @@ Nil defaults to the currently running kernel.")
 	(add-to-list 'my-compile-dir-list
 		     (list (expand-file-name kernel) make-j 'pika-linux)
 		     t)))
+
+;; -------------------------------------------------------------------
+;; xcomp for PPC on warp
+
+(eval-when-compile (require 'xcomp))
+
+;; Wrapper over new xcomp
+(defun ppc-env ()
+  (interactive)
+  (unless (string= xcomp-arch "powerpc")
+    (setq xcomp-arch "powerpc")
+    (setq xcomp-cross-compile "ppc_4xxFP-")
+
+    (setq xcomp-kernel-dir (expand-file-name "~work/taco/linux-warped/"))
+
+    (if nil
+	;; ELDK
+	(setq xcomp-toolchain-dir "/usr/src/eldk")
+      ;; PADS
+      (setq xcomp-toolchain-dir (expand-file-name "~work/pads/toolchain")))
+
+    (setq xcomp-env-list
+	  (list
+	   (list "IPP" nil)
+	   ;; The USE_BRI and PIKA_WARP are *required* for Grandprix
+	   (list "PIKA_CFLAGS" "-DPIKA_DEVEL -fPIC -DUSE_BRI -DPIKA_WARP")
+	   ;; For Grandprix
+	   (list "AOH_LIB" (concat pika-dir "/user/libs"))
+	   (list "AOH_INC" (concat pika-dir "/include"))
+	   (list "PIKA_WARP_DEF" "-DPIKA_WARP")
+	   (list "PIKA_LIB" pika-gp-dir)
+	   (list "PIKA_INC" (concat
+			     pika-gp-dir "/include"
+			     " -I" pika-dir "/include"))
+	   ))
+
+    ;; Add u-boot to compile dir
+    (add-to-list 'my-compile-dir-list
+		 (list (expand-file-name "~work/taco/u-boot/") nil 'linux-style))
+    )
+  (xcomp))
 
 ;; -------------------------------------------------------------------
 
