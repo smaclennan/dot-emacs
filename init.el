@@ -706,6 +706,7 @@ Not all properties are supported."
 ;; Customizations for c-mode, c++-mode, java-mode, etc.
 
 (require 'my-compile)
+(eval-when-compile (require 'cc-mode))
 
 ;; This hook is run once when cc-mode initializes
 (defun my-c-initialization-hook ()
@@ -723,8 +724,6 @@ Not all properties are supported."
     )
   )
 (add-hook 'c-initialization-hook 'my-c-initialization-hook)
-
-(eval-when-compile (require 'cc-mode))
 
 ;; This hook is run for all the modes handled by cc-mode
 (defun my-c-mode-common-hook ()
