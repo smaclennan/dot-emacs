@@ -308,8 +308,10 @@ This is guaranteed not to have a / at the end."
 	 (t (pc-selection-mode))))))
 
   ;; Set the cursor properly for Emacs
-  (blink-cursor-mode 0)
-  (set-cursor-color "red")
+  (my-feature-cond
+   (emacs
+    (blink-cursor-mode 0)
+    (set-cursor-color "red")))
 
   ;; -------
   ;; Title bar - almost every window system supports a title bar
