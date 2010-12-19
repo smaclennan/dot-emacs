@@ -39,7 +39,7 @@
 (setq inhibit-default-init t)
 
 ;; Required for Emacs, doesn't hurt under XEmacs
-(require 'cl)
+(eval-when-compile (require 'cl))
 
 ;; GNU emacs sets emacs
 ;; XEmacs sets xemacs
@@ -214,7 +214,7 @@ Each clause is (PACKAGE BODY...)."
     (let ((buff (generate-new-buffer "exec"))
 	  str)
       (shell-command cmd buff)
-      (save-excursion
+      (save-current-buffer
 	(set-buffer buff)
 	(setq str (buffer-substring (point-min) (point-max))))
       (kill-buffer buff)
@@ -306,6 +306,10 @@ This is guaranteed not to have a / at the end."
 		       pending-delete-modeline-string ""
 		       pc-select-keep-regions t))
 	 (t (pc-selection-mode))))))
+
+  ;; Set the cursor properly for Emacs
+  (blink-cursor-mode 0)
+  (set-cursor-color "red")
 
   ;; -------
   ;; Title bar - almost every window system supports a title bar
@@ -770,36 +774,47 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 
 ;;; -------------------------------------------------------------------------
 
-(defun my-call-compile (cmd &optional finish)
-  (save-some-buffers (not compilation-ask-about-save) nil)
-
-  ;; This must be a set since it is accessed outside the let binding
-  (when finish
-    (setq compilation-finish-function finish))
-
-  ;; We cannot call `compile' here since it sets the compile command
-  (my-feature-cond
-   (emacs (compilation-start cmd))
-   (xemacs (compile-internal cmd "No more errors"))))
-
 (defun my-checkpatch ()
   "Run checkpatch against the current buffer. Output goes to the
 compilation buffer so that `next-error' will work."
   (interactive)
-  (my-call-compile
-   (concat "checkpatch --emacs --file " (buffer-file-name))
-   'my-checkpatch-cleanup))
+
+  (save-some-buffers (not compilation-ask-about-save) nil)
+
+  (my-bound-cond
+   (compilation-finish-functions
+    (add-to-list 'compilation-finish-functions 'my-checkpatch-cleanup))
+   (t (setq compilation-finish-function 'my-checkpatch-cleanup)))
+
+  ;; We cannot call `compile' here since it sets the compile command
+  (let ((cmd (concat "checkpatch --emacs --file " (buffer-file-name))))
+    (my-feature-cond
+     (emacs (compilation-start cmd))
+     (xemacs (compile-internal cmd "No more errors")))))
 
 (defun my-checkpatch-cleanup (buf status)
   "Massage the checkpatch compilation buffer. This removes a final
 false match."
-  (save-excursion
+  (save-current-buffer
     (set-buffer buf)
     (save-excursion
       (goto-char (point-min))
       (when (re-search-forward "^total:" nil t)
-	(replace-match "total"))))
-  (setq compilation-finish-function nil))
+	(replace-match "total"))
+
+      ;; Emacs also gets the #<lineno>: FILE: <file> lines wrong
+      (my-feature-cond
+       (emacs
+	(goto-char (point-min))
+	(while (re-search-forward "^#[0-9]+: FILE: .*$" nil t)
+	  (replace-match ""))))
+      ))
+
+  (my-bound-cond
+   (compilation-finish-functions
+    (setq compilation-finish-functions
+	  (delete 'my-checkpatch-cleanup compilation-finish-functions)))
+   (t (setq compilation-finish-function nil))))
 
 (would-like 'my-sparse)
 
@@ -868,6 +883,11 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
       compilation-window-height  12
       compilation-error-regexp-systems-list '(gnu)
       compile-command (concat "make " make-j " "))
+
+(when (featurep 'emacs)
+  ;; Let's see how we like this. Unfortunately it also stops at the
+  ;; first warning. Which may be irritating.
+  (setq compilation-scroll-output 'first-error))
 
 (defun my-do-compile (cmd)
   (save-some-buffers (not compilation-ask-about-save) nil)
@@ -1279,11 +1299,19 @@ We ignore the 3rd number."
       calendar-latitude  '[45 24 north]
       calendar-longitude '[75 43 west])
 
-(setq christian-holidays nil
-      hebrew-holidays nil
-      islamic-holidays nil
-      bahai-holidays nil
-      oriental-holidays nil)
+(my-bound-cond
+ (holiday-christian-holidays
+  (setq holiday-christian-holidays nil
+	holiday-hebrew-holidays nil
+	holiday-islamic-holidays nil
+	holiday-bahai-holidays nil
+	holiday-oriental-holidays nil))
+ (t
+  (setq christian-holidays nil
+	hebrew-holidays nil
+	islamic-holidays nil
+	bahai-holidays nil
+	oriental-holidays nil)))
 
 ;; Standard holidays too UScentric
 ;;(setq general-holidays
@@ -1312,7 +1340,9 @@ We ignore the 3rd number."
 	(holiday-fixed 12 26	"Boxing Day")
 	))
 
-  (setq mark-holidays-in-calendar t)
+(my-bound-cond
+ (calendar-mark-holidays-flag (setq calendar-mark-holidays-flag t))
+ (t (setq mark-holidays-in-calendar t)))
 
   ;; Diary stuff
   (setq diary-file "~/.dear-diary")
