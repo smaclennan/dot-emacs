@@ -1321,6 +1321,7 @@ We ignore the 3rd number."
       '((holiday-fixed  1  1	"New Year's Day")
 	(holiday-fixed  2  2	"Groundhog Day")
 	(holiday-fixed  2 14	"Valentine's Day")
+	(holiday-float  2  1  3 "Family Day")
 	(holiday-fixed  3 17	"St. Patrick's Day")
 	(holiday-fixed  4  1	"April Fools' Day")
 	(holiday-easter-etc 1	"Easter Monday")
