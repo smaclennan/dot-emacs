@@ -1432,24 +1432,6 @@ We ignore the 3rd number."
 (setq vm-init-file (concat dot-dir "vm-init.el")
       vm-folders-summary-database (concat dot-dir ".vm.folders.db"))
 
-;; browse-url and vm-url-browser
-(cond
- ((exec-installed-p "firefox")
-  (setq browse-url-browser-function 'browse-url-firefox
-	vm-url-browser 'vm-mouse-send-url-to-mozilla))
- ((exec-installed-p "mozilla")
-  (setq browse-url-browser-function 'browse-url-mozilla
-	vm-url-browser 'vm-mouse-send-url-to-mozilla))
- ((exec-installed-p "netscape")
-  (setq browse-url-browser-function 'browse-url-netscape
-	vm-url-browser 'vm-mouse-send-url-to-netscape))
- ((exec-installed-p "opera")
-  (setq browse-url-browser-function 'browse-url-opera))
- ((packagep 'w3 t)
-    (setq browse-url-browser-function 'browse-url-w3))
- ((exec-installed-p "lynx")
-  (setq browse-url-browser-function 'browse-url-lynx-emacs)))
-
 ;; GNUS
 (setq gnus-init-file (concat dot-dir "gnus.el"))
 

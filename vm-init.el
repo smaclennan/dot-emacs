@@ -261,3 +261,12 @@
 (when (would-like 'vm-opera)
   (require 'vm-menu)
   (vm-opera-init))
+
+(cond
+ ((exec-installed-p "firefox")
+  (setq vm-url-browser 'vm-mouse-send-url-to-mozilla))
+ ((exec-installed-p "mozilla")
+  (setq vm-url-browser 'vm-mouse-send-url-to-mozilla))
+ ((exec-installed-p "netscape")
+  (setq vm-url-browser 'vm-mouse-send-url-to-netscape))
+ )
