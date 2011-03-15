@@ -208,28 +208,6 @@ Each clause is (PACKAGE BODY...)."
   (setq lpr-command "lpr"
 	lpr-switches nil))
 
-(my-feature-cond
- (emacs
-  (defun exec-to-string (cmd)
-    (let ((buff (generate-new-buffer "exec"))
-	  str)
-      (shell-command cmd buff)
-      (save-current-buffer
-	(set-buffer buff)
-	(setq str (buffer-substring (point-min) (point-max))))
-      (kill-buffer buff)
-      str))))
-
-(defun uname (&optional arg)
-  "`uname arg' as a list. arg defaults to -a"
-  (unless arg (setq arg "-a"))
-  (let ((uname (exec-to-string (concat "uname " arg)))
-	list)
-    (while (string-match "\\([^ \n]+\\) ?" uname)
-      (setq list (cons (match-string 1 uname) list))
-      (setq uname (substring uname (match-end 0))))
-    (nreverse list)))
-
 (when (would-like 'http)
   ;; Setup http to use curl rather than wget
   (setq http-wget-program "curl")
@@ -514,10 +492,6 @@ instead, uses tag around or before point."
 (define-key global-map [(control h) k] 'hyper-describe-key)
 (define-key global-map [(control h) v] 'hyper-describe-variable)
 (define-key global-map [(control h) w] 'hyper-where-is)
-
-;; Add some standard directory bindings
-;; SAM no longer used...
-;; (defvar linux-dir (concat "/usr/src/linux-" (car (uname "-r")) "/"))
 
 (if (fboundp 'mwheel-install)
     (progn
