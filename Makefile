@@ -1,3 +1,5 @@
+.PHONY: all subdirs clean
+
 ifeq ($(EMACS),)
 BASE=$(shell basename $(PWD))
 ifeq ($(BASE),.sxemacs)
@@ -9,7 +11,9 @@ EMACS := emacs
 endif
 endif
 
-all: init.elc $(patsubst %.el,%.elc,$(wildcard work.el))
+all: subdirs init.elc $(patsubst %.el,%.elc,$(wildcard work.el))
+
+subdirs:
 ifeq ($(EMACS),emacs)
 	make EMACS=$(EMACS) -C esp
 endif
