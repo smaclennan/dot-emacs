@@ -29,3 +29,6 @@ clean:
 	rm -f *.elc
 	make -C site-packages/lisp clean
 	make -C esp clean
+
+clean-sam:
+	make -C site-packages/lisp/sam clean
