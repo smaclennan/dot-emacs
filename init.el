@@ -391,6 +391,8 @@ This is guaranteed not to have a / at the end."
 ;;{{{ Keys
 
 (unless (fboundp 'find-tag-at-point)
+  (eval-when-compile (require 'etags))
+
   ;; Mimics version from XEmacs 21.2
   (defun find-tag-at-point ()
     "*Find tag whose name contains TAGNAME.
@@ -493,11 +495,9 @@ instead, uses tag around or before point."
 (define-key global-map [(control h) v] 'hyper-describe-variable)
 (define-key global-map [(control h) w] 'hyper-where-is)
 
-(if (fboundp 'mwheel-install)
-    (progn
-      (mwheel-install)
-      (setq mwheel-follow-mouse t))
-  (would-like 'intellimouse))
+(when (fboundp 'mwheel-install)
+  (mwheel-install)
+  (setq mwheel-follow-mouse t))
 
 ;; -------------------------------------------------------
 ;; The standard blows away emacs just a little to easily
@@ -1253,7 +1253,9 @@ We ignore the 3rd number."
     ;; Now that we have auto-save-timeout, let's crank this up
     ;; for better interactive response.
     (setq auto-save-interval 2000))
-  (would-like 'backup)))
+  (would-like 'backup))
+ (t
+  (setq backup-directory-alist '(("." . "~/.backup")))))
 
 ;;; -------------------------------------------------------------------------
 ;;; Filladapt is a syntax-highlighting package.  When it is enabled it
@@ -1361,11 +1363,14 @@ We ignore the 3rd number."
   (setq ws-trim-mode-line-string nil)
   (set-default 'ws-trim-level 1))
 
-(when nil
-(when (packagep 'dired-extras)
+(when (would-like 'dired-extras)
   (add-hook 'dired-load-hook 'dired-extras-init)
-  (setq dired-listing-switches "-l"))
-)
+  (setq dired-listing-switches "-l")
+
+  (and (not (assoc "\\.pdf$" auto-mode-alist))
+       (exec-installed-p "acroread")
+       (setq auto-mode-alist
+	     (cons '("\\.pdf$" . do-acroread) auto-mode-alist))))
 
 ;;; ----------------------------------------------
 ;; oo-browser
