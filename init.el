@@ -832,6 +832,27 @@ false match."
   )
 
 ;; -------------------------------------------------------------------------
+;; KSH MODE
+
+;; sh-mode doesn't work too well in XEmacs. It doesn't handle case
+;; labels properly. GNU Emacs handles case labels, but doesn't indent
+;; comments properly. ksh-mode seems to handle case labels and
+;; comments, so let's switch to that if it is available.
+
+(defun sh-to-ksh (entry)
+  (when (eq (cdr entry) 'sh-mode)
+    (setcdr entry 'ksh-mode))
+  entry)
+
+(when (would-like 'ksh-mode)
+  ;; Convert sh-mode to ksh-mode
+  (mapcar 'sh-to-ksh auto-mode-alist)
+  (mapcar 'sh-to-ksh interpreter-mode-alist)
+
+  (setq ksh-indent 4)
+  )
+
+;; -------------------------------------------------------------------------
 ;; LISP MODE
 
 (defun my-byte-compile-buffer ()
