@@ -838,19 +838,24 @@ false match."
 ;; labels properly. GNU Emacs handles case labels, but doesn't indent
 ;; comments properly. ksh-mode seems to handle case labels and
 ;; comments, so let's switch to that if it is available.
+;;
+;; ksh-mode not avaliable in Emacs, and turning it on loses font-lock
+;; and bracket matching... so enable it only for xemacs for now
 
-(defun sh-to-ksh (entry)
-  (when (eq (cdr entry) 'sh-mode)
-    (setcdr entry 'ksh-mode))
-  entry)
+(my-feature-cond
+ (xemacs
+  (defun sh-to-ksh (entry)
+    (when (eq (cdr entry) 'sh-mode)
+      (setcdr entry 'ksh-mode))
+    entry)
 
-(when (would-like 'ksh-mode)
-  ;; Convert sh-mode to ksh-mode
-  (mapcar 'sh-to-ksh auto-mode-alist)
-  (mapcar 'sh-to-ksh interpreter-mode-alist)
+  (when (would-like 'ksh-mode)
+    ;; Convert sh-mode to ksh-mode
+    (mapc 'sh-to-ksh auto-mode-alist)
+    (mapc 'sh-to-ksh interpreter-mode-alist)
 
-  (setq ksh-indent 4)
-  )
+    (setq ksh-indent 4))
+  ))
 
 ;; -------------------------------------------------------------------------
 ;; LISP MODE
