@@ -1,6 +1,6 @@
 .SUFFIXES: .el .elc
 
-EMACS ?= emacs
+EMACS = emacs
 
 .el.elc:
 	$(EMACS) -batch -q -f batch-byte-compile $<
@@ -8,7 +8,6 @@ EMACS ?= emacs
 # Mine
 ELCS =  extent.elc \
 	itimer.elc \
-	stack-f.elc\
 
 # Others
 ELCS += filladapt.elc \
