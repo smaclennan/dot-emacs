@@ -125,10 +125,9 @@ Each clause is (PACKAGE BODY...)."
 
 ;; Only in XEmacs 21.5...
 (my-bound-cond
- (modeline-buffer-id-left
-  ;; Put it back.. the dir part pushs the minor modes off the modeline
-  (customize-set-variable 'modeline-new-buffer-id-format nil)
-  (setq modeline-buffer-id-left "")))
+ (modeline-buffer-id
+  (setq-default modeline-buffer-id
+	(list (cons modeline-buffer-id-left-extent 'modeline-buffer-id-left)))))
 
 (setq debug-on-error t
       track-eol t
