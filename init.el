@@ -853,8 +853,12 @@ false match."
     (mapc 'sh-to-ksh auto-mode-alist)
     (mapc 'sh-to-ksh interpreter-mode-alist)
 
-    (setq ksh-indent 4))
-  ))
+    (setq ksh-indent 4)
+
+    (nconc
+     ksh-font-lock-keywords
+     (list (list "# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+    )))
 
 ;; -------------------------------------------------------------------------
 ;; LISP MODE
