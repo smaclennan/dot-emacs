@@ -123,12 +123,6 @@ Each clause is (PACKAGE BODY...)."
 
 ;;{{{ Basic Customization
 
-;; Only in XEmacs 21.5...
-(my-bound-cond
- (modeline-buffer-id
-  (setq-default modeline-buffer-id
-	(list (cons modeline-buffer-id-left-extent 'modeline-buffer-id-left)))))
-
 (setq debug-on-error t
       track-eol t
       kill-whole-line t
@@ -241,6 +235,25 @@ This is guaranteed not to have a / at the end."
     (if mark-active
 	(setq deactivate-mark t)
       nil))))
+
+;;}}}
+
+;;{{{ XEmacs 21.5 stuff
+
+(my-feature-cond
+ (xemacs
+  (when (emacs-version>= 21 5)
+    ;; For some reason the file coding was gutted - put it back
+    (setq buffer-file-coding-system-for-read 'undecided
+	  default-buffer-file-coding-system  'raw-text)
+
+    ;; New modeline format does not fit on a smaller window
+    (my-bound-cond
+     (modeline-buffer-id
+      (setq-default
+       modeline-buffer-id
+       (list (cons modeline-buffer-id-left-extent 'modeline-buffer-id-left)))))
+    )))
 
 ;;}}}
 
