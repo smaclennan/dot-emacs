@@ -1,11 +1,27 @@
+(defvar gg-dir (expand-file-name "~/goldengate") "* Base goldengate dir")
+(defvar sla-dir nil "* Base sla directory")
+(defvar compile-dir-list-was nil)
+
+(eval-when-compile (require 'etags))
+
 (add-to-list 'my-compile-dir-list '(".*/LM2.[0-9.]+/") t)
 
-(add-to-list 'my-compile-dir-list '(".*/goldengate/vpn/src/" nil space-indent-4) t)
+(defun set-gg-dir (dir)
+  (interactive "DDir: ")
+  (setq gg-dir dir)
+  (setq sla-dir (concat gg-dir "/sla/"))
 
-(add-to-list 'my-compile-dir-list '(".*/goldengate/util/vnodecom/" nil space-indent-4) t)
+  ;; Reset my-compile-dir-list
+  (if compile-dir-list-was
+      (setq my-compile-dir-list compile-dir-list-was)
+    (setq compile-dir-list-was my-compile-dir-list))
 
-(defvar sla-dir (expand-file-name "~/goldengate/sla/")
-  "* sla directory")
+  (add-to-list 'my-compile-dir-list
+	       (list (concat gg-dir "/vpn/src/") nil 'space-indent-4) t)
+  (add-to-list 'my-compile-dir-list
+	       (list (concat gg-dir "/util/vnodecom/") nil 'space-indent-4) t)
+  (add-to-list 'my-compile-dir-list (list sla-dir nil 'sla-build) t)
+  )
 
 (defun sla-etags (&optional force)
   (interactive)
@@ -18,16 +34,12 @@
       (call-process "find" nil sla-buf nil sla-dir "-name" "*.c")
       (call-process "find" nil sla-buf nil sla-dir "-name" "*.h"))
 
-    (message "Calling etags...") ; SAM DBG
     (save-current-buffer
       (set-buffer sla-buf)
       (call-process-region (point-min) (point-max)
 			   "etags" nil nil nil
 			   "-o" (concat sla-dir "TAGS") "-")
-      (message "etags done.") ; SAM DBG
       )))
-
-(eval-when-compile (require 'etags))
 
 (defun sla-build (dir arg)
   "sla is weird in that it must be built from the directory *above* sla"
@@ -49,4 +61,4 @@
   (set (make-local-variable 'make-clean-command)
        (concat "make -C " dir " sla-clean sla")))
 
-(add-to-list 'my-compile-dir-list (list sla-dir nil 'sla-build) t)
+(set-gg-dir gg-dir)
