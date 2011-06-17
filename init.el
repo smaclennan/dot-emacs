@@ -435,7 +435,7 @@ instead, uses tag around or before point."
 (global-set-key [(shift f1)]    (global-key-binding [f1]))
 (global-set-key [XF86_Switch_VT_1] (global-key-binding [f1]))
 (global-set-key [f1]            'find-file)
-(global-set-key [f2] 		'undo)
+(global-set-key [f2]		'undo)
 (global-set-key [(shift f2)]	'redo)
 (global-set-key [XF86_Switch_VT_2] 'redo)
 (global-set-key [f3]		'isearch-repeat-forward)
@@ -519,7 +519,7 @@ instead, uses tag around or before point."
     (save-buffers-kill-emacs)))
 
 (global-set-key "\C-x\C-c"	'my-save-buffers-kill-emacs)
-(global-set-key "\C-xw" 	'what-line)
+(global-set-key "\C-xw"	'what-line)
 
 ;;(global-set-key "\C-cd"		'dup-line)
 (global-set-key "\M-#"		'my-calc)
@@ -1404,6 +1404,9 @@ We ignore the 3rd number."
   (global-ws-trim-mode t)
   (setq ws-trim-mode-line-string nil)
   (set-default 'ws-trim-level 1))
+
+(when (would-like 'whitespace)
+  (whitespace-global-mode))
 
 (when (would-like 'dired-extras)
   (add-hook 'dired-load-hook 'dired-extras-init)
