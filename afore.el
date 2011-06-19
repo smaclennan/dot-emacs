@@ -1,5 +1,6 @@
 (defvar gg-dir (expand-file-name "~/goldengate") "* Base goldengate dir")
 (defvar sla-dir nil "* Base sla directory")
+(defvar sla-buf "*sla files*" "* SLA file list buffer")
 (defvar compile-dir-list-was nil)
 
 (eval-when-compile (require 'etags))
@@ -24,22 +25,11 @@
   )
 
 (defun sla-etags (&optional force)
-  (interactive)
+  (interactive "P")
   ;; SAM If sla-img older than TAGS, drop out?
   ;; SAM How do we decide when to rebuild sla-buf?
-  (let ((sla-buf "*sla files*"))
-    (when force (kill-buffer sla-buf))
-    (when (or (not (bufferp sla-buf)) (eq (buffer-size sla-buf) 0))
-      ;; Doing the find in two steps seems to work better
-      (call-process "find" nil sla-buf nil sla-dir "-name" "*.c")
-      (call-process "find" nil sla-buf nil sla-dir "-name" "*.h"))
-
-    (save-current-buffer
-      (set-buffer sla-buf)
-      (call-process-region (point-min) (point-max)
-			   "etags" nil nil nil
-			   "-o" (concat sla-dir "TAGS") "-")
-      )))
+  (when force (kill-buffer sla-buf))
+  (my-etag-tree sla-dir sla-buf))
 
 (defun sla-build (dir arg)
   "sla is weird in that it must be built from the directory *above* sla"
