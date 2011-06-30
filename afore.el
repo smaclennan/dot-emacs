@@ -9,7 +9,7 @@
 
 (defun set-gg-dir (dir)
   (interactive "DDir: ")
-  (setq gg-dir dir)
+  (setq gg-dir (my-expand-dir-name dir))
   (setq sla-dir (concat gg-dir "/sla/"))
 
   ;; Reset my-compile-dir-list
@@ -17,11 +17,15 @@
       (setq my-compile-dir-list compile-dir-list-was)
     (setq compile-dir-list-was my-compile-dir-list))
 
+  ;; Sighhh.... vpn source uses 2 and 3 and sometimes 4
   (add-to-list 'my-compile-dir-list
-	       (list (concat gg-dir "/vpn/src/") nil 'space-indent-4) t)
+	       (list (concat gg-dir "/vpn/src/") nil 'space-indent-2) t)
   (add-to-list 'my-compile-dir-list
 	       (list (concat gg-dir "/util/vnodecom/") nil 'space-indent-4) t)
-  (add-to-list 'my-compile-dir-list (list sla-dir nil 'sla-build) t)
+  ;; throughput engine must be before sla proper
+  (add-to-list 'my-compile-dir-list (list (concat sla-dir "throughput-engine/")
+					  "throughputengine" 'sla-build) t)
+  (add-to-list 'my-compile-dir-list (list sla-dir "sla" 'sla-build) t)
   )
 
 (defun sla-etags (&optional force)
@@ -36,19 +40,16 @@
 
   (tab-indent-2 dir arg)
 
-  (setq buffer-tag-table dir)
-
-  (add-hook 'my-compile-after-hooks 'sla-etags)
-
-  ;; This can't fail....
-  (when (string-match "^\\(.*\\)/[^/]+/?$" dir)
-    (setq dir (match-string 1 dir)))
+  (setq buffer-tag-table (concat gg-dir "/sla"))
+  (add-hook 'my-compile-after-hooks 'sla-etags))
 
   ;; Note that compile-command will already be buffer local
-  (setq compile-command
-	(concat "make -C " dir " sla"))
+  (setq compile-command (concat "make -C " gg-dir " " arg))
 
   (set (make-local-variable 'make-clean-command)
-       (concat "make -C " dir " sla-clean sla")))
+       (concat "make -C " gg-dir " " arg "-clean " arg)))
 
 (set-gg-dir gg-dir)
+
+;; Codebase contains too much bogus whitespace
+(whitespace-global-mode 0)
