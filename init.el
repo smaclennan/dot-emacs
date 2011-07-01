@@ -1406,7 +1406,7 @@ We ignore the 3rd number."
   (set-default 'ws-trim-level 1))
 
 (when (would-like 'whitespace)
-  (whitespace-global-mode))
+  (my-feature-cond (xemacs (whitespace-global-mode))))
 
 (when (would-like 'dired-extras)
   (add-hook 'dired-load-hook 'dired-extras-init)
