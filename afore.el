@@ -41,7 +41,7 @@
   (tab-indent-2 dir arg)
 
   (setq buffer-tag-table (concat gg-dir "/sla"))
-  (add-hook 'my-compile-after-hooks 'sla-etags))
+  (add-hook 'my-compile-after-hooks 'sla-etags)
 
   ;; Note that compile-command will already be buffer local
   (setq compile-command (concat "make -C " gg-dir " " arg))
