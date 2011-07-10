@@ -741,12 +741,21 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 
 (defvar include-list '("stdio.h" "stdlib.h" "string.h" "unistd.h" "fcntl.h" "errno.h"))
 
-(defun c-template ()
-  (interactive)
+(defun c-template (&optional getopt)
+  (interactive "P")
   (goto-char (point-min))
   (dolist (include include-list)
     (insert (concat "#include <" include ">\n")))
+  (when getopt (insert "\n\nstatic int verbose;\n"))
   (insert "\n\nint main(int argc, char *argv[])\n{\n\t")
+  (when getopt
+    (insert (concat
+	     "int c;\n\n"
+	     "\twhile ((c = getopt(argc, argv, \"v\")) != EOF)\n"
+	     "\t\tswitch (c) {\n" "\t\tcase 'v':\n"
+	     "\t\t\t++verbose;\n" "\t\t\tbreak;\n"
+	     "\t\tdefault:\n" "\t\t\tputs(\"Sorry!\");\n"
+	     "\t\t\texit(1);\n" "\t\t}\n" "\n\t")))
   (let ((mark (point)))
     (insert "\n\treturn 0;\n}\n")
     (goto-char mark))
