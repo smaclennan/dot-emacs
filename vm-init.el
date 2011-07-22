@@ -1,5 +1,12 @@
 ;; VM setup -*- emacs-lisp -*-
 
+; To use:
+
+; ;; Move the .vm init file to .xemacs
+; (setq vm-init-file (concat dot-dir "vm-init.el")
+;      vm-folders-summary-database (concat dot-dir ".vm.folders.db"))
+; (require 'vm)
+
 ; I am down to one environment that I must handle:
 ;    fetchmail/procmail for incoming mail
 ;    smtpmail for outgoing mail

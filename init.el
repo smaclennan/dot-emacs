@@ -1444,10 +1444,8 @@ We ignore the 3rd number."
 
 ;;}}}
 
-;;{{{ Mail/News/Web
+;;{{{ Mail
 
-;; Most of this is in .vm and .gnus.el
-;; However, this is done up front so things like `build-report' will work
 ;; Authorization in .authrc
 
 (when (would-like 'sendmail)
@@ -1460,16 +1458,6 @@ We ignore the 3rd number."
 (let ((domain-specific-init (concat dot-dir "mail-" domain-name)))
   (when (file-exists-p domain-specific-init)
     (load domain-specific-init)))
-
-;; Move the .vm init file to .xemacs
-(setq vm-init-file (concat dot-dir "vm-init.el")
-      vm-folders-summary-database (concat dot-dir ".vm.folders.db"))
-
-;; GNUS
-(setq gnus-init-file (concat dot-dir "gnus.el"))
-
-;; html
-;;(defcustom html-helper-htmldtd-version "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
 
 ;;}}}
 
