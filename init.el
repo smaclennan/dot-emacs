@@ -507,9 +507,11 @@ instead, uses tag around or before point."
 (define-key global-map [(control h) v] 'hyper-describe-variable)
 (define-key global-map [(control h) w] 'hyper-where-is)
 
-(when (fboundp 'mwheel-install)
-  (mwheel-install)
-  (setq mwheel-follow-mouse t))
+
+(would-like 'intellimouse)
+;(when (fboundp 'mwheel-install)
+;    (mwheel-install)
+;    (setq mwheel-follow-mouse t))
 
 ;; -------------------------------------------------------
 ;; The standard blows away emacs just a little to easily
