@@ -13,14 +13,10 @@ ARCH=${ARCH:-i486}
 BUILD=${BUILD:-4}
 TAG=${TAG:-sam}
 
-# Only needed in beta version of XEmacs
-BVERSION="`echo $VERSION | cut -d. -f1-2`-b`echo $VERSION | cut -d. -f3`"
-
 CWD=$(pwd)
 TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=$TMP
-DATADIR=usr/lib
 
 if [ "$ARCH" = "i486" ]; then
     SLKCFLAGS="-O2 -march=i486 -mtune=i686"
@@ -29,9 +25,12 @@ elif [ "$ARCH" = "i686" ]; then
     SLKCFLAGS="-O2 -march=i686 -mtune=i686"
     LIBDIRSUFFIX=""
 elif [ "$ARCH" = "x86_64" ]; then
-    SLKCFLAGS="-O2 -fPIC"
+    # XEmacs will not run compiled -fPIC
+    #SLKCFLAGS="-O2 -fPIC"
     LIBDIRSUFFIX="64"
 fi
+
+DATADIR=usr/lib$LIBDIRSUFFIX
 
 # Let's be nice and warn upfront if things are missing
 ok=1
@@ -40,6 +39,7 @@ for f in $PRGNAM-$VERSION.tar.bz2 \
 	efs-$EFS_VERSION-pkg.tar.gz \
 	check-features.patch \
 	dump-paths.patch \
+	lib64.patch \
 	mod-shift.patch ; do
     [ -f ./$f ] || { echo "$f missing"; ok=0; }
 done
@@ -63,6 +63,11 @@ if [ $DO_UNTAR -eq 1 ] ; then
     patch -p1 < $CWD/dump-paths.patch || exit 1
     patch -p1 < $CWD/check-features.patch || exit 1
 
+    # XEmacs is hardcoded to look in lib
+    if [ "$ARCH" = "x86_64" ]; then
+        patch -p1 < $CWD/lib64.patch
+    fi
+
     # Sighhhhhh.....
     patch -p1 < $CWD/mod-shift.patch || exit 1
 else
@@ -77,7 +82,6 @@ if [ $DO_BUILD -eq 1 ] ; then
      --datadir=/$DATADIR \
      --with-sound=none \
      --with-file-coding \
-     --with-optimization \
      $ARCH-slackware-linux || exit 1
 
     make || exit 1
@@ -102,7 +106,7 @@ make prefix=$PKG/usr \
 make datadir=$PKG/$DATADIR gzip-el || exit 1
 
 # What is this 2.3M for?????
-rm -rf $PKG/usr/lib/xemacs-$VERSION/$ARCH-slackware-linux/include
+rm -rf $PKG/usr/lib$LIBDIRSUFFIX/xemacs-$VERSION/$ARCH-slackware-linux/include
 
 strip_bins () {
     for f in $1/*; do
@@ -113,11 +117,11 @@ strip_bins () {
 }
 
 strip_bins $PKG/usr/bin
-strip_bins $PKG/usr/lib/xemacs-$VERSION/$ARCH-slackware-linux
+strip_bins $PKG/usr/lib$LIBDIRSUFFIX/xemacs-$VERSION/$ARCH-slackware-linux
 
 gzip $PKG/usr/man/*/*
 
-INFODIR=$DATADIR/xemacs-$BVERSION/info
+INFODIR=$DATADIR/xemacs-$VERSION/info
 gzip $PKG/$INFODIR/*
 # DO NOT gzip the dir file - it screws up XEmacs
 gunzip $PKG/$INFODIR/dir.gz
