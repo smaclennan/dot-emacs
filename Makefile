@@ -11,6 +11,10 @@ EMACS := emacs
 endif
 endif
 
+.el.elc:
+	@echo Build $(EMACS) $< ...
+	@$(EMACS) -batch -l init.el -f batch-byte-compile $<
+
 all: subdirs init.elc $(patsubst %.el,%.elc,$(wildcard work.el))
 
 subdirs:
@@ -18,12 +22,6 @@ ifeq ($(EMACS),emacs)
 	make EMACS=$(EMACS) -C esp
 endif
 	make EMACS=$(EMACS) -C site-packages/lisp
-
-init.elc: init.el
-	$(EMACS) -l init.el -batch -f batch-byte-compile $<
-
-work.elc: work.el
-	$(EMACS) -l init.el -batch -f batch-byte-compile $<
 
 clean:
 	rm -f *.elc
