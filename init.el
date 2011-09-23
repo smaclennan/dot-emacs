@@ -1474,6 +1474,13 @@ We ignore the 3rd number."
   (unless running-as-root
     (load (concat dot-dir "user-init") t)))
 
+
+(setq initial-scratch-message
+      ";; This buffer is for goofing around in.
+;; All data will be destroyed on exit.
+
+")
+
 ;;{{{ Final results
 
 (setq debug-on-error nil)
@@ -1489,12 +1496,6 @@ We ignore the 3rd number."
 		     ((< hour 18) "afternoon")
 		     (t           "evening"))
 	       (user-full-name)))))
-
-(setq initial-scratch-message
-      ";; This buffer is for goofing around in.
-;; All data will be destroyed on exit.
-
-")
 
 ;;}}}
 
