@@ -28,31 +28,12 @@
 	  (replace-match "" nil nil dir)))))
   "The init file directory.")
 
-;; Check for older (21.x) GNU Emacs
-(unless (or (featurep 'xemacs) (featurep 'emacs))
-  (provide 'emacs))
-;;  (setq dot-dir (concat dot-dir ".emacs.d/")))
-
 (defconst emacs-start-time (current-time)
   "The time emacs started.")
 
 (setq inhibit-default-init t)
 
-;; Required for Emacs, doesn't hurt under XEmacs
-(eval-when-compile (require 'cl))
-
-;; GNU emacs sets emacs
-;; XEmacs sets xemacs
-;; SXEmacs sets sxemacs and xemacs
-(defmacro my-feature-cond (&rest clauses)
-  "Test CLAUSES for feature at compile time.
-Each clause is (FEATURE BODY...)."
-  (dolist (x clauses)
-    (let ((feature (car x))
-	  (body (cdr x)))
-      (when (or (eq feature t)
-		(featurep feature))
-	(return (cons 'progn body))))))
+(require 'sam-common)
 
 (defmacro my-bound-cond (&rest clauses)
   "Test CLAUSES for binding at compile time.
