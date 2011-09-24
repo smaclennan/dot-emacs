@@ -16,6 +16,9 @@
 (defvar running-as-root (string= (user-login-name) "root")
   "Non-nil if running as root.")
 
+(defconst emacs-start-time (current-time)
+  "The time emacs started.")
+
 (defvar dot-dir
   ;; When called from load
   (if load-file-name
@@ -28,10 +31,16 @@
 	  (replace-match "" nil nil dir)))))
   "The init file directory.")
 
-(defconst emacs-start-time (current-time)
-  "The time emacs started.")
-
-(setq inhibit-default-init t)
+;; We need to setup the load-path before we can require sam-common
+;; Not xemacs is safer for old GNU Emacs versions (see sam-common)
+(when (not (featurep 'xemacs))
+  (require 'cl)
+  (add-to-list 'load-path (concat dot-dir "esp"))
+  ;; Add the local site-packages
+  (let ((lisp-dir (concat dot-dir "site-packages/lisp")))
+    (loop for dir in (directory-files lisp-dir t "^[^.i]") do
+      (add-to-list 'load-path dir)))
+  (load "sam-loaddefs"))
 
 (require 'sam-common)
 
@@ -55,15 +64,6 @@ Each clause is (PACKAGE BODY...)."
       (when (or (eq feature t)
 		(packagep feature))
 	(return (cons 'progn body))))))
-
-(my-feature-cond
- (emacs
-  (add-to-list 'load-path (concat dot-dir "esp"))
-  ;; Add the local site-packages
-  (let ((lisp-dir (concat dot-dir "site-packages/lisp")))
-    (loop for dir in (directory-files lisp-dir t "^[^.i]") do
-      (add-to-list 'load-path dir)))
-  (load "sam-loaddefs")))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -111,6 +111,7 @@ Each clause is (PACKAGE BODY...)."
       delete-key-deletes-forward t
       find-file-compare-truenames t
       signal-error-on-buffer-boundary nil
+      inhibit-default-init t
       inhibit-startup-message t)
 
 (setq visible-bell t)
