@@ -188,16 +188,6 @@ Each clause is (PACKAGE BODY...)."
   (setq http-wget-program "curl")
   (setq http-wget-options '("-i")))
 
-(defun my-expand-dir-name (name &optional default-dir)
-  "Convert directory NAME to absolute, and canonicalize it.
-This is guaranteed not to have a / at the end."
-  (setq name (expand-file-name name)) ;; this does the bulk of the work
-  (when (string-match "/+$" name)
-    (setq name (replace-match "" nil nil name)))
-  (while (string-match "//+" name)
-    (setq name (replace-match "/" nil nil name)))
-  name)
-
 (unless (fboundp 'locate-data-file)
   (defun locate-data-file (name)
     ;; Try local first
