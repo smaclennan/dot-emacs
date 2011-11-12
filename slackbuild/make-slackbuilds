@@ -13,7 +13,8 @@ sed -i 's/^OUTPUT=.*/OUTPUT=${OUTPUT:-\/tmp}/' xemacs/xemacs.SlackBuild
 sed -i 's/^if false; then # SlackBuilds/if true; then/' xemacs/xemacs.SlackBuild
 chmod +x xemacs/xemacs.SlackBuild
 
-cp README xemacs
+# Leave the regular README alone for github
+cp README.SBo xemacs/README
 cp *.patch xemacs
 cp slack-desc xemacs
 

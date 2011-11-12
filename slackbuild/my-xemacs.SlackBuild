@@ -1,0 +1,160 @@
+#!/bin/sh
+# Slackware build script for XEmacs
+# Created by Sean MacLennan <xemacs@seanm.ca>
+
+DO_UNTAR=1
+DO_BUILD=1
+
+PRGNAM=xemacs
+VERSION=21.4.22
+BASE_VERSION=2.27
+EFS_VERSION=1.34
+ARCH=${ARCH:-i486}
+BUILD=${BUILD:-4}
+TAG=${TAG:-sam}
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp/SBo}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=$TMP
+
+if [ "$ARCH" = "i486" ]; then
+    SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+    LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+    SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+    LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+    # XEmacs will not run compiled -fPIC
+    #SLKCFLAGS="-O2 -fPIC"
+    LIBDIRSUFFIX="64"
+fi
+
+DATADIR=usr/lib$LIBDIRSUFFIX
+
+# Let's be nice and warn upfront if things are missing
+ok=1
+for f in $PRGNAM-$VERSION.tar.bz2 \
+	xemacs-base-$BASE_VERSION-pkg.tar.gz \
+	efs-$EFS_VERSION-pkg.tar.gz \
+	check-features.patch \
+	dump-paths.patch \
+	lib64.patch \
+	mod-shift.patch ; do
+    [ -f ./$f ] || { echo "$f missing"; ok=0; }
+done
+[ $ok = 1 ] || exit 2
+
+set -e
+
+rm -rf $PKG
+mkdir -p $TMP $OUPUT $PKG || exit 1
+
+cd $TMP
+if [ $DO_UNTAR -eq 1 ] ; then
+    rm -rf $PRGNAM-$VERSION
+    tar xjf $CWD/$PRGNAM-$VERSION.tar.bz2 || exit 1
+
+    cd $PRGNAM-$VERSION
+    chown -R root.root .
+
+    # These patches allow building xemacs with xemacs installed
+    # dump-paths patch from Enrico Scholz
+    patch -p1 < $CWD/dump-paths.patch || exit 1
+    patch -p1 < $CWD/check-features.patch || exit 1
+
+    # XEmacs is hardcoded to look in lib
+    if [ "$ARCH" = "x86_64" ]; then
+        patch -p1 < $CWD/lib64.patch
+    fi
+
+    # Sighhhhhh.....
+    patch -p1 < $CWD/mod-shift.patch || exit 1
+else
+    cd $PRGNAM-$VERSION || exit 1
+    echo "Skipping untar...."
+fi
+
+if [ $DO_BUILD -eq 1 ] ; then
+    CFLAGS="$SLKCFLAGS" ./configure \
+     --prefix=/usr \
+     --libdir=/usr/lib$LIBDIRSUFFIX \
+     --datadir=/$DATADIR \
+     --with-sound=none \
+     --with-file-coding \
+     $ARCH-slackware-linux || exit 1
+
+    make || exit 1
+else
+    echo "Skipping build...."
+fi
+
+make prefix=$PKG/usr \
+ datadir=$PKG/$DATADIR \
+ libdir=$PKG/usr/lib$LIBDIRSUFFIX \
+ install || exit 1
+
+(   # Add minimal packages to allow package tools to work
+    mkdir -p $PKG/$DATADIR/xemacs/xemacs-packages
+    cd $PKG/$DATADIR/xemacs/xemacs-packages
+    tar zxf $CWD/xemacs-base-$BASE_VERSION-pkg.tar.gz || exit 1
+    tar zxf $CWD/efs-$EFS_VERSION-pkg.tar.gz || exit 1
+    # Make sure the .elc files are newer
+    find . -name \*.elc -exec touch {} \;
+)
+
+make datadir=$PKG/$DATADIR gzip-el || exit 1
+
+# What is this 2.3M for?????
+rm -rf $PKG/usr/lib$LIBDIRSUFFIX/xemacs-$VERSION/$ARCH-slackware-linux/include
+
+strip_bins () {
+    for f in $1/*; do
+        if file $f | fgrep -q "not stripped" ; then
+	    strip $f
+        fi
+    done
+}
+
+strip_bins $PKG/usr/bin
+strip_bins $PKG/usr/lib$LIBDIRSUFFIX/xemacs-$VERSION/$ARCH-slackware-linux
+
+gzip $PKG/usr/man/*/*
+
+INFODIR=$DATADIR/xemacs-$VERSION/info
+gzip $PKG/$INFODIR/*
+# DO NOT gzip the dir file - it screws up XEmacs
+gunzip $PKG/$INFODIR/dir.gz
+
+# Some documentation
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
+cp BUGS CHANGES-* COPYING ChangeLog \
+    Installation PROBLEMS README README.packages \
+    $PKG/usr/doc/$PRGNAM-$VERSION
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cat <<EOF >$PKG/install/doinst.sh
+#!/bin/sh
+
+# Make sure the elc files are newer than the el files
+touch $DATADIR/xemacs-$VERSION/lisp/*.elc
+touch $DATADIR/xemacs-$VERSION/lisp/*/*.elc
+touch $DATADIR/xemacs/xemacs-packages/lisp/xemacs-base/*.elc
+touch $DATADIR/xemacs/xemacs-packages/lisp/efs/*.elc
+
+EOF
+
+# And add the slackbuild
+cd $CWD
+install -D -m664 $0 $PKG/usr/src/slackbuilds/$PRGNAM.SlackBuild
+
+cd $PKG
+makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.tgz
+
+# Clean up the extra stuff:
+if [ "$1" = "--cleanup" ]; then
+    rm -rf $TMP/$PRGNAM-${VERSION}
+    rm -rf $PKG
+fi
