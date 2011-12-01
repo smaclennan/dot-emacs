@@ -1009,14 +1009,18 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 ;;; -------------------------------------------------------------------------
 (unless running-windoze (would-like 'svn))
 
-(defvar signed-off-by-sig (concat user-full-name " <" user-mail-address ">")
-  "* Signature used by `signed-off-by' function.")
+(defvar signed-off-by-sig nil
+  "* Signature used by `signed-off-by' function.
+If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
 
 (defun signed-off-by ()
   (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (insert (concat "Signed-off-by: " signed-off-by-sig "\n---\n"))))
+  (let ((signed-by (if signed-off-by-sig
+		       signed-off-by-sig
+		     (concat user-full-name " <" user-mail-address ">"))))
+    (save-excursion
+      (beginning-of-line)
+      (insert (concat "Signed-off-by: " signed-by "\n---\n")))))
 
 ;;}}}
 
