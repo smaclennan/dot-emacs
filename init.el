@@ -40,7 +40,7 @@
   (let ((lisp-dir (concat dot-dir "site-packages/lisp")))
     (loop for dir in (directory-files lisp-dir t "^[^.i]") do
       (add-to-list 'load-path dir)))
-  (load "sam-loaddefs"))
+  (load "sam-loaddefs" t t))
 
 (require 'sam-common)
 
