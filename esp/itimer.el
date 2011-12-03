@@ -1,6 +1,6 @@
 ;;; itimer.el - itimer compatibility for Emacs
 
-;; Copyright (C) 2002-2009 Sean MacLennan
+;; Copyright (C) 2002-20011 Sean MacLennan
 ;; Revision:   1.1
 ;; Emacs
 
@@ -24,7 +24,9 @@
 
 (defvar itimer-list nil)
 
-(defun start-itimer (name function value &optional restart)
+;; SAM Currently ignores is_idle... but I believe it could be implemented...
+;;;###autoload
+(defun start-itimer (name function value &optional restart is_idle)
   "Start an itimer."
   (when (itimer-live-p name) (error "%s already a timer." name))
   (let ((timer (timer-create)))
@@ -64,5 +66,16 @@
       (dolist (elt itimer-list)
 	(if (eq (nth 1 elt) timer)
 	    (setq itimer-list (delete elt itimer-list)))))))
+
+(defun set-itimer-restart (timer restart)
+  (if restart
+      (progn
+	(timer-set-time timer
+			(timer-relative-time (current-time) restart)
+			restart)
+	(timer-activate timer))
+    (cancel-timer timer)))
+
+(defalias 'itimer-restart 'timer--repeat-delay)
 
 (provide 'itimer)
