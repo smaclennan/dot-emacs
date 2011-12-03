@@ -21,10 +21,11 @@
 	    (set-buffer tmp-buf)
 	    (insert-file-contents file nil nil nil t)
 	    (setq base (file-name-nondirectory (file-name-sans-extension file)))
-	    (while (search-forward ";;;###autoload" nil t)
+	    ;; The \; is so we do not match this autoload
+	    (while (search-forward ";\;;###autoload" nil t)
 	      (end-of-line) (forward-char)
 	      (unless (looking-at "^(def\\(un\\|alias\\|var\\) '?\\([A-Za-z0-9-]+\\)")
-		(error "bad autoload line"))
+		(error "%s: bad autoload line" file))
 	      (setq fun (match-string 2))
 
 	      ;; Add to autoloads

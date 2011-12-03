@@ -14,14 +14,16 @@ ELCS += filladapt.elc \
 	hide-copyleft.elc \
 	igrep.elc \
 
+EXTRA = esp-loaddefs.elc
+
 all:	$(ELCS) $(EXTRA)
 
-auto-autoloads.el: $(ELCS)
-	rm -f auto-autoloads.el
-	$(EMACS) -batch -q -no-site-file -l autoload -f batch-update-directory .
+esp-loaddefs.el: $(ELCS)
+	@echo Create $(EMACS) esp-loaddefs.el ...
+	@$(EMACS) -batch -q $(HELPER) -l build-loaddefs.el -f build-loaddefs
 
 tags:
 	etags *.el
 
 clean:
-	rm -f *.elc auto-autoloads.el TAGS
+	rm -f *.elc esp-loaddefs.el TAGS
