@@ -280,13 +280,13 @@ Each clause is (PACKAGE BODY...)."
   ;; Title bar - almost every window system supports a title bar
   ;; The first element must be a string... sighhh.
   (my-feature-cond
-   (xemacs
-    (setq frame-title-format
-	  '("XEmacs " emacs-program-version "  " host-name ":"
-	    (buffer-file-name "%f" "%b"))))
    (sxemacs
     (setq frame-title-format
 	  '("SXEmacs " emacs-program-version "  " host-name ":"
+	    (buffer-file-name "%f" "%b"))))
+   (xemacs
+    (setq frame-title-format
+	  '("XEmacs " emacs-program-version "  " host-name ":"
 	    (buffer-file-name "%f" "%b"))))
    (emacs
     (setq frame-title-format
