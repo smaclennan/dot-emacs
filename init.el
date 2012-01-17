@@ -696,7 +696,7 @@ Not all properties are supported."
   (setq case-fold-search nil) ;; C is case sensitive
 
   ;; Let's try this...
-  (setq c-enable-xemacs-performance-kludge t)
+  (setq c-enable-xemacs-performance-kludge-p t)
 
 ;  (easy-menu-add-item nil '("C") "----")
 ;  (easy-menu-add-item nil '("C") ["lxr" lxr-at-point lxr-url])
