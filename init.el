@@ -45,17 +45,6 @@
 
 (require 'sam-common)
 
-(defmacro my-bound-cond (&rest clauses)
-  "Test CLAUSES for binding at compile time.
-Each clause is (BOUND BODY...)."
-  (dolist (x clauses)
-    (let ((feature (car x))
-	  (body (cdr x)))
-      (when (or (eq feature t)
-		(boundp feature)
-		(fboundp feature))
-	(return (cons 'progn body))))))
-
 (defmacro my-package-cond (&rest clauses)
   "Test CLAUSES for package at compile time.
 Each clause is (PACKAGE BODY...)."
@@ -717,7 +706,8 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 	  (throw 'converted
 		 (append (list (match-string 0 match)) (cdr entry))))))))
 
-(defvar include-list '("stdio.h" "stdlib.h" "string.h" "unistd.h" "fcntl.h" "errno.h"))
+(defvar include-list
+  '("stdio.h" "stdlib.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "errno.h"))
 
 (defun c-template (&optional getopt)
   (interactive "P")
@@ -745,50 +735,6 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 	  ".git" "*.cmd" "*.lo" "*.ko" ".tmp_versions" "*.Plo"
 	  "modules.order" "*.elc" "*.mod.c" "TAGS"))
   (setq smerge-diff-options "-w"))
-
-;;; -------------------------------------------------------------------------
-
-(defun my-checkpatch ()
-  "Run checkpatch against the current buffer. Output goes to the
-compilation buffer so that `next-error' will work."
-  (interactive)
-
-  (save-some-buffers (not compilation-ask-about-save) nil)
-
-  (my-bound-cond
-   (compilation-finish-functions
-    (add-to-list 'compilation-finish-functions 'my-checkpatch-cleanup))
-   (t (setq compilation-finish-function 'my-checkpatch-cleanup)))
-
-  ;; We cannot call `compile' here since it sets the compile command
-  (let ((cmd (concat "checkpatch --emacs --file " (buffer-file-name))))
-    (my-feature-cond
-     (emacs (compilation-start cmd))
-     (xemacs (compile-internal cmd "No more errors")))))
-
-(defun my-checkpatch-cleanup (buf status)
-  "Massage the checkpatch compilation buffer. This removes a final
-false match."
-  (save-current-buffer
-    (set-buffer buf)
-    (save-excursion
-      (goto-char (point-min))
-      (when (re-search-forward "^total:" nil t)
-	(replace-match "total"))
-
-      ;; Emacs also gets the #<lineno>: FILE: <file> lines wrong
-      (my-feature-cond
-       (emacs
-	(goto-char (point-min))
-	(while (re-search-forward "^#[0-9]+: FILE: .*$" nil t)
-	  (replace-match ""))))
-      ))
-
-  (my-bound-cond
-   (compilation-finish-functions
-    (setq compilation-finish-functions
-	  (delete 'my-checkpatch-cleanup compilation-finish-functions)))
-   (t (setq compilation-finish-function nil))))
 
 (would-like 'my-c-tools)
 
