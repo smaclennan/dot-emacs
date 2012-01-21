@@ -790,7 +790,7 @@ false match."
 	  (delete 'my-checkpatch-cleanup compilation-finish-functions)))
    (t (setq compilation-finish-function nil))))
 
-(would-like 'my-sparse)
+(would-like 'my-c-tools)
 
 ;;; -------------------------------------------------------------------------
 (defvar local-compile-command "gcc -O3 -Wall")
