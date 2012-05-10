@@ -1411,17 +1411,25 @@ We ignore the 3rd number."
 
 (setq debug-on-error nil)
 
-(if would-have-liked-list
-    ;; Warn that some features not found
-    (progn (ding) (message "Features not found: %S" would-have-liked-list))
-  ;; Else display a friendly message
-  (unless noninteractive
-    (let ((hour (nth 2 (decode-time))))
-      (message "Good %s %s"
-	       (cond ((< hour 12) "morning")
-		     ((< hour 18) "afternoon")
-		     (t           "evening"))
-	       (user-full-name)))))
+;; Every time you turn around Emacs is displaying yet another
+;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
+;; one. So use a timer to get past them.
+(unless noninteractive
+  (start-itimer "delayed-msg"
+		(lambda ()
+		  (if would-have-liked-list
+		      ;; Warn that some features not found
+		      (progn (ding)
+			     (message "Features not found: %S" would-have-liked-list))
+		    ;; Else display a friendly message
+		    (let ((hour (nth 2 (decode-time))))
+		      (message "Good %s %s"
+			       (cond ((< hour 12) "morning")
+				     ((< hour 18) "afternoon")
+				     (t           "evening"))
+			       (user-full-name))))
+		  (delete-itimer "delayed-msg"))
+		1))
 
 ;;}}}
 
