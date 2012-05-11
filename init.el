@@ -768,6 +768,31 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
   (let ((cmd (read-string "Compile: " compile-command)))
     (set (make-local-variable 'compile-command) cmd)))
 
+(defun add-local-c-vars (offset)
+  "Add local variables to set tab width."
+  (interactive "nOffset: ")
+  ;; Currently only for C modes
+  (unless (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode))
+    (error "Unsupported mode %S" major-mode))
+  (setq offset (number-to-string offset))
+  (save-excursion
+    (save-restriction
+      ;; Make sure local variables do not exist
+      (when (search-forward "Local Variables:" nil t)
+	(error "Local variables already exist."))
+      ;; Add it
+      (widen)
+      (goto-char (point-max))
+      (insert "\n"
+	      "/*\n"
+	      " * Local Variables:\n"
+	      " * indent-tabs-mode: nil\n"
+	      " * c-basic-offset: " offset "\n"
+	      " * tab-width: " offset "\n"
+	      " * End:\n"
+	      " */\n")
+      )))
+
 ;;; -------------------------------------------------------------------------
 (when (would-like 'vc)
   (setq vc-diff-switches "-u")
