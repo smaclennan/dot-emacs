@@ -24,9 +24,10 @@ endif
 	make EMACS=$(EMACS) -C site-packages/lisp
 
 clean:
+	@echo Clean $(EMACS) ...
 	rm -f *.elc
-	make -C site-packages/lisp clean
-	make -C esp clean
+	make -C site-packages/lisp EMACS=$(EMACS) clean
+	make -C esp EMACS=$(EMACS) clean
 
 clean-sam:
 	make -C site-packages/lisp/sam clean
