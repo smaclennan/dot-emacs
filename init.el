@@ -429,6 +429,47 @@ instead, uses tag around or before point."
 (global-set-key [f6] ".")
 (global-set-key [(shift f6)] ">")
 
+(my-feature-cond
+  (emacs
+   ;; GNU Emacs really really needs a `signal-error-on-buffer-boundary'
+   (defun my-scroll-down (&optional arg)
+     "`scroll-down-command' with no signal on beginning-of-buffer."
+     (interactive "^P")
+     (condition-case nil
+	 (scroll-down-command arg)
+       (beginning-of-buffer)))
+
+   (defun my-scroll-up (&optional arg)
+     "`scroll-up-command' with no signal on end-of-buffer."
+     (interactive "^P")
+     (condition-case nil
+	 (scroll-up-command arg)
+       (end-of-buffer)))
+
+   (defun my-previous-line (&optional arg)
+     "`previous-line' with no signal on beginning-of-buffer."
+     (interactive "^p")
+     (condition-case nil
+	 (previous-line arg)
+       (beginning-of-buffer)))
+
+   (defun my-next-line (&optional arg)
+     "`next-line' with no signal on end-of-buffer."
+     (interactive "^p")
+     (condition-case nil
+	 (next-line arg)
+       (end-of-buffer)))
+
+   (global-set-key (kbd "<prior>") 'my-scroll-down)
+   (global-set-key "\M-v" 'my-scroll-down)
+   (global-set-key (kbd "<next>") 'my-scroll-up)
+   (global-set-key "\C-v" 'my-scroll-up)
+   (global-set-key (kbd "<up>") 'my-previous-line)
+   (global-set-key "\C-p" 'my-previous-line)
+   (global-set-key (kbd "<down>") 'my-next-line)
+   (global-set-key "\C-n" 'my-next-line)
+   ))
+
 (would-like 'lxr)
 
 ;; Cut and paste
