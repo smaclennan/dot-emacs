@@ -242,22 +242,17 @@ Each clause is (PACKAGE BODY...)."
   (setq interprogram-cut-function nil
 	interprogram-paste-function nil)
 
-  (my-bound-cond
-   ;; 21.2.? and up
-   (shifted-motion-keys-select-region
-    (setq shifted-motion-keys-select-region t)
-    (eval-when-compile (would-like 'pending-del))
-    (when (would-like 'pending-del)
-      (setq pending-delete-modeline-string "")
-      (turn-on-pending-delete)))
-   ;; use pc-select
-   (t (when (would-like 'pc-select)
-	(my-feature-cond
-	 (xemacs (pc-select-mode t)
-		 (setq pc-select-modeline-string ""
-		       pending-delete-modeline-string ""
-		       pc-select-keep-regions t))
-	 (t (pc-selection-mode))))))
+  (my-feature-cond
+    (xemacs
+     (setq shifted-motion-keys-select-region t)
+     (eval-when-compile (would-like 'pending-del))
+     (when (would-like 'pending-del)
+       (setq pending-delete-modeline-string "")
+       (turn-on-pending-delete)))
+    (t
+     (and (< emacs-major-version 23)
+	  (would-like 'pc-select)
+	  (pc-selection-mode))))
 
   ;; Set the cursor properly for Emacs
   (my-feature-cond
