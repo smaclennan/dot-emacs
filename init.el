@@ -378,7 +378,7 @@ instead, uses tag around or before point."
 	   (if buffer-file-name buffer-file-name (buffer-name))))
 
 ;; This should always do the right thing
-(when running-xemacs
+(when t ;; running-xemacs
   (global-set-key [(return)] 'newline-and-indent)
   (global-set-key [(linefeed)] 'newline))
 
