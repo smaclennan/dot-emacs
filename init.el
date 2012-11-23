@@ -224,6 +224,9 @@ Each clause is (PACKAGE BODY...)."
 (when window-system
   (setq use-dialog-box nil)
 
+  (when (boundp 'xft-version)
+    (set-face-font 'default "DejaVu Sans Mono-10"))
+
   ;; ---------------------------------------------
   ;; Colour
   ;;XEmacs*background: #d0ccb8
