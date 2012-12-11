@@ -697,7 +697,9 @@ Not all properties are supported."
 ;; Customizations for c-mode, c++-mode, java-mode, etc.
 
 (require 'my-compile)
-(eval-when-compile (require 'cc-mode))
+;;(eval-when-compile (require 'cc-mode))
+;; The require seems to work much better than eval-when-compile
+(require 'cc-mode)
 
 ;; This hook is run once when cc-mode initializes
 (defun my-c-initialization-hook ()
