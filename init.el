@@ -439,14 +439,14 @@ instead, uses tag around or before point."
      "`scroll-down-command' with no signal on beginning-of-buffer."
      (interactive "^P")
      (condition-case nil
-	 (scroll-down-command arg)
+	 (scroll-down arg)
        (beginning-of-buffer)))
 
    (defun my-scroll-up (&optional arg)
      "`scroll-up-command' with no signal on end-of-buffer."
      (interactive "^P")
      (condition-case nil
-	 (scroll-up-command arg)
+	 (scroll-up arg)
        (end-of-buffer)))
 
    (defun my-previous-line (&optional arg)
