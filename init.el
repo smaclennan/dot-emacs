@@ -385,12 +385,14 @@ instead, uses tag around or before point."
       ;; This should always do the right thing
       (global-set-key [(return)] 'newline-and-indent)
       (global-set-key [(linefeed)] 'newline))
-  ;; For Emacs the above breaks the minibuffer
-  (define-key c-mode-base-map [(return)] 'newline-and-indent)
-  (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)
-  (define-key sh-mode-map [(return)] 'newline-and-indent)
-  (define-key perl-mode-map [(return)] 'newline-and-indent)
-  (define-key java-mode-map [(return)] 'newline-and-indent)
+  ;; For Emacs the above breaks the minibuffer.
+  ;; Note: c-mode does java too.
+  (add-hook 'c-initialization-hook
+	    (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))
+  (add-hook 'emacs-lisp-mode-hook
+	    (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))
+  (add-hook 'sh-mode-hook
+	    (lambda () (define-key sh-mode-map [(return)] 'newline-and-indent)))
   )
 
 (defun my-toggle-case-search ()
