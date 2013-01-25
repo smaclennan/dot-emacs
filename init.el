@@ -45,16 +45,6 @@
 
 (require 'sam-common)
 
-(defmacro my-package-cond (&rest clauses)
-  "Test CLAUSES for package at compile time.
-Each clause is (PACKAGE BODY...)."
-  (dolist (x clauses)
-    (let ((feature (car x))
-	  (body (cdr x)))
-      (when (or (eq feature t)
-		(packagep feature))
-	(return (cons 'progn body))))))
-
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
 ;; package to a list of missing packages and move on.
