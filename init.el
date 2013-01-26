@@ -748,7 +748,7 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 		 (append (list (match-string 0 match)) (cdr entry))))))))
 
 (defvar include-list
-  '("stdio.h" "stdlib.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "errno.h"))
+  '("stdio.h" "stdlib.h" "stdint.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "errno.h"))
 
 (defun c-template (&optional getopt)
   (interactive "P")
