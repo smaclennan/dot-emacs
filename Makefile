@@ -15,7 +15,8 @@ endif
 	@echo Build $(EMACS) $< ...
 	@$(EMACS) -batch -l init.el -f batch-byte-compile $<
 
-all: subdirs init.elc $(patsubst %.el,%.elc,$(wildcard work.el))
+#all: subdirs init.elc $(patsubst %.el,%.elc,$(wildcard work.el))
+all: subdirs
 
 subdirs:
 ifeq ($(EMACS),emacs)
