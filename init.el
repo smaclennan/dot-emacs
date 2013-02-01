@@ -45,16 +45,6 @@
 
 (require 'sam-common)
 
-(defmacro my-package-cond (&rest clauses)
-  "Test CLAUSES for package at compile time.
-Each clause is (PACKAGE BODY...)."
-  (dolist (x clauses)
-    (let ((feature (car x))
-	  (body (cdr x)))
-      (when (or (eq feature t)
-		(packagep feature))
-	(return (cons 'progn body))))))
-
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
 ;; package to a list of missing packages and move on.
@@ -380,10 +370,20 @@ instead, uses tag around or before point."
   (message "%s:%s" host-name
 	   (if buffer-file-name buffer-file-name (buffer-name))))
 
-;; This should always do the right thing
-(when t ;; running-xemacs
-  (global-set-key [(return)] 'newline-and-indent)
-  (global-set-key [(linefeed)] 'newline))
+(if running-xemacs
+    (progn
+      ;; This should always do the right thing
+      (global-set-key [(return)] 'newline-and-indent)
+      (global-set-key [(linefeed)] 'newline))
+  ;; For Emacs the above breaks the minibuffer.
+  ;; Note: c-mode does java too.
+  (add-hook 'c-initialization-hook
+	    (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))
+  (add-hook 'emacs-lisp-mode-hook
+	    (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))
+  (add-hook 'sh-mode-hook
+	    (lambda () (define-key sh-mode-map [(return)] 'newline-and-indent)))
+  )
 
 (defun my-toggle-case-search ()
   (interactive)
