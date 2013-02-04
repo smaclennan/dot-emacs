@@ -8,7 +8,7 @@
 
 PRGNAM=xemacs
 VERSION=21.4.22
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 TAG=${TAG:-_SBo}
 
 BASE_VERSION=2.27
@@ -85,9 +85,6 @@ tar xf $CWD/efs-$EFS_VERSION-pkg.tar.gz -C $PKG/usr/lib${LIBDIRSUFFIX}/xemacs/xe
 find $PKG/usr/lib${LIBDIRSUFFIX}/xemacs/xemacs-packages -name \*.elc -exec touch {} \;
 
 make datadir=$PKG/usr/lib${LIBDIRSUFFIX} gzip-el
-
-# What is this 2.3M for?????
-rm -rf $PKG/usr/lib$LIBDIRSUFFIX/xemacs-$VERSION/$ARCH-slackware-linux/include
 
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | \
   grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
