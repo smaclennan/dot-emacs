@@ -34,9 +34,16 @@ CC=ellcc
 LD=$(CC) --mode=link
 MKINIT=$(CC) --mode=init
 
-# XEmacs 21.4.22 x86
-CFLAGS=-I/usr/lib/xemacs-21.4.22/i486-slackware-linux/include
-MAKEDOC=/usr/lib/xemacs-21.4.22/i486-slackware-linux/make-docfile
+# XEmacs sends the output to stderr
+VERSION=$(shell xemacs -batch -vanilla -eval '(message "%d.%d.%d" emacs-major-version emacs-minor-version emacs-patch-level)' 2>&1)
+
+ARCH=$(shell uname -m)
+ifneq ($(ARCH),x86_64)
+ARCH=i486
+endif
+
+# XEmacs 21.4.22
+export ELLMAKEDOC=$(shell ls /usr/lib/xemacs-$(VERSION)/$(ARCH)-*/make-docfile)
 
 
 SRCS=ocra.c
@@ -61,7 +68,7 @@ $(MODNAME).ell: $(OBJS) ocra_i.o
 
 ocra_i.o: ocra_i.c
 ocra_i.c: $(SRCS)
-	ELLMAKEDOC=$(MAKEDOC) $(MKINIT) --mod-output=$@ \
+	$(MKINIT) --mod-output=$@ \
 	--mod-name=$(MODNAME) --mod-version=$(MODVER) \
 	--mod-title=$(MODTITLE) $(SRCS)
 
