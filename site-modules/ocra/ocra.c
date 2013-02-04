@@ -79,18 +79,10 @@ Returns the response as a number.
 */
        (question, secret))
 {
-  EMACS_UINT q;
-
-  if (STRINGP(question))
-	  q = strtol(XSTRING_DATA(question), NULL, 0);
-  else {
-	  CHECK_INT(question);
-	  q = XUINT(question);
-  }
-
+  CHECK_INT(question);
   CHECK_STRING(secret);
 
-  return make_int(generateOCRA(q, XSTRING_DATA(secret)) % POWER);
+  return make_int(generateOCRA(XUINT(question), XSTRING_DATA(secret)) % POWER);
 }
 
 void
