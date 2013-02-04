@@ -82,7 +82,7 @@ Returns the response as a number.
   CHECK_INT(question);
   CHECK_STRING(secret);
 
-  return make_int(generateOCRA(XUINT(question), XSTRING_DATA(secret)) % POWER);
+  return make_int(generateOCRA(XUINT(question), (char *)XSTRING_DATA(secret)) % POWER);
 }
 
 void
