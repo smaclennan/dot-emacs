@@ -45,16 +45,6 @@
 
 (require 'sam-common)
 
-(defmacro my-package-cond (&rest clauses)
-  "Test CLAUSES for package at compile time.
-Each clause is (PACKAGE BODY...)."
-  (dolist (x clauses)
-    (let ((feature (car x))
-	  (body (cdr x)))
-      (when (or (eq feature t)
-		(packagep feature))
-	(return (cons 'progn body))))))
-
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
 ;; package to a list of missing packages and move on.
@@ -380,10 +370,20 @@ instead, uses tag around or before point."
   (message "%s:%s" host-name
 	   (if buffer-file-name buffer-file-name (buffer-name))))
 
-;; This should always do the right thing
-(when t ;; running-xemacs
-  (global-set-key [(return)] 'newline-and-indent)
-  (global-set-key [(linefeed)] 'newline))
+(if running-xemacs
+    (progn
+      ;; This should always do the right thing
+      (global-set-key [(return)] 'newline-and-indent)
+      (global-set-key [(linefeed)] 'newline))
+  ;; For Emacs the above breaks the minibuffer.
+  ;; Note: c-mode does java too.
+  (add-hook 'c-initialization-hook
+	    (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))
+  (add-hook 'emacs-lisp-mode-hook
+	    (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))
+  (add-hook 'sh-mode-hook
+	    (lambda () (define-key sh-mode-map [(return)] 'newline-and-indent)))
+  )
 
 (defun my-toggle-case-search ()
   (interactive)
@@ -439,14 +439,14 @@ instead, uses tag around or before point."
      "`scroll-down-command' with no signal on beginning-of-buffer."
      (interactive "^P")
      (condition-case nil
-	 (scroll-down-command arg)
+	 (scroll-down arg)
        (beginning-of-buffer)))
 
    (defun my-scroll-up (&optional arg)
      "`scroll-up-command' with no signal on end-of-buffer."
      (interactive "^P")
      (condition-case nil
-	 (scroll-up-command arg)
+	 (scroll-up arg)
        (end-of-buffer)))
 
    (defun my-previous-line (&optional arg)
@@ -748,7 +748,7 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 		 (append (list (match-string 0 match)) (cdr entry))))))))
 
 (defvar include-list
-  '("stdio.h" "stdlib.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "errno.h"))
+  '("stdio.h" "stdlib.h" "stdint.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "errno.h"))
 
 (defun c-template (&optional getopt)
   (interactive "P")
