@@ -659,6 +659,9 @@ Not all properties are supported."
       (setq c++-font-lock-keywords-3
 	    (append c++-font-lock-keywords-3
 		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+      (setq go-mode-font-lock-keywords
+	    (append go-mode-font-lock-keywords
+		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
       ))
 
   (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
@@ -733,6 +736,13 @@ Not all properties are supported."
 ;  (easy-menu-add-item nil '("C") ["lxr" lxr-at-point lxr-url])
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+;;; -------------------------------------------------------------------------
+
+(defun my-go-mode-hook()
+  (setup-font-lock-keywords)
+  )
+(add-hook 'go-mode-hook 'my-go-mode-hook)
 
 ;;; -------------------------------------------------------------------------
 
