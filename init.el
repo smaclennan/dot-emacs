@@ -659,9 +659,11 @@ Not all properties are supported."
       (setq c++-font-lock-keywords-3
 	    (append c++-font-lock-keywords-3
 		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+      (when nil ;; SAM NOT YET
       (setq go-mode-font-lock-keywords
 	    (append go-mode-font-lock-keywords
 		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+      ) ;; SAM
       ))
 
   (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
@@ -1069,6 +1071,13 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
 ;;}}}
 
 ;;{{{ Handy Dandy(tm) Functions
+
+(defun unixtime (seconds)
+  (interactive "sTime: ")
+  (let* ((float-time (string-to-number seconds))
+		(time (seconds-to-time float-time)))
+    (message "%s" (format-time-string "%a %b %d %T %Z %Y" time))
+    ))
 
 (defun my-process-time ()
   "Process time in seconds"
