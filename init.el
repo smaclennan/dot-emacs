@@ -1074,10 +1074,9 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
 
 (defun unixtime (seconds)
   (interactive "sTime: ")
-  (let* ((float-time (string-to-number seconds))
-		(time (seconds-to-time float-time)))
-    (message "%s" (format-time-string "%a %b %d %T %Z %Y" time))
-    ))
+  ;; Force it to a float for 32-bit systems.
+  (let ((time (seconds-to-time (string-to-number (concat seconds ".0")))))
+    (message "%s" (format-time-string "%a %b %d %T %Z %Y" time))))
 
 (defun my-process-time ()
   "Process time in seconds"
