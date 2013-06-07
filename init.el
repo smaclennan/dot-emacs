@@ -166,11 +166,6 @@
   (setq lpr-command "lpr"
 	lpr-switches nil))
 
-(when (would-like 'http)
-  ;; Setup http to use curl rather than wget
-  (setq http-wget-program "curl")
-  (setq http-wget-options '("-i")))
-
 (unless (fboundp 'locate-data-file)
   (defun locate-data-file (name)
     ;; Try local first
