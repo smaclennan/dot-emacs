@@ -1411,8 +1411,12 @@ We ignore the 3rd number."
 
 ;; If we don't have el-rcfiles then just load all the files now
 (unless (boundp 'rcfiles-version)
-  (dolist (rc (directory-files (concat dot-dir "rc") t ".*-rc.el"))
-    (load rc)))
+  (let ((rc-dir (concat dot-dir "rc")) lib)
+    (add-to-list 'load-path rc-dir)
+    (dolist (rcfile (directory-files rc-dir nil ".*-rc.el"))
+      (when (string-match "\\(.*\\\)-rc.el" rcfile)
+	(load (match-string 1 rcfile)))
+      (load rcfile))))
 
 (unless noninteractive
   (when running-windoze
