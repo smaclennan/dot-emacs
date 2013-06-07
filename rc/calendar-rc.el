@@ -55,8 +55,8 @@
  (calendar-mark-holidays-flag (setq calendar-mark-holidays-flag t))
  (t (setq mark-holidays-in-calendar t)))
 
-  ;; Diary stuff
-  (setq diary-file "~/.dear-diary")
+;; Diary stuff
+(setq diary-file "~/.dear-diary")
 
 ;; Show today as '**'
 ;;(add-hook 'today-visible-calendar-hook 'calendar-star-date)
