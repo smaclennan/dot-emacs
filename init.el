@@ -163,13 +163,6 @@
 ;; not seem to work in 22.1.9. So explicitly load the module.
 (my-feature-cond (sxemacs (load-module "cl-loop")))
 
-(my-feature-cond
- (emacs
-  (defun region-exists-p ()
-    (if mark-active
-	(setq deactivate-mark t)
-      nil))))
-
 ;;}}}
 
 ;;{{{ XEmacs 21.5 stuff
@@ -422,23 +415,6 @@ instead, uses tag around or before point."
   (set-face-foreground 'font-lock-variable-name-face "purple")
   (add-hook 'ediff-load-hook 'my-ediff-colours)
   )
-
-(my-feature-cond
- (emacs
-  (global-font-lock-mode 1) ;; For 21.x
-
-  (defun set-face-property (face prop arg)
-    "Converts XEmacs set-face-property to `set-face-attribute'.
-Not all properties are supported."
-    (cond
-     ((eq prop 'highlight) (setq prop :weight arg (if arg 'bold 'normal)))
-     ((eq prop 'dim) (setq prop :weight arg 'light))
-     ((eq prop 'underline) (setq prop :underline))
-     ((eq prop 'strikethru) (setq prop :strike-through))
-     ((eq prop 'reverse) (setq prop :inverse-video))
-     ;; Should this be an error?
-     (t (error "set-face-property prop %S not supported" prop)))
-    (set-face-attribute face nil prop arg))))
 
 (defun my-set-face (face fg bg &optional prop)
   (set-face-foreground face fg)
