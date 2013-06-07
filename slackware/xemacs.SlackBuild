@@ -8,7 +8,7 @@
 
 PRGNAM=xemacs
 VERSION=21.4.22
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 TAG=${TAG:-_SBo}
 
 BASE_VERSION=2.27
@@ -61,6 +61,9 @@ fi
 
 # Sighhhhhh.....
 patch -p1 < $CWD/patches/mod-shift.patch
+
+# Add buttons 8 thru 11 inclusive
+patch -p1 < $CWD/patches/extra-buttons.patch
 
 CFLAGS="$SLKCFLAGS" \
   ./configure \

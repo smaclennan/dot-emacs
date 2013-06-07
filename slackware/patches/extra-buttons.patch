@@ -1,0 +1,150 @@
+--- xemacs-21.4.22/src/keymap.c.orig	2006-07-01 01:19:58.000000000 -0400
++++ xemacs-21.4.22/src/keymap.c	2013-06-06 23:34:00.266621663 -0400
+@@ -216,8 +216,10 @@
+ Lisp_Object Qcontrol, Qctrl, Qmeta, Qsuper, Qhyper, Qalt, Qshift;
+ Lisp_Object Qbutton0, Qbutton1, Qbutton2, Qbutton3;
+ Lisp_Object Qbutton4, Qbutton5, Qbutton6, Qbutton7;
++Lisp_Object Qbutton8, Qbutton9, Qbutton10, Qbutton11;
+ Lisp_Object Qbutton0up, Qbutton1up, Qbutton2up, Qbutton3up;
+ Lisp_Object Qbutton4up, Qbutton5up, Qbutton6up, Qbutton7up;
++Lisp_Object Qbutton8up, Qbutton9up, Qbutton10up, Qbutton11up;
+ 
+ Lisp_Object Qmenu_selection;
+ /* Emacs compatibility */
+@@ -228,6 +230,10 @@
+ Lisp_Object Qdown_mouse_5, Qmouse_5;
+ Lisp_Object Qdown_mouse_6, Qmouse_6;
+ Lisp_Object Qdown_mouse_7, Qmouse_7;
++Lisp_Object Qdown_mouse_8, Qmouse_8;
++Lisp_Object Qdown_mouse_9, Qmouse_9;
++Lisp_Object Qdown_mouse_10, Qmouse_10;
++Lisp_Object Qdown_mouse_11, Qmouse_11;
+ 
+ /* Kludge kludge kludge */
+ Lisp_Object QLFD, QTAB, QRET, QESC, QDEL, QSPC, QBS;
+@@ -1372,6 +1378,14 @@
+ 	*keysym = Qbutton6;
+       else if (EQ(*keysym, Qdown_mouse_7))
+ 	*keysym = Qbutton7;
++      else if (EQ(*keysym, Qdown_mouse_8))
++	*keysym = Qbutton8;
++      else if (EQ(*keysym, Qdown_mouse_9))
++	*keysym = Qbutton9;
++      else if (EQ(*keysym, Qdown_mouse_10))
++	*keysym = Qbutton10;
++      else if (EQ(*keysym, Qdown_mouse_11))
++	*keysym = Qbutton11;
+       else if (EQ(*keysym, Qmouse_1))
+ 	*keysym = Qbutton1up;
+       else if (EQ(*keysym, Qmouse_2))
+@@ -1386,6 +1400,14 @@
+ 	*keysym = Qbutton6up;
+       else if (EQ(*keysym, Qmouse_7))
+ 	*keysym = Qbutton7up;
++      else if (EQ(*keysym, Qmouse_8))
++	*keysym = Qbutton8up;
++      else if (EQ(*keysym, Qmouse_9))
++	*keysym = Qbutton9up;
++      else if (EQ(*keysym, Qmouse_10))
++	*keysym = Qbutton10up;
++      else if (EQ(*keysym, Qmouse_11))
++	*keysym = Qbutton11up;
+     }
+ }
+ 
+@@ -1439,6 +1461,14 @@
+ 		returned_value->keysym = (down ? Qbutton6 : Qbutton6up); break;
+ 	      case 7:
+ 		returned_value->keysym = (down ? Qbutton7 : Qbutton7up); break;
++	      case 8:
++		returned_value->keysym = (down ? Qbutton8 : Qbutton8up); break;
++	      case 9:
++		returned_value->keysym = (down ? Qbutton9 : Qbutton9up); break;
++	      case 10:
++		returned_value->keysym = (down ? Qbutton10 : Qbutton10up); break;
++	      case 11:
++		returned_value->keysym = (down ? Qbutton11 : Qbutton11up); break;
+ 	      default:
+ 		returned_value->keysym = (down ? Qbutton0 : Qbutton0up); break;
+ 	      }
+@@ -1539,7 +1569,11 @@
+       EQ (raw_key.keysym, Qbutton4) || EQ (raw_key.keysym, Qbutton4up) ||
+       EQ (raw_key.keysym, Qbutton5) || EQ (raw_key.keysym, Qbutton5up) ||
+       EQ (raw_key.keysym, Qbutton6) || EQ (raw_key.keysym, Qbutton6up) ||
+-      EQ (raw_key.keysym, Qbutton7) || EQ (raw_key.keysym, Qbutton7up))
++      EQ (raw_key.keysym, Qbutton7) || EQ (raw_key.keysym, Qbutton7up) ||
++      EQ (raw_key.keysym, Qbutton8) || EQ (raw_key.keysym, Qbutton8up) ||
++      EQ (raw_key.keysym, Qbutton9) || EQ (raw_key.keysym, Qbutton9up) ||
++      EQ (raw_key.keysym, Qbutton10) || EQ (raw_key.keysym, Qbutton10up) ||
++      EQ (raw_key.keysym, Qbutton11) || EQ (raw_key.keysym, Qbutton11up))
+     error ("Mouse-clicks can't appear in saved keyboard macros.");
+ 
+   XEVENT (event)->channel = Vselected_console;
+@@ -3972,6 +4006,10 @@
+ 	  EQ (keysym, Qbutton5) ||
+ 	  EQ (keysym, Qbutton6) ||
+ 	  EQ (keysym, Qbutton7) ||
++	  EQ (keysym, Qbutton8) ||
++	  EQ (keysym, Qbutton9) ||
++	  EQ (keysym, Qbutton10) ||
++	  EQ (keysym, Qbutton11) ||
+ 	  EQ (keysym, Qbutton0up) ||
+ 	  EQ (keysym, Qbutton1up) ||
+ 	  EQ (keysym, Qbutton2up) ||
+@@ -3979,7 +4017,11 @@
+ 	  EQ (keysym, Qbutton4up) ||
+ 	  EQ (keysym, Qbutton5up) ||
+ 	  EQ (keysym, Qbutton6up) ||
+-	  EQ (keysym, Qbutton7up))))
++	  EQ (keysym, Qbutton7up) ||
++	  EQ (keysym, Qbutton8up) ||
++	  EQ (keysym, Qbutton9up) ||
++	  EQ (keysym, Qbutton10up) ||
++	  EQ (keysym, Qbutton11up))))
+     return;
+ 
+   /* If this command in this map is shadowed by some other map, ignore it. */
+@@ -4289,6 +4331,10 @@
+   defsymbol (&Qbutton5, "button5");
+   defsymbol (&Qbutton6, "button6");
+   defsymbol (&Qbutton7, "button7");
++  defsymbol (&Qbutton8, "button8");
++  defsymbol (&Qbutton9, "button9");
++  defsymbol (&Qbutton10, "button10");
++  defsymbol (&Qbutton11, "button11");
+   defsymbol (&Qbutton0up, "button0up");
+   defsymbol (&Qbutton1up, "button1up");
+   defsymbol (&Qbutton2up, "button2up");
+@@ -4297,6 +4343,10 @@
+   defsymbol (&Qbutton5up, "button5up");
+   defsymbol (&Qbutton6up, "button6up");
+   defsymbol (&Qbutton7up, "button7up");
++  defsymbol (&Qbutton8up, "button8up");
++  defsymbol (&Qbutton9up, "button9up");
++  defsymbol (&Qbutton10up, "button10up");
++  defsymbol (&Qbutton11up, "button11up");
+   defsymbol (&Qmouse_1, "mouse-1");
+   defsymbol (&Qmouse_2, "mouse-2");
+   defsymbol (&Qmouse_3, "mouse-3");
+@@ -4304,6 +4354,10 @@
+   defsymbol (&Qmouse_5, "mouse-5");
+   defsymbol (&Qmouse_6, "mouse-6");
+   defsymbol (&Qmouse_7, "mouse-7");
++  defsymbol (&Qmouse_8, "mouse-8");
++  defsymbol (&Qmouse_9, "mouse-9");
++  defsymbol (&Qmouse_10, "mouse-10");
++  defsymbol (&Qmouse_11, "mouse-11");
+   defsymbol (&Qdown_mouse_1, "down-mouse-1");
+   defsymbol (&Qdown_mouse_2, "down-mouse-2");
+   defsymbol (&Qdown_mouse_3, "down-mouse-3");
+@@ -4311,6 +4365,10 @@
+   defsymbol (&Qdown_mouse_5, "down-mouse-5");
+   defsymbol (&Qdown_mouse_6, "down-mouse-6");
+   defsymbol (&Qdown_mouse_7, "down-mouse-7");
++  defsymbol (&Qdown_mouse_8, "down-mouse-8");
++  defsymbol (&Qdown_mouse_9, "down-mouse-9");
++  defsymbol (&Qdown_mouse_10, "down-mouse-10");
++  defsymbol (&Qdown_mouse_11, "down-mouse-11");
+   defsymbol (&Qmenu_selection, "menu-selection");
+   defsymbol (&QLFD, "LFD");
+   defsymbol (&QTAB, "TAB");

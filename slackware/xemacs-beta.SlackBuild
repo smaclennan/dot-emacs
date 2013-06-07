@@ -60,6 +60,9 @@ if [ "$ARCH" = "x86_64" ]; then
   patch -p1 < $CWD/patches/lib64.patch
 fi
 
+# Add buttons 8 thru 11 inclusive
+patch -p1 < $CWD/patches/extra-buttons.patch
+
 CFLAGS="$SLKCFLAGS" \
   ./configure \
   --prefix=/usr \
