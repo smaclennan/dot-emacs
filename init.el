@@ -1383,8 +1383,6 @@ We ignore the 3rd number."
   (fold-add-to-marks-list 'makefile-mode "# {{{ " "# }}}" nil t))
 )
 
-(setq dired-no-confirm '(kill-file-buffer))
-
 ;;; ----------------------------------------------
 ;; These come from the site-lisp directory
 
@@ -1396,15 +1394,6 @@ We ignore the 3rd number."
 
 (when (would-like 'whitespace)
   (my-feature-cond (xemacs (whitespace-global-mode))))
-
-(when (would-like 'dired-extras)
-  (add-hook 'dired-load-hook 'dired-extras-init)
-  (setq dired-listing-switches "-l")
-
-  (and (not (assoc "\\.pdf$" auto-mode-alist))
-       (exec-installed-p "acroread")
-       (setq auto-mode-alist
-	     (cons '("\\.pdf$" . do-acroread) auto-mode-alist))))
 
 ;;}}}
 

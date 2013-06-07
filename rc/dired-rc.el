@@ -18,18 +18,20 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;; To install: (add-hook 'dired-load-hook 'dired-extras-init)
-;; Note: Putting a (require 'dired) here really slows things down
-
-(eval-when-compile (require 'dired))
-
 (defvar dired-du-command "du" "*`du' command.")
 (defvar dired-du-args    "-s" "*Arguments to du.")
 
-;;;###autoload
-(defun dired-extras-init ()
-  (define-key dired-mode-map "\C-cu" 'dired-do-du)
-  (define-key dired-mode-map "\C-ca" 'dired-toggle-all))
+(define-key dired-mode-map "\C-cu" 'dired-do-du)
+(define-key dired-mode-map "\C-ca" 'dired-toggle-all)
+
+(setq dired-listing-switches "-l")
+
+(and (not (assoc "\\.pdf$" auto-mode-alist))
+     (exec-installed-p "acroread")
+     (setq auto-mode-alist
+	   (cons '("\\.pdf$" . do-acroread) auto-mode-alist)))
+
+(setq dired-no-confirm '(kill-file-buffer))
 
 ;;;###autoload
 (defun dired-do-du ()
@@ -108,7 +110,4 @@ Otherwise, invoke `dired-find-file' on the file."
    (local-set-key "e" 'dired-follow-file)
    (local-set-key "f" 'dired-follow-file)))
 
-
 ;; End of email
-
-(provide 'dired-extras)
