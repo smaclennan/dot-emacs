@@ -271,9 +271,10 @@ instead, uses tag around or before point."
 (global-set-key [XF86_Switch_VT_12] 'lxr-next-defined)
 (global-set-key [(control f12)] 'lxr-defined-at-point)
 
-;; SAM HACK - period key broken on lappy
-(global-set-key [f6] ".")
-(global-set-key [(shift f6)] ">")
+(when (string= (getenv "HOSTNAME") "lappy.seanm.ca")
+  ;; SAM HACK - period key broken on lappy
+  (global-set-key [f6] ".")
+  (global-set-key [(shift f6)] ">"))
 
 ;; Tilt wheel on Logitech M500 + others
 ;;(global-set-key [button6] ')
@@ -284,65 +285,11 @@ instead, uses tag around or before point."
 (global-set-key [button8] 'yank)
 (global-set-key [button9] 'kill-region)
 
-
-(my-feature-cond
-  (emacs
-   ;; GNU Emacs really really needs a `signal-error-on-buffer-boundary'
-   (defun my-scroll-down (&optional arg)
-     "`scroll-down-command' with no signal on beginning-of-buffer."
-     (interactive "^P")
-     (condition-case nil
-	 (scroll-down arg)
-       (beginning-of-buffer)))
-
-   (defun my-scroll-up (&optional arg)
-     "`scroll-up-command' with no signal on end-of-buffer."
-     (interactive "^P")
-     (condition-case nil
-	 (scroll-up arg)
-       (end-of-buffer)))
-
-   (defun my-previous-line (&optional arg)
-     "`previous-line' with no signal on beginning-of-buffer."
-     (interactive "^p")
-     (condition-case nil
-	 (previous-line arg)
-       (beginning-of-buffer)))
-
-   (defun my-next-line (&optional arg)
-     "`next-line' with no signal on end-of-buffer."
-     (interactive "^p")
-     (condition-case nil
-	 (next-line arg)
-       (end-of-buffer)))
-
-   (global-set-key (kbd "<prior>") 'my-scroll-down)
-   (global-set-key "\M-v" 'my-scroll-down)
-   (global-set-key (kbd "<next>") 'my-scroll-up)
-   (global-set-key "\C-v" 'my-scroll-up)
-   (global-set-key (kbd "<up>") 'my-previous-line)
-   (global-set-key "\C-p" 'my-previous-line)
-   (global-set-key (kbd "<down>") 'my-next-line)
-   (global-set-key "\C-n" 'my-next-line)
-   ))
-
 (would-like 'lxr)
 
 ;; Cut and paste
 (setq interprogram-cut-function nil)
 (setq interprogram-paste-function nil)
-
-(my-feature-cond
- (emacs
-  (defun my-clipboard-copy (beg end)
-    (interactive "r")
-    (let ((text (buffer-substring beg end)))
-      (x-set-selection 'CLIPBOARD text) ;; for C-v
-      (x-set-selection 'PRIMARY text) ;; for mouse paste
-      (copy-region-as-kill beg end))) ;; and the kill buffer
-
-  (global-set-key [(shift insert)] 'x-clipboard-yank)
-  (global-set-key [(control insert)] 'my-clipboard-copy)))
 
 ;; iswitchb
 (my-feature-cond
@@ -352,15 +299,6 @@ instead, uses tag around or before point."
 (global-set-key "\C-x\C-l"	'list-buffers)
 
 (global-set-key "\C-x\C-k"	'kill-buffer)
-
-;; Hyper-apropos bindings
-(define-key global-map [(control h) a] 'hyper-apropos)
-(define-key global-map [(control h) c] 'hyper-describe-key-briefly)
-(define-key global-map [(control h) f] 'hyper-describe-function)
-(define-key global-map [(control h) k] 'hyper-describe-key)
-(define-key global-map [(control h) v] 'hyper-describe-variable)
-(define-key global-map [(control h) w] 'hyper-where-is)
-
 
 (would-like 'intellimouse)
 ;(when (fboundp 'mwheel-install)
