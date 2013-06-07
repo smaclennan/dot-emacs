@@ -16,9 +16,6 @@
 (defvar running-as-root (string= (user-login-name) "root")
   "Non-nil if running as root.")
 
-(defconst emacs-start-time (current-time)
-  "The time emacs started.")
-
 (defvar dot-dir
   ;; When called from load
   (if load-file-name
@@ -915,33 +912,6 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
   ;; Force it to a float for 32-bit systems.
   (let ((time (seconds-to-time (string-to-number (concat seconds ".0")))))
     (message "%s" (format-time-string "%a %b %d %T %Z %Y" time))))
-
-(defun my-process-time ()
-  "Process time in seconds"
-  (my-feature-cond
-   (xemacs (truncate (caddr (current-process-time))))
-   (emacs (let ((time (time-since emacs-start-time)))
-	    (+ (* (car time) 65535) (cadr time))))))
-
-(defun uptime (&optional time)
-  (interactive)
-  (unless time (setq time (my-process-time)))
-  (let* ((upminutes (/ time 60))
-	 (minutes (% upminutes 60))
-	 (hours   (% (/ upminutes 60) 24))
-	 (days  (/ upminutes 1440)))
-    (message
-     (concat "up"
-	     (cond ((> days 1) (format " %d days" days))
-		   ((= days 1) " 1 day"))
-	     (and (> days 0) (> hours 0) ",")
-	     (cond ((> hours 1) (format " %d hours" hours))
-		   ((= hours 1) (format " 1 hour")))
-	     (and (> hours 0) (> minutes 0) " and")
-	     (cond ((> minutes 1) (format " %d minutes" minutes))
-		   ((= minutes 1) (format " 1 minute")))
-	     (and (= upminutes 0) " seconds")
-	     ))))
 
 (defun append-to-list (list-var element)
   "Append to the value of LIST-VAR the element ELEMENT if it isn't there yet.
