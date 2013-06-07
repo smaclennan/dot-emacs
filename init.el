@@ -433,6 +433,16 @@ instead, uses tag around or before point."
 (global-set-key [f6] ".")
 (global-set-key [(shift f6)] ">")
 
+;; Tilt wheel on Logitech M500 + others
+;;(global-set-key [button6] ')
+;;(global-set-key [button7] ')
+
+;; Side buttons on Logitech M500 + others
+;; NOTE: Needs patch
+(global-set-key [button8] 'yank)
+(global-set-key [button9] 'kill-region)
+
+
 (my-feature-cond
   (emacs
    ;; GNU Emacs really really needs a `signal-error-on-buffer-boundary'
