@@ -8,6 +8,7 @@ EMACS = emacs
 # Mine
 ELCS =  extent.elc \
 	itimer.elc \
+	missing.elc \
 
 # Others
 ELCS += filladapt.elc \
