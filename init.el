@@ -703,18 +703,11 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
       compilation-error-regexp-systems-list '(gnu)
       compile-command (concat "make " make-j " "))
 
-(my-feature-cond
- (emacs
-  ;; Let's see how we like this. Unfortunately it also stops at the
-  ;; first warning. Which may be irritating.
-  (setq compilation-scroll-output 'first-error)))
-
 (defun my-do-compile (cmd)
   (save-some-buffers (not compilation-ask-about-save) nil)
   (my-feature-cond
    (xemacs (compile-internal cmd "No more errors"))
    (emacs  (compilation-start cmd))))
-
 
 ;; This gives the compilation buffer its own frame
 ;;(push "*compilation*" special-display-buffer-names)

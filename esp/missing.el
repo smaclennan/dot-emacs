@@ -90,3 +90,6 @@ Not all properties are supported."
 (setq inhibit-startup-echo-area-message "seanm")
 (setq inhibit-startup-echo-area-message "sam")
 
+;; Let's see how we like this. Unfortunately it also stops at the
+;; first warning. Which may be irritating.
+(setq compilation-scroll-output 'first-error)
