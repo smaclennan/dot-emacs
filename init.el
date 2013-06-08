@@ -955,10 +955,6 @@ A negative arg comments out the `new' line[s]."
 (when running-xemacs
   (would-like 'introspector))
 
-;; SAM For some reason this causes a compile window to pop up.
-;;     I don't use it, so just leave it off.
-;; (when (would-like 'folding) (folding-mode nil t))
-
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 
@@ -1059,15 +1055,6 @@ We ignore the 3rd number."
 (setq whitespace-chars 'tabs)
 (setq whitespace-install-submenu t)
 
-;; folding-mode
-;; Folding mode does not work with isearch
-(when nil
-(when (would-like 'folding)
-  (setq folding-mode-menu-name "Fold")
-  (folding-mode-add-find-file-hook)
-  (fold-add-to-marks-list 'makefile-mode "# {{{ " "# }}}" nil t))
-)
-
 ;;; ----------------------------------------------
 ;; These come from the site-lisp directory
 
@@ -1112,8 +1099,8 @@ We ignore the 3rd number."
 
   (load (concat dot-dir "work") t)
 
-;; I use a common init.el across many machines. The `user-init' file
-;; allows for user/machine specific initialization.
+  ;; I use a common init.el across many machines. The `user-init' file
+  ;; allows for user/machine specific initialization.
   (unless running-as-root
     (load (concat dot-dir "user-init") t)))
 
