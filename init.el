@@ -67,11 +67,6 @@
 	     nil))
    (emacs (would-like package no-list))))
 
-(defvar have-sound
-  (and (fboundp 'device-sound-enabled-p)
-       (device-sound-enabled-p))
-  "* Non-nil if sound is enabled. XEmacs defaults this correctly, GNU Emacs cannot.")
-
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
   (setq rcfiles-directory (concat dot-dir "rc")))
@@ -720,41 +715,6 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
     (setq compile-command cmd)
     (my-do-compile compile-command)))
 
-;;; -------------------------------------------------------------------------
-;; Audible compilation completion
-(defvar loud-compile    nil   "* If t, `ding' when compile finished.")
-
-(defun loud-finish (buff exit)
-  "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
-  (and loud-compile
-       (not (string= exit "finished\n"))
-       (ding)))
-(my-feature-cond
- (xemacs (setq compilation-finish-function 'loud-finish))
- (t (add-to-list 'compilation-finish-functions 'loud-finish)))
-
-(my-feature-cond
- (xemacs
-  ;; Note: XEmacs 21.5 will ding the visible bell if this funciton
-  ;; returns nil, which it will on a failure.
-  (defun loud-finish-fancy (buff exit)
-    "If `loud-compile', `ding'. Assign to `compilation-finish-function'."
-    (when loud-compile
-      (let ((visible-bell nil))
-	(if (string= exit "finished\n")
-	    (ding nil 'compile-ok)
-	  (ding nil 'compile-failed)))))
-
-  (when have-sound
-    (condition-case nil
-	(progn
-	  (load-sound-file "YouTheMan.au" 'compile-ok)
-	  (load-sound-file "Snicker.au" 'compile-failed)
-	  (setq compilation-finish-function 'loud-finish-fancy)
-	  (setq loud-compile t))
-      (error
-       (push "Sound" would-have-liked-list))))))
-
 ;;----------------------------------------------------------------
 (defvar make-clean-command "make clean all"
   "*Command used by the `make-clean' function.")
@@ -995,10 +955,6 @@ A negative arg comments out the `new' line[s]."
 (when running-xemacs
   (would-like 'introspector))
 
-;; SAM For some reason this causes a compile window to pop up.
-;;     I don't use it, so just leave it off.
-;; (when (would-like 'folding) (folding-mode nil t))
-
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 
@@ -1099,15 +1055,6 @@ We ignore the 3rd number."
 (setq whitespace-chars 'tabs)
 (setq whitespace-install-submenu t)
 
-;; folding-mode
-;; Folding mode does not work with isearch
-(when nil
-(when (would-like 'folding)
-  (setq folding-mode-menu-name "Fold")
-  (folding-mode-add-find-file-hook)
-  (fold-add-to-marks-list 'makefile-mode "# {{{ " "# }}}" nil t))
-)
-
 ;;; ----------------------------------------------
 ;; These come from the site-lisp directory
 
@@ -1152,8 +1099,8 @@ We ignore the 3rd number."
 
   (load (concat dot-dir "work") t)
 
-;; I use a common init.el across many machines. The `user-init' file
-;; allows for user/machine specific initialization.
+  ;; I use a common init.el across many machines. The `user-init' file
+  ;; allows for user/machine specific initialization.
   (unless running-as-root
     (load (concat dot-dir "user-init") t)))
 
