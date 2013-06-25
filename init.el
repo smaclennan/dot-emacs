@@ -280,6 +280,9 @@ instead, uses tag around or before point."
 (global-set-key [button8] 'yank)
 (global-set-key [button9] 'kill-region)
 
+;; C-h =
+(define-key help-map ?= #'introspect-cursor-position)
+
 (would-like 'lxr)
 
 ;; Cut and paste
@@ -784,10 +787,6 @@ A negative arg comments out the `new' line[s]."
 ;;}}}
 
 ;;{{{ Packages
-
-;; C-h =
-(when running-xemacs
-  (would-like 'introspector))
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
