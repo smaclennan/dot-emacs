@@ -1,3 +1,7 @@
+;; Check for older (21.x) GNU Emacs
+(unless (or (featurep 'xemacs) (featurep 'emacs))
+  (provide 'emacs))
+
 (defun locate-data-file (name)
   ;; Try local first
   (let ((file (concat dot-dir "site-packages/etc/" name)))
