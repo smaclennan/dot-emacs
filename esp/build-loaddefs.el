@@ -24,14 +24,13 @@
 	    ;; The \; is so we do not match this autoload
 	    (while (search-forward ";\;;###autoload" nil t)
 	      (end-of-line) (forward-char)
-	      (unless (looking-at "^(def\\(un\\|alias\\|var\\) '?\\([A-Za-z0-9-]+\\)")
-		(error "%s: bad autoload line" file))
-	      (setq fun (match-string 2))
+	      (when (looking-at "^(def\\(un\\|alias\\|var\\) '?\\([A-Za-z0-9-]+\\)")
+		(setq fun (match-string 2))
 
-	      ;; Add to autoloads
-	      (set-buffer loaddefs-buf)
-	      (insert "(autoload '" fun " \"" base "\")\n")
-	      (set-buffer tmp-buf)))
+		;; Add to autoloads
+		(set-buffer loaddefs-buf)
+		(insert "(autoload '" fun " \"" base "\")\n")
+		(set-buffer tmp-buf))))
 
       (set-buffer loaddefs-buf)
       (save-buffer))))
