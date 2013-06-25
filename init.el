@@ -643,14 +643,13 @@ We ignore the 3rd number."
 ;;; Filladapt is a syntax-highlighting package.  When it is enabled it
 ;;; makes filling (e.g. using M-q) much much smarter about paragraphs
 ;;; that are indented and/or are set off with semicolons, dashes, etc.
-
-(when (would-like 'filladapt)
+(when (or (packagep 'text-modes t) (packagep 'filladapt t))
   (add-hook 'text-mode-hook 'turn-on-filladapt-mode)
   (add-hook 'mail-mode-hook 'turn-on-filladapt-mode))
 
 ;;; ------------------------------------------------------------
 ;; Start the server program
-(unless (or running-windoze running-as-root)
+(unless (or running-windoze (string= (user-login-name) "root"))
   (my-feature-cond
    (xemacs (gnuserv-start)
 	   (setq gnuserv-frame (selected-frame)))
@@ -662,17 +661,14 @@ We ignore the 3rd number."
 (setq whitespace-chars 'tabs)
 (setq whitespace-install-submenu t)
 
-;;; ----------------------------------------------
-;; These come from the site-lisp directory
-
-;; ws-trim-mode
-(when (would-like 'ws-trim)
-  (global-ws-trim-mode t)
-  (setq ws-trim-mode-line-string nil)
-  (set-default 'ws-trim-level 1))
-
 (when (would-like 'whitespace)
   (my-feature-cond (xemacs (whitespace-global-mode))))
+
+;;; ----------------------------------------------
+;; ws-trim-mode
+(global-ws-trim-mode t)
+(setq ws-trim-mode-line-string nil)
+(set-default 'ws-trim-level 1)
 
 ;;}}}
 
@@ -692,13 +688,10 @@ We ignore the 3rd number."
 
   ;; I use a common init.el across many machines. The `user-init' file
   ;; allows for user/machine specific initialization.
-  (unless running-as-root
-    (load (concat dot-dir "user-init") t)))
+  (load (concat dot-dir "user-init") t)
 
-(setq initial-scratch-message
-      ";; This buffer is for goofing around in.
-
-")
+  (setq initial-scratch-message ";; This buffer is for goofing around in.\n\n")
+  )
 
 ;;{{{ Final results
 
