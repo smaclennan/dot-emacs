@@ -28,7 +28,7 @@
   "The init file directory.")
 
 ;; We need to setup the load-path before we can require sam-common
-;; Not xemacs is safer for old GNU Emacs versions (see sam-common)
+;; Not xemacs is safer for old GNU Emacs versions
 (when (not (featurep 'xemacs))
   (require 'cl)
   (add-to-list 'load-path (concat dot-dir "esp"))
@@ -86,9 +86,6 @@
       inhibit-startup-message t)
 
 (setq visible-bell t)
-
-(setq custom-file (concat dot-dir "custom.el"))
-(load custom-file t)
 
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -795,7 +792,6 @@ We ignore the 3rd number."
 
 (setq initial-scratch-message
       ";; This buffer is for goofing around in.
-;; All data will be destroyed on exit.
 
 ")
 
@@ -807,21 +803,22 @@ We ignore the 3rd number."
 ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
 ;; one. So use a timer to get past them.
 (unless noninteractive
-  (start-itimer "delayed-msg"
-		(lambda ()
-		  (if would-have-liked-list
-		      ;; Warn that some features not found
-		      (progn (ding)
-			     (message "Features not found: %S" would-have-liked-list))
-		    ;; Else display a friendly message
-		    (let ((hour (nth 2 (decode-time))))
-		      (message "Good %s %s"
-			       (cond ((< hour 12) "morning")
-				     ((< hour 18) "afternoon")
-				     (t           "evening"))
-			       (user-full-name))))
-		  (delete-itimer "delayed-msg"))
-		1))
+  (start-itimer
+   "delayed-msg"
+   (lambda ()
+     (if would-have-liked-list
+	 ;; Warn that some features not found
+	 (progn (ding)
+		(message "Features not found: %S" would-have-liked-list))
+       ;; Else display a friendly message
+       (let ((hour (nth 2 (decode-time))))
+	 (message "Good %s %s"
+		  (cond ((< hour 12) "morning")
+			((< hour 18) "afternoon")
+			(t           "evening"))
+		  (user-full-name))))
+     (delete-itimer "delayed-msg"))
+   1))
 
 ;;}}}
 
