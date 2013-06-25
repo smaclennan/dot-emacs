@@ -68,6 +68,7 @@
 
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
+  (message "Warning: rcfiles not installed.")
   (setq rcfiles-directory (concat dot-dir "rc")))
 
 ;;}}}
@@ -171,8 +172,7 @@
 (when window-system (load (concat rcfiles-directory "/window-config")))
 
 ;; Do this *after* setting the modeline colours
-(when (fboundp 'display-time)
-  (display-time))
+(when (fboundp 'display-time) (display-time))
 
 ;;}}}
 
@@ -535,32 +535,6 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (when (file-directory-p gtag-dir)
     (add-to-list 'load-path gtag-dir)
     (autoload 'gtags-mode "gtags" "" t)))
-
-;;; -------------------------------------------------------------------------
-;; c macro expansion
-
-(defun c-macro-expand-at-point (subst)
-  (interactive "P")
-  (let (start end)
-    (if (region-exists-p)
-	(setq start (region-beginning)
-	      end (region-end))
-      ;; symbol-near-point from 21.2-b45
-      (save-excursion
-	(if (or (bobp) (not (memq (char-syntax (char-before)) '(?w ?_))))
-	    (while (not (looking-at "\\sw\\|\\s_\\|\\'"))
-	      (forward-char 1)))
-	(while (looking-at "\\sw\\|\\s_")
-	  (forward-char 1))
-	(when (re-search-backward "\\sw\\|\\s_" nil t)
-	  (forward-char 1)
-	  (setq end (point))
-	  (forward-sexp -1)
-	  (while (looking-at "\\s'")
-	    (forward-char 1))
-	  (setq start (point)))))
-    ;; end of symbol-near-point
-    (c-macro-expand start end subst)))
 
 ;;; -------------------------------------------------------------------------
 (unless running-windoze (would-like 'svn))

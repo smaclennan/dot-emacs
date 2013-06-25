@@ -152,4 +152,30 @@ Will not overwrite current variables if they exist."
 		   " * End:\n"
 		   " */\n") offset offset)))
 
+;;; -------------------------------------------------------------------------
+;; c macro expansion
+
+(defun c-macro-expand-at-point (subst)
+  (interactive "P")
+  (let (start end)
+    (if (region-exists-p)
+	(setq start (region-beginning)
+	      end (region-end))
+      ;; symbol-near-point from 21.2-b45
+      (save-excursion
+	(if (or (bobp) (not (memq (char-syntax (char-before)) '(?w ?_))))
+	    (while (not (looking-at "\\sw\\|\\s_\\|\\'"))
+	      (forward-char 1)))
+	(while (looking-at "\\sw\\|\\s_")
+	  (forward-char 1))
+	(when (re-search-backward "\\sw\\|\\s_" nil t)
+	  (forward-char 1)
+	  (setq end (point))
+	  (forward-sexp -1)
+	  (while (looking-at "\\s'")
+	    (forward-char 1))
+	  (setq start (point)))))
+    ;; end of symbol-near-point
+    (c-macro-expand start end subst)))
+
 (require 'my-compile)
