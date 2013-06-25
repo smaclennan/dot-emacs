@@ -36,70 +36,22 @@
 	(would-like 'pc-select)
 	(pc-selection-mode))))
 
-;; Set the cursor properly for Emacs
-(my-feature-cond
-  (emacs
-   (blink-cursor-mode 0)
-   (set-cursor-color "red")))
-
 ;; -------
 ;; Title bar - almost every window system supports a title bar
 ;; The first element must be a string... sighhh.
-(my-feature-cond
-  (sxemacs
-   (setq frame-title-format
-	 '("SXEmacs " emacs-program-version "  " host-name ":"
-	   (buffer-file-name "%f" "%b"))))
-  (xemacs
-   (setq frame-title-format
-	 '("XEmacs " emacs-program-version "  " host-name ":"
-	   (buffer-file-name "%f" "%b"))))
-  (emacs
-   (setq frame-title-format
-	 '("Emacs " emacs-version "  " host-name ":"
-	   (buffer-file-name "%f" "%b"))))
-  (t
-   (setq frame-title-format
-	 '("???? " host-name ":" (buffer-file-name "%f" "%b")))))
+(unless (boundp 'emacs-program-version) (defvar emacs-program-version emacs-version))
+
+(defvar emacs-str (concat (if (featurep 'sxemacs) "S")
+			  (if (featurep 'xemacs) "X")
+			  "Emacs " emacs-program-version " " host-name ":"))
+
+(setq frame-title-format '("" emacs-str (buffer-file-name "%f" "%b")))
 
 ;; -------
-;; Menubar
-(my-feature-cond
-  (xemacs (setq menu-accelerator-enabled 'menu-fallback
-		menu-accelerator-modifiers '(alt))))
-
-;; add speedbar
 (my-feature-cond
   (xemacs
-   (when (packagep 'speedbar t)
-     (add-menu-button '("Tools")
-		      ["Speedbar" speedbar-frame-mode
-		       :style toggle
-		       :selected (and (boundp 'speedbar-frame)
-				      (frame-live-p speedbar-frame)
-				      (frame-visible-p speedbar-frame))]
-		      "--"))))
-
-;; -------
-;; Toolbar
-(my-feature-cond
-  (xemacs (set-specifier default-toolbar-visible-p nil))
-  (t (tool-bar-mode 0)))
-
-;; -------
-;; Gutter - turn it off
-;; Old way
-;;(when (boundp 'default-gutter-visible-p)
-;;  (set-specifier default-gutter-visible-p nil))
-;; New way
-(when (boundp 'gutter-buffers-tab-enabled)
-  (setq gutter-buffers-tab-enabled nil))
-
-;; -------
-;; Pointer used during garbage collection.
-;; .xbm not supported under windoze
-(my-feature-cond
-  (xemacs
+   ;; Pointer used during garbage collection.
+   ;; .xbm not supported under windoze
    (let ((img  (locate-data-file "recycle-image.xbm"))
 	 (mask (locate-data-file "recycle-mask.xbm")))
      (if (and img mask (file-exists-p img) (file-exists-p mask)
@@ -110,7 +62,39 @@
 				  :mask-file mask
 				  :foreground "black"
 				  :background "chartreuse1"))
-       (set-glyph-image gc-pointer-glyph "recycle2.xpm")))))
+       (set-glyph-image gc-pointer-glyph "recycle2.xpm")))
+
+   ;; Menubar
+   (setq menu-accelerator-enabled 'menu-fallback
+	 menu-accelerator-modifiers '(alt))
+
+   ;; Speedbar
+   (when (packagep 'speedbar t)
+     (add-menu-button '("Tools")
+		      ["Speedbar" speedbar-frame-mode
+		       :style toggle
+		       :selected (and (boundp 'speedbar-frame)
+				      (frame-live-p speedbar-frame)
+				      (frame-visible-p speedbar-frame))]
+		      "--"))
+
+   ;; Gutter - turn it off
+   (if (boundp 'gutter-buffers-tab-enabled)
+       (setq gutter-buffers-tab-enabled nil)
+     ;; Old way
+     (if (boundp 'default-gutter-visible-p)
+	 (set-specifier default-gutter-visible-p nil)))
+
+   ;; Toolbar
+   (set-specifier default-toolbar-visible-p nil))
+
+  (t
+   ;; Toolbar
+   (tool-bar-mode 0)
+
+   ;; Set the cursor properly for Emacs
+   (blink-cursor-mode 0)
+   (set-cursor-color "red")))
 
 ;; -------
 ;; MISC
