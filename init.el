@@ -316,113 +316,8 @@ instead, uses tag around or before point."
 
 ;;{{{ Programming Packages
 
-;;; -------------------------------------------------------------------------
-;; FONT LOCK
-;; See font-lock.el for a description of why it is called font lock.
-
-;; Load it now so we can modify the fonts
-(require 'font-lock)
-
-;; Maximum colour but minimum chatter
-(setq-default font-lock-maximum-decoration t
-	      font-lock-verbose nil
-	      font-lock-maximum-size nil)
-
-(when (featurep 'xemacs)
-  ;; Of all the modes, font-lock *least* needs a modeline
-  ;; indicator. If the buffer is colourful, font-lock is on.
-  ;; The only thing you lose is the ability to toggle it.
-  (let ((el (assq 'font-lock-mode minor-mode-alist)))
-    (if el (setcdr el '("")))))
-
-;; Change a couple of faces
-(make-face-bold 'font-lock-function-name-face)
-(set-face-foreground 'font-lock-function-name-face "blue")
-;; Um, this is the default
-;(set-face-foreground 'font-lock-string-face "green4")
-(if window-system
-    (set-face-foreground 'font-lock-comment-face "FireBrick")
-  ;; Consoles have less colors to play with
-  (set-face-foreground 'font-lock-comment-face "red")
-  (set-face-foreground 'font-lock-string-face "green")
-  (set-face-foreground 'font-lock-keyword-face "blue")
-  (set-face-foreground 'font-lock-variable-name-face "purple")
-  )
-
-;; -------------------------------------------------------------------------
-;; font-lock-comment-warn
-;; I want all comments with my initials (SAM) at the start to be very bold
-(defface font-lock-comment-warn-face
-  '((((class color))  (:foreground "red" :bold t :italic t))
-    (((class grayscale) (background light))
-     (:foreground "DimGray" :bold t :italic t))
-    (((class grayscale) (background dark))
-     (:foreground "LightGray" :bold t :italic t))
-    (t (:bold t)))
-  "Font Lock mode face used to highlight warning comments."
-  :group 'font-lock-faces)
-
-(my-feature-cond
- (xemacs
-  (defun setup-font-lock-keywords ()
-    (let ((c-regexp "\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)"))
-      (setq c-font-lock-keywords-1
-	    (append c-font-lock-keywords-1
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c-font-lock-keywords-2
-	    (append c-font-lock-keywords-2
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c-font-lock-keywords-3
-	    (append c-font-lock-keywords-3
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-
-      (setq c++-font-lock-keywords-1
-	    (append c++-font-lock-keywords-1
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c++-font-lock-keywords-2
-	    (append c++-font-lock-keywords-2
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c++-font-lock-keywords-3
-	    (append c++-font-lock-keywords-3
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (when nil ;; SAM NOT YET
-      (setq go-mode-font-lock-keywords
-	    (append go-mode-font-lock-keywords
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      ) ;; SAM
-      ))
-
-  (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
-    (setq lisp-font-lock-keywords-1
-	  (append lisp-font-lock-keywords-1
-		  (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
-    (setq lisp-font-lock-keywords-2
-	  (append lisp-font-lock-keywords-2
-		  (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
-    )
-  ) ;; xemacs
-
-(t ;; GNU emacs
- ;; SAM This *should* work for XEmacs too since XEmacs supports
- ;; font-lock-add-keywords but even the example doesn't work.
- (defun setup-font-lock-keywords ()
-   (font-lock-add-keywords
-    'c-mode
-    '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t)))
-   (font-lock-add-keywords
-    'c++-mode
-    '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t))))
-
- (font-lock-add-keywords
-  'emacs-lisp-mode
-  '(("; ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
- (font-lock-add-keywords
-  'sh-mode
-  '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
- (font-lock-add-keywords
-  'makefile-mode
-  '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
- ))
+;; Always want font-lock
+(turn-on-font-lock)
 
 ;; -------------------------------------------------------------------------
 ;; KSH MODE
@@ -587,6 +482,16 @@ The test for presence of ELEMENT is done with `equal'."
 	     (string-to-number (match-string 2 number) 16)
 	     (string-to-number (match-string 3 number) 16)))
    (t (error "Invalid"))))
+
+(defun load-path-dirs ()
+  (interactive)
+  (let (dirs)
+    (dolist (dir load-path)
+      (when (string-match "/lisp.*" dir)
+	(setq dir (replace-match "" nil nil dir)))
+      (add-to-list 'dirs dir))
+    (message "%S" dirs)
+    ))
 
 ;;; -------------------------------------------------------------------------
 ;;  isearch "stuff"
