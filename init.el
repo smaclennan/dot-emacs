@@ -101,9 +101,6 @@
      (would-like 'jka-compr)
      (auto-compression-mode 1))
 
-;; Needed by ediff - exists in `efs'
-(or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
-
 ;; Turn off some modes/functions if they are missing
 
 ;; Always turn this mode off
@@ -352,46 +349,12 @@ instead, uses tag around or before point."
   (set-face-foreground 'font-lock-string-face "green")
   (set-face-foreground 'font-lock-keyword-face "blue")
   (set-face-foreground 'font-lock-variable-name-face "purple")
-  (add-hook 'ediff-load-hook 'my-ediff-colours)
   )
 
 (defun my-set-face (face fg bg &optional prop)
   (set-face-foreground face fg)
   (set-face-background face bg)
   (when prop (set-face-property face prop t)))
-
-;; Ediff is really bad under tty
-(defun my-ediff-colours ()
-  (if (or (featurep 'xemacs) (>= emacs-major-version 22))
-      (progn
-	(my-set-face 'ediff-current-diff-A "black" "yellow")
-	(my-set-face 'ediff-current-diff-B "black" "yellow")
-	(my-set-face 'ediff-current-diff-C "black" "yellow")
-	(my-set-face 'ediff-fine-diff-A    "red"   "yellow")
-	(my-set-face 'ediff-fine-diff-B    "red"   "yellow")
-	(my-set-face 'ediff-fine-diff-C    "red"   "yellow")
-	(my-set-face 'ediff-odd-diff-A     "black" "white" 'highlight)
-	(my-set-face 'ediff-odd-diff-B     "black" "white" 'highlight)
-	(my-set-face 'ediff-even-diff-A    "black" "white" 'highlight)
-	(my-set-face 'ediff-even-diff-B    "black" "white" 'highlight)
-	)
-    ; SAM not yet
-    ;(my-set-face 'ediff-current-diff-face-A "black" "yellow")
-    ;(my-set-face 'ediff-current-diff-face-B "black" "yellow")
-    ;(my-set-face 'ediff-current-diff-face-C "black" "yellow")
-    ;(my-set-face 'ediff-fine-diff-face-A    "red"   "yellow")
-    ;(my-set-face 'ediff-fine-diff-face-B    "red"   "yellow")
-    ;(my-set-face 'ediff-fine-diff-face-C    "red"   "yellow")
-    ;(my-set-face 'ediff-odd-diff-face-A     "black" "white" 'highlight)
-    ;(my-set-face 'ediff-odd-diff-face-B     "black" "white" 'highlight)
-    ;(my-set-face 'ediff-even-diff-face-A    "black" "white" 'highlight)
-    ;(my-set-face 'ediff-even-diff-face-B    "black" "white" 'highlight)
-    ))
-
-;; Ediff 1.76 bug - coding system was set to 'emacs-internal which
-;; doesn't seem to exist. You see it with ediff-buffers but not
-;; ediff-files. Just set it back to no-conversion.
-(setq ediff-coding-system-for-write 'no-conversion)
 
 ;; -------------------------------------------------------------------------
 ;; font-lock-comment-warn
@@ -467,14 +430,6 @@ instead, uses tag around or before point."
   'makefile-mode
   '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
  ))
-
-;;; -------------------------------------------------------------------------
-(when (would-like 'vc)
-  (setq vc-diff-switches "-u")
-  (would-like 'vc-ediff)
-  ;; From vc-git.el
-  (setq git-commits-coding-system nil)
-  )
 
 ;; -------------------------------------------------------------------------
 ;; KSH MODE
@@ -807,25 +762,6 @@ We ignore the 3rd number."
 	(setq t1-hi (- t1-hi 1))
 	(setq t1-lo (+ t1-lo 65536)))
     (list (- t1-hi t2-hi) (- t1-lo t2-lo)))))
-
-;; -------------------
-(when nil ;; SAM doesn't seem to be needed any more
-;; Hack to put the ediff control in the window (rather than off it)
-;; Needed for window manager like PWM that do not honor the window move
-;; request. The window will look strange until XEmacs updates it.
-(defvar ediff-control-frame-position (list (cons 'top 10) (cons 'left 10))
-  "* Where to put the control frame on the screen.")
-
-(defun ediff-control-frame-hack ()
-  (setq ediff-control-frame-parameters
-	(remassq 'left
-		 (remassq 'top ediff-control-frame-parameters)))
-  (setq ediff-control-frame-parameters
-	(nconc ediff-control-frame-parameters ediff-control-frame-position)))
-
-(add-hook 'ediff-load-hook 'ediff-control-frame-hack)
-)
-;; -------------------
 
 ;; for pui-list-packages
 ;;(if t
