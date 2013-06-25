@@ -286,8 +286,6 @@ instead, uses tag around or before point."
 (setq interprogram-cut-function nil)
 (setq interprogram-paste-function nil)
 
-(message "1") ;; SAM DBG
-
 ;; iswitchb
 (my-feature-cond
  (xemacs (iswitchb-default-keybindings))
@@ -476,8 +474,6 @@ instead, uses tag around or before point."
   (setq git-commits-coding-system nil)
   )
 
-(message "2") ;; SAM DBG
-
 ;; -------------------------------------------------------------------------
 ;; KSH MODE
 
@@ -530,14 +526,11 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;;; -------------------------------------------------------------------------
 ;; compile variables
-(message "3") ;; SAM DBG
-
 (setq compilation-read-command   nil
       compilation-ask-about-save nil
       compilation-window-height  12
       compilation-error-regexp-systems-list '(gnu)
       compile-command "make ")
-(message "4") ;; SAM DBG
 
 (defun my-do-compile (cmd)
   (save-some-buffers (not compilation-ask-about-save) nil)
