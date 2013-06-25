@@ -274,7 +274,8 @@ instead, uses tag around or before point."
 (global-set-key [button9] 'kill-region)
 
 ;; C-h =
-(define-key help-map ?= #'introspect-cursor-position)
+(when (featurep 'xemacs)
+  (define-key help-map ?= #'introspect-cursor-position))
 
 (global-set-key "\C-ck" 'browse-kill-ring)
 
