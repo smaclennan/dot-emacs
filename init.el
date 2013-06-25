@@ -240,8 +240,11 @@ instead, uses tag around or before point."
 (global-set-key [(shift f7)]    'make-clean)
 (global-set-key [XF86_Switch_VT_7] 'make-clean)
 (global-set-key [(control f7)]	'my-set-compile)
-(global-set-key [f8]		'grep)
-;; shift f8 taken
+(if (packagep 'igrep running-windoze)
+    (progn
+      (global-set-key [f8] 'igrep)
+      (global-set-key [(shift f8)] 'igrep-find))
+  (global-set-key [f8]		'grep))
 (global-set-key [(control f8)]	'my-checkpatch)
 (global-set-key [f9]		'my-isearch-word-forward)
 (global-set-key [(shift f9)]    'my-toggle-case-search)
@@ -623,30 +626,6 @@ Use region if it exists. My replacement for isearch-yank-word."
   (isearch-mode t (not (null regexp-p)) nil (not (interactive-p))))
 
 ;;; -------------------------------------------------------------------------
-(when (packagep 'igrep running-windoze)
-  ;;(igrep-insinuate)
-  (global-set-key [f8] 'igrep)
-  (global-set-key [(shift f8)] 'igrep-find)
-  (setq igrep-verbose-prompts nil)
-  (put 'igrep-files-default 'c-mode (lambda () "*.[ch]"))
-  (put 'igrep-files-default 'emacs-lisp-mode (lambda () "*.el"))
-
-  (defadvice igrep (before windowize activate)
-    "This removes a final false match from `igrep' on the finished
-line with `next-error'."
-    (setq compilation-finish-function
-	  '(lambda (buf status)
-	     (save-excursion
-	       (set-buffer buf)
-	       (save-excursion
-		 (goto-char (point-min))
-		 ;; Emacs has a "started" line and will have text
-		 ;; after "finished" and before "at".
-		 (while (re-search-forward "^Igrep \\(started\\|finished\\) .*$" nil t)
-		   (replace-match ""))))
-	     (setq compilation-finish-function nil))))
-)
-
 ;; For ispell
 (setq ispell-silently-savep t
       ispell-extra-args '("-W" "3"))
