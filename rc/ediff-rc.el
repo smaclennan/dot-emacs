@@ -6,6 +6,11 @@
 ;; Needed by ediff - exists in `efs'
 (or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
 
+(defun my-set-face (face fg bg &optional prop)
+  (set-face-foreground face fg)
+  (set-face-background face bg)
+  (when prop (set-face-property face prop t)))
+
 (unless window-system
   (when (or (featurep 'xemacs) (>= emacs-major-version 22))
     (my-set-face 'ediff-current-diff-A "black" "yellow")

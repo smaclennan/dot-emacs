@@ -6,6 +6,9 @@
 
 ;;{{{ Configuration variables / functions
 
+; This is the one key binding I must have... switch ASAP
+(global-set-key "\C-x\C-b" 'switch-to-buffer)
+
 (defvar running-windoze (eq system-type 'windows-nt)
   "Non-nil if running Windows.")
 
@@ -66,7 +69,6 @@
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
   (setq rcfiles-directory (concat dot-dir "rc")))
-(add-to-list 'load-path rcfiles-directory)
 
 ;;}}}
 
@@ -139,11 +141,6 @@
   (setq host-name system-name
 	domain-name (getenv "DOMAINNAME"))))
 
-;; These are missing
-(unless (boundp 'lpr-command)
-  (setq lpr-command "lpr"
-	lpr-switches nil))
-
 ;; cl-loop required for packages like etags under SXEmacs, but require does
 ;; not seem to work in 22.1.9. So explicitly load the module.
 (my-feature-cond (sxemacs (load-module "cl-loop")))
@@ -171,7 +168,7 @@
 
 ;;{{{ Windowing System Customization
 
-(when window-system (load "window-config"))
+(when window-system (load (concat rcfiles-directory "/window-config")))
 
 ;; Do this *after* setting the modeline colours
 (when (fboundp 'display-time)
@@ -351,11 +348,6 @@ instead, uses tag around or before point."
   (set-face-foreground 'font-lock-keyword-face "blue")
   (set-face-foreground 'font-lock-variable-name-face "purple")
   )
-
-(defun my-set-face (face fg bg &optional prop)
-  (set-face-foreground face fg)
-  (set-face-background face bg)
-  (when prop (set-face-property face prop t)))
 
 ;; -------------------------------------------------------------------------
 ;; font-lock-comment-warn
@@ -829,25 +821,9 @@ We ignore the 3rd number."
 
 ;;}}}
 
-;;{{{ Mail
-
-;; Authorization in .authrc
-
-(when (would-like 'sendmail)
-  (setq mail-user-agent 'sendmail-user-agent)
-  (setq user-mail-address (concat (user-login-name) "@" domain-name))
-  ;;(setq smtpmail-debug-info t)
-  )
-
-;; Domain specific mail
-(let ((domain-specific-init (concat dot-dir "mail-" domain-name)))
-  (when (file-exists-p domain-specific-init)
-    (load domain-specific-init)))
-
-;;}}}
-
 ;; If we don't have el-rcfiles then just load all the files now
 (unless (boundp 'rcfiles-version)
+  (add-to-list 'load-path rcfiles-directory)
   (dolist (rcfile (directory-files rcfiles-directory nil ".*-rc.el"))
     (when (string-match "\\(.*\\\)-rc.el" rcfile)
       (load (match-string 1 rcfile)))
