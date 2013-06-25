@@ -283,6 +283,9 @@ instead, uses tag around or before point."
 ;; C-h =
 (define-key help-map ?= #'introspect-cursor-position)
 
+(global-set-key "\C-ck" 'browse-kill-ring)
+
+
 (would-like 'lxr)
 
 ;; Cut and paste
@@ -791,9 +794,6 @@ A negative arg comments out the `new' line[s]."
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 
-(when (would-like 'browse-kill-ring)
-  (global-set-key (kbd "C-c k") 'browse-kill-ring))
-
 ;; tramp needs this
 ;; (subtract-time '(13818 19266) '(13818 19145))
 ;; => (0 121)
@@ -830,12 +830,6 @@ We ignore the 3rd number."
 (add-hook 'ediff-load-hook 'ediff-control-frame-hack)
 )
 ;; -------------------
-
-;; So ftp will work
-(my-feature-cond
- (xemacs
-  (when (would-like 'efs)
-    (setq efs-ftp-program-args (append efs-ftp-program-args '("-p"))))))
 
 ;; for pui-list-packages
 ;;(if t
@@ -936,7 +930,6 @@ We ignore the 3rd number."
   ;; allows for user/machine specific initialization.
   (unless running-as-root
     (load (concat dot-dir "user-init") t)))
-
 
 (setq initial-scratch-message
       ";; This buffer is for goofing around in.
