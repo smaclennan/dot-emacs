@@ -6,10 +6,6 @@
 
 ;;{{{ Configuration variables / functions
 
-(unless (boundp 'running-xemacs)
-  (defvar running-xemacs nil
-    "Non-nil when the current emacs is XEmacs."))
-
 (defvar running-windoze (eq system-type 'windows-nt)
   "Non-nil if running Windows.")
 
@@ -337,6 +333,13 @@ instead, uses tag around or before point."
 	      font-lock-verbose nil
 	      font-lock-maximum-size nil)
 
+(when (featurep 'xemacs)
+  ;; Of all the modes, font-lock *least* needs a modeline
+  ;; indicator. If the buffer is colourful, font-lock is on.
+  ;; The only thing you lose is the ability to toggle it.
+  (let ((el (assq 'font-lock-mode minor-mode-alist)))
+    (if el (setcdr el '("")))))
+
 ;; Change a couple of faces
 (make-face-bold 'font-lock-function-name-face)
 (set-face-foreground 'font-lock-function-name-face "blue")
@@ -389,13 +392,6 @@ instead, uses tag around or before point."
 ;; doesn't seem to exist. You see it with ediff-buffers but not
 ;; ediff-files. Just set it back to no-conversion.
 (setq ediff-coding-system-for-write 'no-conversion)
-
-(when running-xemacs
-  ;; Of all the modes, font-lock *least* needs a modeline
-  ;; indicator. If the buffer is colourful, font-lock is on.
-  ;; The only thing you lose is the ability to toggle it.
-  (let ((el (assq 'font-lock-mode minor-mode-alist)))
-    (if el (setcdr el '("")))))
 
 ;; -------------------------------------------------------------------------
 ;; font-lock-comment-warn
