@@ -377,14 +377,14 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
       compilation-error-regexp-systems-list '(gnu)
       compile-command "make ")
 
+;; This gives the compilation buffer its own frame
+;;(push "*compilation*" special-display-buffer-names)
+
 (defun my-do-compile (cmd)
   (save-some-buffers (not compilation-ask-about-save) nil)
   (my-feature-cond
    (xemacs (compile-internal cmd "No more errors"))
    (emacs  (compilation-start cmd))))
-
-;; This gives the compilation buffer its own frame
-;;(push "*compilation*" special-display-buffer-names)
 
 (defun my-set-compile ()
   (interactive)
@@ -536,13 +536,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 (when (exec-installed-p "aspell")
   (setq-default ispell-program-name "aspell"))
 
-;; For flyspell
-(when (would-like 'flyspell)
-  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
-  (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
-  (add-hook 'text-mode-hook 'flyspell-mode)
-  )
-
 (defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
   "* List of commit buffer names.")
 
@@ -593,6 +586,25 @@ A negative arg comments out the `new' line[s]."
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 
+;;; -------------------------------------------------------------------------
+;;; Some text-modes packages
+(when (or (packagep 'text-modes) (not (featurep 'xemacs)))
+
+  ;; Filladapt is a syntax-highlighting package.  When it is enabled it
+  ;; makes filling (e.g. using M-q) much much smarter about paragraphs
+  ;; that are indented and/or are set off with semicolons, dashes, etc.
+  (require 'filladapt) ;; No autoloads :(
+  (add-hook 'text-mode-hook 'turn-on-filladapt-mode)
+  (add-hook 'mail-mode-hook 'turn-on-filladapt-mode)
+
+  ;; Flyspell
+  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
+  (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+
+  (my-feature-cond (xemacs (whitespace-global-mode)))
+  )
+
 ;; tramp needs this
 ;; (subtract-time '(13818 19266) '(13818 19145))
 ;; => (0 121)
@@ -639,14 +651,6 @@ We ignore the 3rd number."
  (t
   (setq backup-directory-alist '(("." . "~/.backup")))))
 
-;;; -------------------------------------------------------------------------
-;;; Filladapt is a syntax-highlighting package.  When it is enabled it
-;;; makes filling (e.g. using M-q) much much smarter about paragraphs
-;;; that are indented and/or are set off with semicolons, dashes, etc.
-(when (or (packagep 'text-modes t) (packagep 'filladapt t))
-  (add-hook 'text-mode-hook 'turn-on-filladapt-mode)
-  (add-hook 'mail-mode-hook 'turn-on-filladapt-mode))
-
 ;;; ------------------------------------------------------------
 ;; Start the server program
 (unless (or running-windoze (string= (user-login-name) "root"))
@@ -654,15 +658,6 @@ We ignore the 3rd number."
    (xemacs (gnuserv-start)
 	   (setq gnuserv-frame (selected-frame)))
    (t (server-start))))
-
-;;; ----------------------------------------------
-;; Whitespace mode handy for tabs - ignore spaces
-;; From text-modes
-(setq whitespace-chars 'tabs)
-(setq whitespace-install-submenu t)
-
-(when (would-like 'whitespace)
-  (my-feature-cond (xemacs (whitespace-global-mode))))
 
 ;;; ----------------------------------------------
 ;; ws-trim-mode
