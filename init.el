@@ -447,6 +447,18 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
       (beginning-of-line)
       (insert (concat "Signed-off-by: " signed-by "\n---\n")))))
 
+(defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
+  "* List of commit buffer names.")
+
+(defun check-for-commit ()
+  "If this is a commit buffer, set to text mode."
+  (when (eq major-mode 'fundamental-mode)
+    (let ((buff (buffer-name)))
+      (dolist (name commit-names)
+	(when (string= buff name)
+	  (text-mode))))))
+(add-hook 'find-file-hooks 'check-for-commit t)
+
 ;;}}}
 
 ;;{{{ Handy Dandy(tm) Functions
@@ -535,18 +547,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; For aspell
 (when (exec-installed-p "aspell")
   (setq-default ispell-program-name "aspell"))
-
-(defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
-  "* List of commit buffer names.")
-
-(defun check-for-commit ()
-  "If this is a commit buffer, set to text mode."
-  (when (eq major-mode 'fundamental-mode)
-    (let ((buff (buffer-name)))
-      (dolist (name commit-names)
-	(when (string= buff name)
-	  (text-mode))))))
-(add-hook 'find-file-hooks 'check-for-commit t)
 
 ;;; -------------------------------------------------------------------------
 ;; For when you need a good excuse...
