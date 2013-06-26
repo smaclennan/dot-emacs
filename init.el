@@ -9,12 +9,6 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
-(defvar running-windoze (eq system-type 'windows-nt)
-  "Non-nil if running Windows.")
-
-(defvar running-as-root (string= (user-login-name) "root")
-  "Non-nil if running as root.")
-
 (defvar dot-dir
   ;; When called from load
   (if load-file-name
@@ -316,113 +310,8 @@ instead, uses tag around or before point."
 
 ;;{{{ Programming Packages
 
-;;; -------------------------------------------------------------------------
-;; FONT LOCK
-;; See font-lock.el for a description of why it is called font lock.
-
-;; Load it now so we can modify the fonts
-(require 'font-lock)
-
-;; Maximum colour but minimum chatter
-(setq-default font-lock-maximum-decoration t
-	      font-lock-verbose nil
-	      font-lock-maximum-size nil)
-
-(when (featurep 'xemacs)
-  ;; Of all the modes, font-lock *least* needs a modeline
-  ;; indicator. If the buffer is colourful, font-lock is on.
-  ;; The only thing you lose is the ability to toggle it.
-  (let ((el (assq 'font-lock-mode minor-mode-alist)))
-    (if el (setcdr el '("")))))
-
-;; Change a couple of faces
-(make-face-bold 'font-lock-function-name-face)
-(set-face-foreground 'font-lock-function-name-face "blue")
-;; Um, this is the default
-;(set-face-foreground 'font-lock-string-face "green4")
-(if window-system
-    (set-face-foreground 'font-lock-comment-face "FireBrick")
-  ;; Consoles have less colors to play with
-  (set-face-foreground 'font-lock-comment-face "red")
-  (set-face-foreground 'font-lock-string-face "green")
-  (set-face-foreground 'font-lock-keyword-face "blue")
-  (set-face-foreground 'font-lock-variable-name-face "purple")
-  )
-
-;; -------------------------------------------------------------------------
-;; font-lock-comment-warn
-;; I want all comments with my initials (SAM) at the start to be very bold
-(defface font-lock-comment-warn-face
-  '((((class color))  (:foreground "red" :bold t :italic t))
-    (((class grayscale) (background light))
-     (:foreground "DimGray" :bold t :italic t))
-    (((class grayscale) (background dark))
-     (:foreground "LightGray" :bold t :italic t))
-    (t (:bold t)))
-  "Font Lock mode face used to highlight warning comments."
-  :group 'font-lock-faces)
-
-(my-feature-cond
- (xemacs
-  (defun setup-font-lock-keywords ()
-    (let ((c-regexp "\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)"))
-      (setq c-font-lock-keywords-1
-	    (append c-font-lock-keywords-1
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c-font-lock-keywords-2
-	    (append c-font-lock-keywords-2
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c-font-lock-keywords-3
-	    (append c-font-lock-keywords-3
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-
-      (setq c++-font-lock-keywords-1
-	    (append c++-font-lock-keywords-1
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c++-font-lock-keywords-2
-	    (append c++-font-lock-keywords-2
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c++-font-lock-keywords-3
-	    (append c++-font-lock-keywords-3
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (when nil ;; SAM NOT YET
-      (setq go-mode-font-lock-keywords
-	    (append go-mode-font-lock-keywords
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      ) ;; SAM
-      ))
-
-  (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
-    (setq lisp-font-lock-keywords-1
-	  (append lisp-font-lock-keywords-1
-		  (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
-    (setq lisp-font-lock-keywords-2
-	  (append lisp-font-lock-keywords-2
-		  (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
-    )
-  ) ;; xemacs
-
-(t ;; GNU emacs
- ;; SAM This *should* work for XEmacs too since XEmacs supports
- ;; font-lock-add-keywords but even the example doesn't work.
- (defun setup-font-lock-keywords ()
-   (font-lock-add-keywords
-    'c-mode
-    '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t)))
-   (font-lock-add-keywords
-    'c++-mode
-    '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t))))
-
- (font-lock-add-keywords
-  'emacs-lisp-mode
-  '(("; ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
- (font-lock-add-keywords
-  'sh-mode
-  '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
- (font-lock-add-keywords
-  'makefile-mode
-  '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
- ))
+;; Always want font-lock
+(turn-on-font-lock)
 
 ;; -------------------------------------------------------------------------
 ;; KSH MODE
@@ -482,14 +371,14 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
       compilation-error-regexp-systems-list '(gnu)
       compile-command "make ")
 
+;; This gives the compilation buffer its own frame
+;;(push "*compilation*" special-display-buffer-names)
+
 (defun my-do-compile (cmd)
   (save-some-buffers (not compilation-ask-about-save) nil)
   (my-feature-cond
    (xemacs (compile-internal cmd "No more errors"))
    (emacs  (compilation-start cmd))))
-
-;; This gives the compilation buffer its own frame
-;;(push "*compilation*" special-display-buffer-names)
 
 (defun my-set-compile ()
   (interactive)
@@ -552,6 +441,18 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
       (beginning-of-line)
       (insert (concat "Signed-off-by: " signed-by "\n---\n")))))
 
+(defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
+  "* List of commit buffer names.")
+
+(defun check-for-commit ()
+  "If this is a commit buffer, set to text mode."
+  (when (eq major-mode 'fundamental-mode)
+    (let ((buff (buffer-name)))
+      (dolist (name commit-names)
+	(when (string= buff name)
+	  (text-mode))))))
+(add-hook 'find-file-hooks 'check-for-commit t)
+
 ;;}}}
 
 ;;{{{ Handy Dandy(tm) Functions
@@ -587,6 +488,16 @@ The test for presence of ELEMENT is done with `equal'."
 	     (string-to-number (match-string 2 number) 16)
 	     (string-to-number (match-string 3 number) 16)))
    (t (error "Invalid"))))
+
+(defun load-path-dirs ()
+  (interactive)
+  (let (dirs)
+    (dolist (dir load-path)
+      (when (string-match "/lisp.*" dir)
+	(setq dir (replace-match "" nil nil dir)))
+      (add-to-list 'dirs dir))
+    (message "%S" dirs)
+    ))
 
 ;;; -------------------------------------------------------------------------
 ;;  isearch "stuff"
@@ -631,25 +542,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 (when (exec-installed-p "aspell")
   (setq-default ispell-program-name "aspell"))
 
-;; For flyspell
-(when (would-like 'flyspell)
-  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
-  (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
-  (add-hook 'text-mode-hook 'flyspell-mode)
-  )
-
-(defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
-  "* List of commit buffer names.")
-
-(defun check-for-commit ()
-  "If this is a commit buffer, set to text mode."
-  (when (eq major-mode 'fundamental-mode)
-    (let ((buff (buffer-name)))
-      (dolist (name commit-names)
-	(when (string= buff name)
-	  (text-mode))))))
-(add-hook 'find-file-hooks 'check-for-commit t)
-
 ;;; -------------------------------------------------------------------------
 ;; For when you need a good excuse...
 
@@ -687,6 +579,25 @@ A negative arg comments out the `new' line[s]."
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
+
+;;; -------------------------------------------------------------------------
+;;; Some text-modes packages
+(when (or (packagep 'text-modes) (not (featurep 'xemacs)))
+
+  ;; Filladapt is a syntax-highlighting package.  When it is enabled it
+  ;; makes filling (e.g. using M-q) much much smarter about paragraphs
+  ;; that are indented and/or are set off with semicolons, dashes, etc.
+  (require 'filladapt) ;; No autoloads :(
+  (add-hook 'text-mode-hook 'turn-on-filladapt-mode)
+  (add-hook 'mail-mode-hook 'turn-on-filladapt-mode)
+
+  ;; Flyspell
+  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
+  (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+
+  (my-feature-cond (xemacs (whitespace-global-mode)))
+  )
 
 ;; tramp needs this
 ;; (subtract-time '(13818 19266) '(13818 19145))
@@ -734,40 +645,19 @@ We ignore the 3rd number."
  (t
   (setq backup-directory-alist '(("." . "~/.backup")))))
 
-;;; -------------------------------------------------------------------------
-;;; Filladapt is a syntax-highlighting package.  When it is enabled it
-;;; makes filling (e.g. using M-q) much much smarter about paragraphs
-;;; that are indented and/or are set off with semicolons, dashes, etc.
-
-(when (would-like 'filladapt)
-  (add-hook 'text-mode-hook 'turn-on-filladapt-mode)
-  (add-hook 'mail-mode-hook 'turn-on-filladapt-mode))
-
 ;;; ------------------------------------------------------------
 ;; Start the server program
-(unless (or running-windoze running-as-root)
+(unless (or running-windoze (string= (user-login-name) "root"))
   (my-feature-cond
    (xemacs (gnuserv-start)
 	   (setq gnuserv-frame (selected-frame)))
    (t (server-start))))
 
 ;;; ----------------------------------------------
-;; Whitespace mode handy for tabs - ignore spaces
-;; From text-modes
-(setq whitespace-chars 'tabs)
-(setq whitespace-install-submenu t)
-
-;;; ----------------------------------------------
-;; These come from the site-lisp directory
-
 ;; ws-trim-mode
-(when (would-like 'ws-trim)
-  (global-ws-trim-mode t)
-  (setq ws-trim-mode-line-string nil)
-  (set-default 'ws-trim-level 1))
-
-(when (would-like 'whitespace)
-  (my-feature-cond (xemacs (whitespace-global-mode))))
+(global-ws-trim-mode t)
+(setq ws-trim-mode-line-string nil)
+(set-default 'ws-trim-level 1)
 
 ;;}}}
 
@@ -787,13 +677,10 @@ We ignore the 3rd number."
 
   ;; I use a common init.el across many machines. The `user-init' file
   ;; allows for user/machine specific initialization.
-  (unless running-as-root
-    (load (concat dot-dir "user-init") t)))
+  (load (concat dot-dir "user-init") t)
 
-(setq initial-scratch-message
-      ";; This buffer is for goofing around in.
-
-")
+  (setq initial-scratch-message ";; This buffer is for goofing around in.\n\n")
+  )
 
 ;;{{{ Final results
 
