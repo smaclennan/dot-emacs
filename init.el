@@ -311,7 +311,8 @@ instead, uses tag around or before point."
 ;;{{{ Programming Packages
 
 ;; Always want font-lock
-(turn-on-font-lock)
+;; Use require. (turn-on-font-lock) caused no end of grief on my work computers.
+(require 'font-lock)
 
 ;; -------------------------------------------------------------------------
 ;; KSH MODE
