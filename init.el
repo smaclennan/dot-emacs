@@ -704,8 +704,7 @@ We ignore the 3rd number."
 		  (cond ((< hour 12) "morning")
 			((< hour 18) "afternoon")
 			(t           "evening"))
-		  (user-full-name))))
-     (delete-itimer "delayed-msg"))
+		  (user-full-name)))))
    1))
 
 ;;}}}
