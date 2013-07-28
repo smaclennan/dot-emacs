@@ -68,6 +68,9 @@
   (message "Warning: rcfiles not installed.")
   (setq rcfiles-directory (concat dot-dir "rc")))
 
+(defun load-rc (file)
+  (load (concat rcfiles-directory "/" file)))
+
 ;;}}}
 
 ;;{{{ Basic Customization
@@ -145,26 +148,14 @@ Local version."
 
 ;;{{{ XEmacs 21.5 stuff
 
-(my-feature-cond
- (xemacs
-  (when (emacs-version>= 21 5)
-    ;; For some reason the file coding was gutted - put it back
-    (setq buffer-file-coding-system-for-read 'undecided
-	  default-buffer-file-coding-system  'raw-text)
-
-    ;; New modeline format does not fit on a smaller window
-    (my-bound-cond
-     (modeline-buffer-id
-      (setq-default
-       modeline-buffer-id
-       (list (cons modeline-buffer-id-left-extent 'modeline-buffer-id-left)))))
-    )))
+(and (featurep 'xemacs) (emacs-version>= 21 5)
+     (load-rc "xemacs-21.5"))
 
 ;;}}}
 
 ;;{{{ Windowing System Customization
 
-(when window-system (load (concat rcfiles-directory "/window-config")))
+(when window-system (load-rc "window-config"))
 
 ;; Do this *after* setting the modeline colours
 (when (fboundp 'display-time) (display-time))
