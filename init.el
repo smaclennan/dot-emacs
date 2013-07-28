@@ -9,6 +9,9 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
+(defvar running-windoze (eq system-type 'windows-nt)
+  "Non-nil if running Windows.")
+
 (defvar dot-dir
   ;; When called from load
   (if load-file-name
