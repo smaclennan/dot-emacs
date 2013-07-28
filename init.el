@@ -107,7 +107,8 @@
 ;; This is defined in apel - here is a simple version
 (unless (fboundp 'exec-installed-p)
   (defun exec-installed-p (file)
-    "Return absolute-path of FILE if FILE is executable."
+    "Return absolute-path of FILE if FILE is executable.
+Local version."
     (and running-windoze
 	 (not (file-name-extension file))
 	 (setq file (concat file ".exe")))
