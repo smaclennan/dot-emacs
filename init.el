@@ -320,24 +320,7 @@ instead, uses tag around or before point."
 ;; ksh-mode not avaliable in Emacs, and turning it on loses font-lock
 ;; and bracket matching... so enable it only for xemacs for now
 
-(my-feature-cond
- (xemacs
-  (defun sh-to-ksh (entry)
-    (when (eq (cdr entry) 'sh-mode)
-      (setcdr entry 'ksh-mode))
-    entry)
-
-  (when (would-like 'ksh-mode)
-    ;; Convert sh-mode to ksh-mode
-    (mapc 'sh-to-ksh auto-mode-alist)
-    (mapc 'sh-to-ksh interpreter-mode-alist)
-
-    (setq ksh-indent 4)
-
-    (nconc
-     ksh-font-lock-keywords
-     (list (list "# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
-    )))
+(and (featurep 'xemacs) (would-like 'ksh-mode))
 
 ;; -------------------------------------------------------------------------
 ;; LISP MODE
