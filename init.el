@@ -2,7 +2,7 @@
 ;; This file should work with XEmacs 2x.x, Emacs 21.x, or SXEmacs
 
 ;; Assumes at least the following packages:
-;;	xemacs-base, edit-utils, cc-mode, ediff, pc
+;;	xemacs-base, edit-utils
 
 ;;{{{ Configuration variables / functions
 
@@ -89,7 +89,6 @@
 
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 (when (not (emacs-version>= 21 2))
   (setq temp-buffer-shrink-to-fit t))
@@ -562,6 +561,7 @@ A negative arg comments out the `new' line[s]."
 ;;; -------------------------------------------------------------------------
 ;;; Some text-modes packages
 (when (or (packagep 'text-modes) (not (featurep 'xemacs)))
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
   ;; Filladapt is a syntax-highlighting package.  When it is enabled it
   ;; makes filling (e.g. using M-q) much much smarter about paragraphs
