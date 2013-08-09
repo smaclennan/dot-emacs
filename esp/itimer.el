@@ -26,12 +26,12 @@
 
 ;; SAM Currently ignores is_idle... but I believe it could be implemented...
 ;;;###autoload
-(defun start-itimer (name function value &optional restart is_idle)
+(defun start-itimer (name function value &optional restart is_idle with-args &rest args)
   "Start an itimer."
   (when (itimer-live-p name) (error "%s already a timer." name))
   (let ((timer (timer-create)))
     (setq itimer-list (cons (list name timer) itimer-list))
-    (timer-set-function timer function)
+    (timer-set-function timer function args)
     (timer-set-time timer
 		    (timer-relative-time (current-time) value)
 		    restart)
