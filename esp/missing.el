@@ -11,9 +11,9 @@
       (if (file-exists-p file) file nil))))
 
 (defun emacs-version>= (major minor)
-  (or (> major emacs-major-version)
-      (and (= major emacs-major-version)
-	   (>= minor emacs-minor-version))))
+  (or (> emacs-major-version major)
+      (and (eq emacs-major-version major)
+	   (>= emacs-minor-version minor))))
 
 (defun region-exists-p ()
   (if mark-active
