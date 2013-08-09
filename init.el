@@ -238,11 +238,6 @@ instead, uses tag around or before point."
 (global-set-key [XF86_Switch_VT_12] 'lxr-next-defined)
 (global-set-key [(control f12)] 'lxr-defined-at-point)
 
-(when (string= (getenv "HOSTNAME") "lappy.seanm.ca")
-  ;; SAM HACK - period key broken on lappy
-  (global-set-key [f6] ".")
-  (global-set-key [(shift f6)] ">"))
-
 ;; Tilt wheel on Logitech M500 + others
 ;;(global-set-key [button6] ')
 ;;(global-set-key [button7] ')
