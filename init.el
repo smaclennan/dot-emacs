@@ -253,9 +253,6 @@ instead, uses tag around or before point."
 
 (global-set-key "\C-ck" 'browse-kill-ring)
 
-
-(would-like 'lxr)
-
 ;; Cut and paste
 (setq interprogram-cut-function nil)
 (setq interprogram-paste-function nil)
@@ -303,7 +300,7 @@ instead, uses tag around or before point."
 ;; ksh-mode not avaliable in Emacs, and turning it on loses font-lock
 ;; and bracket matching... so enable it only for xemacs for now
 
-(and (featurep 'xemacs) (would-like 'ksh-mode))
+(when (featurep 'xemacs) (would-like 'ksh-mode))
 
 ;; -------------------------------------------------------------------------
 ;; LISP MODE
@@ -510,10 +507,9 @@ A negative arg comments out the `new' line[s]."
 ;;; Some edit-utils packages
 (when (or (not (featurep 'xemacs)) (packagep 'edit-utils))
   (my-feature-cond
-    (xemacs (paren-set-mode 'paren t))
+    (xemacs (paren-set-mode 'paren t)
+	    (would-like 'redo))
     (t (show-paren-mode t)))
-
-  (would-like 'redo (featurep 'emacs))
 
   (require 'iswitchb)
   (my-feature-cond
@@ -577,8 +573,7 @@ We ignore the 3rd number."
 ;;; -------------------------------------------------------------------------
 ;; The auto-save.el and backup.el packages collect files in one place
 ;; I added the following to my crontab:
-;; # Cleanup the autosave and backup directories (24 * 7 = 168)
-;; 0 4 * * * /usr/sbin/tmpwatch 168 $HOME/.autosave $HOME/.backup
+;; 13 5 * * * find $HOME/.backup -mtime +7 -delete
 
 (my-feature-cond
  (xemacs
