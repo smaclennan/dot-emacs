@@ -1,8 +1,7 @@
 ;; S?X?Emacs setup -*- Mode:emacs-lisp -*-
 ;; This file should work with XEmacs 2x.x, Emacs 21.x, or SXEmacs
 
-;; Assumes at least the following packages:
-;;	xemacs-base, edit-utils
+;; Assumes at least the xemacs-base package
 
 ;;{{{ Configuration variables / functions
 
@@ -35,6 +34,7 @@
       (add-to-list 'load-path dir)))
   (load "esp-loaddefs" t t)
   (load "sam-loaddefs" t t)
+  (load "misc-loaddefs" t t)
   (load "missing" t t))
 
 (require 'sam-common)
@@ -93,8 +93,6 @@
 (when (not (emacs-version>= 21 2))
   (setq temp-buffer-shrink-to-fit t))
 
-(would-like 'redo (featurep 'emacs)) ;; edit-utils
-
 ;; (would-like 'uncompress) ;; os-utils
 (and (not noninteractive)
      (would-like 'jka-compr)
@@ -104,10 +102,6 @@
 
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
-
-(my-feature-cond
- (xemacs (paren-set-mode 'paren t))
- (t (show-paren-mode t)))
 
 ;; This is defined in apel - here is a simple version
 (unless (fboundp 'exec-installed-p)
@@ -271,11 +265,6 @@ instead, uses tag around or before point."
 (setq interprogram-cut-function nil)
 (setq interprogram-paste-function nil)
 
-;; iswitchb
-(my-feature-cond
- (xemacs (iswitchb-default-keybindings))
- (t (iswitchb-mode 1)))
-(global-set-key "\C-x\C-b"	'iswitchb-buffer)
 (global-set-key "\C-x\C-l"	'list-buffers)
 
 (global-set-key "\C-x\C-k"	'kill-buffer)
@@ -555,12 +544,28 @@ A negative arg comments out the `new' line[s]."
 
 ;;{{{ Packages
 
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward)
+;;; -------------------------------------------------------------------------
+;;; Some edit-utils packages
+(when (or (not (featurep 'xemacs)) (packagep 'edit-utils))
+  (my-feature-cond
+    (xemacs (paren-set-mode 'paren t))
+    (t (show-paren-mode t)))
+
+  (would-like 'redo (featurep 'emacs))
+
+  (require 'iswitchb)
+  (my-feature-cond
+    (xemacs (iswitchb-default-keybindings))
+    (t (iswitchb-mode 1)))
+  (global-set-key "\C-x\C-b" 'iswitchb-buffer)
+
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'post-forward)
+  )
 
 ;;; -------------------------------------------------------------------------
 ;;; Some text-modes packages
-(when (or (packagep 'text-modes) (not (featurep 'xemacs)))
+(when (or (not (featurep 'xemacs)) (packagep 'text-modes))
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
   ;; Filladapt is a syntax-highlighting package.  When it is enabled it
