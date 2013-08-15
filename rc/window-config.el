@@ -3,8 +3,9 @@
 
 (setq use-dialog-box nil)
 
-(when (boundp 'xft-version)
-  (set-face-font 'default "DejaVu Sans Mono-10"))
+(if (boundp 'xft-version)
+    (set-face-font 'default "DejaVu Sans Mono-10")
+  (set-face-font 'default "7x13"))
 
 ;; ---------------------------------------------
 ;; Colour
