@@ -1,6 +1,17 @@
 ;; Windowing system only config.
 ;; No real library to toggle off of so it is not a -rc.el
 
+(defvar x-root-size nil "X root window width and height")
+
+(when (eq window-system 'x)
+  (let ((wininfo (shell-command-to-string "xwininfo -root"))
+	width height)
+    (when (string-match "Width: \\([0-9]+\\)" wininfo)
+      (setq width (string-to-int (match-string 1 wininfo))))
+    (when (string-match "Height: \\([0-9]+\\)" wininfo)
+      (setq height (string-to-int (match-string 1 wininfo))))
+    (and width height (setq x-root-size (list width height)))))
+
 (setq use-dialog-box nil)
 
 (if (boundp 'xft-version)
