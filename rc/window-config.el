@@ -3,7 +3,7 @@
 
 (defvar x-root-size nil "X root window width and height")
 
-(when (eq window-system 'x)
+(when (and (eq window-system 'x) (eq x-root-size nil))
   (let ((wininfo (shell-command-to-string "xwininfo -root"))
 	width height)
     (when (string-match "Width: \\([0-9]+\\)" wininfo)
