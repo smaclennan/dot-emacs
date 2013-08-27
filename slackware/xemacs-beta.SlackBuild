@@ -7,7 +7,7 @@
 #   better consistency with existing SBo scripts...
 
 PRGNAM=xemacs
-VERSION=21.5.32
+VERSION=21.5.34
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -48,11 +48,11 @@ rm -rf $PKG
 mkdir -p $TMP $OUPUT $PKG
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xf $CWD/$PRGNAM-$VERSION.tar.gz
+tar xf $CWD/$PRGNAM-$VERSION.tar.*
 cd $PRGNAM-$VERSION
 chown -R root.root .
 
-# The .elc files are build with mule. We must remove them for a non-mule build.
+# The .elc files are built with mule. We must remove them for a non-mule build.
 rm lisp/*.elc
 
 # XEmacs is hardcoded to look in lib
@@ -61,28 +61,28 @@ if [ "$ARCH" = "x86_64" ]; then
 fi
 
 # Add buttons 8 thru 11 inclusive
-patch -p1 < $CWD/patches/extra-buttons.patch
+#patch -p1 < $CWD/patches/extra-buttons.patch
 
 CFLAGS="$SLKCFLAGS" \
   ./configure \
   --prefix=/usr \
-  --libdir=/usr/lib${LIBDIRSUFFIX} \
-  --with-sound=none \
   --without-error-checking \
  $ARCH-slackware-linux
 
-make
+make -j8
 make install \
   prefix=$PKG/usr \
   mandir=$PKG/usr/man/man1 \
   libdir=$PKG/usr/lib${LIBDIRSUFFIX}
 
+if false; then
 # Add minimal packages to allow package tools to work
 mkdir -p $PKG/usr/share/xemacs/xemacs-packages
 tar xf $CWD/xemacs-base-$BASE_VERSION-pkg.tar.gz -C $PKG/usr/share/xemacs/xemacs-packages
 tar xf $CWD/efs-$EFS_VERSION-pkg.tar.gz -C $PKG/usr/share/xemacs/xemacs-packages
 # Make sure the .elc files are newer
 find $PKG/usr/share/xemacs/xemacs-packages -name \*.elc -exec touch {} \;
+fi
 
 make datadir=$PKG/usr/share gzip-el
 
