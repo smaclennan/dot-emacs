@@ -4,18 +4,18 @@
 
 ;; This hook is run once when cc-mode initializes
 ; (defun my-c-initialization-hook ()
-  ;; Do this after cc-mode loaded for XEmacs
-  (setup-font-lock-keywords)
+;; Do this after cc-mode loaded for XEmacs
+(setup-font-lock-keywords)
 
-  (let ((lxr-menu
-	 `("----"
-	   ["lxr" lxr-at-point lxr-url]
-	   ["lxr defined" lxr-defined-at-point lxr-url]
-	   ["lxr next" lxr-next-defined lxr-url])))
+;(let ((lxr-menu
+;       `("----"
+;	 ["lxr" lxr-at-point lxr-url]
+;	 ["lxr defined" lxr-defined-at-point lxr-url]
+;	 ["lxr next" lxr-next-defined lxr-url])))
 
-    (nconc c-c-menu lxr-menu)
-    (nconc c-c++-menu lxr-menu)
-    )
+;  (nconc c-c-menu lxr-menu)
+;  (nconc c-c++-menu lxr-menu)
+;  )
 ; )
 ; (add-hook 'c-initialization-hook 'my-c-initialization-hook)
 
@@ -33,13 +33,6 @@
 ;  (easy-menu-add-item nil '("C") ["lxr" lxr-at-point lxr-url])
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
-;;; -------------------------------------------------------------------------
-
-(defun my-go-mode-hook()
-  (setup-font-lock-keywords)
-  )
-(add-hook 'go-mode-hook 'my-go-mode-hook)
 
 ;;; -------------------------------------------------------------------------
 
@@ -77,8 +70,6 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
     (insert "\n\treturn 0;\n}\n")
     (goto-char mark))
   (add-local-compile-command nil))
-
-(would-like 'my-c-tools)
 
 ;;; -------------------------------------------------------------------------
 (defvar local-compile-cc "gcc -O3 -Wall")
