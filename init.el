@@ -541,6 +541,9 @@ A negative arg comments out the `new' line[s]."
   (my-feature-cond (xemacs (whitespace-global-mode)))
   )
 
+(when (would-like 'caps-mode)
+  (add-hook 'text-mode-hook 'caps-mode))
+
 ;; tramp needs this
 ;; (subtract-time '(13818 19266) '(13818 19145))
 ;; => (0 121)
