@@ -529,9 +529,11 @@ A negative arg comments out the `new' line[s]."
   ;; Filladapt is a syntax-highlighting package.  When it is enabled it
   ;; makes filling (e.g. using M-q) much much smarter about paragraphs
   ;; that are indented and/or are set off with semicolons, dashes, etc.
-  (require 'filladapt) ;; No autoloads :(
-  (add-hook 'text-mode-hook 'turn-on-filladapt-mode)
-  (add-hook 'mail-mode-hook 'turn-on-filladapt-mode)
+  (defun add-filladapt()
+	(require 'filladapt) ;; No autoloads
+	(turn-on-filladapt-mode))
+  (add-hook 'text-mode-hook 'add-filladapt)
+  (add-hook 'mail-mode-hook 'add-filladapt)
 
   ;; Flyspell
   (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
@@ -540,9 +542,6 @@ A negative arg comments out the `new' line[s]."
 
   (my-feature-cond (xemacs (whitespace-global-mode)))
   )
-
-(when (would-like 'caps-mode)
-  (add-hook 'text-mode-hook 'caps-mode))
 
 ;; tramp needs this
 ;; (subtract-time '(13818 19266) '(13818 19145))
