@@ -75,17 +75,18 @@
 
 ;;{{{ Basic Customization
 
-(setq debug-on-error t
-      track-eol t
+(setq track-eol t
       kill-whole-line t
       next-line-add-newlines nil
       delete-key-deletes-forward t
       find-file-compare-truenames t
       signal-error-on-buffer-boundary nil
       inhibit-default-init t
-      inhibit-startup-message t)
+      inhibit-startup-message t
+      visible-bell t)
 
-(setq visible-bell t)
+(unless (file-exists-p source-lisp)
+  (setq source-lisp lisp-directory))
 
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
