@@ -21,3 +21,4 @@ directory, create the following one line .emacs file:
 (load "~/.emacs.d/init")
 
 For more information you can email me at http://seanm.ca/contact.html.
+
