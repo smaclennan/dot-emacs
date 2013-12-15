@@ -69,8 +69,8 @@
       (mapcar (lambda (elt)
 		(let ((a (car elt)))
 		  (if (eq 0 (string-match "/.*/\\([^/]+\\)\.elc" a))
-		      (list (match-string 1 a) (cdr elt))
-		    elt)))
+		      (list (match-string 1 a))
+		    (list a))))
 	      load-history))
 
 (if (would-like 'rcfiles)
