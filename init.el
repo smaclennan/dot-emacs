@@ -625,7 +625,7 @@ We ignore the 3rd number."
 
 (unless noninteractive
   (when running-windoze
-    (load (concat dot-dir "windoze") t))
+    (load-rc "windoze"))
 
   (load (concat dot-dir "work") t)
 
