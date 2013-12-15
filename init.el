@@ -63,6 +63,16 @@
 	     nil))
    (emacs (would-like package no-list))))
 
+;; For rcfiles to be able to match loaded lisp such as lisp-mode we
+;; need to turn the file names into simple load names.
+(setq load-history
+      (mapcar (lambda (elt)
+		(let ((a (car elt)))
+		  (if (eq 0 (string-match "/.*/\\([^/]+\\)\.elc" a))
+		      (list (match-string 1 a) (cdr elt))
+		    elt)))
+	      load-history))
+
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
   (message "Warning: rcfiles not installed.")
@@ -288,7 +298,7 @@ instead, uses tag around or before point."
 
 ;; Always want font-lock
 ;; Use require. (turn-on-font-lock) caused no end of grief on my work computers.
-(require 'font-lock)
+(unless noninteractive (require 'font-lock))
 
 ;; -------------------------------------------------------------------------
 ;; KSH MODE
