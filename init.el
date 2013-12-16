@@ -95,9 +95,6 @@
       inhibit-startup-message t
       visible-bell t)
 
-(unless (file-exists-p source-lisp)
-  (setq source-lisp lisp-directory))
-
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 
