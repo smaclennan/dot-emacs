@@ -1,4 +1,4 @@
-.PHONY: all subdirs clean
+.PHONY: all elcs clean
 
 ifeq ($(EMACS),)
 BASE=$(shell basename $(PWD))
@@ -11,18 +11,17 @@ EMACS := emacs
 endif
 endif
 
-.el.elc:
-	@echo Build $(EMACS) $< ...
-	@$(EMACS) -batch -l init.el -f batch-byte-compile $<
-
-#all: subdirs init.elc $(patsubst %.el,%.elc,$(wildcard work.el))
-all: subdirs
-
-subdirs:
+all:
 ifeq ($(EMACS),emacs)
 	make EMACS=$(EMACS) -C esp
 endif
 	make EMACS=$(EMACS) -C site-packages/lisp
+
+elcs:
+ifeq ($(EMACS),emacs)
+	make EMACS=$(EMACS) -C esp elcs
+endif
+	make EMACS=$(EMACS) -C site-packages/lisp elcs
 
 clean:
 	@echo Clean $(EMACS) ...
