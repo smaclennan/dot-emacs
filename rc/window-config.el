@@ -108,6 +108,9 @@
    (blink-cursor-mode 0)
    (set-cursor-color "red")))
 
+;; Do this *after* setting the modeline colours
+(when (fboundp 'display-time) (display-time))
+
 ;; -------
 ;; MISC
 

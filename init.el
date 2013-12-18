@@ -156,10 +156,11 @@ Local version."
 
 ;;{{{ Windowing System Customization
 
-(when window-system (load-rc "window-config"))
-
-;; Do this *after* setting the modeline colours
-(when (fboundp 'display-time) (display-time))
+(if window-system
+    (load-rc "window-config")
+  ;; Yes, emacs has a menu bar in console mode
+  (if (fboundp 'menu-bar-mode)
+      (menu-bar-mode -1)))
 
 ;;}}}
 

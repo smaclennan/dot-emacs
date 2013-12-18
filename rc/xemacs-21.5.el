@@ -3,6 +3,7 @@
       default-buffer-file-coding-system  'raw-text)
 
 ;; New modeline format does not fit on a smaller window
+;; I believe display-time was messing it up.
 ;(setq-default
 ; modeline-buffer-id
 ; (list (cons modeline-buffer-id-left-extent 'modeline-buffer-id-left)))
