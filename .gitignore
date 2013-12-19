@@ -2,6 +2,7 @@
 user-init.el
 work.el
 auto-autoloads.el
+custom-load.el
 sam-loaddefs.el
 misc-loaddefs.el
 custom.el
