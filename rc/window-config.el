@@ -98,7 +98,8 @@
 	 (set-specifier default-gutter-visible-p nil)))
 
    ;; Toolbar
-   (set-specifier default-toolbar-visible-p nil))
+   (set-specifier default-toolbar-visible-p nil)
+   )
 
   (t
    ;; Toolbar

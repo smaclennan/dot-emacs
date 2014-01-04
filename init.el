@@ -79,7 +79,12 @@
   (setq rcfiles-directory (concat dot-dir "rc")))
 
 (defun load-rc (file)
-  (load (concat rcfiles-directory "/" file)))
+  "Load a file from the rc directory."
+  (condition-case nil
+      (load (concat rcfiles-directory "/" file))
+    (error
+     (add-to-list 'would-have-liked-list file)
+     nil)))
 
 ;;}}}
 
