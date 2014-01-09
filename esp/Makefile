@@ -6,9 +6,7 @@ EMACS = emacs
 	$(EMACS) -batch -q -f batch-byte-compile $<
 
 # Mine
-ELCS =  extent.elc \
-	itimer.elc \
-	missing.elc \
+ELCS =  esp.elc extent.elc itimer.elc
 
 # Others
 ELCS += filladapt.elc \
