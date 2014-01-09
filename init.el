@@ -24,18 +24,7 @@
   "The init file directory.")
 
 ;; We need to setup the load-path before we can require sam-common
-;; Not xemacs is safer for old GNU Emacs versions
-(when (not (featurep 'xemacs))
-  (require 'cl)
-  (add-to-list 'load-path (concat dot-dir "esp"))
-  ;; Add the local site-packages
-  (let ((lisp-dir (concat dot-dir "site-packages/lisp")))
-    (loop for dir in (directory-files lisp-dir t "^[^.i]") do
-      (add-to-list 'load-path dir)))
-  (load "esp-loaddefs" t t)
-  (load "sam-loaddefs" t t)
-  (load "misc-loaddefs" t t)
-  (load "missing" t t))
+(when (not (featurep 'xemacs)) (load (concat dot-dir "esp/esp")))
 
 (require 'sam-common)
 

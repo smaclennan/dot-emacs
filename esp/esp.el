@@ -2,6 +2,18 @@
 (unless (or (featurep 'xemacs) (featurep 'emacs))
   (provide 'emacs))
 
+(require 'cl)
+(add-to-list 'load-path (concat dot-dir "esp"))
+
+;; Add the local site-packages
+(let ((lisp-dir (concat dot-dir "site-packages/lisp")))
+  (loop for dir in (directory-files lisp-dir t "^[^.i]") do
+    (add-to-list 'load-path dir)))
+
+(load "esp-loaddefs" t t)
+(load "sam-loaddefs" t t)
+(load "misc-loaddefs" t t)
+
 (defun locate-data-file (name)
   ;; Try local first
   (let ((file (concat dot-dir "site-packages/etc/" name)))
