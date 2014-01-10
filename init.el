@@ -438,8 +438,8 @@ Use region if it exists. My replacement for isearch-yank-word."
   ;; Push the C-w and call 'isearch-forward'
   (setq unread-command-events
 	(if (featurep 'xemacs)
-	    (list (make-event 'key-press '(key ?w modifiers (control)))))
-	(t (listify-key-sequence "\C-w")))
+	    (list (make-event 'key-press '(key ?w modifiers (control))))
+	  (listify-key-sequence "\C-w")))
   (isearch-mode t (not (null regexp-p)) nil (not (interactive-p))))
 
 ;;; -------------------------------------------------------------------------
