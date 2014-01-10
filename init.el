@@ -92,15 +92,10 @@
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(when (not (emacs-version>= 21 2))
-  (setq temp-buffer-shrink-to-fit t))
-
 ;; (would-like 'uncompress) ;; os-utils
 (and (not noninteractive)
      (would-like 'jka-compr)
      (auto-compression-mode 1))
-
-;; Turn off some modes/functions if they are missing
 
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
@@ -134,10 +129,6 @@ Local version."
   ;; system-name is host-name
   (setq host-name system-name
 	domain-name (getenv "DOMAINNAME"))))
-
-;; cl-loop required for packages like etags under SXEmacs, but require does
-;; not seem to work in 22.1.9. So explicitly load the module.
-(my-feature-cond (sxemacs (load-module "cl-loop")))
 
 ;;}}}
 
@@ -173,11 +164,6 @@ instead, uses tag around or before point."
     (find-tag (if current-prefix-arg
 		  (find-tag-tag "Find tag: "))
 	      (find-tag (find-tag-default)))))
-
-(defun my-buffer-file-name ()
-  (interactive)
-  (message "%s:%s" host-name
-	   (if buffer-file-name buffer-file-name (buffer-name))))
 
 (my-feature-cond
   (xemacs
@@ -216,8 +202,6 @@ instead, uses tag around or before point."
 (global-set-key [(shift f5)]    'query-replace-regexp)
 (global-set-key [XF86_Switch_VT_5] 'query-replace-regexp)
 (global-set-key [f6]		'ff-find-other-file)
-(global-set-key [(shift f6)]    'my-buffer-file-name)
-(global-set-key [XF86_Switch_VT_6] 'my-buffer-file-name)
 (global-set-key [f7]		'compile)
 (global-set-key [(shift f7)]    'make-clean)
 (global-set-key [XF86_Switch_VT_7] 'make-clean)
