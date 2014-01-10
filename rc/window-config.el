@@ -36,17 +36,16 @@
 (setq interprogram-cut-function nil
       interprogram-paste-function nil)
 
-(my-feature-cond
-  (xemacs
-   (setq shifted-motion-keys-select-region t)
-   (eval-when-compile (would-like 'pending-del))
-   (when (would-like 'pending-del)
-     (setq pending-delete-modeline-string "")
-     (turn-on-pending-delete)))
-  (t
-   (and (< emacs-major-version 23)
-	(would-like 'pc-select)
-	(pc-selection-mode))))
+(if (featurep 'xemacs)
+    (progn
+      (setq shifted-motion-keys-select-region t)
+      (eval-when-compile (would-like 'pending-del))
+      (when (would-like 'pending-del)
+	(setq pending-delete-modeline-string "")
+	(turn-on-pending-delete)))
+  (and (< emacs-major-version 23)
+       (would-like 'pc-select)
+       (pc-selection-mode)))
 
 ;; -------
 ;; Title bar - almost every window system supports a title bar
@@ -60,54 +59,53 @@
 (setq frame-title-format '("" emacs-str (buffer-file-name "%f" "%b")))
 
 ;; -------
-(my-feature-cond
-  (xemacs
-   ;; Pointer used during garbage collection.
-   ;; .xbm not supported under windoze
-   (let ((img  (locate-data-file "recycle-image.xbm"))
-	 (mask (locate-data-file "recycle-mask.xbm")))
-     (if (and img mask (file-exists-p img) (file-exists-p mask)
-	      (not running-windoze))
-	 (set-glyph-image gc-pointer-glyph
-			  (vector 'xbm
-				  :file img
-				  :mask-file mask
-				  :foreground "black"
-				  :background "chartreuse1"))
-       (set-glyph-image gc-pointer-glyph "recycle2.xpm")))
+(if (featurep 'xemacs)
+    (progn
+      ;; Pointer used during garbage collection.
+      ;; .xbm not supported under windoze
+      (let ((img  (locate-data-file "recycle-image.xbm"))
+	    (mask (locate-data-file "recycle-mask.xbm")))
+	(if (and img mask (file-exists-p img) (file-exists-p mask)
+		 (not running-windoze))
+	    (set-glyph-image gc-pointer-glyph
+			     (vector 'xbm
+				     :file img
+				     :mask-file mask
+				     :foreground "black"
+				     :background "chartreuse1"))
+	  (set-glyph-image gc-pointer-glyph "recycle2.xpm")))
 
-   ;; Menubar
-   (setq menu-accelerator-enabled 'menu-fallback
-	 menu-accelerator-modifiers '(alt))
+      ;; Menubar
+      (setq menu-accelerator-enabled 'menu-fallback
+	    menu-accelerator-modifiers '(alt))
 
-   ;; Speedbar
-   (when (packagep 'speedbar t)
-     (add-menu-button '("Tools")
-		      ["Speedbar" speedbar-frame-mode
-		       :style toggle
-		       :selected (and (boundp 'speedbar-frame)
-				      (frame-live-p speedbar-frame)
-				      (frame-visible-p speedbar-frame))]
-		      "--"))
+      ;; Speedbar
+      (when (packagep 'speedbar t)
+	(add-menu-button '("Tools")
+			 ["Speedbar" speedbar-frame-mode
+			  :style toggle
+			  :selected (and (boundp 'speedbar-frame)
+					 (frame-live-p speedbar-frame)
+					 (frame-visible-p speedbar-frame))]
+			 "--"))
 
-   ;; Gutter - turn it off
-   (if (boundp 'gutter-buffers-tab-enabled)
-       (setq gutter-buffers-tab-enabled nil)
-     ;; Old way
-     (if (boundp 'default-gutter-visible-p)
-	 (set-specifier default-gutter-visible-p nil)))
+      ;; Gutter - turn it off
+      (if (boundp 'gutter-buffers-tab-enabled)
+	  (setq gutter-buffers-tab-enabled nil)
+	;; Old way
+	(if (boundp 'default-gutter-visible-p)
+	    (set-specifier default-gutter-visible-p nil)))
 
-   ;; Toolbar
-   (set-specifier default-toolbar-visible-p nil)
-   )
+      ;; Toolbar
+      (set-specifier default-toolbar-visible-p nil)
+      )
 
-  (t
-   ;; Toolbar
-   (tool-bar-mode 0)
+  ;; Toolbar
+  (tool-bar-mode 0)
 
-   ;; Set the cursor properly for Emacs
-   (blink-cursor-mode 0)
-   (set-cursor-color "red")))
+  ;; Set the cursor properly for Emacs
+  (blink-cursor-mode 0)
+  (set-cursor-color "red"))
 
 ;; Do this *after* setting the modeline colours
 (when (fboundp 'display-time) (display-time))
@@ -115,17 +113,16 @@
 ;; -------
 ;; MISC
 
-(my-feature-cond
-  (xemacs
-   ;; Handy functions that where hard to work out
-   (defun my-get-face-foreground (face)
-     (cdr (specifier-specs (face-foreground face) 'global)))
-   (defun my-get-face-background (face)
-     (cdr (specifier-specs (face-background face) 'global)))
-   ;; (my-get-face-background 'default)
+(when (featurep 'xemacs)
+  ;; Handy functions that where hard to work out
+  (defun my-get-face-foreground (face)
+    (cdr (specifier-specs (face-foreground face) 'global)))
+  (defun my-get-face-background (face)
+    (cdr (specifier-specs (face-background face) 'global)))
+  ;; (my-get-face-background 'default)
 
-   (defun hack-modeline-background ()
-     (let ((bg (face-background-instance 'modeline)))
-       (when (color-instance-p bg)
-	 (set-face-background 'modeline bg))))
-   (add-hook 'after-init-hook 'hack-modeline-background)))
+  (defun hack-modeline-background ()
+    (let ((bg (face-background-instance 'modeline)))
+      (when (color-instance-p bg)
+	(set-face-background 'modeline bg))))
+  (add-hook 'after-init-hook 'hack-modeline-background))

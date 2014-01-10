@@ -9,9 +9,9 @@
 
 (defun my-do-compile (cmd)
   (save-some-buffers (not compilation-ask-about-save) nil)
-  (my-feature-cond
-   (xemacs (compile-internal cmd "No more errors"))
-   (emacs  (compilation-start cmd))))
+  (if (featurep 'xemacs)
+      (compile-internal cmd "No more errors")
+    (emacs  (compilation-start cmd))))
 
 (defun my-set-compile ()
   (interactive)

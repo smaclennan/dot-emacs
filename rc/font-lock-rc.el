@@ -32,70 +32,69 @@
   "Font Lock mode face used to highlight warning comments."
   :group 'font-lock-faces)
 
-(my-feature-cond
- (xemacs
-  ;; Of all the modes, font-lock *least* needs a modeline
-  ;; indicator. If the buffer is colourful, font-lock is on.
-  ;; The only thing you lose is the ability to toggle it.
-  (let ((el (assq 'font-lock-mode minor-mode-alist)))
-    (if el (setcdr el '(""))))
+(if (featurep 'xemacs)
+    (progn
+      ;; Of all the modes, font-lock *least* needs a modeline
+      ;; indicator. If the buffer is colourful, font-lock is on.
+      ;; The only thing you lose is the ability to toggle it.
+      (let ((el (assq 'font-lock-mode minor-mode-alist)))
+	(if el (setcdr el '(""))))
 
+      (defun setup-font-lock-keywords ()
+	(let ((c-regexp "\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)"))
+	  (setq c-font-lock-keywords-1
+		(append c-font-lock-keywords-1
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  (setq c-font-lock-keywords-2
+		(append c-font-lock-keywords-2
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  (setq c-font-lock-keywords-3
+		(append c-font-lock-keywords-3
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+
+	  (setq c++-font-lock-keywords-1
+		(append c++-font-lock-keywords-1
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  (setq c++-font-lock-keywords-2
+		(append c++-font-lock-keywords-2
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  (setq c++-font-lock-keywords-3
+		(append c++-font-lock-keywords-3
+			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	  (when nil ;; SAM NOT YET
+	    (setq go-mode-font-lock-keywords
+		  (append go-mode-font-lock-keywords
+			  (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+	    ) ;; SAM
+	  ))
+
+      (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
+	(setq lisp-font-lock-keywords-1
+	      (append lisp-font-lock-keywords-1
+		      (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
+	(setq lisp-font-lock-keywords-2
+	      (append lisp-font-lock-keywords-2
+		      (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
+	))
+
+  ;; GNU emacs
+  ;; SAM This *should* work for XEmacs too since XEmacs supports
+  ;; font-lock-add-keywords but even the example doesn't work.
   (defun setup-font-lock-keywords ()
-    (let ((c-regexp "\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)"))
-      (setq c-font-lock-keywords-1
-	    (append c-font-lock-keywords-1
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c-font-lock-keywords-2
-	    (append c-font-lock-keywords-2
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c-font-lock-keywords-3
-	    (append c-font-lock-keywords-3
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
+    (font-lock-add-keywords
+     'c-mode
+     '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t)))
+    (font-lock-add-keywords
+     'c++-mode
+     '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t))))
 
-      (setq c++-font-lock-keywords-1
-	    (append c++-font-lock-keywords-1
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c++-font-lock-keywords-2
-	    (append c++-font-lock-keywords-2
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (setq c++-font-lock-keywords-3
-	    (append c++-font-lock-keywords-3
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      (when nil ;; SAM NOT YET
-      (setq go-mode-font-lock-keywords
-	    (append go-mode-font-lock-keywords
-		    (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-      ) ;; SAM
-      ))
-
-  (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
-    (setq lisp-font-lock-keywords-1
-	  (append lisp-font-lock-keywords-1
-		  (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
-    (setq lisp-font-lock-keywords-2
-	  (append lisp-font-lock-keywords-2
-		  (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
-    )
-  ) ;; xemacs
-
-(t ;; GNU emacs
- ;; SAM This *should* work for XEmacs too since XEmacs supports
- ;; font-lock-add-keywords but even the example doesn't work.
- (defun setup-font-lock-keywords ()
-   (font-lock-add-keywords
-    'c-mode
-    '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t)))
-   (font-lock-add-keywords
-    'c++-mode
-    '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t))))
-
- (font-lock-add-keywords
-  'emacs-lisp-mode
-  '(("; ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
- (font-lock-add-keywords
-  'sh-mode
-  '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
- (font-lock-add-keywords
-  'makefile-mode
-  '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
- ))
+  (font-lock-add-keywords
+   'emacs-lisp-mode
+   '(("; ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+  (font-lock-add-keywords
+   'sh-mode
+   '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+  (font-lock-add-keywords
+   'makefile-mode
+   '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+  )

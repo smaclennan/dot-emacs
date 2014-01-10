@@ -23,10 +23,8 @@
 	  (replace-match "" nil nil dir)))))
   "The init file directory.")
 
-;; We need to setup the load-path before we can require sam-common
+;; We need to setup the load-path for GNU Emacs
 (when (not (featurep 'xemacs)) (load (concat dot-dir "esp/esp")))
-
-(require 'sam-common)
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -45,12 +43,12 @@
      nil)))
 
 (defun packagep (package &optional no-list)
-  (my-feature-cond
-   (xemacs (if (assq package packages-package-list)
-	       t
-	     (unless no-list (add-to-list 'would-have-liked-list package))
-	     nil))
-   (emacs (would-like package no-list))))
+  (if (boundp 'packages-package-list)
+      (if (assq package packages-package-list)
+	  t
+	(unless no-list (add-to-list 'would-have-liked-list package))
+	nil)
+    (would-like package no-list)))
 
 ;; For rcfiles to be able to match loaded lisp such as lisp-mode we
 ;; need to turn the file names into simple load names.
@@ -165,21 +163,20 @@ instead, uses tag around or before point."
 		  (find-tag-tag "Find tag: "))
 	      (find-tag (find-tag-default)))))
 
-(my-feature-cond
-  (xemacs
-   ;; This should always do the right thing
-   (global-set-key [(return)] 'newline-and-indent)
-   (global-set-key [(linefeed)] 'newline))
-  (t
-   ;; For Emacs the above breaks the minibuffer.
-   ;; Note: c-mode does java too.
-   (add-hook 'c-initialization-hook
-	     (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))
-   (add-hook 'emacs-lisp-mode-hook
-	     (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))
-   (add-hook 'sh-mode-hook
-	     (lambda () (define-key sh-mode-map [(return)] 'newline-and-indent)))
-   ))
+(if (featurep 'xemacs)
+    (progn
+      ;; This should always do the right thing
+      (global-set-key [(return)] 'newline-and-indent)
+      (global-set-key [(linefeed)] 'newline))
+  ;; For Emacs the above breaks the minibuffer.
+  ;; Note: c-mode does java too.
+  (add-hook 'c-initialization-hook
+	    (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))
+  (add-hook 'emacs-lisp-mode-hook
+	    (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))
+  (add-hook 'sh-mode-hook
+	    (lambda () (define-key sh-mode-map [(return)] 'newline-and-indent)))
+  )
 
 (defun my-toggle-case-search ()
   (interactive)
@@ -424,9 +421,9 @@ Use region if it exists. My replacement for isearch-yank-word."
 		  (buffer-substring (region-beginning) (region-end))
 		(current-word))))
     (forward-char 1) ;; make sure we are not on first char of word
-    (my-feature-cond
-     (xemacs (isearch-yank word))
-     (t (isearch-yank-string word)))))
+    (if (fboundp 'isearch-yank)
+	(isearch-yank word)
+      (isearch-yank-string word))))
 
 ;; Warning: If you change this binding, change `my-isearch-word-forward'
 (define-key isearch-mode-map "\C-w"		'my-isearch-yank-word)
@@ -440,10 +437,9 @@ Use region if it exists. My replacement for isearch-yank-word."
   (interactive "P")
   ;; Push the C-w and call 'isearch-forward'
   (setq unread-command-events
-	(my-feature-cond
-	 (xemacs
-	  (list (make-event 'key-press '(key ?w modifiers (control)))))
-	 (t (listify-key-sequence "\C-w"))))
+	(if (featurep 'xemacs)
+	    (list (make-event 'key-press '(key ?w modifiers (control)))))
+	(t (listify-key-sequence "\C-w")))
   (isearch-mode t (not (null regexp-p)) nil (not (interactive-p))))
 
 ;;; -------------------------------------------------------------------------
@@ -493,15 +489,16 @@ A negative arg comments out the `new' line[s]."
 ;;; -------------------------------------------------------------------------
 ;;; Some edit-utils packages
 (when (or (not (featurep 'xemacs)) (packagep 'edit-utils))
-  (my-feature-cond
-    (xemacs (paren-set-mode 'paren t)
-	    (would-like 'redo))
-    (t (show-paren-mode t)))
-
   (require 'iswitchb)
-  (my-feature-cond
-    (xemacs (iswitchb-default-keybindings))
-    (t (iswitchb-mode 1)))
+
+  (if (featurep 'xemacs)
+      (progn
+	(paren-set-mode 'paren t)
+	(iswitchb-default-keybindings)
+	(would-like 'redo))
+    (show-paren-mode t)
+    (iswitchb-mode 1))
+
   (global-set-key "\C-x\C-b" 'iswitchb-buffer)
 
   (require 'uniquify)
@@ -527,7 +524,7 @@ A negative arg comments out the `new' line[s]."
   (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
   (add-hook 'text-mode-hook 'flyspell-mode)
 
-  (my-feature-cond (xemacs (whitespace-global-mode)))
+  ;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
   )
 
 ;; tramp needs this
@@ -564,24 +561,15 @@ We ignore the 3rd number."
 ;; I added the following to my crontab:
 ;; 13 5 * * * find $HOME/.backup -mtime +7 -delete
 
-(my-feature-cond
- (xemacs
-  (when (would-like 'auto-save)
-    (setq auto-save-directory "~/.autosave/")
-    ;; Now that we have auto-save-timeout, let's crank this up
-    ;; for better interactive response.
-    (setq auto-save-interval 2000))
-  (would-like 'backup))
- (t
-  (setq backup-directory-alist '(("." . "~/.backup")))))
-
-;;; ------------------------------------------------------------
-;; Start the server program
-(unless (or running-windoze (string= (user-login-name) "root"))
-  (my-feature-cond
-   (xemacs (gnuserv-start)
-	   (setq gnuserv-frame (selected-frame)))
-   (t (server-start))))
+(if (featurep 'xemacs)
+    (progn
+      (when (would-like 'auto-save)
+	(setq auto-save-directory "~/.autosave/")
+	;; Now that we have auto-save-timeout, let's crank this up
+	;; for better interactive response.
+	(setq auto-save-interval 2000))
+      (would-like 'backup))
+  (setq backup-directory-alist '(("." . "~/.backup"))))
 
 ;;; ----------------------------------------------
 ;; ws-trim-mode
@@ -600,6 +588,15 @@ We ignore the 3rd number."
     (load rcfile)))
 
 (unless noninteractive
+  ;;; ------------------------------------------------------------
+  ;; Start the server program
+  (unless (or running-windoze (string= (user-login-name) "root"))
+    (if (featurep 'xemacs)
+	(progn
+	  (gnuserv-start)
+	  (setq gnuserv-frame (selected-frame)))
+      (server-start)))
+
   (when running-windoze
     (load-rc "windoze"))
 
@@ -613,8 +610,6 @@ We ignore the 3rd number."
   )
 
 ;;{{{ Final results
-
-(setq debug-on-error nil)
 
 (defun friendly-message (&optional full)
   (interactive "P")

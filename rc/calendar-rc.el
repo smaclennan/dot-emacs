@@ -9,22 +9,21 @@
       calendar-latitude  '[45 24 north]
       calendar-longitude '[75 43 west])
 
-(my-bound-cond
- (holiday-christian-holidays
-  (setq holiday-christian-holidays nil
-	holiday-hebrew-holidays nil
-	holiday-islamic-holidays nil
-	holiday-bahai-holidays nil
-	holiday-oriental-holidays nil))
- (t
+(if (boundp 'holiday-christian-holidays)
+    (setq holiday-christian-holidays nil
+	  holiday-hebrew-holidays nil
+	  holiday-islamic-holidays nil
+	  holiday-bahai-holidays nil
+	  holiday-oriental-holidays nil
+	  calendar-mark-holidays-flag t)
   (setq christian-holidays nil
 	hebrew-holidays nil
 	islamic-holidays nil
 	bahai-holidays nil
-	oriental-holidays nil)))
+	oriental-holidays nil
+	mark-holidays-in-calendar t))
 
 ;; Standard holidays too UScentric
-;;(setq general-holidays
 (setq calendar-holidays
       '((holiday-fixed  1  1	"New Year's Day")
 	(holiday-fixed  2  2	"Groundhog Day")
@@ -50,13 +49,3 @@
 	(holiday-fixed 12 25	"Christmas")
 	(holiday-fixed 12 26	"Boxing Day")
 	))
-
-(my-bound-cond
- (calendar-mark-holidays-flag (setq calendar-mark-holidays-flag t))
- (t (setq mark-holidays-in-calendar t)))
-
-;; Diary stuff
-(setq diary-file "~/.dear-diary")
-
-;; Show today as '**'
-;;(add-hook 'today-visible-calendar-hook 'calendar-star-date)
