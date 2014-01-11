@@ -62,8 +62,7 @@
 
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
-  (message "Warning: rcfiles not installed.")
-  (setq rcfiles-directory (concat dot-dir "rc")))
+  (load (concat dot-dir "esp/rcfiles")))
 
 (defun load-rc (file)
   "Load a file from the rc directory."
@@ -532,14 +531,6 @@ A negative arg comments out the `new' line[s]."
 (set-default 'ws-trim-level 1)
 
 ;;}}}
-
-;; If we don't have el-rcfiles then just load all the files now
-(unless (boundp 'rcfiles-version)
-  (add-to-list 'load-path rcfiles-directory)
-  (dolist (rcfile (directory-files rcfiles-directory nil ".*-rc.el"))
-    (when (string-match "\\(.*\\\)-rc.el" rcfile)
-      (load (match-string 1 rcfile)))
-    (load rcfile)))
 
 (unless noninteractive
   ;;; ------------------------------------------------------------
