@@ -431,15 +431,6 @@ Use region if it exists. My replacement for isearch-yank-word."
   (isearch-mode t (not (null regexp-p)) nil (not (interactive-p))))
 
 ;;; -------------------------------------------------------------------------
-;; For ispell
-(setq ispell-silently-savep t
-      ispell-extra-args '("-W" "3"))
-
-;; For aspell
-(when (exec-installed-p "aspell")
-  (setq-default ispell-program-name "aspell"))
-
-;;; -------------------------------------------------------------------------
 ;; For when you need a good excuse...
 
 (defvar excuse-phrase-file (locate-data-file "excuses.lines")
@@ -513,24 +504,6 @@ A negative arg comments out the `new' line[s]."
 
   ;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
   )
-
-;; tramp needs this
-;; (subtract-time '(13818 19266) '(13818 19145))
-;; => (0 121)
-(unless (fboundp 'subtract-time)
-  ;; This is just time-sub from comics.el
-  (defun subtract-time (t1 t2)
-    "Subtact two lisp time values.
-The time values are stored as a list of three 16-bit numbers.
-We ignore the 3rd number."
-  (let ((t1-lo (cadr t1))
-	(t1-hi (car t1))
-	(t2-lo (cadr t2))
-	(t2-hi (car t2)))
-    (when (> t2-lo t1-lo)
-	(setq t1-hi (- t1-hi 1))
-	(setq t1-lo (+ t1-lo 65536)))
-    (list (- t1-hi t2-hi) (- t1-lo t2-lo)))))
 
 ;; for pui-list-packages
 ;;(if t
