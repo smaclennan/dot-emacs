@@ -77,6 +77,11 @@
 
 ;;{{{ Basic Customization
 
+;; Default the package location
+(when (featurep 'xemacs)
+  (setq package-get-remote
+	'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
+
 (setq track-eol t
       kill-whole-line t
       next-line-add-newlines nil
@@ -504,17 +509,6 @@ A negative arg comments out the `new' line[s]."
 
   ;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
   )
-
-;; for pui-list-packages
-;;(if t
-;;    ;; remote
-;;    (setq package-get-remote '(("ftp.xemacs.org" "/pub/xemacs/packages")))
-;;  ;; local
-;;  (setq package-get-remote '((nil "~/.xemacs"))))
-;;(setq package-get-remote '(("ftp.xemacs.org" "/pub/xemacs/beta/experimental")))
-(setq package-get-require-signed-base-updates nil)
-;; Turn off the automatic ftp of missing packages
-;;(fset 'package-get-package-provider 'ignore)
 
 ;;; -------------------------------------------------------------------------
 ;; The auto-save.el and backup.el packages collect files in one place
