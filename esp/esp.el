@@ -109,3 +109,16 @@ Not all properties are supported."
 ;; Let's see how we like this. Unfortunately it also stops at the
 ;; first warning. Which may be irritating.
 (setq compilation-scroll-output 'first-error)
+
+(eval-when-compile (require 'etags))
+
+;; Mimics version from XEmacs 21.2
+(defun find-tag-at-point ()
+  "*Find tag whose name contains TAGNAME.
+Identical to `find-tag' but does not prompt for tag when called interactively;
+instead, uses tag around or before point."
+  (interactive)
+  (find-tag (if current-prefix-arg
+		(find-tag-tag "Find tag: "))
+	    (find-tag (find-tag-default))))
+

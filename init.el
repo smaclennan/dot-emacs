@@ -150,19 +150,6 @@ Local version."
 
 ;;{{{ Keys
 
-(unless (fboundp 'find-tag-at-point)
-  (eval-when-compile (require 'etags))
-
-  ;; Mimics version from XEmacs 21.2
-  (defun find-tag-at-point ()
-    "*Find tag whose name contains TAGNAME.
-Identical to `find-tag' but does not prompt for tag when called interactively;
-instead, uses tag around or before point."
-    (interactive)
-    (find-tag (if current-prefix-arg
-		  (find-tag-tag "Find tag: "))
-	      (find-tag (find-tag-default)))))
-
 (if (featurep 'xemacs)
     (progn
       ;; This should always do the right thing
@@ -400,14 +387,15 @@ The test for presence of ELEMENT is done with `equal'."
    (t (error "Invalid"))))
 
 (defun load-path-dirs ()
+  "Show only the root dirs in the `load-path'."
   (interactive)
   (let (dirs)
     (dolist (dir load-path)
       (when (string-match "/lisp.*" dir)
 	(setq dir (replace-match "" nil nil dir)))
       (add-to-list 'dirs dir))
-    (message "%S" dirs)
-    ))
+    (if (interactive-p) (message "%S" dirs))
+    dirs))
 
 ;;; -------------------------------------------------------------------------
 ;;  isearch "stuff"
