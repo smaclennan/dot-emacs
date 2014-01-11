@@ -12,7 +12,7 @@
   (when prop (set-face-property face prop t)))
 
 (unless window-system
-  (when (or (featurep 'xemacs) (>= emacs-major-version 22))
+  (when (or running-xemacs (>= emacs-major-version 22))
     (my-set-face 'ediff-current-diff-A "black" "yellow")
     (my-set-face 'ediff-current-diff-B "black" "yellow")
     (my-set-face 'ediff-current-diff-C "black" "yellow")

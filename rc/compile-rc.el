@@ -9,7 +9,7 @@
 
 (defun my-do-compile (cmd)
   (save-some-buffers (not compilation-ask-about-save) nil)
-  (if (featurep 'xemacs)
+  (if running-xemacs
       (compile-internal cmd "No more errors")
     (emacs  (compilation-start cmd))))
 

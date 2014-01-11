@@ -23,8 +23,8 @@
 	  (replace-match "" nil nil dir)))))
   "The init file directory.")
 
-;; We need to setup the load-path for GNU Emacs
-(when (not (featurep 'xemacs)) (load (concat dot-dir "esp/esp")))
+;; We need to setup for GNU Emacs
+(if (not (featurep 'xemacs)) (load (concat dot-dir "esp/esp")))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -78,7 +78,7 @@
 ;;{{{ Basic Customization
 
 ;; Default the package location
-(when (featurep 'xemacs)
+(when running-xemacs
   (setq package-get-remote
 	'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
 
@@ -137,7 +137,7 @@ Local version."
 
 ;;{{{ XEmacs 21.5 stuff
 
-(and (featurep 'xemacs) (emacs-version>= 21 5)
+(and running-xemacs (emacs-version>= 21 5)
      (load-rc "xemacs-21.5"))
 
 ;;}}}
@@ -155,7 +155,7 @@ Local version."
 
 ;;{{{ Keys
 
-(if (featurep 'xemacs)
+(if running-xemacs
     (progn
       ;; This should always do the right thing
       (global-set-key [(return)] 'newline-and-indent)
@@ -224,7 +224,7 @@ Local version."
 (global-set-key [button9] 'kill-region)
 
 ;; C-h =
-(when (featurep 'xemacs)
+(when running-xemacs
   (define-key help-map ?= #'introspect-cursor-position))
 
 (global-set-key "\C-ck" 'browse-kill-ring)
@@ -276,7 +276,7 @@ Local version."
 ;; ksh-mode not avaliable in Emacs, and turning it on loses font-lock
 ;; and bracket matching... so enable it only for xemacs for now
 
-(when (featurep 'xemacs) (would-like 'ksh-mode))
+(when running-xemacs (would-like 'ksh-mode))
 
 ;; -------------------------------------------------------------------------
 ;; LISP MODE
@@ -430,7 +430,7 @@ Use region if it exists. My replacement for isearch-yank-word."
   (interactive "P")
   ;; Push the C-w and call 'isearch-forward'
   (setq unread-command-events
-	(if (featurep 'xemacs)
+	(if running-xemacs
 	    (list (make-event 'key-press '(key ?w modifiers (control))))
 	  (listify-key-sequence "\C-w")))
   (isearch-mode t (not (null regexp-p)) nil (not (interactive-p))))
@@ -471,10 +471,10 @@ A negative arg comments out the `new' line[s]."
 
 ;;; -------------------------------------------------------------------------
 ;;; Some edit-utils packages
-(when (or (not (featurep 'xemacs)) (packagep 'edit-utils))
+(when (or (not running-xemacs) (packagep 'edit-utils))
   (require 'iswitchb)
 
-  (if (featurep 'xemacs)
+  (if running-xemacs
       (progn
 	(paren-set-mode 'paren t)
 	(iswitchb-default-keybindings)
@@ -490,7 +490,7 @@ A negative arg comments out the `new' line[s]."
 
 ;;; -------------------------------------------------------------------------
 ;;; Some text-modes packages
-(when (or (not (featurep 'xemacs)) (packagep 'text-modes))
+(when (or (not running-xemacs) (packagep 'text-modes))
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
   ;; Filladapt is a syntax-highlighting package.  When it is enabled it
@@ -515,7 +515,7 @@ A negative arg comments out the `new' line[s]."
 ;; I added the following to my crontab:
 ;; 13 5 * * * find $HOME/.backup -mtime +7 -delete
 
-(if (featurep 'xemacs)
+(if running-xemacs
     (progn
       (when (would-like 'auto-save)
 	(setq auto-save-directory "~/.autosave/")
@@ -545,7 +545,7 @@ A negative arg comments out the `new' line[s]."
   ;;; ------------------------------------------------------------
   ;; Start the server program
   (unless (or running-windoze (string= (user-login-name) "root"))
-    (if (featurep 'xemacs)
+    (if running-xemacs
 	(progn
 	  (gnuserv-start)
 	  (setq gnuserv-frame (selected-frame)))

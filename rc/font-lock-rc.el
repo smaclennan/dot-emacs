@@ -32,7 +32,7 @@
   "Font Lock mode face used to highlight warning comments."
   :group 'font-lock-faces)
 
-(if (featurep 'xemacs)
+(if running-xemacs
     (progn
       ;; Of all the modes, font-lock *least* needs a modeline
       ;; indicator. If the buffer is colourful, font-lock is on.

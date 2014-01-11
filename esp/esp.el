@@ -1,6 +1,7 @@
 ;; Check for older (21.x) GNU Emacs
-(unless (or (featurep 'xemacs) (featurep 'emacs))
-  (provide 'emacs))
+(unless (featurep 'emacs) (provide 'emacs))
+
+(defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
 
 (require 'cl)
 (add-to-list 'load-path (concat dot-dir "esp"))
