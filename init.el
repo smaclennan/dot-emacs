@@ -454,8 +454,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; -------------------------------------------------------------------------
 ;; For when you need a good excuse...
 
-(defvar excuse-phrase-file
-  (concat dot-dir "site-packages/etc/excuses.lines")
+(defvar excuse-phrase-file (locate-data-file "excuses.lines")
   "*File containing excuses")
 
 (defun excuse (&optional insert)
