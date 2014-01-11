@@ -12,6 +12,7 @@ ELCS =  esp.elc extent.elc itimer.elc
 ELCS += filladapt.elc \
 	hide-copyleft.elc \
 	igrep.elc \
+	rcfiles.elc
 
 EXTRA = esp-loaddefs.elc
 
