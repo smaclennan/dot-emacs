@@ -277,26 +277,6 @@ Local version."
 
 (when running-xemacs (would-like 'ksh-mode))
 
-;; -------------------------------------------------------------------------
-;; LISP MODE
-
-(defun my-byte-compile-buffer ()
-  "Byte compile and load the current buffer.
-If `compilation-ask-about-save' is nil, saves the file without asking."
-  (interactive)
-  (save-some-buffers (not compilation-ask-about-save))
-  (emacs-lisp-byte-compile-and-load))
-
-(defun my-emacs-lisp-mode-hook ()
-  ;; greedy-delete
-  (when (would-like 'greedy-delete)
-    (setq gd-indicator-string nil)
-    (gd-add-to-mode))
-  ;; Redefine compile
-  (define-key emacs-lisp-mode-map [f7] 'my-byte-compile-buffer)
-  )
-(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
-
 ;;; -------------------------------------------------------------------------
 ;; compile variables
 (would-like 'compile) ; xemacs-base
