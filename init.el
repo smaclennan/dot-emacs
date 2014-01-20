@@ -175,7 +175,7 @@ Local version."
   (when (interactive-p)
     (message "Case sensitive search %s." (if case-fold-search "off" "on"))))
 
-;;;; Function keys. Only f1 is bound in XEmacs. We move to shift-f1.
+;;;; Function keys. Only f1 is bound in XEmacs. We move it to shift-f1.
 (global-set-key [(shift f1)]    (global-key-binding [f1]))
 (global-set-key [XF86_Switch_VT_1] (global-key-binding [f1]))
 (global-set-key [f1]            'find-file)
@@ -189,7 +189,7 @@ Local version."
 (global-set-key [f5]		'query-replace)
 (global-set-key [(shift f5)]    'query-replace-regexp)
 (global-set-key [XF86_Switch_VT_5] 'query-replace-regexp)
-(global-set-key [f6]		'ff-find-other-file)
+; (global-set-key [f6]		')
 (global-set-key [f7]		'compile)
 (global-set-key [(shift f7)]    'make-clean)
 (global-set-key [XF86_Switch_VT_7] 'make-clean)
