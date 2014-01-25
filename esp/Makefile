@@ -9,10 +9,7 @@ EMACS = emacs
 ELCS =  esp.elc extent.elc itimer.elc
 
 # Others
-ELCS += filladapt.elc \
-	hide-copyleft.elc \
-	igrep.elc \
-	rcfiles.elc
+ELCS += filladapt.elc igrep.elc rcfiles.elc
 
 EXTRA = esp-loaddefs.elc
 
