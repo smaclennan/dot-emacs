@@ -1,5 +1,5 @@
 ;; S?X?Emacs setup -*- Mode:emacs-lisp -*-
-;; This file should work with XEmacs 2x.x, Emacs 21.x, or SXEmacs
+;; This file should work with XEmacs 2x.x, Emacs >= 21.x, or SXEmacs
 
 ;; Aug 9, 2013: Can run with no packages.
 

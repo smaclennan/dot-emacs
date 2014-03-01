@@ -5,20 +5,16 @@ A brief rundown:
 
 * The config files are in the top level.
 
-* The esp directory contains the "Emacs Special Packages". These are
-  files needed only for GNU Emacs. They are in a non-standard place so
-  that XEmacs will not automagically pick them up.
-
 * The site-packages directory is laid out as per XEmacs. It should be
   automagically used. There is code in init.el to handle the GNU Emacs
   case.
 
-Running an old emacs?
+* The esp directory contains the "Emacs Special Packages". These are
+  files needed only for GNU Emacs. They are in a non-standard place so
+  that XEmacs will not automagically pick them up.
 
-If you are running an old emacs that does not support the .emacs.d
-directory, create the following one line .emacs file:
-
-(load "~/.emacs.d/init")
+* I use Didier Verna's el-rcfiles package. The rc files are in the rc
+  directory. https://github.com/didierverna/el-rcfiles
 
 For more information you can email me at http://seanm.ca/contact.html.
 
