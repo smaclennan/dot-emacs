@@ -228,10 +228,6 @@ Local version."
 
 (global-set-key "\C-ck" 'browse-kill-ring)
 
-;; Cut and paste
-(setq interprogram-cut-function nil)
-(setq interprogram-paste-function nil)
-
 (global-set-key "\C-x\C-l"	'list-buffers)
 
 (global-set-key "\C-x\C-k"	'kill-buffer)
