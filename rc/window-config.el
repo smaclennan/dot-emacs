@@ -31,13 +31,13 @@
   )
 ;; ---------------------------------------------
 
-;; Performance optimizations
-;; Use C-Insert and Shift-Insert for clipboard
-(setq interprogram-cut-function nil
-      interprogram-paste-function nil)
-
 (if running-xemacs
     (progn
+      ;; Performance optimizations
+      ;; Use C-Insert and Shift-Insert for clipboard
+      (setq interprogram-cut-function nil
+	    interprogram-paste-function nil)
+
       (setq shifted-motion-keys-select-region t)
       (eval-when-compile (would-like 'pending-del))
       (when (would-like 'pending-del)
