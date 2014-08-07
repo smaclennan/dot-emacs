@@ -49,28 +49,28 @@ Not all properties are supported."
 ;; GNU Emacs really really needs a `signal-error-on-buffer-boundary'
 (defun my-scroll-down (&optional arg)
   "`scroll-down-command' with no signal on beginning-of-buffer."
-  (interactive "^P")
+  (interactive "P")
   (condition-case nil
       (scroll-down arg)
     (beginning-of-buffer)))
 
 (defun my-scroll-up (&optional arg)
   "`scroll-up-command' with no signal on end-of-buffer."
-  (interactive "^P")
+  (interactive "P")
   (condition-case nil
       (scroll-up arg)
     (end-of-buffer)))
 
 (defun my-previous-line (&optional arg)
   "`previous-line' with no signal on beginning-of-buffer."
-  (interactive "^p")
+  (interactive "p")
   (condition-case nil
       (previous-line arg)
     (beginning-of-buffer)))
 
 (defun my-next-line (&optional arg)
   "`next-line' with no signal on end-of-buffer."
-  (interactive "^p")
+  (interactive "p")
   (condition-case nil
       (next-line arg)
     (end-of-buffer)))
