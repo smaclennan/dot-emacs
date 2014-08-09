@@ -64,14 +64,6 @@
     (rcfiles-register-rc-files)
   (load (concat dot-dir "esp/rcfiles")))
 
-(defun load-rc (file)
-  "Load a file from the rc directory."
-  (condition-case nil
-      (load (concat rcfiles-directory "/" file))
-    (error
-     (add-to-list 'would-have-liked-list file)
-     nil)))
-
 ;;}}}
 
 ;;{{{ Basic Customization
@@ -146,7 +138,7 @@ Local version."
 ;;{{{ Windowing System Customization
 
 (if window-system
-    (load-rc "window-config")
+    (load (concat rcfiles-directory "/" "window-config"))
   ;; Yes, emacs has a menu bar in console mode
   (if (fboundp 'menu-bar-mode)
       (menu-bar-mode -1)))
@@ -522,7 +514,7 @@ A negative arg comments out the `new' line[s]."
       (server-start)))
 
   (when running-windoze
-    (load-rc "windoze"))
+    (load "windoze"))
 
   (load (concat dot-dir "work") t)
 
