@@ -503,27 +503,25 @@ A negative arg comments out the `new' line[s]."
 
 ;;}}}
 
-(unless noninteractive
-  ;;; ------------------------------------------------------------
-  ;; Start the server program
-  (unless (or running-windoze (string= (user-login-name) "root"))
-    (if running-xemacs
-	(progn
-	  (gnuserv-start)
-	  (setq gnuserv-frame (selected-frame)))
+;;; ------------------------------------------------------------
+;; Start the server program
+(unless (or noninteractive running-windoze (string= (user-login-name) "root"))
+  (if running-xemacs
+      (progn
+	(gnuserv-start)
+	(setq gnuserv-frame (selected-frame)))
       (server-start)))
 
-  (when running-windoze
-    (load "windoze"))
+(when running-windoze
+  (load "windoze"))
 
-  (load (concat dot-dir "work") t)
+(load (concat dot-dir "work") t)
 
-  ;; I use a common init.el across many machines. The `user-init' file
-  ;; allows for user/machine specific initialization.
-  (load (concat dot-dir "user-init") t)
+;; I use a common init.el across many machines. The `user-init' file
+;; allows for user/machine specific initialization.
+(load (concat dot-dir "user-init") t)
 
-  (setq initial-scratch-message ";; This buffer is for goofing around in.\n\n")
-  )
+(setq initial-scratch-message ";; This buffer is for goofing around in.\n\n")
 
 ;;{{{ Final results
 
