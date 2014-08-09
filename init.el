@@ -137,7 +137,9 @@ Local version."
 ;;{{{ XEmacs 21.5 stuff
 
 (and running-xemacs (emacs-version>= 21 5)
-     (load-rc "xemacs-21.5"))
+     ;; For some reason the file coding was gutted - put it back
+     (setq buffer-file-coding-system-for-read 'undecided
+	   default-buffer-file-coding-system  'raw-text))
 
 ;;}}}
 
