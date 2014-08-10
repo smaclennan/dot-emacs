@@ -81,7 +81,8 @@
       signal-error-on-buffer-boundary nil
       inhibit-default-init t
       inhibit-startup-message t
-      visible-bell t)
+      visible-bell t
+      initial-scratch-message ";; This buffer is for goofing around in.\n\n")
 
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -512,16 +513,15 @@ A negative arg comments out the `new' line[s]."
 	(setq gnuserv-frame (selected-frame)))
       (server-start)))
 
-(when running-windoze
-  (load "windoze"))
+;;; ------------------------------------------------------------
+;; Some non-standard init files. Start them last so they can override defaults.
+(when running-windoze (load "windoze"))
 
 (load (concat dot-dir "work") t)
 
 ;; I use a common init.el across many machines. The `user-init' file
 ;; allows for user/machine specific initialization.
 (load (concat dot-dir "user-init") t)
-
-(setq initial-scratch-message ";; This buffer is for goofing around in.\n\n")
 
 ;;{{{ Final results
 
