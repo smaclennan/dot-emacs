@@ -50,6 +50,19 @@
 	nil)
     (would-like package no-list)))
 
+;; Split the system-name up into host and domain name.
+;; We need this up front for sendmail-rc.
+(defvar host-name nil)
+(defvar domain-name nil)
+(let ((system-name (system-name)))
+  (if (string-match "^\\([^.]+\\)\\.\\(.*\\)" system-name)
+      ;; fully qualified system-name
+      (setq host-name (match-string 1 system-name)
+	    domain-name (match-string 2 system-name))
+  ;; system-name is host-name
+  (setq host-name system-name
+	domain-name (getenv "DOMAINNAME"))))
+
 ;; For rcfiles to be able to match loaded lisp such as lisp-mode we
 ;; need to turn the file names into simple load names.
 (setq load-history
@@ -60,6 +73,8 @@
 		    (list a))))
 	      load-history))
 
+;; The standard doesn't support sxemacs
+(setq rcfiles-directory (concat dot-dir "rc"))
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
   (load (concat dot-dir "esp/rcfiles")))
@@ -112,18 +127,6 @@ Local version."
 	  (setq path (concat path "/" file))
 	  (when (file-exists-p path)
 	    (throw 'found path)))))))
-
-;; Split the system-name up into host and domain name.
-(defvar host-name nil)
-(defvar domain-name nil)
-(let ((system-name (system-name)))
-  (if (string-match "^\\([^.]+\\)\\.\\(.*\\)" system-name)
-      ;; fully qualified system-name
-      (setq host-name (match-string 1 system-name)
-	    domain-name (match-string 2 system-name))
-  ;; system-name is host-name
-  (setq host-name system-name
-	domain-name (getenv "DOMAINNAME"))))
 
 ;;}}}
 
