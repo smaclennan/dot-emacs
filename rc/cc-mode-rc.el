@@ -19,9 +19,12 @@
 ; )
 ; (add-hook 'c-initialization-hook 'my-c-initialization-hook)
 
+;; Same as Linux except 4 char tabs
+(c-add-style "sam" '("linux" (c-basic-offset . 4) (tab-width . 4)))
+
 ;; This hook is run for all the modes handled by cc-mode
 (defun my-c-mode-common-hook ()
-  (c-set-style "linux")
+  (c-set-style "sam")
   (c-toggle-hungry-state 1)  ;; hungry delete
   (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
   (setq case-fold-search nil) ;; C is case sensitive
