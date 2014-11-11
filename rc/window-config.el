@@ -103,6 +103,9 @@
   ;; Toolbar
   (tool-bar-mode 0)
 
+  ;; Tooltips hang emacs over VPN
+  (tooltip-mode 0)
+
   ;; Set the cursor properly for Emacs
   (blink-cursor-mode 0)
   (set-cursor-color "red"))
