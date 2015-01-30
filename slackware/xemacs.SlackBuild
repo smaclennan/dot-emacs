@@ -7,8 +7,8 @@
 #   better consistency with existing SBo scripts...
 
 PRGNAM=xemacs
-VERSION=21.4.22
-BUILD=${BUILD:-3}
+VERSION=21.4.23
+BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
 BASE_VERSION=2.27
