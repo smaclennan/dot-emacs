@@ -336,8 +336,15 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
 (defun unixtime (seconds)
   (interactive "sTime: ")
   ;; Force it to a float for 32-bit systems.
-  (let ((time (seconds-to-time (string-to-number (concat seconds ".0")))))
-    (message "%s" (format-time-string "%a %b %d %T %Z %Y" time))))
+  (let ((time (string-to-number (concat seconds ".0"))))
+    (message "%s"
+	     (format-time-string
+	      "%a %b %d %T %Z %Y"
+	      ;; seconds-to-time from time-date.el in gnus
+	      (list (floor time 65536)
+		    (floor (mod time 65536))
+		    (floor (* (- time (ffloor time)) 1000000)))
+	      ))))
 
 (defun append-to-list (list-var element)
   "Append to the value of LIST-VAR the element ELEMENT if it isn't there yet.
