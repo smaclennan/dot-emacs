@@ -465,9 +465,10 @@ A negative arg comments out the `new' line[s]."
 
 ;;; ----------------------------------------------
 ;; ws-trim-mode
-(global-ws-trim-mode t)
-(setq ws-trim-mode-line-string nil)
-(set-default 'ws-trim-level 1)
+(when (fboundp 'global-ws-trim-mode)
+  (global-ws-trim-mode t)
+  (setq ws-trim-mode-line-string nil)
+  (set-default 'ws-trim-level 1))
 
 ;;}}}
 
