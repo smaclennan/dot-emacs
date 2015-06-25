@@ -225,6 +225,12 @@ Local version."
 ;    (mwheel-install)
 ;    (setq mwheel-follow-mouse t))
 
+;; Fixup GNU Emacs
+(when (not running-xemacs)
+  (global-set-key [M-right] 'forward-sexp)
+  (global-set-key [M-left]  'backward-sexp)
+  )
+
 ;; -------------------------------------------------------
 ;; The standard blows away emacs just a little to easily
 (defun my-save-buffers-kill-emacs ()
