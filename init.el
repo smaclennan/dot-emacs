@@ -167,12 +167,6 @@ Local version."
 	    (lambda () (define-key sh-mode-map [(return)] 'newline-and-indent)))
   )
 
-(defun my-toggle-case-search ()
-  (interactive)
-  (setq case-fold-search (not case-fold-search))
-  (when (interactive-p)
-    (message "Case sensitive search %s." (if case-fold-search "off" "on"))))
-
 ;;;; Function keys. Only f1 is bound in XEmacs. We move it to shift-f1.
 (global-set-key [(shift f1)]    (global-key-binding [f1]))
 (global-set-key [XF86_Switch_VT_1] (global-key-binding [f1]))
@@ -180,9 +174,7 @@ Local version."
 (global-set-key [f2]		'undo)
 (global-set-key [(shift f2)]	'redo)
 (global-set-key [XF86_Switch_VT_2] 'redo)
-(global-set-key [f3]		'isearch-repeat-forward)
-(global-set-key [(shift f3)]    'isearch-repeat-backward)
-(global-set-key [XF86_Switch_VT_3] 'isearch-repeat-backward)
+; f3 is isearch
 (global-set-key [f4]		'next-error)
 (global-set-key [f5]		'query-replace)
 (global-set-key [(shift f5)]    'query-replace-regexp)
@@ -198,9 +190,7 @@ Local version."
       (global-set-key [(shift f8)] 'igrep-find))
   (global-set-key [f8]		'grep))
 (global-set-key [(control f8)]	'my-checkpatch)
-(global-set-key [f9]		'my-isearch-word-forward)
-(global-set-key [(shift f9)]    'my-toggle-case-search)
-(global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
+; f9 is isearch
 (global-set-key [f10]		'find-tag-at-point)
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
@@ -234,6 +224,12 @@ Local version."
 ;(when (fboundp 'mwheel-install)
 ;    (mwheel-install)
 ;    (setq mwheel-follow-mouse t))
+
+;; Fixup GNU Emacs
+(when (not running-xemacs)
+  (global-set-key [M-right] 'forward-sexp)
+  (global-set-key [M-left]  'backward-sexp)
+  )
 
 ;; -------------------------------------------------------
 ;; The standard blows away emacs just a little to easily
@@ -384,39 +380,6 @@ The test for presence of ELEMENT is done with `equal'."
     dirs))
 
 ;;; -------------------------------------------------------------------------
-;;  isearch "stuff"
-
-;;  I don't like the way isearch-yank-word defines word, so I rolled my own
-(defun my-isearch-yank-word ()
-  "Pull current word from buffer into search string.
-Use region if it exists. My replacement for isearch-yank-word."
-  (interactive)
-  (let ((word (if (region-exists-p)
-		  (buffer-substring (region-beginning) (region-end))
-		(current-word))))
-    (forward-char 1) ;; make sure we are not on first char of word
-    (if (fboundp 'isearch-yank)
-	(isearch-yank word)
-      (isearch-yank-string word))))
-
-;; Warning: If you change this binding, change `my-isearch-word-forward'
-(define-key isearch-mode-map "\C-w"		'my-isearch-yank-word)
-
-(define-key isearch-mode-map [f3]		'isearch-repeat-forward)
-(define-key isearch-mode-map [(shift f3)]	'isearch-repeat-backward)
-(define-key isearch-mode-map "\C-t"		'isearch-toggle-case-fold)
-
-(defun my-isearch-word-forward (&optional regexp-p)
-  "Search for current word. Region is used if set."
-  (interactive "P")
-  ;; Push the C-w and call 'isearch-forward'
-  (setq unread-command-events
-	(if running-xemacs
-	    (list (make-event 'key-press '(key ?w modifiers (control))))
-	  (listify-key-sequence "\C-w")))
-  (isearch-mode t (not (null regexp-p)) nil (not (interactive-p))))
-
-;;; -------------------------------------------------------------------------
 ;; For when you need a good excuse...
 
 (defvar excuse-phrase-file (locate-data-file "excuses.lines")
@@ -508,9 +471,10 @@ A negative arg comments out the `new' line[s]."
 
 ;;; ----------------------------------------------
 ;; ws-trim-mode
-(global-ws-trim-mode t)
-(setq ws-trim-mode-line-string nil)
-(set-default 'ws-trim-level 1)
+(when (fboundp 'global-ws-trim-mode)
+  (global-ws-trim-mode t)
+  (setq ws-trim-mode-line-string nil)
+  (set-default 'ws-trim-level 1))
 
 ;;}}}
 
