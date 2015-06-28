@@ -75,6 +75,16 @@ Not all properties are supported."
       (next-line arg)
     (end-of-buffer)))
 
+(defun my-shift-select-down ()
+  (interactive)
+  (unless (region-active-p) (set-mark-command nil))
+  (my-next-line))
+
+(defun my-shift-select-up ()
+  (interactive)
+  (unless (region-active-p) (set-mark-command nil))
+  (my-previous-line))
+
 (global-set-key (kbd "<prior>") 'my-scroll-down)
 (global-set-key "\M-v" 'my-scroll-down)
 (global-set-key (kbd "<next>") 'my-scroll-up)
@@ -83,6 +93,8 @@ Not all properties are supported."
 (global-set-key "\C-p" 'my-previous-line)
 (global-set-key (kbd "<down>") 'my-next-line)
 (global-set-key "\C-n" 'my-next-line)
+(global-set-key [S-down] 'my-shift-select-down)
+(global-set-key [S-up] 'my-shift-select-up)
 
 (defun my-clipboard-copy (beg end)
   (interactive "r")
