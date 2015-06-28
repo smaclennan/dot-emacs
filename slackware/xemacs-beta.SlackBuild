@@ -63,10 +63,15 @@ fi
 # Add buttons 8 thru 11 inclusive
 #patch -p1 < $CWD/patches/extra-buttons.patch
 
+# Thanks to Jerry James for letting me know about the
+# --with-default-eol-detection option!
+
 CFLAGS="$SLKCFLAGS" \
-  ./configure \
-  --prefix=/usr \
-  --without-error-checking \
+ ./configure \
+ --prefix=/usr \
+ --without-error-checking \
+ --without-mule \
+ --with-default-eol-detection \
  $ARCH-slackware-linux
 
 make -j8
