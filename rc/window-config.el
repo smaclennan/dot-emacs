@@ -62,10 +62,14 @@
 (when running-xemacs
   ;; Pointer used during garbage collection.
   ;; .xbm not supported under windoze
-  (let ((img  (locate-data-file "recycle-image.xbm"))
-	(mask (locate-data-file "recycle-mask.xbm")))
-    (if (and img mask (file-exists-p img) (file-exists-p mask)
-	     (not running-windoze))
+  (let (img mask)
+    (if (string= (x-server-vendor) "Colin Harrison")
+	;; xming only supports 32x32
+	(setq img  (locate-data-file "recycle-image-32.xbm")
+	      mask (locate-data-file "recycle-mask-32.xbm"))
+      (setq img  (locate-data-file "recycle-image.xbm")
+	    mask (locate-data-file "recycle-mask.xbm")))
+    (if (and img mask (not running-windoze))
 	(set-glyph-image gc-pointer-glyph
 			 (vector 'xbm
 				 :file img
