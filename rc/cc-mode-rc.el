@@ -32,8 +32,10 @@
   ;; Let's try this...
   (setq c-enable-xemacs-performance-kludge-p t)
 
-;  (easy-menu-add-item nil '("C") "----")
-;  (easy-menu-add-item nil '("C") ["lxr" lxr-at-point lxr-url])
+  (unless running-xemacs
+    (let ((tags (concat default-directory "TAGS")))
+      (when (file-exists-p tags)
+	(set (make-local-variable 'tags-file-name) tags))))
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 

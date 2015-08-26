@@ -330,8 +330,10 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;;; -------------------------------------------------------------------------
 ;; tags
-(setq tags-build-completion-table nil ;; too slow
-      tags-auto-read-changed-tag-files t)
+(if running-xemacs
+    (setq tags-build-completion-table nil ;; too slow
+	  tags-auto-read-changed-tag-files t)
+  (setq tags-revert-without-query t))
 
 ;;; -------------------------------------------------------------------------
 ;; GNU global - gtags
