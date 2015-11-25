@@ -1,6 +1,5 @@
-(setq ispell-silently-savep t
-      ispell-extra-args '("-W" "3"))
+(setq ispell-silently-savep t)
 
-;; For aspell
-(when (exec-installed-p "aspell")
-  (setq-default ispell-program-name "aspell"))
+(unless ispell-really-hunspell
+  ;; hunspell doesn't have this option
+  (setq ispell-extra-args '("-W" "3")))
