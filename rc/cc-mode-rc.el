@@ -82,6 +82,9 @@ Does the matches case insensitive unless `case-sensitive' is non-nil."
 (defvar local-compile-go "gccgo")
 (defvar local-compile-offset 4)
 
+;; We need to obfuscate this string or XEmacs gets confused
+(defvar local-vars-str (concat "Local Variables" ":"))
+
 (defun add-local-vars (block)
   "Local routine to actually add the block of vars to the file.
 Will not overwrite current variables if they exist."
@@ -91,7 +94,7 @@ Will not overwrite current variables if they exist."
 
       ;; Make sure local variables do not exist
       (widen)
-      (when (search-forward "Local Variables:" nil t)
+      (when (search-forward local-vars-str nil t)
 	(error "Local variables already exist."))
 
       ;; Add it
@@ -116,7 +119,7 @@ Will not overwrite current variables if they exist."
      (t (error "Unsupported mode %S" major-mode)))
 
     (add-local-vars
-     (concat "\n/*\n * Local Variables:\n"
+     (concat "\n/*\n * " local-vars-str "\n"
 	     " * compile-command: \"" cmd "\"\n"
 	     (when arg
 	       (format (concat " * indent-tabs-mode: t\n"
@@ -141,7 +144,7 @@ Will not overwrite current variables if they exist."
   (add-local-vars
    (format (concat "\n"
 		   "/*\n"
-		   " * Local Variables:\n"
+		   " * " local-vars-str "\n"
 		   " * indent-tabs-mode: t\n"
 		   " * c-basic-offset: %d\n"
 		   " * tab-width: %d\n"
