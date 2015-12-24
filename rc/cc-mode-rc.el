@@ -178,3 +178,6 @@ Will not overwrite current variables if they exist."
     (c-macro-expand start end subst)))
 
 (require 'my-compile)
+
+;; Turn off gcc colours
+(setenv "GCC_COLORS" "")
