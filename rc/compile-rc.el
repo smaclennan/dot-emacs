@@ -11,7 +11,7 @@
   (save-some-buffers (not compilation-ask-about-save) nil)
   (if running-xemacs
       (compile-internal cmd "No more errors")
-    (emacs  (compilation-start cmd))))
+    (compilation-start cmd)))
 
 (defun my-set-compile ()
   (interactive)
