@@ -1,5 +1,10 @@
 .PHONY: all elcs clean
 
+# When building inside of Emacs it seems EMACS=t
+ifeq ($(EMACS),t)
+EMACS=
+endif
+
 ifeq ($(EMACS),)
 BASE=$(shell basename $(PWD))
 ifeq ($(BASE),.sxemacs)
