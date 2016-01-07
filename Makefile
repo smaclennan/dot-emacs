@@ -18,9 +18,6 @@ endif
 	make EMACS=$(EMACS) -C site-packages/lisp
 
 elcs:
-ifeq ($(EMACS),emacs)
-	make EMACS=$(EMACS) -C esp elcs
-endif
 	make EMACS=$(EMACS) -C site-packages/lisp elcs
 
 clean:
