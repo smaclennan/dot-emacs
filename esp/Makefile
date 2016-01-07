@@ -15,6 +15,9 @@ EXTRA = esp-loaddefs.elc
 
 all:	$(ELCS) $(EXTRA)
 
+# Dummy... we already build elc files
+elcs:
+
 esp-loaddefs.el: $(ELCS)
 	@echo Create $(EMACS) esp-loaddefs.el ...
 	@$(EMACS) -batch -q $(HELPER) -l build-loaddefs.el -f build-loaddefs
