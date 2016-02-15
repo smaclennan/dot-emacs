@@ -115,7 +115,10 @@
   (set-cursor-color "red"))
 
 ;; Do this *after* setting the modeline colours
-(when (fboundp 'display-time) (display-time))
+(when (fboundp 'display-time)
+  ;; remove 'mail
+  (setq display-time-form-list (list 'date 'time 'load))
+  (display-time))
 
 ;; -------
 ;; MISC
