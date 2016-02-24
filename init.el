@@ -102,6 +102,11 @@
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;; Let's try making _ part of a "word"
+(modify-syntax-entry ?_ "w" (standard-syntax-table))
+(modify-syntax-entry ?_ "w" c-mode-syntax-table)
+(modify-syntax-entry ?_ "w" c++-mode-syntax-table)
+
 ;; (would-like 'uncompress) ;; os-utils
 (and (not noninteractive)
      (would-like 'jka-compr)
