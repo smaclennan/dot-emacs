@@ -3,5 +3,6 @@
 (add-to-list 'my-compile-dir-list
 	     (list (expand-file-name "~/linux-kernel/") make-j "linux") t)
 
+;; Use the non-greedy match so include/qemu works
 (add-to-list 'my-compile-dir-list
-	     (list (expand-file-name "~/qemu/") make-j 'space-indent-4))
+	     (list ".*?/qemu/" make-j 'space-indent-4))
