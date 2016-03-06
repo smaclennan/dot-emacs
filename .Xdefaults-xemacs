@@ -1,0 +1,10 @@
+XEmacs*background:			White
+XEmacs*menubar.background:		Gray80
+XEmacs.modeline.attributeBackground:	Gray80
+
+XEmacs*XlwScrollBar*Foreground:		Gray30
+XEmacs*XlwScrollBar*Background:		Gray80
+XEmacs*XmScrollBar*Foreground:		Gray30
+XEmacs*XmScrollBar*Background:		Gray80
+
+XEmacs*Ediff.geometry:			29x2+100+100
