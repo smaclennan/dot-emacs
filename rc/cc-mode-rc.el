@@ -146,10 +146,25 @@ Will not overwrite current variables if they exist."
 		   "/*\n"
 		   " * " local-vars-str "\n"
 		   " * indent-tabs-mode: t\n"
-		   " * c-basic-offset: %d\n"
-		   " * tab-width: %d\n"
+		   " * c-basic-offset: 8\n"
+		   " * tab-width: 8\n"
 		   " * End:\n"
 		   " */\n") offset offset)))
+
+(defun add-local-kernel-vars ()
+  "Add local variables to set Linux kernel coding standard."
+  (interactive)
+  ;; Currently only for C mode
+  (or (eq major-mode 'c-mode) (error "Unsupported mode %S" major-mode))
+  (add-local-vars
+   (concat "\n"
+	   "/*\n"
+	   " * " local-vars-str "\n"
+	   " * indent-tabs-mode: t\n"
+	   " * c-basic-offset: 8\n"
+	   " * tab-width: 8\n"
+	   " * End:\n"
+	   " */\n")))
 
 ;;; -------------------------------------------------------------------------
 ;; c macro expansion
