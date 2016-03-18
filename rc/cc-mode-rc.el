@@ -196,3 +196,11 @@ Will not overwrite current variables if they exist."
 
 ;; Turn off gcc colours
 (setenv "GCC_COLORS" "")
+
+;; At least *try* to validate the compile-command */
+(defun cc-string (obj)
+  (and (stringp obj)
+       (string-match "^\\(cc\\|gcc\\|clang\\) [a-zA-Z0-9. -]+$" obj)))
+
+(unless (featurep 'xemacs)
+  (put 'compile-command 'safe-local-variable #'cc-string))
