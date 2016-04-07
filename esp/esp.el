@@ -8,8 +8,9 @@
 
 ;; Add the local site-packages
 (let ((lisp-dir (concat dot-dir "site-packages/lisp")))
-  (loop for dir in (directory-files lisp-dir t "^[^.i]") do
-    (add-to-list 'load-path dir)))
+  (dolist (dir (directory-files lisp-dir t "^[^.i]"))
+    (when (file-directory-p dir)
+      (add-to-list 'load-path dir))))
 
 (load "esp-loaddefs" t t)
 (load "sam-loaddefs" t t)
@@ -134,4 +135,3 @@ instead, uses tag around or before point."
   (find-tag (if current-prefix-arg
 		(find-tag-tag "Find tag: "))
 	    (find-tag (find-tag-default))))
-
