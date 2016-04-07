@@ -1,6 +1,6 @@
 (setq compilation-read-command   nil
       compilation-ask-about-save nil
-      compilation-window-height  12
+      compilation-window-height  16
       compilation-error-regexp-systems-list '(gnu)
       compile-command "make ")
 
