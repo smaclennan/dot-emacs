@@ -17,10 +17,13 @@ endif
 endif
 
 all:
+	@echo Make $(EMACS) ...
 ifeq ($(EMACS),emacs)
 	make EMACS=$(EMACS) -C esp
-endif
+	make EMACS=$(EMACS) -C site-packages/lisp elcs
+else
 	make EMACS=$(EMACS) -C site-packages/lisp
+endif
 
 elcs:
 	make EMACS=$(EMACS) -C site-packages/lisp elcs
