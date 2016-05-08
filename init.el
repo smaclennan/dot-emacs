@@ -334,13 +334,6 @@ Use region if it exists. My replacement for isearch-yank-word."
     (add-hook 'c-mode-common-hook 'hide-copyleft-region)))
 
 ;;; -------------------------------------------------------------------------
-;; tags
-(if running-xemacs
-    (setq tags-build-completion-table nil ;; too slow
-	  tags-auto-read-changed-tag-files t)
-  (setq tags-revert-without-query t))
-
-;;; -------------------------------------------------------------------------
 ;; GNU global - gtags
 (let ((gtag-dir "/usr/share/gtags")) ;; default install location
   (when (file-directory-p gtag-dir)

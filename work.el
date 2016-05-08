@@ -7,8 +7,6 @@
 (add-to-list 'my-compile-dir-list
 	     (list ".*?/qemu/" make-j 'space-indent-4) t)
 
-(require 'etags)
-
 (defvar bf-dir nil "Interval variable.")
 (make-variable-buffer-local 'bf-dir)
 
@@ -23,6 +21,8 @@
       (my-tag-tree bf-dir buf))))
 
 (defun bf-func (matched-dir target)
+  (require 'etags)
+
   (let ((dir (buffer-file-name)) subdir)
     ;; Get the subdir under bart's fault
     (when (string-match "/barts-fault/\\([^/]+\\)/" dir)
