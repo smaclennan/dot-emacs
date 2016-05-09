@@ -44,6 +44,7 @@
     (add-hook 'after-save-hook 'bf-tags)
     ))
 
-(add-to-list 'my-compile-dir-list (list ".*?/barts-fault/" make-j 'bf-func) t)
+;; Bart's Fault can't handle -j everywhere
+(add-to-list 'my-compile-dir-list '(".*?/barts-fault/" nil bf-func) t)
 
-(add-to-list 'my-compile-dir-list (list ".*?/drv/" make-j "linux") t)
+(add-to-list 'my-compile-dir-list '(".*?/drv/" make-j "linux") t)
