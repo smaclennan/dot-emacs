@@ -316,10 +316,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 (when running-xemacs (would-like 'ksh-mode))
 
 ;;; -------------------------------------------------------------------------
-;; compile variables
-(would-like 'compile) ; xemacs-base
-
-;;; -------------------------------------------------------------------------
 ;; hide-copyleft
 ;; If you're sure you're not gonna get sued, you can do something like this
 ;; in your .emacs file:
@@ -334,13 +330,6 @@ Use region if it exists. My replacement for isearch-yank-word."
     (add-hook 'c-mode-common-hook 'hide-copyleft-region)))
 
 ;;; -------------------------------------------------------------------------
-;; tags
-(if running-xemacs
-    (setq tags-build-completion-table nil ;; too slow
-	  tags-auto-read-changed-tag-files t)
-  (setq tags-revert-without-query t))
-
-;;; -------------------------------------------------------------------------
 ;; GNU global - gtags
 (let ((gtag-dir "/usr/share/gtags")) ;; default install location
   (when (file-directory-p gtag-dir)
@@ -348,7 +337,7 @@ Use region if it exists. My replacement for isearch-yank-word."
     (autoload 'gtags-mode "gtags" "" t)))
 
 ;;; -------------------------------------------------------------------------
-(unless running-windoze (would-like 'svn))
+;; (unless running-windoze (would-like 'svn))
 
 (defvar signed-off-by-sig nil
   "* Signature used by `signed-off-by' function.
