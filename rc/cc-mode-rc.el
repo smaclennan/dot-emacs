@@ -204,3 +204,12 @@ Will not overwrite current variables if they exist."
 
 (unless (featurep 'xemacs)
   (put 'compile-command 'safe-local-variable #'cc-string))
+
+(defun my-c-settings ()
+  "Show the basic C settings for the buffer."
+  (interactive)
+  (if (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode))
+      (message "%s: style %s basic %d %s %d"
+	       (buffer-name) c-indentation-style c-basic-offset
+	       (if indent-tabs-mode "tabs" "spaces") tab-width)
+    (message "Buffer not in C mode.")))
