@@ -7,7 +7,7 @@
 (add-to-list 'my-compile-dir-list
 	     (list ".*?/qemu/" make-j 'space-indent-4) t)
 
-(defvar bf-dir nil "Interval variable.")
+(defvar bf-dir nil "Internal variable.")
 (make-variable-buffer-local 'bf-dir)
 
 (defvar bf-app-dirs '("barf" "bfmgr" "dmxmgr")
