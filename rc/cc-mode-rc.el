@@ -213,3 +213,44 @@ Will not overwrite current variables if they exist."
 	       (buffer-name) c-indentation-style c-basic-offset
 	       (if indent-tabs-mode "tabs" "spaces") tab-width)
     (message "Buffer not in C mode.")))
+
+;;; -------------------------------------------------------------------------
+
+(defun open-helper(fname flags &optional mode)
+  "Helper for C open() function.
+Flags are: r = read, w = write, rw = read + write,
+	   c = create, t = truncate, a = append.
+The x flag adds exit(1) on error, else it returns -1.
+Default flags value is read only."
+  (interactive "sFname: \nsFlags [rwctax]: ")
+  (let (out (rw 0) exit start mark end)
+    (dolist (f (string-to-list flags))
+      (cond
+       ((eq f ?r) (setq rw (logior rw 1)))
+       ((eq f ?w) (setq rw (logior rw 2)))
+       ((eq f ?c) (setq out (concat out " | O_CREAT") mode "0644"))
+       ((eq f ?t) (setq out (concat out " | O_TRUNC")))
+       ((eq f ?a) (setq out (concat out " | O_APPEND")))
+       ((eq f ?x) (setq exit t))
+       (t (error "Invalid flag %c" f))))
+    (cond
+     ((<= rw 1) (setq out (concat "O_RDONLY" out)))
+     ((eq rw 2) (setq out (concat "O_WRONLY" out)))
+     ((eq rw 3) (setq out (concat "O_RDWR" out))))
+    (setq start (point-marker))
+    (insert (concat "int fd = open(" fname ", " out
+		    (if mode (concat ", " mode))
+		    ");\n"
+		    "if (fd < 0) {\n"
+		    "perror(" fname ");\n"
+		    (if exit
+			"exit(1);\n"
+		      "return -1;\n")
+		    "}\n;"))
+    (setq mark (point-marker))
+    (insert "\nclose(fd);\n")
+    (setq end (point-marker))
+    (indent-region start end)
+    (goto-char mark)
+    (delete-backward-char)
+    ))
