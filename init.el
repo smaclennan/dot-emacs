@@ -189,11 +189,8 @@ Local version."
 (global-set-key [(shift f7)]    'make-clean)
 (global-set-key [XF86_Switch_VT_7] 'make-clean)
 (global-set-key [(control f7)]	'my-set-compile)
-(if (packagep 'igrep running-windoze)
-    (progn
-      (global-set-key [f8] 'igrep)
-      (global-set-key [(shift f8)] 'igrep-find))
-  (global-set-key [f8]		'grep))
+(global-set-key [f8] 'igrep)
+(global-set-key [(shift f8)] 'igrep-find)
 (global-set-key [(control f8)]	'my-checkpatch)
 ; f9 is isearch
 (global-set-key [f10]		'find-tag-at-point)
