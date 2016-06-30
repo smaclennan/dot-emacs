@@ -135,3 +135,8 @@ instead, uses tag around or before point."
   (find-tag (if current-prefix-arg
 		(find-tag-tag "Find tag: "))
 	    (find-tag (find-tag-default))))
+
+;; Hacks for Emacs 23
+(when (eq emacs-major-version 23)
+  (mapcar 'require '(git-diff my-calc my-tags smerge))
+  )
