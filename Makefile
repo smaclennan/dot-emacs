@@ -20,7 +20,7 @@ all:
 	@echo Make $(EMACS) ...
 ifeq ($(EMACS),emacs)
 	make EMACS=$(EMACS) -C esp
-	make EMACS=$(EMACS) -C site-packages/lisp elcs
+	make EMACS=$(EMACS) -C site-packages/lisp
 else
 	make EMACS=$(EMACS) -C site-packages/lisp
 endif
