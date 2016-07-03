@@ -63,6 +63,9 @@ fi
 # Add buttons 8 thru 11 inclusive
 #patch -p1 < $CWD/patches/extra-buttons.patch
 
+# Should work even with earlier compilers
+patch -p1 < $CWD/patches/gcc5.3.0.patch
+
 # Thanks to Jerry James for letting me know about the
 # --with-default-eol-detection option!
 

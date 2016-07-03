@@ -1,0 +1,19 @@
+--- xemacs-21.5.34/src/lisp.h.orig	2016-07-02 22:10:37.516801193 -0400
++++ xemacs-21.5.34/src/lisp.h	2016-07-02 22:10:42.412906260 -0400
+@@ -1156,6 +1156,8 @@
+ 
+ /* No type has a greater alignment requirement than max_align_t.
+    (except perhaps for types we don't use, like long double) */
++#ifndef _GCC_MAX_ALIGN_T
++#define _GCC_MAX_ALIGN_T
+ typedef union
+ {
+   struct { long l; } l;
+@@ -1163,6 +1165,7 @@
+   struct { void (*f)(void); } f;
+   struct { double d; } d;
+ } max_align_t;
++#endif
+ 
+ /* ALIGNOF returns the required alignment of a type -- i.e. a value such
+    that data of this type must begin at a memory address which is a
