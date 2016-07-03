@@ -7,6 +7,10 @@
 ;; Do this after cc-mode loaded for XEmacs
 (setup-font-lock-keywords)
 
+;; Let's try making _ part of a "word"
+(modify-syntax-entry ?_ "w" c-mode-syntax-table)
+(modify-syntax-entry ?_ "w" c++-mode-syntax-table)
+
 ;(let ((lxr-menu
 ;       `("----"
 ;	 ["lxr" lxr-at-point lxr-url]

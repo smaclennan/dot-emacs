@@ -1,6 +1,8 @@
 ;; Windowing system only config.
 ;; No real library to toggle off of so it is not a -rc.el
 
+(require 'sam-common)
+
 (defvar x-root-size nil "X root window width and height")
 
 (when (and (eq window-system 'x) (eq x-root-size nil))
@@ -31,21 +33,22 @@
   )
 ;; ---------------------------------------------
 
-(if running-xemacs
-    (progn
-      ;; Performance optimizations
-      ;; Use C-Insert and Shift-Insert for clipboard
-      (setq interprogram-cut-function nil
-	    interprogram-paste-function nil)
+(my-feature-cond
+  (xemacs
+   ;; Performance optimizations
+   ;; Use C-Insert and Shift-Insert for clipboard
+   (setq interprogram-cut-function nil
+	 interprogram-paste-function nil)
 
-      (setq shifted-motion-keys-select-region t)
-      (eval-when-compile (would-like 'pending-del))
-      (when (would-like 'pending-del)
-	(setq pending-delete-modeline-string "")
-	(turn-on-pending-delete)))
-  (and (< emacs-major-version 23)
-       (would-like 'pc-select)
-       (pc-selection-mode)))
+   (setq shifted-motion-keys-select-region t)
+   (eval-when-compile (would-like 'pending-del))
+   (when (would-like 'pending-del)
+     (setq pending-delete-modeline-string "")
+     (turn-on-pending-delete)))
+  (emacs
+   (and (< emacs-major-version 23)
+	(would-like 'pc-select)
+	(pc-selection-mode))))
 
 ;; -------
 ;; Title bar - almost every window system supports a title bar
@@ -59,60 +62,61 @@
 (setq frame-title-format '("" emacs-str (buffer-file-name "%f" "%b")))
 
 ;; -------
-(when running-xemacs
-  ;; Pointer used during garbage collection.
-  ;; .xbm not supported under windoze
-  (let (img mask)
-    (if (string= (x-server-vendor) "Colin Harrison")
-	;; xming only supports 32x32
-	(setq img  (locate-data-file "recycle-image-32.xbm")
-	      mask (locate-data-file "recycle-mask-32.xbm"))
-      (setq img  (locate-data-file "recycle-image.xbm")
-	    mask (locate-data-file "recycle-mask.xbm")))
-    (if (and img mask (not running-windoze))
-	(set-glyph-image gc-pointer-glyph
-			 (vector 'xbm
-				 :file img
-				 :mask-file mask
-				 :foreground "black"
-				 :background "chartreuse1"))
-      (set-glyph-image gc-pointer-glyph "recycle2.xpm")))
+(my-feature-cond
+  (xemacs
+   ;; Pointer used during garbage collection.
+   ;; .xbm not supported under windoze
+   (let (img mask)
+     (if (string= (x-server-vendor) "Colin Harrison")
+	 ;; xming only supports 32x32
+	 (setq img  (locate-data-file "recycle-image-32.xbm")
+	       mask (locate-data-file "recycle-mask-32.xbm"))
+       (setq img  (locate-data-file "recycle-image.xbm")
+	     mask (locate-data-file "recycle-mask.xbm")))
+     (if (and img mask (not running-windoze))
+	 (set-glyph-image gc-pointer-glyph
+			  (vector 'xbm
+				  :file img
+				  :mask-file mask
+				  :foreground "black"
+				  :background "chartreuse1"))
+       (set-glyph-image gc-pointer-glyph "recycle2.xpm")))
 
-  ;; Menubar
-  (setq menu-accelerator-enabled 'menu-fallback
-	menu-accelerator-modifiers '(alt))
+   ;; Menubar
+   (setq menu-accelerator-enabled 'menu-fallback
+	 menu-accelerator-modifiers '(alt))
 
-  ;; Speedbar
-  (when (packagep 'speedbar t)
-    (add-menu-button '("Tools")
-		     ["Speedbar" speedbar-frame-mode
-		      :style toggle
-		      :selected (and (boundp 'speedbar-frame)
-				     (frame-live-p speedbar-frame)
-				     (frame-visible-p speedbar-frame))]
-		     "--"))
+   ;; Speedbar
+   (when (packagep 'speedbar t)
+     (add-menu-button '("Tools")
+		      ["Speedbar" speedbar-frame-mode
+		       :style toggle
+		       :selected (and (boundp 'speedbar-frame)
+				      (frame-live-p speedbar-frame)
+				      (frame-visible-p speedbar-frame))]
+		      "--"))
 
-  ;; Gutter - turn it off
-  (if (boundp 'gutter-buffers-tab-enabled)
-      (setq gutter-buffers-tab-enabled nil)
-    ;; Old way
-    (if (boundp 'default-gutter-visible-p)
-	(set-specifier default-gutter-visible-p nil)))
+   ;; Gutter - turn it off
+   (if (boundp 'gutter-buffers-tab-enabled)
+       (setq gutter-buffers-tab-enabled nil)
+     ;; Old way
+     (if (boundp 'default-gutter-visible-p)
+	 (set-specifier default-gutter-visible-p nil)))
 
-  ;; Toolbar
-  (set-specifier default-toolbar-visible-p nil)
-  ) ;; running-xemacs
+   ;; Toolbar
+   (set-specifier default-toolbar-visible-p nil)
+   ) ;; xemacs
 
-(when (not running-xemacs)
-  ;; Toolbar
-  (tool-bar-mode 0)
+  (emacs
+   ;; Toolbar
+   (tool-bar-mode 0)
 
-  ;; Tooltips hang emacs over VPN
-  (tooltip-mode 0)
+   ;; Tooltips hang emacs over VPN
+   (tooltip-mode 0)
 
-  ;; Set the cursor properly for Emacs
-  (blink-cursor-mode 0)
-  (set-cursor-color "red"))
+   ;; Set the cursor properly for Emacs
+   (blink-cursor-mode 0)
+   (set-cursor-color "red")))
 
 ;; Do this *after* setting the modeline colours
 (when (fboundp 'display-time)

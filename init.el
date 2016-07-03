@@ -102,10 +102,8 @@
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Let's try making _ part of a "word"
+;; Let's try making _ part of a "word". C & C++ done in cc-mode-rc.el
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
-(modify-syntax-entry ?_ "w" c-mode-syntax-table)
-(modify-syntax-entry ?_ "w" c++-mode-syntax-table)
 
 ;; (would-like 'uncompress) ;; os-utils
 (and (not noninteractive)
