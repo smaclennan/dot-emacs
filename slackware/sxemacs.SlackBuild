@@ -1,0 +1,109 @@
+#!/bin/sh
+
+# Slackware build script for SXEmacs
+
+# Created by Sean MacLennan <seanm@seanm.ca>
+# Modified by Robby Workman <rworkman@slackbuilds.org> for
+#   better consistency with existing SBo scripts...
+
+PRGNAM=sxemacs
+VERSION=22.1.16
+BUILD=${BUILD:-2}
+TAG=${TAG:-_SBo}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i486 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp/SBo}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-/tmp}
+
+if [ "$ARCH" = "i486" ]; then
+    SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+    LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+    SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+    LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+    # XEmacs will not run compiled -fPIC
+    SLKCFLAGS="-O2"
+    LIBDIRSUFFIX="64"
+fi
+
+set -e
+
+rm -rf $PKG
+mkdir -p $TMP $OUPUT $PKG
+
+cd $TMP
+rm -rf $PRGNAM-$VERSION
+tar xf $CWD/$PRGNAM-$VERSION.tar.xz
+cd $PRGNAM-$VERSION
+chown -R root.root .
+
+mkdir -p $TMP/$PRGNAM-build
+cd $TMP/$PRGNAM-build
+
+CFLAGS="$SLKCFLAGS" \
+  $TMP/$PRGNAM-$VERSION/configure \
+  --prefix=/usr \
+  --libdir=/usr/lib$LIBDIRSUFFIX \
+  --infodir=/usr/info \
+  --mandir=/usr/man \
+  --with-sound=none \
+  --with-file-coding \
+  $ARCH-slackware-linux
+
+patch -p1 < $CWD/sxemacs-termcap.patch
+
+make
+
+make install \
+  prefix=$PKG/usr \
+  libdir=$PKG/usr/lib${LIBDIRSUFFIX} \
+  infodir=$PKG/usr/info \
+  mandir=$PKG/usr/man
+
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | \
+  grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+
+gzip $PKG/usr/man/*/*
+
+# gzip info stuff, but not the dir file
+gzip -9 $PKG/usr/info/*
+rm $PKG/usr/info/dir.gz
+
+# Fixup some conflicts with stock Slackware packages
+for file in ctags etags; do mv $PKG/usr/bin/$file{,-xemacs} ; done
+for file in ctags etags ; do mv $PKG/usr/man/man1/$file{,-xemacs}.1.gz ; done
+
+cd $TMP/$PRGNAM-$VERSION
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
+cp -a \
+  BUGS COPYING ChangeLog PROBLEMS README* \
+  $PKG/usr/doc/$PRGNAM-$VERSION
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
+
+mkdir -p $PKG/install
+cat $CWD/$PRGNAM-desc > $PKG/install/slack-desc
+
+cat <<EOF >$PKG/install/doinst.sh
+# Make sure the elc files are newer than the el files
+touch usr/share/$PRGNAM-$VERSION/lisp/*.elc
+touch usr/share/$PRGNAM-$VERSION/lisp/*/*.elc
+EOF
+
+cd $PKG
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-tgz}
+
+# Clean up the extra stuff:
+if [ "$1" = "--cleanup" ]; then
+    rm -rf $TMP/$PRGNAM-${VERSION}
+    rm -rf $PKG
+fi
