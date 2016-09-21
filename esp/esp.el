@@ -136,6 +136,8 @@ instead, uses tag around or before point."
 		(find-tag-tag "Find tag: "))
 	    (find-tag (find-tag-default))))
 
+(defalias 'kill-entire-line 'kill-whole-line)
+
 ;; Hacks for Emacs 23
 (when (eq emacs-major-version 23)
   (mapcar 'require '(git-diff my-calc my-tags smerge))
