@@ -26,6 +26,12 @@
 ;; We need to setup for GNU Emacs
 (if (not (featurep 'xemacs)) (load (concat dot-dir "esp/esp")))
 
+(when (featurep 'sxemacs)
+  (setq load-path (append load-path
+			  (list (concat dot-dir "/site-packages/lisp/sam"))
+			  (list (concat dot-dir "/site-packages/lisp/misc"))))
+  )
+
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
 ;; package to a list of missing packages and move on.
