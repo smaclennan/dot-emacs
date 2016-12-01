@@ -20,6 +20,16 @@
       (save-current-buffer (set-buffer buf) (erase-buffer))
       (my-tag-tree bf-dir buf))))
 
+;; Use one global tagfile
+(defun bf-tag-file (matched-dir)
+  (setq bf-dir
+	(replace-in-string matched-dir "/barts-fault/.*" "/barts-fault/"))
+
+  (make-local-variable 'tags-file-name)
+  (setq tags-file-name (concat bf-dir "TAGS"))
+
+  (add-hook 'after-save-hook 'bf-tags))
+
 (defun bf-func (matched-dir target)
   (require 'etags)
 
@@ -35,16 +45,25 @@
       (kill-local-variable 'tab-width)
       (c-set-style "linux"))
 
-    ;; Use one global tagfile
-    (make-local-variable 'tags-file-name)
-    (setq tags-file-name (concat matched-dir "TAGS"))
-
-    ;; Setup for etags
-    (setq bf-dir matched-dir)
-    (add-hook 'after-save-hook 'bf-tags)
+    (bf-tag-file matched-dir)
     ))
 
-;; Bart's Fault can't handle -j everywhere
+(defun bf-guest-func (matched-dir target)
+  (require 'etags)
+
+  (if (string-match "/drv/" matched-dir)
+      (progn
+	;; Set driver directories to Linux style and apps to spaces
+	;; I set tab-width in my-c-mode-common-hook. Reset it here.
+	(kill-local-variable 'tab-width)
+	(c-set-style "linux"))
+    (setq c-basic-offset 4 tab-width 4 indent-tabs-mode nil))
+
+  (add-hook 'after-save-hook 'my-tag-simple))
+
+;; Bart's Fault
+(add-to-list 'my-compile-dir-list (list ".*?/barts-fault/drv/" make-j 'bf-func) t)
+(add-to-list 'my-compile-dir-list (list ".*?/barts-fault/guest/" nil 'bf-guest-func) t)
 (add-to-list 'my-compile-dir-list '(".*?/barts-fault/" nil bf-func) t)
 
 (add-to-list 'my-compile-dir-list '(".*?/drv/" make-j "linux") t)
