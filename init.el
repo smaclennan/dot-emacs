@@ -202,6 +202,7 @@ Local version."
 (global-set-key [f10]		'find-tag-at-point)
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
+(global-set-key [f20] 'pop-tag-mark)
 (global-set-key [(control f10)]	'lxr-at-point)
 ;; I keep f11 free for temporary bindings
 (global-set-key [f12]		'revert-buffer)

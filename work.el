@@ -51,7 +51,7 @@
 (defun bf-guest-func (matched-dir target)
   (require 'etags)
 
-  (if (string-match "/drv/" matched-dir)
+  (if (string-match "/drv/" (buffer-file-name))
       (progn
 	;; Set driver directories to Linux style and apps to spaces
 	;; I set tab-width in my-c-mode-common-hook. Reset it here.
