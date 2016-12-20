@@ -23,7 +23,7 @@
 ;; Use one global tagfile
 (defun bf-tag-file (matched-dir)
   (setq bf-dir
-	(replace-in-string matched-dir "/barts-fault/.*" "/barts-fault/"))
+	(replace-regexp-in-string "/barts-fault/.*" "/barts-fault/" matched-dir))
 
   (make-local-variable 'tags-file-name)
   (setq tags-file-name (concat bf-dir "TAGS"))
