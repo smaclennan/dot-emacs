@@ -465,8 +465,8 @@ A negative arg comments out the `new' line[s]."
 	(iswitchb-default-keybindings)
 	(would-like 'redo))
     (show-paren-mode t)
-    (if (fboundp 'icomplete-mode)
-	(icomplete-mode 1)
+    (if (fboundp 'ido-mode)
+	(ido-mode 1)
       (require 'iswitchb)
       (iswitchb-mode 1)))
 
