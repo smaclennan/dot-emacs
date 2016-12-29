@@ -459,17 +459,18 @@ A negative arg comments out the `new' line[s]."
 ;;; -------------------------------------------------------------------------
 ;;; Some edit-utils packages
 (when (or (not running-xemacs) (packagep 'edit-utils))
-  (require 'iswitchb)
-
   (if running-xemacs
       (progn
 	(paren-set-mode 'paren t)
 	(iswitchb-default-keybindings)
 	(would-like 'redo))
     (show-paren-mode t)
-    (iswitchb-mode 1))
+    (if (fboundp 'icomplete-mode)
+	(icomplete-mode 1)
+      (require 'iswitchb)
+      (iswitchb-mode 1)))
 
-  (global-set-key "\C-x\C-b" 'iswitchb-buffer)
+  (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
   (require 'uniquify)
   (setq uniquify-buffer-name-style 'post-forward)
