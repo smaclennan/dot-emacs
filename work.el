@@ -57,6 +57,7 @@
 	;; I set tab-width in my-c-mode-common-hook. Reset it here.
 	(kill-local-variable 'tab-width)
 	(c-set-style "linux"))
+    (setq compile-command "make ")
     (setq c-basic-offset 4 tab-width 4 indent-tabs-mode nil))
 
   (add-hook 'after-save-hook 'my-tag-simple))
