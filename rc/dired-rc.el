@@ -26,11 +26,6 @@
 
 (setq dired-listing-switches "-l")
 
-(and (not (assoc "\\.pdf$" auto-mode-alist))
-     (exec-installed-p "acroread")
-     (setq auto-mode-alist
-	   (cons '("\\.pdf$" . do-acroread) auto-mode-alist)))
-
 (setq dired-no-confirm '(kill-file-buffer))
 
 ;;;###autoload
@@ -55,11 +50,6 @@
 	      (replace-match "" nil nil dired-listing-switches)))
     (setq dired-listing-switches (concat dired-listing-switches "a")))
   (dired-sort-other dired-listing-switches))
-
-;;;###autoload
-(defun do-acroread ()
-  (when (not (null buffer-file-name))
-    (start-process "acroread" nil "acroread" buffer-file-name)))
 
 ;;;###autoload
 (defun dired-do-apply-function (func)
