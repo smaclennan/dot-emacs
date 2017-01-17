@@ -217,6 +217,11 @@ Local version."
 (global-set-key [(shift f9)]    'my-toggle-case-search)
 (global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
 
+(global-set-key "\C-ce" 'errno-string)
+(global-set-key "\C-cg" 'git-diff)
+(global-set-key "\C-ck" 'browse-kill-ring)
+
+
 ;;  I don't like the way isearch-yank-word defines word, so I rolled my own
 (defun my-isearch-yank-word ()
   "Pull current word from buffer into search string.
@@ -265,8 +270,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; C-h =
 (when running-xemacs
   (define-key help-map ?= #'introspect-cursor-position))
-
-(global-set-key "\C-ck" 'browse-kill-ring)
 
 (global-set-key "\C-x\C-l"	'list-buffers)
 
