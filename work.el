@@ -1,34 +1,19 @@
 (require 'my-compile)
+(require 'my-tags)
 
 (add-to-list 'my-compile-dir-list
 	     (list (expand-file-name "~/linux-kernel/") make-j "linux") t)
 
+(defun qemu-func (matched-dir target)
+  (space-indent-4 matched-dir target)
+  (my-tag-dirs-helper matched-dir "*qemu tags*"))
+
 ;; Use the non-greedy match so include/qemu works
 (add-to-list 'my-compile-dir-list
-	     (list ".*?/qemu/" make-j 'space-indent-4) t)
-
-(defvar bf-dir nil "Internal variable.")
-(make-variable-buffer-local 'bf-dir)
+	     (list ".*?/qemu/" make-j 'qemu-func) t)
 
 (defvar bf-app-dirs '("barf" "bfmgr" "dmxmgr")
   "* List of application sub-directories.")
-
-(defun bf-tags ()
-  (when bf-dir
-    (let ((buf (get-buffer-create "*bf tags *")))
-      ;; Emacs does not have (erase-buffer buf) :(
-      (save-current-buffer (set-buffer buf) (erase-buffer))
-      (my-tag-tree bf-dir buf))))
-
-;; Use one global tagfile
-(defun bf-tag-file (matched-dir)
-  (setq bf-dir
-	(replace-regexp-in-string "/barts-fault/.*" "/barts-fault/" matched-dir))
-
-  (make-local-variable 'tags-file-name)
-  (setq tags-file-name (concat bf-dir "TAGS"))
-
-  (add-hook 'after-save-hook 'bf-tags))
 
 (defun bf-func (matched-dir target)
   (require 'etags)
@@ -45,7 +30,9 @@
       (kill-local-variable 'tab-width)
       (c-set-style "linux"))
 
-    (bf-tag-file matched-dir)
+    (my-tag-dirs-helper
+     (replace-regexp-in-string "/barts-fault/.*" "/barts-fault/" matched-dir)
+     "*bf tags*")
     ))
 
 (defun bf-guest-func (matched-dir target)
