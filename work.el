@@ -16,8 +16,6 @@
   "* List of application sub-directories.")
 
 (defun bf-func (matched-dir target)
-  (require 'etags)
-
   (let ((dir (buffer-file-name)) subdir)
     ;; Get the subdir under bart's fault
     (when (string-match "/barts-fault/\\([^/]+\\)/" dir)
@@ -36,8 +34,6 @@
     ))
 
 (defun bf-guest-func (matched-dir target)
-  (require 'etags)
-
   (if (string-match "/drv/" (buffer-file-name))
       (progn
 	;; Set driver directories to Linux style and apps to spaces
