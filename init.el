@@ -92,7 +92,8 @@
 ;; Default the package location
 (when running-xemacs
   (setq package-get-remote
-	'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
+;;	'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
+	'("ftp.xemacs.org" "/pub/xemacs/xemacs-21.5/experimental/packages")))
 
 (setq track-eol t
       kill-whole-line t
@@ -374,6 +375,15 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
 ;;}}}
 
 ;;{{{ Handy Dandy(tm) Functions
+
+(defun directory-files-recursive (dir &optional match)
+  "Return a list of files in DIR recursively descending all
+subdirectories that do not start in a dot (.). If MATCH is non-nil,
+match all files against the regular expression."
+  (let ((files (directory-files dir t match nil t)))
+    (dolist (d (directory-files dir nil "^[^.].*" nil 'dirs))
+      (setq files (append files (all-files (concat dir "/" d)))))
+    files))
 
 (defun unixtime (seconds)
   (interactive "sTime: ")
