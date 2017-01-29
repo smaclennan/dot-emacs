@@ -424,7 +424,7 @@ The test for presence of ELEMENT is done with `equal'."
 	     (string-to-number (match-string 3 number) 16)))
    (t (error "Invalid"))))
 
-(defun load-path-dirs ()
+(defun load-path-roots ()
   "Show only the root dirs in the `load-path'."
   (interactive)
   (let (dirs)
