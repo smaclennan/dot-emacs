@@ -27,8 +27,7 @@
       ;; Linux style
       (kill-local-variable 'tab-width)
       (c-set-style "linux")
-
-      (add-hook 'after-save-hook 'my-tag-simple))
+      (my-tag-dirs-helper matched-dir))
 
 (add-to-list 'my-compile-dir-list (list ".*?/barts-fault/drv/" make-j 'bf-func) t)
 (add-to-list 'my-compile-dir-list (list ".*?/barts-fault/dmx-trap/" make-j 'dmx-simple-func) t)
