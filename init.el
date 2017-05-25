@@ -232,6 +232,7 @@ Local version."
 (global-set-key [(shift f9)]    'my-toggle-case-search)
 (global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
 
+(global-set-key "\C-cd" 'dup-line)
 (global-set-key "\C-ce" 'errno-string)
 (global-set-key "\C-cg" 'git-diff)
 (global-set-key "\C-ck" 'browse-kill-ring)
