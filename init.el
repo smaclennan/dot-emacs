@@ -56,6 +56,20 @@
 	nil)
     (would-like package no-list)))
 
+;; GNU emacs sets emacs
+;; XEmacs sets xemacs
+;; SXEmacs sets sxemacs and xemacs
+(defmacro my-feature-cond (&rest clauses)
+  "Test CLAUSES for feature at compile time.
+Each clause is (FEATURE BODY...)."
+  (dolist (x clauses)
+    (let ((feature (car x))
+	  (body (cdr x)))
+      (when (or (eq feature t)
+		(featurep feature))
+	(return (cons 'progn body))))))
+(put 'my-feature-cond 'lisp-indent-hook 'defun)
+
 ;; Split the system-name up into host and domain name.
 ;; We need this up front for sendmail-rc.
 (defvar host-name nil)
@@ -90,10 +104,11 @@
 ;;{{{ Basic Customization
 
 ;; Default the package location
-(when running-xemacs
-  (setq package-get-remote
-;;	'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
-	'("ftp.xemacs.org" "/pub/xemacs/xemacs-21.5/experimental/packages")))
+(my-feature-cond
+  (xemacs
+   (setq package-get-remote
+	 ;;'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
+	 '("ftp.xemacs.org" "/pub/xemacs/xemacs-21.5/experimental/packages"))))
 
 (setq track-eol t
       kill-whole-line t
@@ -142,10 +157,12 @@ Local version."
 
 ;;{{{ XEmacs 21.5 stuff
 
-(and running-xemacs (emacs-version>= 21 5)
+(my-feature-cond
+  (xemacs
+   (when (emacs-version>= 21 5)
      ;; For some reason the file coding was gutted - put it back
      (setq buffer-file-coding-system-for-read 'undecided
-	   default-buffer-file-coding-system  'raw-text))
+	   default-buffer-file-coding-system  'raw-text))))
 
 ;;}}}
 
@@ -269,8 +286,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 (global-set-key [button9] 'kill-region)
 
 ;; C-h =
-(when running-xemacs
-  (define-key help-map ?= #'introspect-cursor-position))
+(my-feature-cond
+  (xemacs (define-key help-map ?= #'introspect-cursor-position)))
 
 (global-set-key "\C-x\C-l"	'list-buffers)
 
@@ -515,15 +532,16 @@ A negative arg comments out the `new' line[s]."
 ;; I added the following to my crontab:
 ;; 13 5 * * * find $HOME/.backup -mtime +7 -delete
 
-(if running-xemacs
-    (progn
-      (when (would-like 'auto-save)
-	(setq auto-save-directory "~/.autosave/")
-	;; Now that we have auto-save-timeout, let's crank this up
-	;; for better interactive response.
-	(setq auto-save-interval 2000))
-      (would-like 'backup))
-  (setq backup-directory-alist '(("." . "~/.backup"))))
+(my-feature-cond
+  (xemacs
+   (when (would-like 'auto-save)
+     (setq auto-save-directory "~/.autosave/")
+     ;; Now that we have auto-save-timeout, let's crank this up
+     ;; for better interactive response.
+     (setq auto-save-interval 2000))
+   (would-like 'backup))
+  (t
+   (setq backup-directory-alist '(("." . "~/.backup")))))
 
 ;;; ----------------------------------------------
 ;; ws-trim-mode
@@ -537,11 +555,11 @@ A negative arg comments out the `new' line[s]."
 ;;; ------------------------------------------------------------
 ;; Start the server program
 (unless (or noninteractive running-windoze (string= (user-login-name) "root"))
-  (if running-xemacs
-      (progn
-	(gnuserv-start)
-	(setq gnuserv-frame (selected-frame)))
-      (server-start)))
+  (my-feature-cond
+    (xemacs
+     (gnuserv-start)
+     (setq gnuserv-frame (selected-frame)))
+    (t (server-start))))
 
 ;;; ------------------------------------------------------------
 ;; Some non-standard init files. Start them last so they can override defaults.
