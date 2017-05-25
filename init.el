@@ -60,13 +60,13 @@
 ;; We need this up front for sendmail-rc.
 (defvar host-name nil)
 (defvar domain-name nil)
-(let ((system-name (system-name)))
-  (if (string-match "^\\([^.]+\\)\\.\\(.*\\)" system-name)
+(let ((my-system-name (system-name)))
+  (if (string-match "^\\([^.]+\\)\\.\\(.*\\)" my-system-name)
       ;; fully qualified system-name
-      (setq host-name (match-string 1 system-name)
-	    domain-name (match-string 2 system-name))
+      (setq host-name (match-string 1 my-system-name)
+	    domain-name (match-string 2 my-system-name))
   ;; system-name is host-name
-  (setq host-name system-name
+  (setq host-name my-system-name
 	domain-name (getenv "DOMAINNAME"))))
 
 ;; For rcfiles to be able to match loaded lisp such as lisp-mode we
