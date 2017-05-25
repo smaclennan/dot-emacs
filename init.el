@@ -327,15 +327,14 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; hide-copyleft
 ;; If you're sure you're not gonna get sued, you can do something like this
 ;; in your .emacs file:
-(when running-xemacs
-  (when (would-like 'hide-copyleft)
-    (add-to-list
-     'copylefts-to-hide
-     ;; Apache
-     '(" \\* The Apache Software License, Version 1\\.1" . " \\*/")
-     )
-    (add-hook 'emacs-lisp-mode-hook 'hide-copyleft-region)
-    (add-hook 'c-mode-common-hook 'hide-copyleft-region)))
+(when (would-like 'hide-copyleft)
+  (add-to-list
+   'copylefts-to-hide
+   ;; Apache
+   '(" \\* The Apache Software License, Version 1\\.1" . " \\*/")
+   )
+  (add-hook 'emacs-lisp-mode-hook 'hide-copyleft-region)
+  (add-hook 'c-mode-common-hook 'hide-copyleft-region))
 
 ;;; -------------------------------------------------------------------------
 ;; GNU global - gtags
