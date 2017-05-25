@@ -13,3 +13,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (setq gd-indicator-string nil)
   (gd-add-to-mode))
 
+(my-feature-cond
+  (emacs
+   (add-hook 'emacs-lisp-mode-hook
+	     (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))))

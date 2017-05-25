@@ -185,20 +185,11 @@ Local version."
 
 ;;{{{ Keys
 
-(if running-xemacs
-    (progn
-      ;; This should always do the right thing
-      (global-set-key [(return)] 'newline-and-indent)
-      (global-set-key [(linefeed)] 'newline))
-  ;; For Emacs the above breaks the minibuffer.
-  ;; Note: c-mode does java too.
-  (add-hook 'c-initialization-hook
-	    (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))
-  (add-hook 'emacs-lisp-mode-hook
-	    (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))
-  (add-hook 'sh-mode-hook
-	    (lambda () (define-key sh-mode-map [(return)] 'newline-and-indent)))
-  )
+;; For Emacs this breaks the minibuffer. Emacs delt with in rc/ files.
+(when running-xemacs
+  ;; This should always do the right thing
+  (global-set-key [(return)] 'newline-and-indent)
+  (global-set-key [(linefeed)] 'newline))
 
 ;;;; Function keys. Only f1 is bound in XEmacs. We move it to shift-f1.
 (global-set-key [(shift f1)]    (global-key-binding [f1]))
@@ -270,10 +261,13 @@ Use region if it exists. My replacement for isearch-yank-word."
   "Search for current word. Region is used if set."
   (interactive "P")
   ;; Push the C-w and call 'isearch-forward'
-  (setq unread-command-events
-	(if running-xemacs
-	    (list (make-event 'key-press '(key ?w modifiers (control))))
-	  (listify-key-sequence "\C-w")))
+  (my-feature-cond
+    (xemacs
+     (setq unread-command-events
+	   (list (make-event 'key-press '(key ?w modifiers (control))))))
+    (t
+     (setq unread-command-events
+	   (listify-key-sequence "\C-w"))))
   (isearch-mode t (not (null regexp-p)) nil (not (my-interactive-p))))
 
 (defun my-toggle-case-search ()
@@ -494,16 +488,17 @@ A negative arg comments out the `new' line[s]."
 ;;; -------------------------------------------------------------------------
 ;;; Some edit-utils packages
 (when (or (not running-xemacs) (packagep 'edit-utils))
-  (if running-xemacs
-      (progn
-	(paren-set-mode 'paren t)
-	(iswitchb-default-keybindings)
-	(would-like 'redo))
-    (show-paren-mode t)
-    (if (fboundp 'ido-mode)
-	(ido-mode 1)
-      (require 'iswitchb)
-      (iswitchb-mode 1)))
+  (my-feature-cond
+    (xemacs
+     (paren-set-mode 'paren t)
+     (iswitchb-default-keybindings)
+     (would-like 'redo))
+    (t
+     (show-paren-mode t)
+     (if (fboundp 'ido-mode)
+	 (ido-mode 1)
+       (require 'iswitchb)
+       (iswitchb-mode 1))))
 
   (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
