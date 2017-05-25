@@ -70,6 +70,12 @@ Each clause is (FEATURE BODY...)."
 	(return (cons 'progn body))))))
 (put 'my-feature-cond 'lisp-indent-hook 'defun)
 
+(my-feature-cond
+  (xemacs
+   (defun my-interactive-p () (interactive-p)))
+  (t
+   (defun my-interactive-p () (called-interactively-p 'interactive))))
+
 ;; Split the system-name up into host and domain name.
 ;; We need this up front for sendmail-rc.
 (defvar host-name nil)
@@ -268,12 +274,12 @@ Use region if it exists. My replacement for isearch-yank-word."
 	(if running-xemacs
 	    (list (make-event 'key-press '(key ?w modifiers (control))))
 	  (listify-key-sequence "\C-w")))
-  (isearch-mode t (not (null regexp-p)) nil (not (interactive-p))))
+  (isearch-mode t (not (null regexp-p)) nil (not (my-interactive-p))))
 
 (defun my-toggle-case-search ()
   (interactive)
   (setq case-fold-search (not case-fold-search))
-  (when (interactive-p)
+  (when (my-interactive-p)
     (message "Case sensitive search %s." (if case-fold-search "off" "on"))))
 
 ;; Tilt wheel on Logitech M500 + others
@@ -448,7 +454,7 @@ The test for presence of ELEMENT is done with `equal'."
       (when (string-match "/lisp.*" dir)
 	(setq dir (replace-match "" nil nil dir)))
       (add-to-list 'dirs dir))
-    (if (interactive-p) (message "%S" dirs))
+    (if (my-interactive-p) (message "%S" dirs))
     dirs))
 
 ;;; -------------------------------------------------------------------------
