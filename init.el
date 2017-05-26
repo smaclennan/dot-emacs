@@ -531,14 +531,16 @@ A negative arg comments out the `new' line[s]."
 (when (or (not running-xemacs) (packagep 'text-modes))
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
-  ;; Filladapt is a syntax-highlighting package.  When it is enabled it
-  ;; makes filling (e.g. using M-q) much much smarter about paragraphs
-  ;; that are indented and/or are set off with semicolons, dashes, etc.
-  (defun add-filladapt()
-	(require 'filladapt) ;; No autoloads
-	(turn-on-filladapt-mode))
-  (add-hook 'text-mode-hook 'add-filladapt)
-  (add-hook 'mail-mode-hook 'add-filladapt)
+  (my-feature-cond
+    (xemacs
+     ;; Filladapt is a syntax-highlighting package.  When it is enabled it
+     ;; makes filling (e.g. using M-q) much much smarter about paragraphs
+     ;; that are indented and/or are set off with semicolons, dashes, etc.
+     (defun add-filladapt()
+       (require 'filladapt) ;; No autoloads
+       (turn-on-filladapt-mode))
+     (add-hook 'text-mode-hook 'add-filladapt)
+     (add-hook 'mail-mode-hook 'add-filladapt)))
 
   ;; Flyspell
   (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
