@@ -1,5 +1,6 @@
 (require 'my-compile)
 (require 'my-tags)
+(require 'cc-mode)
 
 ;; Bart's Fault
 (defvar bf-app-dirs '("barf" "bfmgr" "dmxmgr" "lib")
