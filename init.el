@@ -60,13 +60,14 @@
 ;; XEmacs sets xemacs
 ;; SXEmacs sets sxemacs and xemacs
 (defmacro my-feature-cond (&rest clauses)
-  "Test CLAUSES for feature at compile time.
+  "Test CLAUSES for feature or function at compile time.
 Each clause is (FEATURE BODY...)."
   (dolist (x clauses)
     (let ((feature (car x))
 	  (body (cdr x)))
       (when (or (eq feature t)
-		(featurep feature))
+		(featurep feature)
+		(fboundp feature))
 	(return (cons 'progn body))))))
 (put 'my-feature-cond 'lisp-indent-hook 'defun)
 
@@ -513,12 +514,13 @@ A negative arg comments out the `new' line[s]."
      (paren-set-mode 'paren t)
      (iswitchb-default-keybindings)
      (would-like 'redo))
+    (ido-mode
+     (show-paren-mode t)
+     (ido-mode 1))
     (t
      (show-paren-mode t)
-     (if (fboundp 'ido-mode)
-	 (ido-mode 1)
-       (require 'iswitchb)
-       (iswitchb-mode 1))))
+     (require 'iswitchb)
+     (iswitchb-mode 1)))
 
   (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
@@ -598,6 +600,7 @@ A negative arg comments out the `new' line[s]."
 
 (defun friendly-message (&optional full)
   (interactive "P")
+  (delete-itimer "delayed-msg")
   (if (and full would-have-liked-list)
       ;; Warn that some features not found
       (progn (ding)
