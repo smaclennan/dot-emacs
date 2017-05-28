@@ -248,9 +248,9 @@ Use region if it exists. My replacement for isearch-yank-word."
 		  (buffer-substring (region-beginning) (region-end))
 		(current-word))))
     (forward-char 1) ;; make sure we are not on first char of word
-    (if (fboundp 'isearch-yank)
-	(isearch-yank word)
-      (isearch-yank-string word))))
+    (my-feature-cond
+      (isearch-yank (isearch-yank word))
+      (t (isearch-yank-string word)))))
 
 ;; Warning: If you change this binding, change `my-isearch-word-forward'
 (define-key isearch-mode-map "\C-w"		'my-isearch-yank-word)
