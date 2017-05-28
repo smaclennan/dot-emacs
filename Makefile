@@ -17,22 +17,22 @@ endif
 endif
 
 all:
-	@echo Make $(EMACS) ...
+	@echo $(MAKE) $(EMACS) ...
 ifeq ($(EMACS),emacs)
-	make EMACS=$(EMACS) -C esp
-	make EMACS=$(EMACS) -C site-packages/lisp
+	$(MAKE) EMACS=$(EMACS) -C esp
+	$(MAKE) EMACS=$(EMACS) -C site-packages/lisp
 else
-	make EMACS=$(EMACS) -C site-packages/lisp
+	$(MAKE) EMACS=$(EMACS) -C site-packages/lisp
 endif
 
 elcs:
-	make EMACS=$(EMACS) -C site-packages/lisp elcs
+	$(MAKE) EMACS=$(EMACS) -C site-packages/lisp elcs
 
 clean:
 	@echo Clean $(EMACS) ...
 	rm -f *.elc
-	make -C site-packages/lisp EMACS=$(EMACS) clean
-	make -C esp EMACS=$(EMACS) clean
+	$(MAKE) -C site-packages/lisp EMACS=$(EMACS) clean
+	$(MAKE) -C esp EMACS=$(EMACS) clean
 
 clean-sam:
-	make -C site-packages/lisp/sam clean
+	$(MAKE) -C site-packages/lisp/sam clean
