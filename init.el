@@ -73,7 +73,8 @@ Each clause is (FEATURE BODY...)."
 
 (my-feature-cond
   (xemacs
-   (defun my-interactive-p () (interactive-p)))
+   ;; Must be a defalias for my-isearch-word-forward
+   (defalias 'my-interactive-p 'interactive-p))
   (t
    (defun my-interactive-p () (called-interactively-p 'interactive))))
 
