@@ -8,15 +8,15 @@
 
 ;; Bart's Fault
 (defun dmx-simple-func (matched-dir target &optional buf)
-      ;; Linux style
-      (kill-local-variable 'tab-width)
-      (c-set-style "linux")
-      (my-tag-dirs-helper matched-dir buf))
+  ;; Linux style
+  (kill-local-variable 'tab-width)
+  (c-set-style "linux")
+  (my-tag-dirs-helper matched-dir buf))
 
 (defun bf-func (matched-dir target)
   (dmx-simple-func
    (replace-regexp-in-string "/barts-fault/.*" "/barts-fault/" matched-dir)
-   "*bf tags*"))
+   target "*bf tags*"))
 
 (add-to-list 'my-compile-dir-list (list ".*?/barts-fault/drv/" make-j 'bf-func) t)
 (add-to-list 'my-compile-dir-list (list ".*?/barts-fault/dmx-trap/" make-j 'dmx-simple-func) t)
