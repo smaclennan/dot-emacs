@@ -546,9 +546,12 @@ A negative arg comments out the `new' line[s]."
      (add-hook 'mail-mode-hook 'add-filladapt)))
 
   ;; Flyspell
-  (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
-  (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
-  (add-hook 'text-mode-hook 'flyspell-mode)
+  (if (or (exec-installed-p "hunspell") (exec-installed-p "aspell"))
+      (progn
+	(add-hook 'c-mode-common-hook 'flyspell-prog-mode)
+	(add-hook 'lisp-mode-hook 'flyspell-prog-mode)
+	(add-hook 'text-mode-hook 'flyspell-mode))
+    (add-to-list 'would-have-liked-list 'spell))
 
   ;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
   )
