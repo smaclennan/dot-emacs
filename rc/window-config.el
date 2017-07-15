@@ -5,20 +5,37 @@
 
 (defvar x-root-size nil "X root window width and height")
 
-(when (and (eq window-system 'x) (eq x-root-size nil))
-  (let ((wininfo (shell-command-to-string "xwininfo -root"))
-	width height)
-    (when (string-match "Width: \\([0-9]+\\)" wininfo)
-      (setq width (string-to-int (match-string 1 wininfo))))
-    (when (string-match "Height: \\([0-9]+\\)" wininfo)
-      (setq height (string-to-int (match-string 1 wininfo))))
-    (and width height (setq x-root-size (list width height)))))
+(defvar laptop-mode nil
+  "*Set laptop mode (larger font).
+Setting laptop mode to 'auto tries to guess setting.")
 
-(setq use-dialog-box nil)
+(when (eq window-system 'x)
+  (when (eq x-root-size nil)
+    (let ((wininfo (shell-command-to-string "xwininfo -root"))
+	  width height)
+      (when (string-match "Width: \\([0-9]+\\)" wininfo)
+	(setq width (string-to-int (match-string 1 wininfo))))
+      (when (string-match "Height: \\([0-9]+\\)" wininfo)
+	(setq height (string-to-int (match-string 1 wininfo))))
+      (and width height (setq x-root-size (list width height)))))
+
+  (when (eq laptop-mode 'auto)
+    (let ((out (shell-command-to-string "xrandr -q"))
+	  (count 0))
+      (while (string-match "^[^ ]+ connected" out)
+	(setq count (1+ count))
+	(setq out (replace-match "" nil nil out)))
+      (setq laptop-mode (eq count 1))
+      ))
+  )
 
 (if (boundp 'xft-version)
     (set-face-font 'default "DejaVu Sans Mono-10")
-  (set-face-font 'default "7x13"))
+  (if laptop-mode
+      (set-face-font 'default "9x15")
+    (set-face-font 'default "7x13")))
+
+(setq use-dialog-box nil)
 
 ;; ---------------------------------------------
 ;; Colour

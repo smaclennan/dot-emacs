@@ -111,6 +111,11 @@ Each clause is (FEATURE BODY...)."
 
 ;;{{{ Basic Customization
 
+;; I use a common init.el across many machines. The `user-init' file
+;; allows for user/machine specific initialization. It is called at
+;; the start and end of the init.el.
+(load (concat dot-dir "user-init") t)
+
 ;; Default the package location
 (my-feature-cond
   (xemacs
@@ -596,9 +601,8 @@ A negative arg comments out the `new' line[s]."
 
 (load (concat dot-dir "work") t)
 
-;; I use a common init.el across many machines. The `user-init' file
-;; allows for user/machine specific initialization.
-(load (concat dot-dir "user-init") t)
+;; Call `user-init-fini' if provided.
+(when (fboundp 'user-init-fini) (user-init-fini))
 
 ;;{{{ Final results
 
