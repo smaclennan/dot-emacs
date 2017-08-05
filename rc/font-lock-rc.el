@@ -11,7 +11,12 @@
 ;; Um, this is the default
 ;(set-face-foreground 'font-lock-string-face "green4")
 (if window-system
-    (set-face-foreground 'font-lock-comment-face "FireBrick")
+    (progn
+      (set-face-foreground 'font-lock-comment-face "FireBrick")
+      ;; In my init.el, laptop mode is always set before font-lock
+      (when laptop-mode
+	(dolist (face '(font-lock-function-name-face font-lock-warning-face))
+	  (set-face-font face laptop-mode-font))))
   ;; Consoles have less colors to play with
   (set-face-foreground 'font-lock-comment-face "red")
   (set-face-foreground 'font-lock-string-face "green")

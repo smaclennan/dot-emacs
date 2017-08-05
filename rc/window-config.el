@@ -9,6 +9,9 @@
   "*Set laptop mode (larger font).
 Setting laptop mode to 'auto tries to guess setting.")
 
+(defvar laptop-mode-font "10x20"
+  "*The font to use for laptop mode.")
+
 (when (eq window-system 'x)
   (when (eq x-root-size nil)
     (let ((wininfo (shell-command-to-string "xwininfo -root"))
@@ -32,7 +35,7 @@ Setting laptop mode to 'auto tries to guess setting.")
 (if (boundp 'xft-version)
     (set-face-font 'default "DejaVu Sans Mono-10")
   (if laptop-mode
-      (set-face-font 'default "10x20")
+      (set-face-font 'default laptop-mode-font)
     (set-face-font 'default "7x13")))
 
 (setq use-dialog-box nil)
