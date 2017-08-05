@@ -72,11 +72,10 @@ Each clause is (FEATURE BODY...)."
 (put 'my-feature-cond 'lisp-indent-hook 'defun)
 
 (my-feature-cond
-  (xemacs
-   ;; Must be a defalias for my-isearch-word-forward
+  (xemacs ;; Must be a defalias for my-isearch-word-forward
    (defalias 'my-interactive-p 'interactive-p))
-  (t
-   (defun my-interactive-p () (called-interactively-p 'interactive))))
+  (t ;; Must be a macro to work
+   (defmacro my-interactive-p () `(called-interactively-p 'interactive))))
 
 ;; Split the system-name up into host and domain name.
 ;; We need this up front for sendmail-rc.
