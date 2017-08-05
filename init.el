@@ -399,34 +399,6 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
 
 ;;{{{ Handy Dandy(tm) Functions
 
-(my-feature-cond
-  (xemacs
-   (defun directory-files-recursive (dir &optional match)
-     "Return a list of files in DIR recursively descending all
-subdirectories that do not start in a dot (.). If MATCH is non-nil,
-match all files against the regular expression."
-     (let ((files (directory-files dir t match nil t)))
-       (dolist (d (directory-files dir nil "^[^.].*" nil 'dirs))
-	 (setq files (append files (directory-files-recursive (concat dir "/" d) match))))
-       files)))
-  (t
-   (defun directory-files-recursive-intern (dir &optional match)
-     "Internal function for `directory-files-recursive'."
-     (let (files)
-       (dolist (d (directory-files dir t "^[^.].*"))
-	 (if (file-directory-p d)
-	     (setq files (append files (directory-files-recursive-intern d match)))
-	   (when (or (not match) (string-match match d))
-	     (setq files (append files (list d))))))
-       files))
-
-   (defun directory-files-recursive (dir &optional match)
-     "Return a list of files in DIR recursively descending all
-subdirectories that do not start in a dot (.). If MATCH is non-nil,
-match all files against the regular expression."
-     (when match (setq match (concat "/" match)))
-     (directory-files-recursive-intern dir match))))
-
 (defun unixtime (seconds)
   (interactive "sTime: ")
   ;; Force it to a float for 32-bit systems.
