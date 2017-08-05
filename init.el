@@ -425,7 +425,7 @@ match all files against the regular expression."
      "Return a list of files in DIR recursively descending all
 subdirectories that do not start in a dot (.). If MATCH is non-nil,
 match all files against the regular expression."
-     (when match (setq match (concat "/" match "$")))
+     (when match (setq match (concat "/" match)))
      (directory-files-recursive-intern dir match))))
 
 (defun unixtime (seconds)
