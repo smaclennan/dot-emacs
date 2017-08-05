@@ -32,7 +32,7 @@ Setting laptop mode to 'auto tries to guess setting.")
 (if (boundp 'xft-version)
     (set-face-font 'default "DejaVu Sans Mono-10")
   (if laptop-mode
-      (set-face-font 'default "9x15")
+      (set-face-font 'default "10x20")
     (set-face-font 'default "7x13")))
 
 (setq use-dialog-box nil)
