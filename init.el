@@ -450,25 +450,6 @@ The test for presence of ELEMENT is done with `equal'."
     dirs))
 
 ;;; -------------------------------------------------------------------------
-;; For when you need a good excuse...
-
-(defvar excuse-phrase-file (locate-data-file "excuses.lines")
-  "*File containing excuses")
-
-(defun excuse (&optional insert)
-  "Return or display a random excuse.  With prefix arg, insert it."
-  (interactive "P")
-  (let ((case-fold-search nil)
-	(excuse (concat (cookie excuse-phrase-file "I didn't" "do it"))))
-    (if (string-match "^[^A-Z]" excuse)
-	(setq excuse (concat "The problem is " excuse)))
-    (if (string-match "[^.!?]$" excuse)
-	(setq excuse (concat excuse ".")))
-    (if insert
-	(insert excuse)
-      (message excuse))))
-
-;;; -------------------------------------------------------------------------
 (defun dup-line (&optional arg)
   "Duplicate the current line.
 A negative arg comments out the `new' line[s]."
