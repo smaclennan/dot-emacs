@@ -395,60 +395,6 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
 	  (text-mode))))))
 (add-hook 'find-file-hooks 'check-for-commit t)
 
-;;}}}
-
-;;{{{ Handy Dandy(tm) Functions
-
-(defun unixtime (seconds)
-  (interactive "sTime: ")
-  ;; Force it to a float for 32-bit systems.
-  (let ((time (string-to-number (concat seconds ".0"))))
-    (message "%s"
-	     (format-time-string
-	      "%a %b %d %T %Z %Y"
-	      ;; seconds-to-time from time-date.el in gnus
-	      (list (floor time 65536)
-		    (floor (mod time 65536))
-		    (floor (* (- time (ffloor time)) 1000000)))
-	      ))))
-
-(defun append-to-list (list-var element)
-  "Append to the value of LIST-VAR the element ELEMENT if it isn't there yet.
-The test for presence of ELEMENT is done with `equal'."
-  (or (member element (symbol-value list-var))
-      (set list-var (nconc (symbol-value list-var) (list element)))))
-
-(defun my-x-colour (number)
-  (interactive "sColour: ")
-  (cond
-   ;; Convert 'd d d' to `#xxxxxx'
-   ((string-match "^\\([0-9]+\\)\\([ \t]+[0-9]+\\)\\([ \t]+[0-9]+\\)$" number)
-    (message "#%02x%02x%02x"
-	     (string-to-number (match-string 1 number))
-	     (string-to-number (match-string 2 number))
-	     (string-to-number (match-string 3 number))))
-   ;; Convert `#xxxxxx' to `d d d'
-   ((string-match (concat "^#"
-			  "\\([0-9a-fA-F][0-9a-fA-F]\\)"
-			  "\\([0-9a-fA-F][0-9a-fA-F]\\)"
-			  "\\([0-9a-fA-F][0-9a-fA-F]\\)$") number)
-    (message "%d %d %d"
-	     (string-to-number (match-string 1 number) 16)
-	     (string-to-number (match-string 2 number) 16)
-	     (string-to-number (match-string 3 number) 16)))
-   (t (error "Invalid"))))
-
-(defun load-path-roots ()
-  "Show only the root dirs in the `load-path'."
-  (interactive)
-  (let (dirs)
-    (dolist (dir load-path)
-      (when (string-match "/lisp.*" dir)
-	(setq dir (replace-match "" nil nil dir)))
-      (add-to-list 'dirs dir))
-    (if (my-interactive-p) (message "%S" dirs))
-    dirs))
-
 ;;; -------------------------------------------------------------------------
 (defun dup-line (&optional arg)
   "Duplicate the current line.
