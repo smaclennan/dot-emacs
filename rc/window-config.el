@@ -143,6 +143,8 @@ Setting laptop mode to 'auto tries to guess setting.")
 (when (fboundp 'display-time)
   ;; remove 'mail
   (setq display-time-form-list (list 'date 'time 'load))
+  (when laptop-mode
+    (setq display-time-show-icons-maybe nil))
   (display-time))
 
 ;; -------
