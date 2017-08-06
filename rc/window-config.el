@@ -35,7 +35,8 @@ Setting laptop mode to 'auto tries to guess setting.")
 (if (boundp 'xft-version)
     (set-face-font 'default "DejaVu Sans Mono-10")
   (if laptop-mode
-      (set-face-font 'default laptop-mode-font)
+      (dolist (face '(default bold italic bold-italic))
+	(set-face-font face laptop-mode-font))
     (set-face-font 'default "7x13")))
 
 (setq use-dialog-box nil)
@@ -160,3 +161,19 @@ Setting laptop mode to 'auto tries to guess setting.")
       (when (color-instance-p bg)
 	(set-face-background 'modeline bg))))
   (add-hook 'after-init-hook 'hack-modeline-background))
+
+;; -------------------
+;; Laptop Mode Helpers
+
+(my-feature-cond
+  (xemacs
+   (defun check-faces ()
+     (interactive)
+     (let (found-one)
+       (dolist (face (face-list))
+	 (unless (equal (face-font-name face) laptop-mode-font)
+	   (setq found-one t)
+	   (message "%S %s" face (face-font-name face))))
+       (if found-one
+	   (message "Check the message log")
+	 (message "OK"))))))
