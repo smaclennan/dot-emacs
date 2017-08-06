@@ -370,19 +370,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; -------------------------------------------------------------------------
 ;; (unless running-windoze (would-like 'svn))
 
-(defvar signed-off-by-sig nil
-  "* Signature used by `signed-off-by' function.
-If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
-
-(defun signed-off-by ()
-  (interactive)
-  (let ((signed-by (if signed-off-by-sig
-		       signed-off-by-sig
-		     (concat user-full-name " <" user-mail-address ">"))))
-    (save-excursion
-      (beginning-of-line)
-      (insert (concat "Signed-off-by: " signed-by "\n---\n")))))
-
 (defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
   "* List of commit buffer names.")
 
@@ -497,7 +484,15 @@ A negative arg comments out the `new' line[s]."
 ;; Some non-standard init files. Start them last so they can override defaults.
 (when running-windoze (load "windoze"))
 
-(load (concat dot-dir "work") t)
+(defun in-work-dir ()
+  (when (string-match "^/home/work" (buffer-file-name))
+    (remove-hook 'find-file-hooks 'in-work-dir)
+    (load (concat dot-dir "work") t)))
+
+;; I set `not-at-work' in user-init.el at home
+(if not-at-work
+    (add-hook 'find-file-hooks 'in-work-dir)
+  (load (concat dot-dir "work") t))
 
 ;; Call `user-init-fini' if provided.
 (when (fboundp 'user-init-fini) (user-init-fini))
