@@ -490,6 +490,8 @@ A negative arg comments out the `new' line[s]."
     (load (concat dot-dir "work") t)))
 
 ;; I set `not-at-work' in user-init.el at home
+(defvar not-at-work nil)
+
 (if not-at-work
     (add-hook 'find-file-hooks 'in-work-dir)
   (load (concat dot-dir "work") t))
