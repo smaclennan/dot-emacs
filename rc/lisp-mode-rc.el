@@ -2,6 +2,7 @@
   "Byte compile and load the current buffer.
 If `compilation-ask-about-save' is nil, saves the file without asking."
   (interactive)
+  (require 'compile)
   (save-some-buffers (not compilation-ask-about-save))
   (emacs-lisp-byte-compile-and-load))
 
