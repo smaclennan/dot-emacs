@@ -240,6 +240,9 @@ Simple version."
 (global-set-key "\C-cg" 'git-diff)
 (global-set-key "\C-ck" 'browse-kill-ring)
 
+(global-set-key "\C-c8" '80-scan)
+(global-set-key "\C-c9" '80-cleanup) ;; shift-8 and ctrl-8 did not work
+
 
 ;;  I don't like the way isearch-yank-word defines word, so I rolled my own
 (defun my-isearch-yank-word ()
