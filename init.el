@@ -147,23 +147,21 @@ Each clause is (FEATURE BODY...)."
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
 
-;; This is defined in apel - here is a simple version
-(unless (fboundp 'exec-installed-p)
-  (defun exec-installed-p (file)
-    "Return absolute-path of FILE if FILE is executable.
-Local version."
-    (and running-windoze
-	 (not (file-name-extension file))
-	 (setq file (concat file ".exe")))
-    (if (file-exists-p file)
-	t
-      (catch 'found
-	(dolist (path exec-path)
-	  (when (string-match "/+$" path)
-	    (setq path (replace-match "" nil nil path)))
-	  (setq path (concat path "/" file))
-	  (when (file-exists-p path)
-	    (throw 'found path)))))))
+(defun my-exec-installed-p (file)
+  "Return absolute-path of FILE if FILE is executable.
+Simple version."
+  (and running-windoze
+       (not (file-name-extension file))
+       (setq file (concat file ".exe")))
+  (if (file-exists-p file)
+      t
+    (catch 'found
+      (dolist (path exec-path)
+	(when (string-match "/+$" path)
+	  (setq path (replace-match "" nil nil path)))
+	(setq path (concat path "/" file))
+	(when (file-exists-p path)
+	  (throw 'found path))))))
 
 ;;}}}
 
@@ -187,7 +185,6 @@ Local version."
       (menu-bar-mode -1)))
 
 ;;}}}
-
 
 ;;{{{ Keys
 
@@ -436,7 +433,7 @@ A negative arg comments out the `new' line[s]."
      (add-hook 'mail-mode-hook 'add-filladapt)))
 
   ;; Flyspell
-  (if (or (exec-installed-p "hunspell") (exec-installed-p "aspell"))
+  (if (or (my-exec-installed-p "hunspell") (my-exec-installed-p "aspell"))
       (progn
 	(add-hook 'c-mode-common-hook 'flyspell-prog-mode)
 	(add-hook 'lisp-mode-hook 'flyspell-prog-mode)
