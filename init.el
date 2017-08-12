@@ -484,17 +484,7 @@ A negative arg comments out the `new' line[s]."
 ;; Some non-standard init files. Start them last so they can override defaults.
 (when running-windoze (load "windoze"))
 
-(defun in-work-dir ()
-  (when (string-match "^/home/work" (buffer-file-name))
-    (remove-hook 'find-file-hooks 'in-work-dir)
-    (load (concat dot-dir "work") t)))
-
-;; I set `not-at-work' in user-init.el at home
-(defvar not-at-work nil)
-
-(if not-at-work
-    (add-hook 'find-file-hooks 'in-work-dir)
-  (load (concat dot-dir "work") t))
+(load (concat dot-dir "work") t)
 
 ;; Call `user-init-fini' if provided.
 (when (fboundp 'user-init-fini) (user-init-fini))
