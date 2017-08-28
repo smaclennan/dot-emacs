@@ -45,18 +45,6 @@
 
 ;;; -------------------------------------------------------------------------
 
-(defun string-match-list (match list &optional case-sensitive)
-  "Lookup an element in a list using string-match.
-If found, returns the matching list entry with the car of the list replaced
-with the actual match.
-Does the matches case insensitive unless `case-sensitive' is non-nil."
-  (let ((case-fold-search (not case-sensitive)))
-    (catch 'converted
-      (dolist (entry list)
-	(when (string-match (car entry) match)
-	  (throw 'converted
-		 (append (list (match-string 0 match)) (cdr entry))))))))
-
 (defvar include-list
   '("stdio.h" "stdlib.h" "stdint.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "errno.h"))
 
