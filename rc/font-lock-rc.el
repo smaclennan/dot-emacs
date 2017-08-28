@@ -52,26 +52,26 @@
 	(if el (setcdr el '(""))))
 
       (defun setup-font-lock-keywords ()
-	(let ((c-regexp "\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)"))
+	(let ((c-regexp "\\(/\\*\\|//\\) ?\\<SAM\\>.*"))
 	  (setq c-font-lock-keywords-1
 		(append c-font-lock-keywords-1
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
 	  (setq c-font-lock-keywords-2
 		(append c-font-lock-keywords-2
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
 	  (setq c-font-lock-keywords-3
 		(append c-font-lock-keywords-3
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
 
 	  (setq c++-font-lock-keywords-1
 		(append c++-font-lock-keywords-1
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
 	  (setq c++-font-lock-keywords-2
 		(append c++-font-lock-keywords-2
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
 	  (setq c++-font-lock-keywords-3
 		(append c++-font-lock-keywords-3
-			(list (list c-regexp 2 'font-lock-comment-warn-face t))))
+			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
 	  (when nil ;; SAM NOT YET
 	    (setq go-mode-font-lock-keywords
 		  (append go-mode-font-lock-keywords
@@ -79,13 +79,13 @@
 	    ) ;; SAM
 	  ))
 
-      (let ((lisp-regexp "; ?\\(\\<SAM\\>\\)"))
+      (let ((lisp-regexp ";+ ?\\<SAM\\>.*"))
 	(setq lisp-font-lock-keywords-1
 	      (append lisp-font-lock-keywords-1
-		      (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
+		      (list (list lisp-regexp 0 'font-lock-comment-warn-face t))))
 	(setq lisp-font-lock-keywords-2
 	      (append lisp-font-lock-keywords-2
-		      (list (list lisp-regexp 1 'font-lock-comment-warn-face t))))
+		      (list (list lisp-regexp 0 'font-lock-comment-warn-face t))))
 	))
 
   ;; GNU emacs
@@ -94,18 +94,18 @@
   (defun setup-font-lock-keywords ()
     (font-lock-add-keywords
      'c-mode
-     '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t)))
+     '(("\\(/\\*\\|//\\) ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
     (font-lock-add-keywords
      'c++-mode
-     '(("\\(/\\*\\|//\\) ?\\(\\<SAM\\>\\)" 2 'font-lock-comment-warn-face t))))
+     '(("\\(/\\*\\|//\\) ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t))))
 
   (font-lock-add-keywords
    'emacs-lisp-mode
-   '(("; ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+   '((";+ ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
   (font-lock-add-keywords
    'sh-mode
-   '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+   '(("# ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
   (font-lock-add-keywords
    'makefile-mode
-   '(("# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+   '(("# ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
   )
