@@ -94,6 +94,7 @@ Will not overwrite current variables if they exist."
       (insert block)))))
 
 (defun add-local-compile-command (arg)
+  "Add a local compile command to the current file."
   (interactive "*P")
   (let ((file-name (file-name-nondirectory (buffer-file-name)))
 	cmd)
@@ -120,6 +121,16 @@ Will not overwrite current variables if they exist."
 		       local-compile-offset local-compile-offset))
 	     " * End:\n */\n"))
     (set (make-local-variable 'compile-command) cmd)))
+
+(defun update-local-compile-command ()
+  "If you update the local compile command string, call this to
+actually update the associated `compile-command' variable."
+  (interactive)
+  (save-excursion
+    (goto-char (point-max))
+    (if (re-search-backward " \* compile-command: \"\\(.*\\)\"" nil t)
+	(set (make-local-variable 'compile-command) (match-string 1))
+      (error "No compile command found."))))
 
 (defun set-local-compile-command ()
   (interactive)
