@@ -4,10 +4,10 @@
 (would-like 'holidays)
 
 ;; Where in the world is Ottawa?
-;; Source: http://www.infoplease.com/ipa/A0001796.html
+;; google.ca/maps 45.3842398,-75.7337702
 (setq calendar-location-name "Ottawa, ON"
-      calendar-latitude  '[45 24 north]
-      calendar-longitude '[75 43 west])
+      calendar-latitude  '[45 23 north]
+      calendar-longitude '[75 44 west])
 
 (if (boundp 'holiday-christian-holidays)
     (setq holiday-christian-holidays nil
