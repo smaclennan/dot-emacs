@@ -8,6 +8,8 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
+(setq debug-on-error t)
+
 (defvar running-windoze (eq system-type 'windows-nt)
   "Non-nil if running Windows.")
 
@@ -179,7 +181,7 @@ Simple version."
 ;;{{{ Windowing System Customization
 
 (if window-system
-    (load (concat rcfiles-directory "/" "window-config"))
+    (load (concat rcfiles-directory "/window-config"))
   ;; Yes, emacs has a menu bar in console mode
   (if (fboundp 'menu-bar-mode)
       (menu-bar-mode -1)))
@@ -510,7 +512,10 @@ A negative arg comments out the `new' line[s]."
 ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
 ;; one. So use a timer to get past them.
 (unless noninteractive
-  (start-itimer "delayed-msg" 'friendly-message 1 nil nil t t))
+  (if (and (featurep 'emacs) (not window-system))
+      ;; Need a long delay to get around Emacs delayed message
+      (start-itimer "delayed-msg" 'friendly-message 2.5 nil nil t t)
+    (start-itimer "delayed-msg" 'friendly-message 1 nil nil t t)))
 
 ;;}}}
 

@@ -24,12 +24,11 @@
 ;; Um, this is the default
 ;(set-face-foreground 'font-lock-string-face "green4")
 
-;; Emacs calls font-lock before window-config
-(unless (boundp 'laptop-mode)
-  (load (concat dot-dir "rc/window-config")))
-
 (if window-system
     (progn
+      ;; Emacs calls font-lock before window-config
+      (unless (boundp 'laptop-mode)
+	(load (concat dot-dir "rc/window-config")))
       (set-face-foreground 'font-lock-comment-face "FireBrick")
       (when laptop-mode
 	(dolist (face '(font-lock-function-name-face
