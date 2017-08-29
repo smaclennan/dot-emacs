@@ -78,7 +78,6 @@
   (let* ((pos (1- (overlay-end extent)))
 	 (next (next-overlay-change pos))
 	 (overlay (overlays-at next)))
-    (message "pos %S next %S overlay %S" pos next overlay)
     (when overlay
       (setq overlay (car overlay))
       (when (eq overlay extent) (error "PROBLEMS"))
