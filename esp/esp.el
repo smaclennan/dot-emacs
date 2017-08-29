@@ -4,17 +4,13 @@
 (defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
 
 (require 'cl)
-(add-to-list 'load-path (concat dot-dir "esp"))
 
-;; Add the local site-packages
-(let ((lisp-dir (concat dot-dir "site-packages/lisp")))
-  (dolist (dir (directory-files lisp-dir t "^[^.i]"))
-    (when (file-directory-p dir)
-      (add-to-list 'load-path dir))))
+;; Add the local site-packages - must be two loops
+(dolist (dir '("esp" "site-packages/lisp/sam" "site-packages/lisp/misc"))
+  (add-to-list 'load-path (concat dot-dir dir)))
 
-(load "esp-loaddefs" t t)
-(load "sam-loaddefs" t t)
-(load "misc-loaddefs" t t)
+(dolist (file '("esp-loaddefs" "sam-loaddefs" "misc-loaddefs"))
+  (load file t t))
 
 (defun locate-data-file (name)
   ;; Try local first
@@ -140,5 +136,5 @@ instead, uses tag around or before point."
 
 ;; Hacks for Emacs 23
 (when (eq emacs-major-version 23)
-  (mapcar 'require '(git-diff my-calc my-tags smerge))
+  (mapc 'require '(git-diff my-calc my-tags smerge))
   )
