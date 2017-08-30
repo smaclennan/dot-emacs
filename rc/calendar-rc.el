@@ -9,19 +9,21 @@
       calendar-latitude  '[45 23 north]
       calendar-longitude '[75 44 west])
 
-(if (boundp 'holiday-christian-holidays)
+(my-bound-cond
+ (holiday-christian-holidays
     (setq holiday-christian-holidays nil
 	  holiday-hebrew-holidays nil
 	  holiday-islamic-holidays nil
 	  holiday-bahai-holidays nil
 	  holiday-oriental-holidays nil
-	  calendar-mark-holidays-flag t)
+	  calendar-mark-holidays-flag t))
+ (t
   (setq christian-holidays nil
 	hebrew-holidays nil
 	islamic-holidays nil
 	bahai-holidays nil
 	oriental-holidays nil
-	mark-holidays-in-calendar t))
+	mark-holidays-in-calendar t)))
 
 ;; Standard holidays too UScentric
 (setq calendar-holidays
