@@ -1,8 +1,6 @@
 ;; Windowing system only config.
 ;; No real library to toggle off of so it is not a -rc.el
 
-(require 'sam-common)
-
 (defvar x-root-size nil "X root window width and height")
 
 (defvar laptop-mode nil
@@ -17,9 +15,9 @@ Setting laptop mode to 'auto tries to guess setting.")
     (let ((wininfo (shell-command-to-string "xwininfo -root"))
 	  width height)
       (when (string-match "Width: \\([0-9]+\\)" wininfo)
-	(setq width (string-to-int (match-string 1 wininfo))))
+	(setq width (string-to-number (match-string 1 wininfo))))
       (when (string-match "Height: \\([0-9]+\\)" wininfo)
-	(setq height (string-to-int (match-string 1 wininfo))))
+	(setq height (string-to-number (match-string 1 wininfo))))
       (and width height (setq x-root-size (list width height)))))
 
   (when (eq laptop-mode 'auto)
@@ -150,19 +148,20 @@ Setting laptop mode to 'auto tries to guess setting.")
 ;; -------
 ;; MISC
 
-(when running-xemacs
-  ;; Handy functions that where hard to work out
-  (defun my-get-face-foreground (face)
-    (cdr (specifier-specs (face-foreground face) 'global)))
-  (defun my-get-face-background (face)
-    (cdr (specifier-specs (face-background face) 'global)))
-  ;; (my-get-face-background 'default)
+(my-feature-cond
+  (xemacs
+   ;; Handy functions that where hard to work out
+   (defun my-get-face-foreground (face)
+     (cdr (specifier-specs (face-foreground face) 'global)))
+   (defun my-get-face-background (face)
+     (cdr (specifier-specs (face-background face) 'global)))
+   ;; (my-get-face-background 'default)
 
-  (defun hack-modeline-background ()
-    (let ((bg (face-background-instance 'modeline)))
-      (when (color-instance-p bg)
-	(set-face-background 'modeline bg))))
-  (add-hook 'after-init-hook 'hack-modeline-background))
+   (defun hack-modeline-background ()
+     (let ((bg (face-background-instance 'modeline)))
+       (when (color-instance-p bg)
+	 (set-face-background 'modeline bg))))
+   (add-hook 'after-init-hook 'hack-modeline-background)))
 
 ;; -------------------
 ;; Laptop Mode Helpers

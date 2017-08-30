@@ -255,7 +255,7 @@ Default flags value is read only."
     (setq end (point-marker))
     (indent-region start end)
     (goto-char mark)
-    (delete-backward-char)
+    (delete-char -1)
     ))
 
 ;; GNU emacs
