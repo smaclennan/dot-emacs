@@ -8,7 +8,7 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
-(setq debug-on-error t)
+;;(setq debug-on-error t)
 
 (defvar running-windoze (eq system-type 'windows-nt)
   "Non-nil if running Windows.")
