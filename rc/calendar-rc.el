@@ -9,7 +9,7 @@
       calendar-latitude  '[45 23 north]
       calendar-longitude '[75 44 west])
 
-(my-bound-cond
+(my-feature-cond
  (holiday-christian-holidays
     (setq holiday-christian-holidays nil
 	  holiday-hebrew-holidays nil

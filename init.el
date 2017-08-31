@@ -1,5 +1,9 @@
 ;; S?X?Emacs setup -*- Mode:emacs-lisp -*-
-;; This file should work with XEmacs 2x.x, Emacs >= 21.x, or SXEmacs
+;; This file should work with XEmacs 2x.x, Emacs >= 22.1, or SXEmacs
+
+;; RH 5 = Emacs 22.1
+;; RH 6 = Emacs 23.1
+;; RH 7 = Emacs 24.3
 
 ;; Aug 9, 2013: Can run with no packages.
 
@@ -62,26 +66,17 @@
 ;; XEmacs sets xemacs
 ;; SXEmacs sets sxemacs and xemacs
 (defmacro my-feature-cond (&rest clauses)
-  "Test CLAUSES for feature or function at compile time.
+  "Test CLAUSES for feature, variable, or function at compile time.
 Each clause is (FEATURE BODY...)."
   (dolist (x clauses)
     (let ((feature (car x))
 	  (body (cdr x)))
       (when (or (eq feature t)
 		(featurep feature)
-		(fboundp feature))
+		(fboundp feature)
+		(boundp feature))
 	(return (cons 'progn body))))))
 (put 'my-feature-cond 'lisp-indent-hook 'defun)
-
-(defmacro my-bound-cond (&rest clauses)
-  "Test CLAUSES for variable at compile time.
-Each clause is (FEATURE BODY...)."
-  (dolist (x clauses)
-    (let ((feature (car x))
-	  (body (cdr x)))
-      (when (or (eq feature t) (boundp feature))
-	(return (cons 'progn body))))))
-(put 'my-bound-cond 'lisp-indent-hook 'defun)
 
 (my-feature-cond
   (xemacs ;; Must be a defalias for my-isearch-word-forward
