@@ -5,8 +5,6 @@
 ;; RH 6 = Emacs 23.1
 ;; RH 7 = Emacs 24.3
 
-;; Aug 9, 2013: Can run with no packages.
-
 ;;{{{ Configuration variables / functions
 
 ; This is the one key binding I must have... switch ASAP

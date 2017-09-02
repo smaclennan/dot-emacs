@@ -13,8 +13,25 @@ A brief rundown:
   files needed only for GNU Emacs. They are in a non-standard place so
   that XEmacs will not automagically pick them up.
 
+* There is a site-packages/lisp/xemacs directory for XEmacs specific
+  files not used by GNU Emacs.
+
 * I use Didier Verna's el-rcfiles package. The rc files are in the rc
   directory. https://github.com/didierverna/el-rcfiles
 
-You can find contact information at http://seanm.ca/.
+Optional config files called from init.el:
 
+* user-init.el: If user-init.el exists, it is run at the start of
+  init.el. If it provides the function `user-init-fini' it is called
+  at the end of init.el. This is used to tweak per machine settings
+  such as email address and laptop-mode.
+
+* work.el: This provides work related configs. This is very specific
+  to my job, you probably want to override it.
+
+* mail-<domain name>.el: This is called from the sendmail rc file if
+  it exists.
+
+* windoze.el: Called if you are running windoze... Nuff said.
+
+You can find contact information at http://seanm.ca/.
