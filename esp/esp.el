@@ -5,6 +5,18 @@
 
 (require 'cl)
 
+(defmacro emacs-version-cond (&rest clauses)
+  "Test CLAUSES for version >= at compile time.
+Each clause is (VERSION BODY...).
+Where VERSION is a list of major minor (e.g. (25 1)) or t."
+  (dolist (x clauses)
+    (let ((v (car x))
+	  (body (cdr x)))
+      (when (or (eq v t)
+		(emacs-version>= (car v) (cadr v)))
+	(return (cons 'progn body))))))
+(put 'emacs-version-cond 'lisp-indent-hook 'defun)
+
 ;; Add the local site-packages - must be two loops
 (dolist (dir '("esp" "site-packages/lisp/sam" "site-packages/lisp/misc"))
   (add-to-list 'load-path (concat dot-dir dir)))
@@ -72,8 +84,13 @@ Not all properties are supported."
 (defun my-clipboard-copy (beg end)
   (interactive "r")
   (let ((text (buffer-substring beg end)))
-    (x-set-selection 'CLIPBOARD text) ;; for C-v
-    (x-set-selection 'PRIMARY text) ;; for mouse paste
+    (emacs-version-cond
+      ((25 1)
+       (gui-set-selection 'CLIPBOARD text) ;; for C-v
+       (gui-set-selection 'PRIMARY text))  ;; for mouse paste
+      (t
+       (x-set-selection 'CLIPBOARD text) ;; for C-v
+       (x-set-selection 'PRIMARY text))) ;; for mouse paste
     (copy-region-as-kill beg end))) ;; and the kill buffer
 
 (global-set-key [(shift insert)] 'x-clipboard-yank)
