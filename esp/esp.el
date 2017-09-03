@@ -44,54 +44,30 @@ Not all properties are supported."
   (set-face-attribute face nil prop arg))
 
 ;; GNU Emacs really really needs a `signal-error-on-buffer-boundary'
-(defun my-scroll-down (&optional arg)
-  "`scroll-down-command' with no signal on beginning-of-buffer."
-  (interactive "P")
+
+(defadvice scroll-down (around my-scroll-down activate)
+  "`scroll-down' with no signal on end-of-buffer."
   (condition-case nil
-      (scroll-down arg)
+      ad-do-it
     (beginning-of-buffer)))
 
-(defun my-scroll-up (&optional arg)
-  "`scroll-up-command' with no signal on end-of-buffer."
-  (interactive "P")
+(defadvice scroll-up (around my-scroll-up activate)
+  "`scroll-up' with no signal on end-of-buffer."
   (condition-case nil
-      (scroll-up arg)
+      ad-do-it
     (end-of-buffer)))
 
-(defun my-previous-line (&optional arg)
-  "`previous-line' with no signal on beginning-of-buffer."
-  (interactive "p")
+(defadvice previous-line (around my-previous-line activate)
+  "`previous-line' with no signal on end-of-buffer."
   (condition-case nil
-      (previous-line arg)
+      ad-do-it
     (beginning-of-buffer)))
 
-(defun my-next-line (&optional arg)
+(defadvice next-line (around my-next-line activate)
   "`next-line' with no signal on end-of-buffer."
-  (interactive "p")
   (condition-case nil
-      (next-line arg)
+      ad-do-it
     (end-of-buffer)))
-
-(defun my-shift-select-down ()
-  (interactive)
-  (unless (region-active-p) (set-mark-command nil))
-  (my-next-line))
-
-(defun my-shift-select-up ()
-  (interactive)
-  (unless (region-active-p) (set-mark-command nil))
-  (my-previous-line))
-
-(global-set-key (kbd "<prior>") 'my-scroll-down)
-(global-set-key "\M-v" 'my-scroll-down)
-(global-set-key (kbd "<next>") 'my-scroll-up)
-(global-set-key "\C-v" 'my-scroll-up)
-(global-set-key (kbd "<up>") 'my-previous-line)
-(global-set-key "\C-p" 'my-previous-line)
-(global-set-key (kbd "<down>") 'my-next-line)
-(global-set-key "\C-n" 'my-next-line)
-(global-set-key [S-down] 'my-shift-select-down)
-(global-set-key [S-up] 'my-shift-select-up)
 
 (defun my-clipboard-copy (beg end)
   (interactive "r")
