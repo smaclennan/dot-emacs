@@ -3,7 +3,7 @@
 
 (defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
 
-(require 'cl)
+(with-no-warnings (require 'cl))
 
 (defun emacs-version>= (major minor)
   (or (> emacs-major-version major)
