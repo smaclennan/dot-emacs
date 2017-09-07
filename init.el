@@ -100,13 +100,6 @@
 ;; the start and end of the init.el.
 (load (concat dot-dir "user-init") t)
 
-;; Default the package location
-(my-feature-cond
-  (xemacs
-   (setq package-get-remote
-	 ;;'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
-	 '("ftp.xemacs.org" "/pub/xemacs/xemacs-21.5/experimental/packages"))))
-
 (setq track-eol t
       kill-whole-line t
       next-line-add-newlines nil
