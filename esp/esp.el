@@ -3,7 +3,12 @@
 
 (defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
 
-(require 'cl)
+(with-no-warnings (require 'cl))
+
+(defun emacs-version>= (major minor)
+  (or (> emacs-major-version major)
+      (and (eq emacs-major-version major)
+	   (>= emacs-minor-version minor))))
 
 (defmacro emacs-version-cond (&rest clauses)
   "Test CLAUSES for version >= at compile time.
@@ -31,11 +36,6 @@ Where VERSION is a list of major minor (e.g. (25 1)) or t."
 	file
       (setq file (concat data-directory name))
       (if (file-exists-p file) file nil))))
-
-(defun emacs-version>= (major minor)
-  (or (> emacs-major-version major)
-      (and (eq emacs-major-version major)
-	   (>= emacs-minor-version minor))))
 
 (defun region-exists-p ()
   (if mark-active
