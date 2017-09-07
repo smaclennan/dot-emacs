@@ -18,3 +18,7 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
   (emacs
    (add-hook 'emacs-lisp-mode-hook
 	     (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))))
+
+;; Let's try making - part of a "word".
+(modify-syntax-entry ?- "w" lisp-mode-syntax-table)
+(modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
