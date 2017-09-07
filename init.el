@@ -471,7 +471,8 @@ A negative arg comments out the `new' line[s]."
 
 (defun friendly-message (&optional full)
   (interactive "P")
-  (delete-itimer "delayed-msg")
+  (when (get-itimer "delayed-msg")
+    (delete-itimer "delayed-msg"))
   (if (and full would-have-liked-list)
       ;; Warn that some features not found
       (progn (ding)
