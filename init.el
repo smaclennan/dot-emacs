@@ -299,7 +299,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 (global-set-key "\C-x\C-c"	'my-save-buffers-kill-emacs)
 (global-set-key "\C-xw"	'what-line)
 
-;;(global-set-key "\C-cd"		'dup-line)
 (global-set-key "\M-#"		'my-calc)
 
 (global-set-key [(iso-left-tab)] 'tab-to-tab-stop)
@@ -359,17 +358,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 	(when (string= buff name)
 	  (text-mode))))))
 (add-hook 'find-file-hooks 'check-for-commit t)
-
-;;; -------------------------------------------------------------------------
-(defun dup-line (&optional arg)
-  "Duplicate the current line.
-A negative arg comments out the `new' line[s]."
-  (interactive "*p")
-  (let ((line (buffer-substring
-	       (progn (end-of-line) (point))
-	       (progn (beginning-of-line) (point)))))
-    ;; The above leaves the point at the start of the current line
-    (dotimes (iter arg) (insert line) (newline))))
 
 ;;}}}
 
