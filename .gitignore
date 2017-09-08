@@ -4,6 +4,7 @@ auto-autoloads.el
 custom-load.el
 sam-loaddefs.el
 misc-loaddefs.el
+xemacs-loaddefs.el
 custom.el
 slashdots
 *~
