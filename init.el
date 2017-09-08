@@ -16,11 +16,11 @@
   "Non-nil if running Windows.")
 
 (defvar dot-dir
-  ;; When called from load
-  (if load-file-name
-      (file-name-directory load-file-name)
-    (if user-init-file
-	(file-name-directory user-init-file)
+  (if user-init-file
+      (file-name-directory user-init-file)
+    ;; When called from load
+    (if load-file-name
+	(file-name-directory load-file-name)
       ;; for batch mode
       (let ((dir (pwd)))
 	(when (string-match "^Directory " dir)
