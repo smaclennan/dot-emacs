@@ -141,10 +141,7 @@ Simple version."
 	(when (file-exists-p path)
 	  (throw 'found path))))))
 
-;;}}}
-
-;;{{{ XEmacs 21.5 stuff
-
+;; XEmacs 21.5 cruft
 (my-feature-cond
   (xemacs
    (when (emacs-version>= 21 5)
@@ -152,9 +149,7 @@ Simple version."
      (setq buffer-file-coding-system-for-read 'undecided
 	   default-buffer-file-coding-system  'raw-text))))
 
-;;}}}
-
-;;{{{ Windowing System Customization
+;; Windowing System Customization
 
 (if window-system
     (load (concat rcfiles-directory "/window-config"))
@@ -435,8 +430,6 @@ Use region if it exists. My replacement for isearch-yank-word."
   (setq ws-trim-mode-line-string nil)
   (set-default 'ws-trim-level 1))
 
-;;}}}
-
 ;;; ------------------------------------------------------------
 ;; Start the server program
 (unless (or noninteractive running-windoze (string= (user-login-name) "root"))
@@ -446,6 +439,10 @@ Use region if it exists. My replacement for isearch-yank-word."
      (setq gnuserv-frame (selected-frame)))
     (t (server-start))))
 
+;;}}}
+
+;;{{{ Optional Init files
+
 ;;; ------------------------------------------------------------
 ;; Some non-standard init files. Start them last so they can override defaults.
 (when running-windoze (load "windoze"))
@@ -454,6 +451,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;; Call `user-init-fini' if provided.
 (when (fboundp 'user-init-fini) (user-init-fini))
+
+;;}}}
 
 ;;{{{ Final results
 
