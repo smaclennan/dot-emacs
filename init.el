@@ -196,6 +196,8 @@ Simple version."
 (global-set-key [f20] 'pop-tag-mark)
 (global-set-key [(control f10)]	'lxr-at-point)
 ;; I keep f11 free for temporary bindings
+(global-set-key [(shift f11)] 'my-show-messages)
+(global-set-key [XF86_Switch_VT_11] 'my-show-messages)
 (global-set-key [f12]		'revert-buffer)
 (global-set-key [(shift f12)]	'lxr-next-defined)
 (global-set-key [XF86_Switch_VT_12] 'lxr-next-defined)
@@ -216,6 +218,13 @@ Simple version."
 (global-set-key "\C-c8" '80-scan)
 (global-set-key "\C-c9" '80-cleanup) ;; shift-8 and ctrl-8 did not work
 
+(defun my-show-messages ()
+  "Show messages in other window."
+  (interactive)
+  (my-feature-cond
+    (xemacs (show-message-log))
+    (t (switch-to-buffer-other-window "*Messages*"))
+    ))
 
 ;;  I don't like the way isearch-yank-word defines word, so I rolled my own
 (defun my-isearch-yank-word ()
