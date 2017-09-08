@@ -18,7 +18,10 @@ Where VERSION is a list of major minor (e.g. (25 1)) or t."
     (let ((v (car x))
 	  (body (cdr x)))
       (when (or (eq v t)
-		(emacs-version>= (car v) (cadr v)))
+		;; Unroll emacs-verion>= or we get void function definiton
+		(> emacs-major-version (car v))
+		(and (eq emacs-major-version (car v))
+		     (>= emacs-minor-version (cadr v))))
 	(return (cons 'progn body))))))
 (put 'emacs-version-cond 'lisp-indent-hook 'defun)
 
