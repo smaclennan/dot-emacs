@@ -4,7 +4,6 @@
 
 ;; Bart's Fault
 (defun dmx-simple-func (matched-dir target &optional buf)
-  ;; Linux style
   (kill-local-variable 'tab-width)
   (c-set-style "linux")
   (my-tag-dirs-helper matched-dir buf))
