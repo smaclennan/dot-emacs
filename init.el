@@ -31,10 +31,10 @@
 (if (not (featurep 'xemacs)) (load (concat dot-dir "esp/esp")))
 
 (when (featurep 'sxemacs)
-  (setq load-path (append load-path
-			  (list (concat dot-dir "/site-packages/lisp/sam"))
-			  (list (concat dot-dir "/site-packages/lisp/misc"))))
-  )
+  (setq load-path
+	(append load-path
+		(mapcar (lambda(dir) (concat dot-dir "/site-packages/lisp/" dir))
+			'("introspector" "sam" "misc" "xemacs")))))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -143,6 +143,7 @@ Simple version."
 
 ;; XEmacs 21.5 cruft
 (my-feature-cond
+  (sxemacs nil)
   (xemacs
    (when (emacs-version>= 21 5)
      ;; For some reason the file coding was gutted - put it back
