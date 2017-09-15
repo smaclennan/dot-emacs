@@ -1,0 +1,3 @@
+[submodule "esp/mmm-mode"]
+	path = esp/mmm-mode
+	url = https://github.com/purcell/mmm-mode.git

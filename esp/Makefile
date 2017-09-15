@@ -13,6 +13,10 @@ ELCS += filladapt.elc igrep.elc rcfiles.elc hide-copyleft.elc
 
 EXTRA = esp-loaddefs.elc
 
+ifneq ($(wildcard mmm-mode/mmm-mode.el),)
+EXTRA += mmm
+endif
+
 all:	$(ELCS) $(EXTRA)
 
 # Dummy... we already build elc files
@@ -21,6 +25,12 @@ elcs:
 esp-loaddefs.el: $(ELCS)
 	@echo Create $(EMACS) esp-loaddefs.el ...
 	@$(EMACS) -batch -q $(HELPER) -l build-loaddefs.el -f build-loaddefs
+
+mmm:	mmm-mode/Makefile
+	$(MAKE) $(MFLAGS) -C mmm-mode
+
+mmm-mode/Makefile:
+	cd mmm-mode; ./autogen.sh; ./configure --with-emacs
 
 tags:
 	etags *.el
