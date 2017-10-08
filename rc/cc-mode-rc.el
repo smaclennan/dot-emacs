@@ -4,8 +4,6 @@
 
 ;; This hook is run once when cc-mode initializes
 ; (defun my-c-initialization-hook ()
-;; Do this after cc-mode loaded for XEmacs
-(setup-font-lock-keywords)
 
 ;; Let's try making _ part of a "word"
 (modify-syntax-entry ?_ "w" c-mode-syntax-table)
@@ -216,6 +214,22 @@ actually update the associated `compile-command' variable."
 	       (buffer-name) c-indentation-style c-basic-offset
 	       (if indent-tabs-mode "tabs" "spaces") tab-width)
     (message "Buffer not in C mode.")))
+
+;;; -------------------------------------------------------------------------
+;; Bold SAM comments
+
+(let ((keyword '(("\\(/\\*\\|//\\) ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t))))
+  (my-feature-cond
+    (xemacs
+     (nconc c-font-lock-keywords-1 keyword)
+     (nconc c-font-lock-keywords-2 keyword)
+     (nconc c-font-lock-keywords-3 keyword)
+     (nconc c++-font-lock-keywords-1 keyword)
+     (nconc c++-font-lock-keywords-2 keyword)
+     (nconc c++-font-lock-keywords-3 keyword))
+    (t
+     (font-lock-add-keywords 'c-mode keyword)
+     (font-lock-add-keywords 'c++-mode keyword))))
 
 ;;; -------------------------------------------------------------------------
 

@@ -22,3 +22,14 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 ;; Let's try making - part of a "word".
 (modify-syntax-entry ?- "w" lisp-mode-syntax-table)
 (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
+
+;; Bold SAM comments
+(require 'font-lock) ; lisp mode called very early in startup
+
+(let ((keyword '((";+ ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t))))
+  (my-feature-cond
+    (xemacs
+     (nconc lisp-font-lock-keywords-1 keyword)
+     (nconc lisp-font-lock-keywords-2 keyword))
+  (t
+   (font-lock-add-keywords 'emacs-lisp-mode keyword))))

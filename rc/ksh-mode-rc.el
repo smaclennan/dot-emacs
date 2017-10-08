@@ -9,6 +9,5 @@
 
 (setq ksh-indent 4)
 
-(nconc
- ksh-font-lock-keywords
- (list (list "# ?\\(\\<SAM\\>\\)" 1 'font-lock-comment-warn-face t)))
+(nconc ksh-font-lock-keywords
+       '(("# ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
