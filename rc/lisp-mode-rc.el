@@ -32,14 +32,17 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 
 ;; I don't like the warning-face used in GNU Emacs for functions like `error'.
 ;; However, the keywords are a defconst, so we must work around that by
-;; making a copy.
+;; making a copy. XEmacs doesn't consider error a keyword.
 
-(when (not running-xemacs)
-  (let ((mine (copy-tree lisp-el-font-lock-keywords-2))
-	str)
-    (dolist (face mine)
-      (setq str (car face))
-      (and (stringp str)
-	   (string-match "error" str)
-	   (setf (cdadr face) (list 'font-lock-keyword-face))))
-    (setq lisp-el-font-lock-keywords-2 mine)))
+(my-feature-cond
+  (xemacs
+   (nconc lisp-font-lock-keywords-2 '(("(\\(error\\|warn\\)\\>" 1 'font-lock-keyword-face))))
+  (t
+   (let ((mine (copy-tree lisp-el-font-lock-keywords-2))
+	 str)
+     (dolist (face mine)
+       (setq str (car face))
+       (and (stringp str)
+	    (string-match "error" str)
+	    (setf (cdadr face) (list 'font-lock-keyword-face))))
+     (setq lisp-el-font-lock-keywords-2 mine))))
