@@ -5,4 +5,5 @@
 
 ;; Bold SAM comments
 ;; SAM not working for XEmacs
-(comment-warn (list sh-font-lock-keywords) 'sh-mode)
+;(comment-warn (list sh-font-lock-keywords) 'sh-mode)
+(comment-warn nil 'sh-mode)
