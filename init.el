@@ -327,7 +327,16 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; ksh-mode not avaliable in Emacs, and turning it on loses font-lock
 ;; and bracket matching... so enable it only for xemacs for now
 
-(when running-xemacs (would-like 'ksh-mode))
+(when running-xemacs
+  (defun sh-to-ksh (entry)
+    (when (eq (cdr entry) 'sh-mode)
+      (setcdr entry 'ksh-mode))
+    entry)
+
+  ;; Convert sh-mode to ksh-mode
+  (mapc 'sh-to-ksh auto-mode-alist)
+  (mapc 'sh-to-ksh interpreter-mode-alist)
+  )
 
 ;;; -------------------------------------------------------------------------
 ;; hide-copyleft
