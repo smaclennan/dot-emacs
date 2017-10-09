@@ -18,6 +18,18 @@
   "Font Lock mode face used to highlight warning comments."
   :group 'font-lock-faces)
 
+(defconst sh-comment-warn "# ?\\<SAM\\>.*"
+  "Regular expression used in scripts.")
+
+(defun comment-warn (keywords mode &optional re)
+  "Helper for comment bolding. `keywords' are used by XEmacs. `mode' is used by GNU Emacs."
+  (unless re (setq re sh-comment-warn))
+  (let ((keyword (list (list re 0 (quote `font-lock-comment-warn-face) t))))
+    (if running-xemacs
+	(dolist (kw keywords)
+	  (nconc kw keyword))
+      (font-lock-add-keywords mode keyword))))
+
 ;; Change a couple of faces
 (make-face-bold 'font-lock-function-name-face)
 (set-face-foreground 'font-lock-function-name-face "blue")

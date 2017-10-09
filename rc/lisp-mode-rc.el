@@ -26,10 +26,6 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 ;; Bold SAM comments
 (require 'font-lock) ; lisp mode called very early in startup
 
-(let ((keyword '((";+ ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t))))
-  (my-feature-cond
-    (xemacs
-     (nconc lisp-font-lock-keywords-1 keyword)
-     (nconc lisp-font-lock-keywords-2 keyword))
-  (t
-   (font-lock-add-keywords 'emacs-lisp-mode keyword))))
+(comment-warn (list lisp-font-lock-keywords-1 lisp-font-lock-keywords-2)
+	      'emacs-lisp-mode
+	      ";+ ?\\<SAM\\>.*")

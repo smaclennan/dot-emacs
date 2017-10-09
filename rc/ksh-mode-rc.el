@@ -9,5 +9,5 @@
 
 (setq ksh-indent 4)
 
-(nconc ksh-font-lock-keywords
-       '(("# ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
+;; Bold SAM comments
+(comment-warn (list ksh-font-lock-keywords) 'ksh-mode)

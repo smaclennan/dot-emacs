@@ -2,9 +2,5 @@
 (require 'compile)
 
 ;; Bold SAM comments
-(let ((keyword '(("# ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t))))
-  (my-feature-cond
-    (xemacs
-     (nconc makefile-font-lock-keywords keyword))
-    (t
-     (font-lock-add-keywords 'makefile-mode keyword))))
+;; SAM not working for GNU Emacs
+(comment-warn (list makefile-font-lock-keywords) 'makefile-mode)

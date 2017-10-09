@@ -218,18 +218,14 @@ actually update the associated `compile-command' variable."
 ;;; -------------------------------------------------------------------------
 ;; Bold SAM comments
 
-(let ((keyword '(("\\(/\\*\\|//\\) ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t))))
-  (my-feature-cond
-    (xemacs
-     (nconc c-font-lock-keywords-1 keyword)
-     (nconc c-font-lock-keywords-2 keyword)
-     (nconc c-font-lock-keywords-3 keyword)
-     (nconc c++-font-lock-keywords-1 keyword)
-     (nconc c++-font-lock-keywords-2 keyword)
-     (nconc c++-font-lock-keywords-3 keyword))
-    (t
-     (font-lock-add-keywords 'c-mode keyword)
-     (font-lock-add-keywords 'c++-mode keyword))))
+(comment-warn
+ (list c-font-lock-keywords-1 c-font-lock-keywords-2 c-font-lock-keywords-3)
+ 'c-mode
+ "\\(/\\*\\|//\\) ?\\<SAM\\>.*")
+(comment-warn
+ (list c++-font-lock-keywords-1 c++-font-lock-keywords-2 c++-font-lock-keywords-3)
+ 'c++-mode
+ "\\(/\\*\\|//\\) ?\\<SAM\\>.*")
 
 ;;; -------------------------------------------------------------------------
 
