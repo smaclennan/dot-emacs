@@ -10,6 +10,10 @@ Setting laptop mode to 'auto tries to guess setting.")
 (defvar laptop-mode-font "10x20"
   "*The font to use for laptop mode.")
 
+(defvar laptop-mode-fixup 'auto
+  "*Do we need to fixup the laptop-mode-font?
+Setting to 'auto tries to guess the setting.")
+
 (when (eq window-system 'x)
   (when (eq x-root-size nil)
     (let ((wininfo (shell-command-to-string "xwininfo -root"))
@@ -28,6 +32,9 @@ Setting laptop mode to 'auto tries to guess setting.")
 	(setq out (replace-match "" nil nil out)))
       (setq laptop-mode (eq count 1))
       ))
+
+  (when (eq laptop-mode-fixup 'auto)
+    (setq laptop-mode-fixup (and laptop-mode running-xemacs)))
   )
 
 (if (boundp 'xft-version)

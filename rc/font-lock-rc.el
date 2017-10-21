@@ -42,7 +42,7 @@
       (unless (boundp 'laptop-mode)
 	(load (concat dot-dir "rc/window-config")))
       (set-face-foreground 'font-lock-comment-face "FireBrick")
-      (when laptop-mode
+      (when laptop-mode-fixup
 	(dolist (face '(font-lock-function-name-face
 			font-lock-comment-warn-face
 			font-lock-warning-face))
