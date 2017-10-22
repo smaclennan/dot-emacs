@@ -93,6 +93,10 @@
 
 ;; The standard doesn't support sxemacs
 (setq rcfiles-directory (concat dot-dir "rc"))
+
+;; Load laptop mode early before window-config
+(load (concat rcfiles-directory "/laptop-mode"))
+
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
   (load (concat dot-dir "esp/rcfiles")))
