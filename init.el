@@ -62,6 +62,12 @@
 
 (require 'sam-common)
 
+;; I use a common init.el across many machines. The `user-init' file
+;; allows for user/machine specific initialization. It is called at
+;; the start and end of the init.el. It must be very early for
+;; variables like laptop-mode to work.
+(load (concat dot-dir "user-init") t)
+
 ;; Split the system-name up into host and domain name.
 ;; We need this up front for sendmail-rc.
 (defvar host-name nil)
@@ -94,11 +100,6 @@
 ;;}}}
 
 ;;{{{ Basic Customization
-
-;; I use a common init.el across many machines. The `user-init' file
-;; allows for user/machine specific initialization. It is called at
-;; the start and end of the init.el.
-(load (concat dot-dir "user-init") t)
 
 (setq track-eol t
       kill-whole-line t
