@@ -29,9 +29,9 @@ Where VERSION is a list of major minor (e.g. (25 1)) or t."
 (dolist (dir '("esp" "site-packages/lisp/sam" "site-packages/lisp/misc"))
   (add-to-list 'load-path (concat dot-dir dir)))
 
-;; Optional package
+;; Optional mmm package
 (let ((mmm-dir (concat dot-dir "/esp/mmm-mode")))
-  (when mmm-dir (add-to-list 'load-path mmm-dir)))
+  (when (file-exists-p mmm-dir) (add-to-list 'load-path mmm-dir)))
 
 (dolist (file '("esp-loaddefs" "sam-loaddefs" "misc-loaddefs"))
   (load file t t))

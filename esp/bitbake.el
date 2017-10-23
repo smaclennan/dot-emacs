@@ -44,7 +44,7 @@
 ;;; Code:
 
 (eval-when-compile
-  (add-to-list 'load-path (expand-file-name "../../../esp/mmm-mode")))
+  (add-to-list 'load-path (expand-file-name "./mmm-mode")))
 
 (require 'ansi-color)
 (require 'comint)
