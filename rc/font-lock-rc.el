@@ -18,6 +18,18 @@
   "Font Lock mode face used to highlight warning comments."
   :group 'font-lock-faces)
 
+(defconst sh-comment-warn "# ?\\<SAM\\>.*"
+  "Regular expression used in scripts.")
+
+(defun comment-warn (keywords mode &optional re)
+  "Helper for comment bolding. `keywords' are used by XEmacs. `mode' is used by GNU Emacs."
+  (unless re (setq re sh-comment-warn))
+  (let ((keyword (list (list re 0 (quote `font-lock-comment-warn-face) t))))
+    (if running-xemacs
+	(dolist (kw keywords)
+	  (nconc kw keyword))
+      (font-lock-add-keywords mode keyword))))
+
 ;; Change a couple of faces
 (make-face-bold 'font-lock-function-name-face)
 (set-face-foreground 'font-lock-function-name-face "blue")
@@ -30,7 +42,7 @@
       (unless (boundp 'laptop-mode)
 	(load (concat dot-dir "rc/window-config")))
       (set-face-foreground 'font-lock-comment-face "FireBrick")
-      (when laptop-mode
+      (when laptop-mode-fixup
 	(dolist (face '(font-lock-function-name-face
 			font-lock-comment-warn-face
 			font-lock-warning-face))
@@ -42,69 +54,9 @@
   (set-face-foreground 'font-lock-variable-name-face "purple")
   )
 
-(if running-xemacs
-    (progn
-      ;; Of all the modes, font-lock *least* needs a modeline
-      ;; indicator. If the buffer is colourful, font-lock is on.
-      ;; The only thing you lose is the ability to toggle it.
-      (let ((el (assq 'font-lock-mode minor-mode-alist)))
-	(if el (setcdr el '(""))))
-
-      (defun setup-font-lock-keywords ()
-	(let ((c-regexp "\\(/\\*\\|//\\) ?\\<SAM\\>.*"))
-	  (setq c-font-lock-keywords-1
-		(append c-font-lock-keywords-1
-			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
-	  (setq c-font-lock-keywords-2
-		(append c-font-lock-keywords-2
-			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
-	  (setq c-font-lock-keywords-3
-		(append c-font-lock-keywords-3
-			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
-
-	  (setq c++-font-lock-keywords-1
-		(append c++-font-lock-keywords-1
-			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
-	  (setq c++-font-lock-keywords-2
-		(append c++-font-lock-keywords-2
-			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
-	  (setq c++-font-lock-keywords-3
-		(append c++-font-lock-keywords-3
-			(list (list c-regexp 0 'font-lock-comment-warn-face t))))
-	  (when nil ;; SAM NOT YET
-	    (setq go-mode-font-lock-keywords
-		  (append go-mode-font-lock-keywords
-			  (list (list c-regexp 2 'font-lock-comment-warn-face t))))
-	    ) ;; SAM
-	  ))
-
-      (let ((lisp-regexp ";+ ?\\<SAM\\>.*"))
-	(setq lisp-font-lock-keywords-1
-	      (append lisp-font-lock-keywords-1
-		      (list (list lisp-regexp 0 'font-lock-comment-warn-face t))))
-	(setq lisp-font-lock-keywords-2
-	      (append lisp-font-lock-keywords-2
-		      (list (list lisp-regexp 0 'font-lock-comment-warn-face t))))
-	))
-
-  ;; GNU emacs
-  ;; SAM This *should* work for XEmacs too since XEmacs supports
-  ;; font-lock-add-keywords but even the example doesn't work.
-  (defun setup-font-lock-keywords ()
-    (font-lock-add-keywords
-     'c-mode
-     '(("\\(/\\*\\|//\\) ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
-    (font-lock-add-keywords
-     'c++-mode
-     '(("\\(/\\*\\|//\\) ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t))))
-
-  (font-lock-add-keywords
-   'emacs-lisp-mode
-   '((";+ ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
-  (font-lock-add-keywords
-   'sh-mode
-   '(("# ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
-  (font-lock-add-keywords
-   'makefile-mode
-   '(("# ?\\<SAM\\>.*" 0 'font-lock-comment-warn-face t)))
-  )
+(when running-xemacs
+   ;; Of all the modes, font-lock *least* needs a modeline
+   ;; indicator. If the buffer is colourful, font-lock is on.
+   ;; The only thing you lose is the ability to toggle it.
+   (let ((el (assq 'font-lock-mode minor-mode-alist)))
+     (if el (setcdr el '("")))))

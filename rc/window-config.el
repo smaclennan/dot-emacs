@@ -3,13 +3,6 @@
 
 (defvar x-root-size nil "X root window width and height")
 
-(defvar laptop-mode nil
-  "*Set laptop mode (larger font).
-Setting laptop mode to 'auto tries to guess setting.")
-
-(defvar laptop-mode-font "10x20"
-  "*The font to use for laptop mode.")
-
 (when (eq window-system 'x)
   (when (eq x-root-size nil)
     (let ((wininfo (shell-command-to-string "xwininfo -root"))
@@ -18,17 +11,7 @@ Setting laptop mode to 'auto tries to guess setting.")
 	(setq width (string-to-number (match-string 1 wininfo))))
       (when (string-match "Height: \\([0-9]+\\)" wininfo)
 	(setq height (string-to-number (match-string 1 wininfo))))
-      (and width height (setq x-root-size (list width height)))))
-
-  (when (eq laptop-mode 'auto)
-    (let ((out (shell-command-to-string "xrandr -q"))
-	  (count 0))
-      (while (string-match "^[^ ]+ connected" out)
-	(setq count (1+ count))
-	(setq out (replace-match "" nil nil out)))
-      (setq laptop-mode (eq count 1))
-      ))
-  )
+      (and width height (setq x-root-size (list width height))))))
 
 (if (boundp 'xft-version)
     (set-face-font 'default "DejaVu Sans Mono-10")
@@ -164,19 +147,3 @@ Setting laptop mode to 'auto tries to guess setting.")
        (when (color-instance-p bg)
 	 (set-face-background 'modeline bg))))
    (add-hook 'after-init-hook 'hack-modeline-background)))
-
-;; -------------------
-;; Laptop Mode Helpers
-
-(my-feature-cond
-  (xemacs
-   (defun check-faces ()
-     (interactive)
-     (let (found-one)
-       (dolist (face (face-list))
-	 (unless (equal (face-font-name face) laptop-mode-font)
-	   (setq found-one t)
-	   (message "%S %s" face (face-font-name face))))
-       (if found-one
-	   (message "Check the message log")
-	 (message "OK"))))))

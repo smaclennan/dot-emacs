@@ -62,6 +62,12 @@
 
 (require 'sam-common)
 
+;; I use a common init.el across many machines. The `user-init' file
+;; allows for user/machine specific initialization. It is called at
+;; the start and end of the init.el. It must be very early for
+;; variables like laptop-mode to work.
+(load (concat dot-dir "user-init") t)
+
 ;; Split the system-name up into host and domain name.
 ;; We need this up front for sendmail-rc.
 (defvar host-name nil)
@@ -87,6 +93,10 @@
 
 ;; The standard doesn't support sxemacs
 (setq rcfiles-directory (concat dot-dir "rc"))
+
+;; Load laptop mode early before window-config
+(load (concat rcfiles-directory "/laptop-mode"))
+
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
   (load (concat dot-dir "esp/rcfiles")))
@@ -94,11 +104,6 @@
 ;;}}}
 
 ;;{{{ Basic Customization
-
-;; I use a common init.el across many machines. The `user-init' file
-;; allows for user/machine specific initialization. It is called at
-;; the start and end of the init.el.
-(load (concat dot-dir "user-init") t)
 
 (setq track-eol t
       kill-whole-line t
@@ -327,7 +332,16 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; ksh-mode not avaliable in Emacs, and turning it on loses font-lock
 ;; and bracket matching... so enable it only for xemacs for now
 
-(when running-xemacs (would-like 'ksh-mode))
+(when running-xemacs
+  (defun sh-to-ksh (entry)
+    (when (eq (cdr entry) 'sh-mode)
+      (setcdr entry 'ksh-mode))
+    entry)
+
+  ;; Convert sh-mode to ksh-mode
+  (mapc 'sh-to-ksh auto-mode-alist)
+  (mapc 'sh-to-ksh interpreter-mode-alist)
+  )
 
 ;;; -------------------------------------------------------------------------
 ;; hide-copyleft
