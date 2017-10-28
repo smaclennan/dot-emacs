@@ -44,13 +44,23 @@
 ;;; -------------------------------------------------------------------------
 
 (defvar include-list
-  '("stdio.h" "stdlib.h" "stdint.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "errno.h"))
+  '("stdio.h" "stdlib.h" "stdint.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "errno.h")
+  "* List of include files added by `c-template'.")
+
+(defvar c++-extra
+  '("#include <iostream>" "using namespace std;")
+  "* List of lines added by `c-template' for c++ files after the
+`include-list' includes.")
 
 (defun c-template (&optional getopt)
   (interactive "P")
   (goto-char (point-min))
   (dolist (include include-list)
     (insert (concat "#include <" include ">\n")))
+  (when (eq major-mode 'c++-mode)
+    (dolist (include c++-extra)
+      (insert (concat include "\n"))))
+
   (when getopt (insert "\n\nstatic int verbose;\n"))
   (insert "\n\nint main(int argc, char *argv[])\n{\n\t")
   (when getopt
