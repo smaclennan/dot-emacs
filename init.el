@@ -62,12 +62,6 @@
 
 (require 'sam-common)
 
-;; I use a common init.el across many machines. The `user-init' file
-;; allows for user/machine specific initialization. It is called at
-;; the start and end of the init.el. It must be very early for
-;; variables like laptop-mode to work.
-(load (concat dot-dir "user-init") t)
-
 ;; Split the system-name up into host and domain name.
 ;; We need this up front for sendmail-rc.
 (defvar host-name nil)
@@ -80,6 +74,12 @@
   ;; system-name is host-name
   (setq host-name my-system-name
 	domain-name (getenv "DOMAINNAME"))))
+
+;; I use a common init.el across many machines. The `user-init' file
+;; allows for user/machine specific initialization. It is called at
+;; the start and end of the init.el. It must be very early for
+;; variables like laptop-mode to work.
+(load (concat dot-dir "user-init") t)
 
 ;; For rcfiles to be able to match loaded lisp such as lisp-mode we
 ;; need to turn the file names into simple load names.
