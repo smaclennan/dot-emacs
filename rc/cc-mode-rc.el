@@ -77,8 +77,8 @@
   (add-local-compile-command nil))
 
 ;;; -------------------------------------------------------------------------
-(defvar local-compile-cc "gcc -O3 -Wall")
-(defvar local-compile-c++ "g++ -O3 -Wall")
+(defvar local-compile-cc "gcc -O2 -Wall")
+(defvar local-compile-c++ "g++ -O2 -Wall")
 (defvar local-compile-go "gccgo")
 (defvar local-compile-offset 4)
 
