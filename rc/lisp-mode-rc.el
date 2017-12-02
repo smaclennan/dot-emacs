@@ -43,6 +43,6 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
      (dolist (face mine)
        (setq str (car face))
        (and (stringp str)
-	    (string-match "error" str)
+	    (string-match "\\berror\\b" str)
 	    (setf (cdadr face) (list 'font-lock-keyword-face))))
      (setq lisp-el-font-lock-keywords-2 mine))))
