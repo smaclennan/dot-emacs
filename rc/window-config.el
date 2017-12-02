@@ -1,17 +1,20 @@
 ;; Windowing system only config.
 ;; No real library to toggle off of so it is not a -rc.el
 
-(defvar x-root-size nil "X root window width and height")
+(defvar bells-and-whistles nil "*If non-nil, enable all graphical widgets.")
 
-(when (eq window-system 'x)
-  (when (eq x-root-size nil)
-    (let ((wininfo (shell-command-to-string "xwininfo -root"))
-	  width height)
-      (when (string-match "Width: \\([0-9]+\\)" wininfo)
-	(setq width (string-to-number (match-string 1 wininfo))))
-      (when (string-match "Height: \\([0-9]+\\)" wininfo)
-	(setq height (string-to-number (match-string 1 wininfo))))
-      (and width height (setq x-root-size (list width height))))))
+(when nil ;; Disable for now
+  (defvar x-root-size nil "X root window width and height")
+
+  (when (eq window-system 'x)
+    (when (eq x-root-size nil)
+      (let ((wininfo (shell-command-to-string "xwininfo -root"))
+	    width height)
+	(when (string-match "Width: \\([0-9]+\\)" wininfo)
+	  (setq width (string-to-number (match-string 1 wininfo))))
+	(when (string-match "Height: \\([0-9]+\\)" wininfo)
+	  (setq height (string-to-number (match-string 1 wininfo))))
+	(and width height (setq x-root-size (list width height)))))))
 
 (if (boundp 'xft-version)
     (set-face-font 'default "DejaVu Sans Mono-10")
@@ -19,8 +22,6 @@
       (dolist (face '(default bold italic bold-italic))
 	(set-face-font face laptop-mode-font))
     (set-face-font 'default "7x13")))
-
-(setq use-dialog-box nil)
 
 ;; ---------------------------------------------
 ;; Colour
@@ -98,23 +99,27 @@
 				      (frame-visible-p speedbar-frame))]
 		      "--"))
 
-   ;; Gutter - turn it off
-   (if (boundp 'gutter-buffers-tab-enabled)
-       (setq gutter-buffers-tab-enabled nil)
-     ;; Old way
-     (if (boundp 'default-gutter-visible-p)
-	 (set-specifier default-gutter-visible-p nil)))
+   (unless bells-and-whistles
+     (setq use-dialog-box nil)
 
-   ;; Toolbar
-   (set-specifier default-toolbar-visible-p nil)
+     ;; Gutter - turn it off
+     (if (boundp 'gutter-buffers-tab-enabled)
+	 (setq gutter-buffers-tab-enabled nil)
+       ;; Old way
+       (if (boundp 'default-gutter-visible-p)
+	   (set-specifier default-gutter-visible-p nil)))
+
+     ;; Toolbar
+     (set-specifier default-toolbar-visible-p nil))
    ) ;; xemacs
 
   (emacs
-   ;; Toolbar
-   (tool-bar-mode 0)
-
-   ;; Tooltips hang emacs over VPN
-   (tooltip-mode 0)
+   (unless bells-and-whistles
+     (setq use-dialog-box nil)
+     ;; Toolbar
+     (tool-bar-mode 0)
+     ;; Tooltips hang emacs over VPN
+     (tooltip-mode 0))
 
    ;; Set the cursor properly for Emacs
    (blink-cursor-mode 0)
