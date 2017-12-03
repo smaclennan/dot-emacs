@@ -76,9 +76,9 @@
 	domain-name (getenv "DOMAINNAME"))))
 
 ;; I use a common init.el across many machines. The `user-init' file
-;; allows for user/machine specific initialization. It is called at
-;; the start and end of the init.el. It must be very early for
-;; variables like laptop-mode to work.
+;; allows for user/machine specific initialization. It must be very
+;; early for variables like laptop-mode to work. Use `after-init-hook'
+;; if you need to clean something up at the end.
 (load (concat dot-dir "user-init") t)
 
 ;; For rcfiles to be able to match loaded lisp such as lisp-mode we
@@ -472,9 +472,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 (when running-windoze (load "windoze"))
 
 (load (concat dot-dir "work") t)
-
-;; Call `user-init-fini' if provided.
-(when (fboundp 'user-init-fini) (user-init-fini))
 
 ;;}}}
 
