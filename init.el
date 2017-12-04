@@ -200,7 +200,7 @@ Simple version."
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
 (global-set-key [f20] 'pop-tag-mark)
-(global-set-key [(control f10)]	'lxr-at-point)
+(global-set-key [(control f10)]	'lxr-or-ogrok-at-point)
 ;; I keep f11 free for temporary bindings
 (global-set-key [(shift f11)] 'my-show-messages)
 (global-set-key [XF86_Switch_VT_11] 'my-show-messages)
@@ -223,6 +223,12 @@ Simple version."
 
 (global-set-key "\C-c8" '80-scan)
 (global-set-key "\C-c9" '80-cleanup) ;; shift-8 and ctrl-8 did not work
+
+(defun lxr-or-ogrok-at-point ()
+  (interactive)
+  (if (and ogrok-url ogrok-project)
+      (ogrok-at-point)
+    (lxr-at-point)))
 
 (defun my-show-messages ()
   "Show messages in other window."
