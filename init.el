@@ -163,6 +163,12 @@ Simple version."
   (if (fboundp 'menu-bar-mode)
       (menu-bar-mode -1)))
 
+(defun size-window (size)
+  (let* ((edges (window-edges))
+	 (cursize (- (nth 3 edges) (nth 1 edges) -1)))
+    (unless (= size cursize)
+      (enlarge-window (- size cursize)))))
+
 ;;}}}
 
 ;;{{{ Keys
