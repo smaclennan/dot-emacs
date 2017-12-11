@@ -278,8 +278,13 @@ Default flags value is read only."
     (delete-char -1)
     ))
 
+;;; -------------------------------------------------------------------------
+
 ;; GNU emacs
 (my-feature-cond
   (emacs
    (add-hook 'c-initialization-hook
 	     (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))))
+
+(require 'xcscope)
+(cscope-setup)
