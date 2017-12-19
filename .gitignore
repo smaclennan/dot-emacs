@@ -1,6 +1,5 @@
 *.elc
 user-init.el
-work.el
 auto-autoloads.el
 custom-load.el
 sam-loaddefs.el
