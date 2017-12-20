@@ -84,10 +84,12 @@ the procnto make command."
 			   (format qnx-make-fmt "lib" "install")
 			   (qnx-make-procnto arch)
 			   (format qnx-make-fmt "hardware" "install")
-			   (format qnx-make-fmt "utils" "install")
-			   (format qnx-make-fmt "services/tracelogger" "install")
-			   (format qnx-make-fmt "services/pipe" "install")
-			   ))
+			   (format qnx-make-fmt "utils" "install")))
+
+    ;; Deal with the services directory dynamically
+    (dolist (dir (directory-files (concat qnx-sandbox "services") nil "^[a-z].*"))
+      (unless (equal dir "system")
+	(nconc qnx-make-stages (list (format qnx-make-fmt (concat "services/" dir) "install")))))
 
     ;; Start if off by pretending to successfully finish a stage
     (add-hook 'compilation-finish-functions 'qnx-make-finish)
