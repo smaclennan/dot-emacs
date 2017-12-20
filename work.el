@@ -12,9 +12,9 @@
 (defcustom qnx-build-target "smp.instr" "*Build target suffix.")
 
 (defcustom qnx-arch-list '(("x86_64" . "o.")
-			("x86" . "o.")
-			("arm" . "le.v7.")
-			("aarch64" . "le"))
+			   ("x86" . "o.")
+			   ("arm" . "le.v7.")
+			   ("aarch64" . "le"))
   "*List of arches and target prefixes supported by QNX.")
 
 (defun qnx-make-procnto (arch)
@@ -71,12 +71,26 @@ the procnto make command."
 (defvar qnx-make-stages nil "Local variable")
 
 ;;;###autoload
-(defun qnx-make-all (arch)
+(defun qnx-set-arch (arch)
+  "Set the `qnx-build-arch' variable from a list of arches."
   (interactive (list
 		(completing-read "Arch: " qnx-arch-list nil t)))
+  (setq qnx-build-arch arch))
 
-  (let ((qnx-make-fmt
-	 (concat "make -C " qnx-sandbox "%s OSLIST=nto CPULIST=" arch " %s")))
+;;;###autoload
+(defun qnx-make-all (arg)
+  "Build everything, with everything being my definition of
+everything. If ARG is non-nil, then prompt for the arch to build
+for. The default is `qnx-build-arch'."
+  (interactive "P")
+
+  (let (qnx-make-fmt
+	(arch (if arg
+		  (completing-read "Arch: " qnx-arch-list nil t)
+		qnx-build-arch)))
+
+    (setq qnx-make-fmt
+	  (concat "make -C " qnx-sandbox "%s OSLIST=nto CPULIST=" arch " %s"))
 
     ;; Create the stages list
     (setq qnx-make-stages (list
