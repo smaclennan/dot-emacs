@@ -226,6 +226,7 @@ Simple version."
 (global-set-key "\C-ce" 'errno-string)
 (global-set-key "\C-cg" 'git-diff)
 (global-set-key "\C-ck" 'browse-kill-ring)
+(global-set-key "\C-co" 'ogrok)
 
 (global-set-key "\C-c8" '80-scan)
 (global-set-key "\C-c9" '80-cleanup) ;; shift-8 and ctrl-8 did not work
