@@ -43,6 +43,7 @@ the procnto make command."
 ;; qnx-func
 
 (defun work-init ()
+  (add-to-list 'my-compile-dir-list '(".*/unittests/.*") t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "lib/") "lib" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "hardware/") "hw" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "utils/") "utils" 'qnx-func) t)
