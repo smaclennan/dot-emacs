@@ -34,7 +34,7 @@ the procnto make command."
        (concat "make -C " matched-dir " clean"))
 
   (defun qnx-cscope-update ()
-    (shell-command "find . -name '*.[ch]' -print | grep -iv unittest > cscope.files"))
+    (shell-command "find -name unittests -prune -o -name '*.[ch]' -print > cscope.files"))
 
   (set (make-local-variable 'cscope-initial-directory) qnx-sandbox)
   (set (make-local-variable 'cscope-update-args) "-q -b -k -i cscope.files")

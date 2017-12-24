@@ -132,6 +132,11 @@ instead, uses tag around or before point."
 		(find-tag-tag "Find tag: "))
 	    (find-tag (find-tag-default))))
 
+(defun push-tag-mark ()
+  (my-feature-cond
+    (xref-push-marker-stack (xref-push-marker-stack))
+    (t (ring-insert find-tag-marker-ring (point-marker)))))
+
 (defalias 'kill-entire-line 'kill-whole-line)
 
 ;; Hacks for Emacs 23
