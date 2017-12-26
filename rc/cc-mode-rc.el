@@ -287,6 +287,4 @@ Default flags value is read only."
 	     (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))))
 
 ;; (when (would-like 'xcscope) (cscope-setup))
-;(when (would-like 'my-cscope)
-(when (would-like 'my-cscope)
-  (add-hook 'c-initialization-hook 'my-cscope-setup))
+(when (would-like 'my-cscope) (add-hook 'c-mode-hook 'my-cscope-setup))
