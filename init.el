@@ -245,6 +245,24 @@ Simple version."
     (t (switch-to-buffer-other-window "*Messages*"))
     ))
 
+(defun grab-word ()
+  "Grab the word on or after the point."
+  (interactive)
+  (let (end)
+    (save-excursion
+      (if (forward-word)
+	  (progn ;; normal case
+	    (setq end (point))
+	    (backward-word))
+	;; special case when point past last word in buffer
+	(backward-word)
+	(setq end (point))
+	(forward-word))
+      (copy-region-as-kill (point) end))))
+
+;; emacs has problems with \C-,
+(global-set-key [(control ?.)] 'grab-word)
+
 ;;  I don't like the way isearch-yank-word defines word, so I rolled my own
 (defun my-isearch-yank-word ()
   "Pull current word from buffer into search string.
