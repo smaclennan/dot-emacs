@@ -115,12 +115,6 @@ for. The default is `qnx-build-arch'."
     (qnx-make-finish nil "finished\n")
     ))
 
-(defun delta (time)
-  (setq time (cadr time))
-  (let ((sec (mod time 60))
-	(min (/ time 60)))
-    (format "%d:%d" min sec)))
-
 (defun qnx-make-finish (buffer desc)
   (unless (equal desc "finished\n")
     (remove-hook 'compilation-finish-functions 'qnx-make-finish)
