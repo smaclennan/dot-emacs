@@ -64,8 +64,13 @@ the procnto make command."
 
 ;;; --------- make all
 
-(defvar qnx-make-all-cmd nil "Local variable for debugging")
-(defvar qnx-make-stages nil "Local variable")
+;; For qnx-make-all, -j8 didn't help that much
+
+(defvar qnx-make-stages nil
+  "List of make commands to perform created by `qnx-make-all'. If
+a make fails, the failing command will be the car of the list.")
+
+(defvar qnx-make-start nil "Time that `qnx-make-all' started.")
 
 ;;;###autoload
 (defun qnx-set-arch (arch)
@@ -91,6 +96,7 @@ for. The default is `qnx-build-arch'."
 
     ;; Create the stages list
     (setq qnx-make-stages (list
+			   nil ;; First entry is skipped
 			   (format qnx-make-fmt "" "hinstall")
 			   (format qnx-make-fmt "lib" "install")
 			   (qnx-make-procnto arch)
@@ -102,25 +108,31 @@ for. The default is `qnx-build-arch'."
       (unless (equal dir "system")
 	(nconc qnx-make-stages (list (format qnx-make-fmt (concat "services/" dir) "install")))))
 
+    (setq qnx-make-start (current-time))
+
     ;; Start if off by pretending to successfully finish a stage
     (add-hook 'compilation-finish-functions 'qnx-make-finish)
     (qnx-make-finish nil "finished\n")
     ))
 
+(defun delta (time)
+  (setq time (cadr time))
+  (let ((sec (mod time 60))
+	(min (/ time 60)))
+    (format "%d:%d" min sec)))
+
 (defun qnx-make-finish (buffer desc)
   (unless (equal desc "finished\n")
     (remove-hook 'compilation-finish-functions 'qnx-make-finish)
     (error "Stage: %s" desc))
-  (setq qnx-make-all-cmd (car qnx-make-stages))
-  (if qnx-make-all-cmd
-      (progn
-	(setq qnx-make-stages (cdr qnx-make-stages))
-	(message "stage %s" qnx-make-all-cmd)
-	;; The let binding here is to stop `compile' from setting the
-	;; global var
-	(let ((compile-command qnx-make-all-cmd))
-	  (compile qnx-make-all-cmd)))
+  (setq qnx-make-stages (cdr qnx-make-stages)) ;; next
+  (if qnx-make-stages
+      ;; The let binding is here to stop `compile' from setting the global var
+      (let ((compile-command (car qnx-make-stages)))
+	(message "stage %s..." compile-command)
+	(compile compile-command))
     ;; Done!
     (remove-hook 'compilation-finish-functions 'qnx-make-finish)
-    (setq qnx-make-all-cmd nil)
-    (message "Success!")))
+    (let ((time (cadr (time-since qnx-make-start))))
+      (setq qnx-make-start nil)
+      (message "Success! %d:%d" (/ time 60) (mod time 60)))))
