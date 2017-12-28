@@ -169,6 +169,12 @@ Simple version."
     (unless (= size cursize)
       (enlarge-window (- size cursize)))))
 
+(my-feature-cond
+  (xemacs
+   (defadvice abbreviate-file-name (before add-hack-homedir activate)
+     "Always set HACK-HOMEDIR to t ala GNU Emacs."
+     (ad-set-arg 1 t))))
+
 ;;}}}
 
 ;;{{{ Keys
