@@ -21,6 +21,12 @@ the procnto make command."
     (concat "make -C " qnx-sandbox "services/system/proc/"
 	    arch "/" (cdr target) qnx-build-target " install")))
 
+(defun qnx-cscope-update ()
+  (interactive)
+  (let ((default-directory qnx-sandbox))
+    (shell-command "find -name unittests -prune -o -name '*.[ch]' -print > cscope.files")
+    (shell-command "cscope -q -k -b")))
+
 (defun qnx-func (matched-dir target)
   (if (equal target "procnto")
       (setq compile-command (qnx-make-procnto qnx-build-arch))
@@ -33,12 +39,7 @@ the procnto make command."
   (set (make-local-variable 'make-clean-command)
        (concat "make -C " matched-dir " clean"))
 
-  (defun qnx-cscope-update ()
-    (shell-command "find -name unittests -prune -o -name '*.[ch]' -print > cscope.files"))
-
-  (set (make-local-variable 'cscope-initial-directory) qnx-sandbox)
-  (set (make-local-variable 'cscope-update-args) "-q -b -k -i cscope.files")
-  (add-hook 'cscope-update-hooks 'qnx-cscope-update t t)
+  (set (make-local-variable 'my-cscope-args) "-q -k")
   )
 ;; qnx-func
 
