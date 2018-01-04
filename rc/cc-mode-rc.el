@@ -41,6 +41,24 @@
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
+(my-feature-cond
+  (xemacs
+   (defun my-read-number (prompt default-value)
+     (let* ((default (number-to-string default-value))
+	    (prompt (concat prompt "[" default "] ")))
+       (read-number prompt t default))))
+  (t
+   (defalias 'my-read-number 'read-number)))
+
+(defun set-c-vars (tabs width)
+  "Set C tab mode and tab width"
+  (interactive (list
+		(yes-or-no-p "Tabs? ")
+		(my-read-number "Width: " c-basic-offset)))
+  (setq indent-tabs-mode tabs
+	c-basic-offset width
+	tab-width width))
+
 ;;; -------------------------------------------------------------------------
 
 (defvar include-list
