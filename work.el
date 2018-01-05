@@ -43,12 +43,21 @@ the procnto make command."
   )
 ;; qnx-func
 
+(defun gdb-func (matched-dir target)
+  "GDB the Ubuntu way"
+  (setq compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))
+  (c-set-style "gnu")
+  (setq c-basic-offset 2)
+  (setq tab-width 8))
+
 (defun work-init ()
   (add-to-list 'my-compile-dir-list '(".*/unittests/.*") t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "lib/") "lib" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "hardware/") "hw" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "utils/") "utils" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "services/") "procnto" 'qnx-func) t)
+
+  (add-to-list 'my-compile-dir-list (list "^.*/gdb-[0-9.]+/" nil 'gdb-func) t)
   )
 (add-hook 'my-compile-init-hooks 'work-init)
 
