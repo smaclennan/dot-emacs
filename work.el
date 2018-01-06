@@ -40,6 +40,8 @@ the procnto make command."
        (concat "make -C " matched-dir " clean"))
 
   (set (make-local-variable 'my-cscope-args) "-q -k")
+
+  (my-tags-update-helper qnx-sandbox)
   )
 ;; qnx-func
 
