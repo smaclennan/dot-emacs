@@ -1,6 +1,6 @@
 (defgroup qnx nil "QNX variables." :group 'tools)
 
-(defcustom qnx-sandbox (file-name-as-directory (getenv "QNX_SANDBOX"))
+(defcustom qnx-sandbox (getenv "QNX_SANDBOX")
   "* Sandbox directory. Defaults to QNX_SANDBOX environment
   variable if set. Must end in /!")
 
