@@ -13,12 +13,6 @@ ELCS += filladapt.elc igrep.elc rcfiles.elc hide-copyleft.elc
 
 EXTRA = esp-loaddefs.elc
 
-ifneq ($(wildcard mmm-mode/mmm-mode.el),)
-# We can't compile bitbake without mmm-mode
-ELCS += bitbake.elc
-EXTRA += mmm
-endif
-
 all:	$(ELCS) $(EXTRA)
 
 # Dummy... we already build elc files
