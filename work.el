@@ -27,6 +27,13 @@ the procnto make command."
     (shell-command "find -name unittests -prune -o -name '*.[ch]' -print > cscope.files")
     (shell-command "cscope -q -k -b")))
 
+(defun qnx-tags-update ()
+  (interactive)
+  (let ((default-directory qnx-sandbox))
+    ;; reuse cscope.files
+    (shell-command "find -name unittests -prune -o -name '*.[ch]' -print > cscope.files")
+    (shell-command "cat cscope.files | etags -")))
+
 (defun qnx-func (matched-dir target)
   (if (equal target "procnto")
       (setq compile-command (qnx-make-procnto qnx-build-arch))
@@ -42,6 +49,16 @@ the procnto make command."
   (set (make-local-variable 'my-cscope-args) "-q -k")
 
   (my-tags-update-helper qnx-sandbox)
+
+  ;; Try to pick a reasonable project - not complete
+  (let ((proj))
+    (cond
+     ((equal target "procnto") (setq proj ".kwlp_mainline_procnto_full"))
+     ((equal target "lib")     (setq proj ".kwlp_mainline_libc_full"))
+     ((equal target "utils")   (setq proj ".kwlp_x86_hypervisor"))
+     )
+    (when proj
+      (set (make-local-variable 'kloc-dir) (concat qnx-sandbox proj))))
   )
 ;; qnx-func
 
@@ -69,10 +86,15 @@ the procnto make command."
       ogrok-path "%21unittests"
       ogrok-base qnx-sandbox)
 
-(defvar kloc-project-dir ".kwlp_mainline_procnto_full"
-  "*Klocwork sub-project directory to use.")
 
-(setq kloc-dir (concat qnx-sandbox kloc-project-dir "/"))
+(when (not running-xemacs)
+  (setq frame-title-format '("" emacs-str
+			     (buffer-file-name
+			      (:eval
+			       (if (eq (cl-search qnx-sandbox buffer-file-name) 0)
+				   (concat "~qnx/" (substring buffer-file-name (length qnx-sandbox)))
+				 (abbreviate-file-name buffer-file-name)))
+			      "%b"))))
 
 ;;; --------- make all
 
