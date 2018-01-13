@@ -13,6 +13,13 @@
 			   ("aarch64" . "le"))
   "*List of arches and target prefixes supported by QNX.")
 
+(when qnx-sandbox
+  ;; At work cscope more useful than tags... but memory muscle can be
+  ;; a terrible thing.
+  (global-set-key [f10]   'my-cscope-at-point)
+  (global-set-key [?\M-.] 'my-cscope)
+  )
+
 (defun qnx-make-procnto (arch)
   "Given ARCH, use `qnx-sandbox' and `qnx-build-target' to build
 the procnto make command."
@@ -24,7 +31,9 @@ the procnto make command."
 (defun qnx-cscope-update ()
   (interactive)
   (let ((default-directory qnx-sandbox))
-    (shell-command "find -name unittests -prune -o -name '*.[ch]' -print > cscope.files")
+    (shell-command (concat "find -name unittests -prune "
+			   "-o type l -prune "
+			   "-o -name '*.[ch]' -print > cscope.files"))
     (shell-command "cscope -q -k -b")))
 
 (defun qnx-tags-update ()
@@ -48,7 +57,7 @@ the procnto make command."
 
   (set (make-local-variable 'my-cscope-args) "-q -k")
 
-  (my-tags-update-helper qnx-sandbox)
+  ;; (my-tags-update-helper qnx-sandbox)
 
   ;; Try to pick a reasonable project - not complete
   (let ((proj))
@@ -59,7 +68,8 @@ the procnto make command."
      )
     (when proj
       (set (make-local-variable 'kloc-dir) (concat qnx-sandbox proj))))
-  )
+
+  (setq mode-name (concat "qnx-" mode-name)))
 ;; qnx-func
 
 (defun gdb-func (matched-dir target)
