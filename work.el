@@ -7,9 +7,9 @@
 (defcustom qnx-build-arch  "x86_64" "*Arch to build.")
 (defcustom qnx-build-target "smp.instr" "*Build target suffix.")
 
-(defcustom qnx-arch-list '(("x86_64" . "o.")
-			   ("x86" . "o.")
-			   ("arm" . "le.v7.")
+(defcustom qnx-arch-list '(("x86_64" . "o")
+			   ("x86" . "o")
+			   ("arm" . "le.v7")
 			   ("aarch64" . "le"))
   "*List of arches and target prefixes supported by QNX.")
 
@@ -26,7 +26,18 @@ the procnto make command."
   (let ((target (assoc arch qnx-arch-list)))
     (unless target (error "Unsupported arch %s" arch))
     (concat "make -C " qnx-sandbox "services/system/proc/"
-	    arch "/" (cdr target) qnx-build-target " install")))
+	    arch "/" (cdr target) "." qnx-build-target " install")))
+
+;;;###autoload
+(defun qnx-reset-arch ()
+  "Reset the current compile command for the current buffer to
+the current `qnx-build-arch'."
+  (interactive)
+  (if (string-match "CPULIST=[^ ]+" compile-command)
+      (setq compile-command
+	    (replace-match (concat "CPULIST=" qnx-build-arch) nil nil compile-command))
+    (setq compile-command (qnx-make-procnto qnx-build-arch)))
+  (message compile-command))
 
 (defun qnx-cscope-update ()
   (interactive)
@@ -83,8 +94,9 @@ the procnto make command."
   (add-to-list 'my-compile-dir-list '(".*/unittests/.*") t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "lib/") "lib" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "hardware/") "hw" 'qnx-func) t)
-  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "utils/") "utils" 'qnx-func) t)
-  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "services/") "procnto" 'qnx-func) t)
+  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "utils/[a-z]/[^/]+/") "utils" 'qnx-func) t)
+  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "services/system/") "procnto" 'qnx-func) t)
+  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "services/[^/]+/") "service" 'qnx-func) t)
 
   (add-to-list 'my-compile-dir-list (list "^.*/gdb-[0-9.]+/" nil 'gdb-func) t)
   )
