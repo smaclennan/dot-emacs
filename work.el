@@ -32,19 +32,22 @@ the current `qnx-build-arch'."
     (setq compile-command (qnx-make-procnto qnx-build-arch)))
   (message compile-command))
 
+(defun qnx-files-update ()
+  (shell-command (concat "find -name unittests -prune "
+			 "-o -type l -prune "
+			 "-o -name '*.[ch]' -print > cscope.files")))
+
 (defun qnx-cscope-update ()
   (interactive)
   (let ((default-directory qnx-sandbox))
-    (shell-command (concat "find -name unittests -prune "
-			   "-o type l -prune "
-			   "-o -name '*.[ch]' -print > cscope.files"))
+    (qnx-files-update)
     (shell-command "cscope -q -k -b")))
 
 (defun qnx-tags-update ()
   (interactive)
   (let ((default-directory qnx-sandbox))
     ;; reuse cscope.files
-    (shell-command "find -name unittests -prune -o -name '*.[ch]' -print > cscope.files")
+    (qnx-files-update)
     (shell-command "cat cscope.files | etags -")))
 
 (defun qnx-func (matched-dir target)
@@ -86,7 +89,7 @@ the current `qnx-build-arch'."
 (defun work-init ()
   (add-to-list 'my-compile-dir-list '(".*/unittests/.*") t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "lib/") "lib" 'qnx-func) t)
-  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "hardware/") "hw" 'qnx-func) t)
+  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "hardware/[^/]+/[^/]+/") "hw" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "utils/[a-z]/[^/]+/") "utils" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "services/system/") "procnto" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "services/[^/]+/") "service" 'qnx-func) t)
