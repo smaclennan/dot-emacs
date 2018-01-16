@@ -2,7 +2,7 @@
 
 (defcustom qnx-sandbox (getenv "QNX_SANDBOX")
   "* Sandbox directory. Defaults to QNX_SANDBOX environment
-  variable if set. Must end in /!")
+variable if set. Must end in /!")
 
 (defcustom qnx-build-arch  "x86_64" "*Arch to build.")
 (defcustom qnx-build-target "smp.instr" "*Build target suffix.")
@@ -12,13 +12,6 @@
 			   ("arm" . "le.v7")
 			   ("aarch64" . "le"))
   "*List of arches and target prefixes supported by QNX.")
-
-(when qnx-sandbox
-  ;; At work cscope more useful than tags... but memory muscle can be
-  ;; a terrible thing.
-  (global-set-key [f10]   'my-cscope-at-point)
-  (global-set-key [?\M-.] 'my-cscope)
-  )
 
 (defun qnx-make-procnto (arch)
   "Given ARCH, use `qnx-sandbox' and `qnx-build-target' to build
@@ -100,23 +93,25 @@ the current `qnx-build-arch'."
 
   (add-to-list 'my-compile-dir-list (list "^.*/gdb-[0-9.]+/" nil 'gdb-func) t)
   )
-(add-hook 'my-compile-init-hooks 'work-init)
 
-(setq ogrok-url "http://10.222.97.117:8080/source"
-      ogrok-project "product_mainline"
-      ogrok-xref "/source/xref/product_mainline/"
-      ogrok-path "%21unittests"
-      ogrok-base qnx-sandbox)
+;; If qnx-sandbox is nil, these configs will mess up
+(when qnx-sandbox
+  (add-hook 'my-compile-init-hooks 'work-init)
 
+  ;; At work cscope is more useful than tags... but memory muscle can
+  ;; be a terrible thing.
+  (global-set-key [f10]   'my-cscope-at-point)
+  (global-set-key [?\M-.] 'my-cscope)
 
-(when (not running-xemacs)
-  (setq frame-title-format '("" emacs-str
-			     (buffer-file-name
-			      (:eval
-			       (if (eq (cl-search qnx-sandbox buffer-file-name) 0)
-				   (concat "~qnx/" (substring buffer-file-name (length qnx-sandbox)))
-				 (abbreviate-file-name buffer-file-name)))
-			      "%b"))))
+  (when (not running-xemacs)
+    (setq frame-title-format '("" emacs-str
+			       (buffer-file-name
+				(:eval
+				 (if (eq (cl-search qnx-sandbox buffer-file-name) 0)
+				     (concat "~qnx/" (substring buffer-file-name (length qnx-sandbox)))
+				   (abbreviate-file-name buffer-file-name)))
+				"%b"))))
+  )
 
 ;;; --------- make all
 
