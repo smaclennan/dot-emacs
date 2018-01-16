@@ -62,7 +62,12 @@
 			  (if (featurep 'xemacs)  "X")
 			  "Emacs " emacs-program-version " " host-name ":"))
 
-(setq frame-title-format '("" emacs-str (buffer-file-name "%f" "%b")))
+(if (not running-xemacs)
+    (setq frame-title-format '("" emacs-str
+			       (buffer-file-name
+				(:eval (abbreviate-file-name buffer-file-name))
+				"%b")))
+  (setq frame-title-format '("" emacs-str (buffer-file-name "%f" "%b"))))
 
 ;; -------
 (my-feature-cond
