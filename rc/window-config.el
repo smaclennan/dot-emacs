@@ -16,12 +16,13 @@
 	  (setq height (string-to-number (match-string 1 wininfo))))
 	(and width height (setq x-root-size (list width height)))))))
 
-(if (boundp 'xft-version)
-    (set-face-font 'default "DejaVu Sans Mono-10")
-  (if laptop-mode
-      (dolist (face '(default bold italic bold-italic))
-	(set-face-font face laptop-mode-font))
-    (set-face-font 'default "7x13")))
+(unless running-windoze
+  (if (boundp 'xft-version)
+      (set-face-font 'default "DejaVu Sans Mono-10")
+    (if laptop-mode
+	(dolist (face '(default bold italic bold-italic))
+	  (set-face-font face laptop-mode-font))
+      (set-face-font 'default "7x13"))))
 
 ;; ---------------------------------------------
 ;; Colour

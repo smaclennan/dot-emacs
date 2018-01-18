@@ -516,8 +516,9 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 (defun friendly-message (&optional full)
   (interactive "P")
-  (when (get-itimer "delayed-msg")
-    (delete-itimer "delayed-msg"))
+  (unless running-windoze
+    (when (get-itimer "delayed-msg")
+      (delete-itimer "delayed-msg")))
   (if (and full would-have-liked-list)
       ;; Warn that some features not found
       (progn (ding)
@@ -534,10 +535,12 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
 ;; one. So use a timer to get past them.
 (unless noninteractive
-  (if (and (featurep 'emacs) (not window-system))
-      ;; Need a long delay to get around Emacs delayed message
-      (start-itimer "delayed-msg" 'friendly-message 2.5 nil nil t t)
-    (start-itimer "delayed-msg" 'friendly-message 1 nil nil t t)))
+  (if running-windoze
+      (friendly-message)
+    (if (and (featurep 'emacs) (not window-system))
+	;; Need a long delay to get around Emacs delayed message
+	(start-itimer "delayed-msg" 'friendly-message 2.5 nil nil t t)
+      (start-itimer "delayed-msg" 'friendly-message 1 nil nil t t))))
 
 ;;}}}
 
