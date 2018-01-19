@@ -13,6 +13,8 @@ variable if set. Must end in /!")
 			   ("aarch64" . "le"))
   "*List of arches and target prefixes supported by QNX.")
 
+(add-to-list 'copylefts-to-hide '(" \\* \\$QNXLicenseC:" . " \\* \\$"))
+
 (defun qnx-make-procnto (arch)
   "Given ARCH, use `qnx-sandbox' and `qnx-build-target' to build
 the procnto make command."
