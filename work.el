@@ -91,7 +91,7 @@ the current `qnx-build-arch'."
 
 (defun work-init ()
   (add-to-list 'my-compile-dir-list '(".*/unittests/.*") t)
-  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "lib/") "lib" 'qnx-func) t)
+  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "lib/[^/]+/") "lib" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "hardware/[^/]+/[^/]+/") "hw" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "utils/[a-z]/[^/]+/") "utils" 'qnx-func) t)
   (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "services/system/") "procnto" 'qnx-func) t)
