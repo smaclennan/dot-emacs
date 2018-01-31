@@ -1,3 +1,7 @@
+;; -*-no-byte-compile: t; -*-
+;; The dynamic compile-command does not handle a byte compiled
+;; qnx-make-procnto.
+
 (defgroup qnx nil "QNX variables." :group 'tools)
 
 (defcustom qnx-sandbox (let ((dir (getenv "QNX_SANDBOX")))
