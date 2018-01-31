@@ -16,25 +16,6 @@ variable if set. Must end in /!")
 
 (add-to-list 'copylefts-to-hide '(" \\* \\$QNXLicenseC:" . " \\* \\$"))
 
-(defun qnx-make-procnto (arch)
-  "Given ARCH, use `qnx-sandbox' and `qnx-build-target' to build
-the procnto make command."
-  (let ((target (assoc arch qnx-arch-list)))
-    (unless target (error "Unsupported arch %s" arch))
-    (concat "make -C " qnx-sandbox "services/system/proc/"
-	    arch "/" (cdr target) "." qnx-build-target " install")))
-
-;;;###autoload
-(defun qnx-reset-arch ()
-  "Reset the current compile command for the current buffer to
-the current `qnx-build-arch'."
-  (interactive)
-  (if (string-match "CPULIST=[^ ]+" compile-command)
-      (setq compile-command
-	    (replace-match (concat "CPULIST=" qnx-build-arch) nil nil compile-command))
-    (setq compile-command (qnx-make-procnto qnx-build-arch)))
-  (message compile-command))
-
 (defun qnx-files-update ()
   (shell-command (concat "find -name unittests -prune "
 			 "-o -type l -prune "
@@ -53,11 +34,25 @@ the current `qnx-build-arch'."
     (qnx-files-update)
     (shell-command "cat cscope.files | etags -")))
 
+(defun qnx-make-procnto (&optional arch dir)
+  "Build the procnto make command."
+  (unless arch (setq arch (getenv "QNX_ARCH")))
+  (unless dir
+    ;; For buffer compile commands we cannot use qnx-sandbox since it
+    ;; might change.
+    (if (string-match "/services/system/" buffer-file-name)
+	(setq dir (substring buffer-file-name 0 (match-end 0)))
+      (error "Not a procnto file %s" buffer-file-name)))
+  (let ((target (assoc arch qnx-arch-list)))
+    (unless target (error "Unsupported arch %s" arch))
+    (concat "make -C " dir "proc/" arch "/" (cdr target) "." qnx-build-target " install")))
+
 (defun qnx-func (matched-dir target)
   (if (equal target "procnto")
-      (setq compile-command (qnx-make-procnto qnx-build-arch))
+      (setq compile-command '(qnx-make-procnto))
+    ;; This cannot be dynamic because of matched-dir.
     (setq compile-command
-	  (concat "make -C " matched-dir " OSLIST=nto CPULIST=" qnx-build-arch " install")))
+	  (concat "make -C " matched-dir " OSLIST=nto CPULIST=$QNX_ARCH install")))
 
   (when (equal target "utils")
     (indent-N 4 nil)) ;; 4 char spaces
@@ -131,32 +126,27 @@ a make fails, the failing command will be the car of the list.")
 
 ;;;###autoload
 (defun qnx-set-arch (arch)
-  "Set the `qnx-build-arch' variable from a list of arches."
+  "Set the QNX_ARCH environment variable from a list of arches."
   (interactive (list
 		(completing-read "Arch: " qnx-arch-list nil t)))
-  (setq qnx-build-arch arch))
+  (setenv "QNX_ARCH" arch))
 
 ;;;###autoload
-(defun qnx-make-all (arg)
+(defun qnx-make-all ()
   "Build everything, with everything being my definition of
-everything. If ARG is non-nil, then prompt for the arch to build
-for. The default is `qnx-build-arch'."
-  (interactive "P")
-
-  (let (qnx-make-fmt
-	(arch (if arg
-		  (completing-read "Arch: " qnx-arch-list nil t)
-		qnx-build-arch)))
-
-    (setq qnx-make-fmt
-	  (concat "make -C " qnx-sandbox "%s OSLIST=nto CPULIST=" arch " %s"))
+everything. Always builds from `qnx-sandbox', so you can call it
+anywhere."
+  (interactive)
+  (let* ((arch (getenv "QNX_ARCH"))
+	 (qnx-make-fmt
+	  (concat "make -C " qnx-sandbox "%s OSLIST=nto CPULIST=" arch " %s")))
 
     ;; Create the stages list
     (setq qnx-make-stages (list
 			   nil ;; First entry is skipped
 			   (format qnx-make-fmt "" "hinstall")
 			   (format qnx-make-fmt "lib" "install")
-			   (qnx-make-procnto arch)
+			   (qnx-make-procnto arch qnx-sandbox)
 			   (format qnx-make-fmt "hardware" "install")
 			   (format qnx-make-fmt "utils" "install")))
 
