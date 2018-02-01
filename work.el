@@ -6,8 +6,8 @@
 
 (defcustom qnx-sandbox (let ((dir (getenv "QNX_SANDBOX")))
 			 (if dir (file-name-as-directory dir)))
-  "* Sandbox directory. Defaults to QNX_SANDBOX environment
-variable if set. Must end in /!")
+  "* Sandbox directory. Defaults to $QNX_SANDBOX. Must end in a
+/!")
 
 (defcustom qnx-build-arch  "x86_64" "*Arch to build.")
 (defcustom qnx-build-target "smp.instr" "*Build target suffix.")
@@ -55,12 +55,10 @@ variable if set. Must end in /!")
 (defun qnx-func (matched-dir target)
   (if (equal target "procnto")
       (setq compile-command '(qnx-make-procnto))
-    ;; This cannot be dynamic because of matched-dir.
-    (setq compile-command
-	  (concat "make -C " matched-dir " OSLIST=nto CPULIST=$QNX_ARCH install")))
-
-  (when (equal target "utils")
-    (indent-N 4 nil)) ;; 4 char spaces
+    (when (not (equal target "unittests"))
+      ;; This cannot be dynamic because of matched-dir.
+      (setq compile-command
+	    (concat "make -C " matched-dir " OSLIST=nto CPULIST=$QNX_ARCH install"))))
 
   (set (make-local-variable 'make-clean-command)
        (concat "make -C " matched-dir " clean"))
@@ -74,7 +72,8 @@ variable if set. Must end in /!")
     (cond
      ((equal target "procnto") (setq proj ".kwlp_mainline_procnto_full"))
      ((equal target "lib")     (setq proj ".kwlp_mainline_libc_full"))
-     ((equal target "utils")   (setq proj ".kwlp_x86_hypervisor"))
+     ((equal target "utils")   (setq proj ".kwlp_x86_hypervisor")
+      (indent-N 4 nil)) ;; 4 char spaces
      )
     (when proj
       (set (make-local-variable 'kloc-dir) (concat qnx-sandbox proj))))
@@ -90,19 +89,16 @@ variable if set. Must end in /!")
   (setq tab-width 8))
 
 (defun work-init ()
-  (add-to-list 'my-compile-dir-list '(".*/unittests/.*") t)
-  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "lib/[^/]+/") "lib" 'qnx-func) t)
-  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "hardware/[^/]+/[^/]+/") "hw" 'qnx-func) t)
-  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "utils/[a-z]/[^/]+/") "utils" 'qnx-func) t)
-  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "services/system/") "procnto" 'qnx-func) t)
-  (add-to-list 'my-compile-dir-list (list (concat qnx-sandbox "services/[^/]+/") "service" 'qnx-func) t)
+  (nconc my-compile-dir-list
+	 (list
+	  (list (concat qnx-sandbox ".*/unittests/") "unittests" 'qnx-func)
+	  (list (concat qnx-sandbox "lib/[^/]+/") "lib" 'qnx-func)
+	  (list (concat qnx-sandbox "hardware/[^/]+/[^/]+/") "hw" 'qnx-func)
+	  (list (concat qnx-sandbox "utils/[a-z]/[^/]+/") "utils" 'qnx-func)
+	  (list (concat qnx-sandbox "services/system/") "procnto" 'qnx-func)
+	  (list (concat qnx-sandbox "services/[^/]+/") "service" 'qnx-func)
 
-  (add-to-list 'my-compile-dir-list (list "^.*/gdb-[0-9.]+/" nil 'gdb-func) t)
-  )
-
-;; If qnx-sandbox is nil, these configs will mess up
-(when qnx-sandbox
-  (add-hook 'my-compile-init-hooks 'work-init)
+	  (list "^.*/gdb-[0-9.]+/" nil 'gdb-func)))
 
   ;; At work cscope is more useful than tags... but memory muscle can
   ;; be a terrible thing.
@@ -110,14 +106,18 @@ variable if set. Must end in /!")
   (global-set-key [?\M-.] 'my-cscope)
 
   (when (not running-xemacs)
-    (setq frame-title-format '("" emacs-str
-			       (buffer-file-name
-				(:eval
-				 (if (eq (cl-search qnx-sandbox buffer-file-name) 0)
-				     (concat "~qnx/" (substring buffer-file-name (length qnx-sandbox)))
-				   (abbreviate-file-name buffer-file-name)))
-				"%b"))))
+    (setq frame-title-format
+	  '("" emacs-str
+	    (buffer-file-name
+	     (:eval
+	      (if (eq (cl-search qnx-sandbox buffer-file-name) 0)
+		  (concat "~qnx/" (substring buffer-file-name (length qnx-sandbox)))
+		(abbreviate-file-name buffer-file-name)))
+	     "%b"))))
   )
+
+;; If qnx-sandbox is nil, these configs will mess up
+(when qnx-sandbox (add-hook 'my-compile-init-hooks 'work-init))
 
 ;;; --------- make all
 
@@ -129,14 +129,11 @@ a make fails, the failing command will be the car of the list.")
 
 (defvar qnx-make-start nil "Time that `qnx-make-all' started.")
 
-;;;###autoload
 (defun qnx-set-arch (arch)
-  "Set the QNX_ARCH environment variable from a list of arches."
-  (interactive (list
-		(completing-read "Arch: " qnx-arch-list nil t)))
+  "Set the QNX_ARCH environment variable from a list."
+  (interactive (list (completing-read "Arch: " qnx-arch-list nil t)))
   (setenv "QNX_ARCH" arch))
 
-;;;###autoload
 (defun qnx-make-all ()
   "Build everything, with everything being my definition of
 everything. Always builds from `qnx-sandbox', so you can call it
@@ -159,7 +156,8 @@ anywhere."
     ;; Deal with the services directory dynamically
     (dolist (dir (directory-files (concat qnx-sandbox "services") nil "^[a-z].*"))
       (unless (equal dir "system")
-	(nconc qnx-make-stages (list (format qnx-make-fmt (concat "services/" dir) "install")))))
+	(nconc qnx-make-stages
+	       (list (format qnx-make-fmt (concat "services/" dir) "install")))))
 
     (setq qnx-make-start (current-time))
 
