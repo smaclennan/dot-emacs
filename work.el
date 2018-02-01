@@ -41,7 +41,8 @@ variable if set. Must end in /!")
 (defun qnx-make-procnto (&optional arch dir)
   "Build the procnto make command."
   (unless arch (setq arch (getenv "QNX_ARCH")))
-  (unless dir
+  (if dir
+      (setq dir (concat dir "services/system/"))
     ;; For buffer compile commands we cannot use qnx-sandbox since it
     ;; might change.
     (if (string-match "/services/system/" buffer-file-name)
@@ -141,6 +142,7 @@ a make fails, the failing command will be the car of the list.")
 everything. Always builds from `qnx-sandbox', so you can call it
 anywhere."
   (interactive)
+  (require 'compile)
   (let* ((arch (getenv "QNX_ARCH"))
 	 (qnx-make-fmt
 	  (concat "make -C " qnx-sandbox "%s OSLIST=nto CPULIST=" arch " %s")))
