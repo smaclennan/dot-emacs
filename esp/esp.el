@@ -5,6 +5,10 @@
 
 (with-no-warnings (require 'cl))
 
+;; I used to like when the suggestions where good, but not when they
+;; are just a shortened version of the command.
+(setq suggest-key-bindings nil)
+
 (defun emacs-version>= (major minor)
   (or (> emacs-major-version major)
       (and (eq emacs-major-version major)
@@ -28,10 +32,6 @@ Where VERSION is a list of major minor (e.g. (25 1)) or t."
 ;; Add the local site-packages - must be two loops
 (dolist (dir '("esp" "site-packages/lisp/sam" "site-packages/lisp/misc"))
   (add-to-list 'load-path (concat dot-dir dir)))
-
-;; Optional mmm package
-(let ((mmm-dir (concat dot-dir "/esp/mmm-mode")))
-  (when (file-exists-p mmm-dir) (add-to-list 'load-path mmm-dir)))
 
 (dolist (file '("esp-loaddefs" "sam-loaddefs" "misc-loaddefs"))
   (load file t t))
@@ -76,17 +76,26 @@ Not all properties are supported."
       ad-do-it
     (end-of-buffer)))
 
-(defadvice previous-line (around my-previous-line activate)
+;; Using defadvice for these functions breaks minibuffer history
+(defun my-previous-line (&optional arg try-vscroll)
   "`previous-line' with no signal on end-of-buffer."
+  (interactive "p")
   (condition-case nil
-      ad-do-it
+      (with-no-warnings ;; Yes, I want the interactive version
+	(previous-line arg try-vscroll))
     (beginning-of-buffer)))
 
-(defadvice next-line (around my-next-line activate)
-  "`next-line' with no signal on end-of-buffer."
+(defun my-next-line (&optional arg try-vscroll)
+  "`previous-line' with no signal on end-of-buffer."
+  (interactive "p")
   (condition-case nil
-      ad-do-it
+      (with-no-warnings ;; Yes, I want the interactive version
+	(next-line arg try-vscroll))
     (end-of-buffer)))
+
+(global-set-key (kbd "<up>") 'my-previous-line)
+(global-set-key (kbd "<down>") 'my-next-line)
+
 
 (defun my-clipboard-copy (beg end)
   (interactive "r")
