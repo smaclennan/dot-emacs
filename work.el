@@ -53,12 +53,14 @@
     (concat "make -C " dir "proc/" arch "/" (cdr target) "." qnx-build-target " install")))
 
 (defun qnx-func (matched-dir target)
-  (if (equal target "procnto")
-      (setq compile-command '(qnx-make-procnto))
-    (when (not (equal target "unittests"))
-      ;; This cannot be dynamic because of matched-dir.
-      (setq compile-command
-	    (concat "make -C " matched-dir " OSLIST=nto CPULIST=$QNX_ARCH install"))))
+  (cond
+   ((equal target "procnto")
+    (setq compile-command '(qnx-make-procnto)))
+   ((equal target "unittests")
+    (setq compile-command "make "))
+   (t ;; This cannot be dynamic because of matched-dir.
+    (setq compile-command
+	  (concat "make -C " matched-dir " OSLIST=nto CPULIST=$QNX_ARCH install"))))
 
   (set (make-local-variable 'make-clean-command)
        (concat "make -C " matched-dir " clean"))
