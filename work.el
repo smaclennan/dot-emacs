@@ -132,8 +132,8 @@ a make fails, the failing command will be the car of the list.")
 (defvar qnx-make-start nil "Time that `qnx-make-all' started.")
 
 (defun qnx-set-arch (arch)
-  "Set the QNX_ARCH environment variable from a list."
-  (interactive (list (completing-read "Arch: " qnx-arch-list nil t)))
+  "Set the QNX_ARCH environment variable from a list. Hint: M-n grabs default."
+  (interactive (list (completing-read "Arch: " qnx-arch-list nil t nil nil (getenv "QNX_ARCH"))))
   (setenv "QNX_ARCH" arch))
 
 (defun qnx-make-all ()
