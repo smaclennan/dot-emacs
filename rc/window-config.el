@@ -133,12 +133,18 @@
 
 ;; Do this *after* setting the modeline colours
 (when (fboundp 'display-time)
-  ;; remove 'mail
-  (setq display-time-form-list (list 'date 'time 'load))
   (my-feature-cond
-    (xemacs
+    (xemacs ;; remove mail
+     (setq display-time-form-list (list 'date 'time 'load))
      (when laptop-mode
-       (setq display-time-show-icons-maybe nil))))
+       (setq display-time-show-icons-maybe nil)))
+    (t ;; want angry mail
+     (setq display-time-use-mail-icon t)
+     (defface angry-mail-face '((t (:background "red")))
+       "Make the mail face angry."
+       :group 'display-time)
+     (setq display-time-mail-face 'angry-mail-face)))
+
   (display-time))
 
 ;; -------
