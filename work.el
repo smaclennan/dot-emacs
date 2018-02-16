@@ -180,6 +180,7 @@ anywhere."
 	(compile compile-command))
     ;; Done!
     (remove-hook 'compilation-finish-functions 'qnx-make-finish)
+    (qnx-cscope-update) ;; just a good idea
     (let ((time (cadr (time-since qnx-make-start))))
       (setq qnx-make-start nil)
       (message "Success! %d:%d" (/ time 60) (mod time 60)))))
