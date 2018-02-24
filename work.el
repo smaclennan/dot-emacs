@@ -65,7 +65,7 @@
   (set (make-local-variable 'make-clean-command)
        (concat "make -C " matched-dir " clean"))
 
-  (set (make-local-variable 'my-cscope-args) "-q -k")
+  ;; SAM (set (make-local-variable 'my-cscope-args) "-q -k")
 
   ;; (my-tags-update-helper qnx-sandbox)
 
@@ -106,6 +106,10 @@
   ;; be a terrible thing.
   (global-set-key [f10]   'my-cscope-at-point)
   (global-set-key [?\M-.] 'my-cscope)
+
+  ;; Let's try always enabling cscope
+  (setq my-cscope-dir qnx-sandbox
+	my-cscope-args "-q -k")
 
   (when (not running-xemacs)
     (setq frame-title-format
