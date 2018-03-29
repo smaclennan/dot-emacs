@@ -108,8 +108,9 @@
   (global-set-key [?\M-.] 'my-cscope)
 
   ;; Let's try always enabling cscope
+  ;; Let's also try -d and see how that goes...
   (setq my-cscope-dir qnx-sandbox
-	my-cscope-args "-q -k")
+	my-cscope-args "-q -k -d")
 
   (when (not running-xemacs)
     (setq frame-title-format
@@ -124,6 +125,33 @@
 
 ;; If qnx-sandbox is nil, these configs will mess up
 (when qnx-sandbox (add-hook 'my-compile-init-hooks 'work-init))
+
+(defun qnx-unittest (func)
+  (interactive "sFunc: ")
+  ;; Create the file if necessary
+  (find-file (concat "./" func ".c"))
+  ;; Fill in the stub code
+  (let (here)
+    (insert "#include \"unittest.h\"\n\n")
+    ;; (insert "#include \"source.c\"\n\n")
+    (insert "#include \"common.c\"\n\n")
+    (insert "int main(void)\n{\n")
+    (insert "\t")
+    (setq here (point))
+    (insert func "();\n")
+    (insert "\treturn UT_PASS;\n}\n")
+    (goto-char here)
+    )
+  ;; Add to Makefile
+  (with-current-buffer (find-file-noselect "Makefile")
+    (goto-char (point-min))
+    (unless (re-search-forward "^TESTLIST")
+      (error "No TESTLIST in Makefile"))
+    (end-of-line) (forward-char)
+    (while (looking-at "^[::blank::][a-z]")
+      (end-of-line) (forward-char))
+    (insert (concat "\t" func " \\\n")))
+  )
 
 ;;; --------- make all
 
