@@ -42,7 +42,7 @@
 ;; Note: returns non-nil if package exists.
 
 (defvar would-have-liked-list nil
-  "List of features that `would-like' and `packagep' could not find.")
+  "List of features that `would-like' could not find.")
 
 (defun would-like (feature &optional no-list)
   "A less strident `require'."
@@ -51,14 +51,6 @@
     (error
      (unless no-list (add-to-list 'would-have-liked-list feature))
      nil)))
-
-(defun packagep (package &optional no-list)
-  (if (boundp 'packages-package-list)
-      (if (assq package packages-package-list)
-	  t
-	(unless no-list (add-to-list 'would-have-liked-list package))
-	nil)
-    (would-like package no-list)))
 
 (require 'sam-common)
 
@@ -421,52 +413,48 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;;; -------------------------------------------------------------------------
 ;;; Some edit-utils packages
-(when (or (not running-xemacs) (packagep 'edit-utils))
-  (my-feature-cond
-    (xemacs
-     (paren-set-mode 'paren t)
-     (iswitchb-default-keybindings)
-     (would-like 'redo))
-    (ido-mode
-     (show-paren-mode t)
-     (ido-mode 1))
-    (t
-     (show-paren-mode t)
-     (require 'iswitchb)
-     (iswitchb-mode 1)))
+(my-feature-cond
+  (xemacs
+   (paren-set-mode 'paren t)
+   (iswitchb-default-keybindings)
+   (would-like 'redo))
+  (ido-mode
+   (show-paren-mode t)
+   (ido-mode 1))
+  (t
+   (show-paren-mode t)
+   (require 'iswitchb)
+   (iswitchb-mode 1)))
 
-  (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
+(global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
-  (require 'uniquify)
-  (setq uniquify-buffer-name-style 'post-forward)
-  )
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
 
 ;;; -------------------------------------------------------------------------
 ;;; Some text-modes packages
-(when (or (not running-xemacs) (packagep 'text-modes))
-  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
 
-  (my-feature-cond
-    (xemacs
-     ;; Filladapt is a syntax-highlighting package.  When it is enabled it
-     ;; makes filling (e.g. using M-q) much much smarter about paragraphs
-     ;; that are indented and/or are set off with semicolons, dashes, etc.
-     (defun add-filladapt()
-       (require 'filladapt) ;; No autoloads
-       (turn-on-filladapt-mode))
-     (add-hook 'text-mode-hook 'add-filladapt)
-     (add-hook 'mail-mode-hook 'add-filladapt)))
+(my-feature-cond
+  (xemacs
+   ;; Filladapt is a syntax-highlighting package.  When it is enabled it
+   ;; makes filling (e.g. using M-q) much much smarter about paragraphs
+   ;; that are indented and/or are set off with semicolons, dashes, etc.
+   (defun add-filladapt()
+     (require 'filladapt) ;; No autoloads
+     (turn-on-filladapt-mode))
+   (add-hook 'text-mode-hook 'add-filladapt)
+   (add-hook 'mail-mode-hook 'add-filladapt)))
 
-  ;; Flyspell
-  (if (or (my-exec-installed-p "hunspell") (my-exec-installed-p "aspell"))
-      (progn
-	(add-hook 'c-mode-common-hook 'flyspell-prog-mode)
-	(add-hook 'lisp-mode-hook 'flyspell-prog-mode)
-	(add-hook 'text-mode-hook 'flyspell-mode))
-    (add-to-list 'would-have-liked-list 'spell))
+;; Flyspell
+(if (or (my-exec-installed-p "hunspell") (my-exec-installed-p "aspell"))
+    (progn
+      (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
+      (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
+      (add-hook 'text-mode-hook 'flyspell-mode))
+  (add-to-list 'would-have-liked-list 'spell))
 
-  ;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
-  )
+;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
 
 ;;; -------------------------------------------------------------------------
 ;; The auto-save.el and backup.el packages collect files in one place

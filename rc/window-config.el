@@ -96,7 +96,7 @@
 	 menu-accelerator-modifiers '(alt))
 
    ;; Speedbar
-   (when (packagep 'speedbar t)
+   (when (would-like 'speedbar t)
      (add-menu-button '("Tools")
 		      ["Speedbar" speedbar-frame-mode
 		       :style toggle
