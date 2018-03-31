@@ -6,7 +6,7 @@ A brief rundown:
 * The config files are in the top level.
 
 * The site-packages directory is laid out as per XEmacs. It should be
-  automagically used. There is code in init.el to handle the GNU Emacs
+  automagically used. There is code in esp/esp.el to handle the GNU Emacs
   case.
 
 * The esp directory contains the "Emacs Special Packages". These are
@@ -22,16 +22,13 @@ A brief rundown:
 Optional config files called from init.el:
 
 * user-init.el: If user-init.el exists, it is run at the start of
-  init.el. If it provides the function `user-init-fini' it is called
-  at the end of init.el. This is used to tweak per machine settings
-  such as email address and laptop-mode.
+  init.el. This is used to tweak per machine settings such as email
+  address and laptop-mode.
 
 * work.el: This provides work related configs. This is very specific
   to my job, you probably want to override it.
 
 * mail-<domain name>.el: This is called from the sendmail rc file if
   it exists.
-
-* windoze.el: Called if you are running windoze... Nuff said.
 
 You can find contact information at http://seanm.ca/.
