@@ -73,15 +73,16 @@
 ;; if you need to clean something up at the end.
 (load (concat dot-dir "user-init") t)
 
-;; For rcfiles to be able to match loaded lisp such as lisp-mode we
-;; need to turn the file names into simple load names.
-(setq load-history
-      (mapcar (lambda (elt)
-		(let ((a (car elt)))
-		  (if (eq 0 (string-match "/.*/\\([^/]+\\)\.elc" a))
-		      (list (match-string 1 a))
-		    (list a))))
-	      load-history))
+(when running-xemacs
+  ;; For rcfiles to be able to match loaded lisp such as lisp-mode we
+  ;; need to turn the file names into simple load names.
+  (setq load-history
+	(mapcar (lambda (elt)
+		  (let ((a (car elt)))
+		    (if (eq 0 (string-match "/.*/\\([^/]+\\)\.elc" a))
+			(list (match-string 1 a))
+		      (list a))))
+		load-history)))
 
 ;; The standard doesn't support sxemacs
 (setq rcfiles-directory (concat dot-dir "rc"))
