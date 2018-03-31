@@ -472,6 +472,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; The auto-save.el and backup.el packages collect files in one place
 ;; I added the following to my crontab:
 ;; 13 5 * * * find $HOME/.backup -mtime +7 -delete
+;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
 
 (my-feature-cond
   (xemacs
@@ -482,6 +483,7 @@ Use region if it exists. My replacement for isearch-yank-word."
      (setq auto-save-interval 2000))
    (would-like 'backup))
   (t
+   (setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
    (setq backup-directory-alist '(("." . "~/.backup")))))
 
 ;;; ----------------------------------------------
