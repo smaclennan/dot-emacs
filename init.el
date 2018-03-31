@@ -475,13 +475,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
 
 (my-feature-cond
-  (xemacs
-   (when (would-like 'auto-save)
-     (setq auto-save-directory "~/.autosave/")
-     ;; Now that we have auto-save-timeout, let's crank this up
-     ;; for better interactive response.
-     (setq auto-save-interval 2000))
-   (would-like 'backup))
+  (xemacs (would-like 'backup))
   (t
    (setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
    (setq backup-directory-alist '(("." . "~/.backup")))))
