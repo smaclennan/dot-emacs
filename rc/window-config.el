@@ -49,6 +49,8 @@
    (when (would-like 'pending-del)
      (setq pending-delete-modeline-string "")
      (turn-on-pending-delete)))
+  (delete-selection-mode
+   (delete-selection-mode))
   (emacs
    (and (< emacs-major-version 23)
 	(would-like 'pc-select)
