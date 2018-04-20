@@ -126,11 +126,12 @@
 ;; If qnx-sandbox is nil, these configs will mess up
 (when qnx-sandbox (add-hook 'my-compile-init-hooks 'work-init))
 
+;;; --------- unittest stuff
+
 (defun qnx-unittest (func)
   (interactive "sFunc: ")
-  ;; Create the file if necessary
+  ;; Create the file
   (find-file (concat "./" func ".c"))
-  ;; Fill in the stub code
   (let (here)
     (insert "#include \"unittest.h\"\n\n")
     (insert "#include \"source.c\"\n\n")
@@ -140,6 +141,7 @@
     (setq here (point))
     (insert func "();\n")
     (insert "\treturn UT_PASS;\n}\n")
+    (save-buffer)
     (goto-char here)
     )
   ;; Add to Makefile
@@ -148,9 +150,20 @@
     (unless (re-search-forward "^TESTLIST")
       (error "No TESTLIST in Makefile"))
     (end-of-line) (forward-char)
-    (while (looking-at "^\\s-[a-z]")
+    (while (looking-at "^[::blank::][a-z]")
       (end-of-line) (forward-char))
     (insert (concat "\t" func " \\\n")))
+  )
+
+(defun unittest-trim ()
+  (interactive)
+  (unless (use-region-p) (error "Region not active"))
+  (narrow-to-region (region-beginning) (region-end))
+  (goto-char (point-min))
+  (while (re-search-forward "^\\([[:blank:]]*\\)\\([a-zA-Z_].*\\)=\\([^,;]*\\)[,;]?$" nil t)
+    (replace-match (concat (match-string 1) "if (" (match-string 2) "!=" (match-string 3) ") return UT_FAIL;")))
+  (widen)
+  (forward-char) ;; just because
   )
 
 ;;; --------- make all
