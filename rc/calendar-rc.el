@@ -39,7 +39,7 @@
 	(holiday-float  5  1 -1	"Victoria Day (S)" 24)
 	(holiday-float  6  0  3	"Father's Day")
 	(holiday-fixed  7  1	"Canada Day (S)")
-	(holiday-fixed  7 17	"Slackware 1.00 1993")
+	(holiday-fixed  7 16	"Slackware 1.00 1993")
 	(holiday-float  8  1  1	"Civic Holiday")
 	(holiday-fixed  8 16	"Debian 1993")
 	(holiday-fixed  8 18	"Jeanine's Birthday")
