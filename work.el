@@ -9,7 +9,6 @@
   "* Sandbox directory. Defaults to $QNX_SANDBOX. Must end in a
 /!")
 
-(defcustom qnx-build-arch  "x86_64" "*Arch to build.")
 (defcustom qnx-build-target "smp.instr" "*Build target suffix.")
 
 (defcustom qnx-arch-list '(("x86_64" . "o")
@@ -18,25 +17,13 @@
 			   ("aarch64" . "le"))
   "*List of arches and target prefixes supported by QNX.")
 
+(defvar qnx-make-stages nil
+  "List of make commands to perform created by `qnx-make-all'. If
+a make fails, the failing command will be the car of the list.")
+
+(defvar qnx-make-start nil "Time that `qnx-make-all' started.")
+
 (add-to-list 'copylefts-to-hide '(" \\* \\$QNXLicenseC:" . " \\* \\$"))
-
-(defun qnx-files-update ()
-  (shell-command (concat "find -name unittests -prune "
-			 "-o -type l -prune "
-			 "-o -name '*.[ch]' -print > cscope.files")))
-
-(defun qnx-cscope-update ()
-  (interactive)
-  (let ((default-directory qnx-sandbox))
-    (qnx-files-update)
-    (shell-command "cscope -q -k -b")))
-
-(defun qnx-tags-update ()
-  (interactive)
-  (let ((default-directory qnx-sandbox))
-    ;; reuse cscope.files
-    (qnx-files-update)
-    (shell-command "cat cscope.files | etags -")))
 
 (defun qnx-make-procnto (&optional arch dir)
   "Build the procnto make command."
@@ -51,130 +38,6 @@
   (let ((target (assoc arch qnx-arch-list)))
     (unless target (error "Unsupported arch %s" arch))
     (concat "make -C " dir "proc/" arch "/" (cdr target) "." qnx-build-target " install")))
-
-(defun qnx-func (matched-dir target)
-  (cond
-   ((equal target "procnto")
-    (setq compile-command '(qnx-make-procnto)))
-   ((equal target "unittests")
-    (setq compile-command "make "))
-   (t ;; This cannot be dynamic because of matched-dir.
-    (setq compile-command
-	  (concat "make -C " matched-dir " OSLIST=nto CPULIST=$QNX_ARCH install"))))
-
-  (set (make-local-variable 'make-clean-command)
-       (concat "make -C " matched-dir " clean"))
-
-  ;; SAM (set (make-local-variable 'my-cscope-args) "-q -k")
-
-  ;; (my-tags-update-helper qnx-sandbox)
-
-  ;; Try to pick a reasonable project - not complete
-  (let ((proj))
-    (cond
-     ((equal target "procnto") (setq proj ".kwlp_mainline_procnto_full"))
-     ((equal target "lib")     (setq proj ".kwlp_mainline_libc_full"))
-     ((equal target "utils")   (setq proj ".kwlp_x86_hypervisor")
-      (indent-N 4 nil)) ;; 4 char spaces
-     )
-    (when proj
-      (set (make-local-variable 'kloc-dir) (concat qnx-sandbox proj))))
-
-  (setq mode-name (concat "qnx-" mode-name)))
-;; qnx-func
-
-(defun gdb-func (matched-dir target)
-  "GDB the Ubuntu way"
-  (setq compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))
-  (c-set-style "gnu")
-  (setq c-basic-offset 2)
-  (setq tab-width 8))
-
-(defun work-init ()
-  (nconc my-compile-dir-list
-	 (list
-	  (list (concat qnx-sandbox ".*/unittests/") "unittests" 'qnx-func)
-	  (list (concat qnx-sandbox "lib/[^/]+/") "lib" 'qnx-func)
-	  (list (concat qnx-sandbox "hardware/[^/]+/[^/]+/") "hw" 'qnx-func)
-	  (list (concat qnx-sandbox "utils/[a-z]/[^/]+/") "utils" 'qnx-func)
-	  (list (concat qnx-sandbox "services/system/") "procnto" 'qnx-func)
-	  (list (concat qnx-sandbox "services/[^/]+/") "service" 'qnx-func)
-
-	  (list "^.*/gdb-[0-9.]+/" nil 'gdb-func)))
-
-  ;; At work cscope is more useful than tags... but memory muscle can
-  ;; be a terrible thing.
-  (global-set-key [f10]   'my-cscope-at-point)
-  (global-set-key [?\M-.] 'my-cscope)
-
-  ;; Let's try always enabling cscope
-  ;; Let's also try -d and see how that goes...
-  (setq my-cscope-dir qnx-sandbox
-	my-cscope-args "-q -k -d")
-
-  (when (not running-xemacs)
-    (setq frame-title-format
-	  '("" emacs-str
-	    (buffer-file-name
-	     (:eval
-	      (if (eq (cl-search qnx-sandbox buffer-file-name) 0)
-		  (concat "~qnx/" (substring buffer-file-name (length qnx-sandbox)))
-		(abbreviate-file-name buffer-file-name)))
-	     "%b"))))
-  )
-
-;; If qnx-sandbox is nil, these configs will mess up
-(when qnx-sandbox (add-hook 'my-compile-init-hooks 'work-init))
-
-;;; --------- unittest stuff
-
-(defun qnx-unittest (func)
-  (interactive "sFunc: ")
-  ;; Create the file
-  (find-file (concat "./" func ".c"))
-  (let (here)
-    (insert "#include \"unittest.h\"\n\n")
-    (insert "#include \"source.c\"\n\n")
-    ;;(insert "#include \"common.c\"\n\n")
-    (insert "static void reset(void)\n{\n}\n\n")
-    (insert "int main(void)\n{\n\t")
-    (setq here (point))
-    (insert func "();\n")
-    (insert "\treturn UT_PASS;\n}\n")
-    (save-buffer)
-    (goto-char here)
-    )
-  ;; Add to Makefile
-  (with-current-buffer (find-file-noselect "Makefile")
-    (goto-char (point-min))
-    (unless (re-search-forward "^TESTLIST")
-      (error "No TESTLIST in Makefile"))
-    (end-of-line) (forward-char)
-    (while (looking-at "^[::blank::][a-z]")
-      (end-of-line) (forward-char))
-    (insert (concat "\t" func " \\\n")))
-  )
-
-(defun unittest-trim ()
-  (interactive)
-  (unless (use-region-p) (error "Region not active"))
-  (narrow-to-region (region-beginning) (region-end))
-  (goto-char (point-min))
-  (while (re-search-forward "^\\([[:blank:]]*\\)\\([a-zA-Z_].*\\)=\\([^,;]*\\)[,;]?$" nil t)
-    (replace-match (concat (match-string 1) "if (" (match-string 2) "!=" (match-string 3) ") return UT_FAIL;")))
-  (widen)
-  (forward-char) ;; just because
-  )
-
-;;; --------- make all
-
-;; For qnx-make-all, -j8 didn't help that much
-
-(defvar qnx-make-stages nil
-  "List of make commands to perform created by `qnx-make-all'. If
-a make fails, the failing command will be the car of the list.")
-
-(defvar qnx-make-start nil "Time that `qnx-make-all' started.")
 
 (defun qnx-set-arch (arch)
   "Set the QNX_ARCH environment variable from a list. Hint: M-n grabs default."
@@ -229,3 +92,7 @@ anywhere."
     (let ((time (cadr (time-since qnx-make-start))))
       (setq qnx-make-start nil)
       (message "Success! %d:%d" (/ time 60) (mod time 60)))))
+
+;; Load the qnx code
+(when qnx-sandbox
+  (load (concat qnx-sandbox "emacs/qnx")))
