@@ -17,6 +17,8 @@
 			   ("aarch64" . "le"))
   "*List of arches and target prefixes supported by QNX.")
 
+(defcustom qnx-make "make" "*make command. You can put flags here like make -k")
+
 (defvar qnx-make-stages nil
   "List of make commands to perform created by `qnx-make-all'. If
 a make fails, the failing command will be the car of the list.")
@@ -37,7 +39,7 @@ a make fails, the failing command will be the car of the list.")
       (error "Not a procnto file %s" buffer-file-name)))
   (let ((target (assoc arch qnx-arch-list)))
     (unless target (error "Unsupported arch %s" arch))
-    (concat "make -C " dir "proc/" arch "/" (cdr target) "." qnx-build-target " install")))
+    (concat qnx-make " -C " dir "proc/" arch "/" (cdr target) "." qnx-build-target " install")))
 
 (defun qnx-set-arch (arch)
   "Set the QNX_ARCH environment variable from a list. Hint: M-n grabs default."
@@ -52,7 +54,7 @@ anywhere."
   (require 'compile)
   (let* ((arch (getenv "QNX_ARCH"))
 	 (qnx-make-fmt
-	  (concat "make -C " qnx-sandbox "%s OSLIST=nto CPULIST=" arch " %s")))
+	  (concat qnx-make " -C " qnx-sandbox "%s OSLIST=nto CPULIST=" arch " %s")))
 
     ;; Create the stages list
     (setq qnx-make-stages (list
