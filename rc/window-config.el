@@ -98,7 +98,7 @@
 	 menu-accelerator-modifiers '(alt))
 
    ;; Speedbar
-   (when (would-like 'speedbar t)
+   (when (and bells-and-whistles (would-like 'speedbar t))
      (add-menu-button '("Tools")
 		      ["Speedbar" speedbar-frame-mode
 		       :style toggle
@@ -134,20 +134,7 @@
    (set-cursor-color "red")))
 
 ;; Do this *after* setting the modeline colours
-(when (fboundp 'display-time)
-  (my-feature-cond
-    (xemacs ;; remove mail
-     (setq display-time-form-list (list 'date 'time 'load))
-     (when laptop-mode
-       (setq display-time-show-icons-maybe nil)))
-    (t ;; want angry mail
-     (setq display-time-use-mail-icon t)
-     (defface angry-mail-face '((t (:background "red")))
-       "Make the mail face angry."
-       :group 'display-time)
-     (setq display-time-mail-face 'angry-mail-face)))
-
-  (display-time))
+(and nil (fboundp 'display-time) (display-time))
 
 ;; -------
 ;; MISC
