@@ -46,6 +46,19 @@ a make fails, the failing command will be the car of the list.")
   (interactive (list (completing-read "Arch: " qnx-arch-list nil t nil nil (getenv "QNX_ARCH"))))
   (setenv "QNX_ARCH" arch))
 
+(defun qnx-remove-stage ()
+  (let ((stage (getenv "QNX_STAGE_ROOT"))
+	bak)
+    (unless (string-match "/home/sam/work/stage" stage)
+      ;; paranoia
+      (unless (yes-or-no-p (concat "Remove " stage)) (error "abort")))
+    (when (file-directory-p stage)
+      (setq bak (concat stage ".bak"))
+      (when (file-directory-p bak)
+	(delete-directory bak t))
+      (rename-file stage bak))
+    ))
+
 (defun qnx-make-all ()
   "Build everything, with everything being my definition of
 everything. Always builds from `qnx-sandbox', so you can call it
@@ -72,6 +85,9 @@ anywhere."
 	       (list (format qnx-make-fmt (concat "services/" dir) "install")))))
 
     (setq qnx-make-start (current-time))
+
+    ;; Start by blowing away the stage directory to remove stale files
+    (qnx-remove-stage)
 
     ;; Start if off by pretending to successfully finish a stage
     (add-hook 'compilation-finish-functions 'qnx-make-finish)
