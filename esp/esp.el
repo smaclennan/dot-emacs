@@ -5,6 +5,9 @@
 
 (with-no-warnings (require 'cl))
 
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file t)
+
 ;; I used to like when the suggestions where good, but not when they
 ;; are just a shortened version of the command.
 (setq suggest-key-bindings nil)
