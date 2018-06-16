@@ -22,6 +22,14 @@ Setting to 'auto tries to guess the setting.")
 (when (eq laptop-mode-fixup 'auto)
   (setq laptop-mode-fixup (and laptop-mode running-xemacs)))
 
+(defun laptop-mode-toggle ()
+  "Toggle laptop-mode. Doesn't work that well on XEmacs :("
+  (interactive)
+  (setq laptop-mode (not laptop-mode))
+  (let ((font (if laptop-mode laptop-mode-font "7x13")))
+    (dolist (face '(default bold italic bold-italic))
+      (set-face-font face font))))
+
 ;; -------------------
 ;; Laptop Mode Helpers
 
