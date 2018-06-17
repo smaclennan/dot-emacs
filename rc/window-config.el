@@ -20,25 +20,6 @@
 ;;(set-face-attribute 'default nil :family "Input Mono" :foundry "unknown"
 ;;		    :slant 'normal :weight 'extra-light :height 98 :width 'normal)
 
-(load (concat rcfiles-directory "laptop-mode"))
-
-(my-feature-cond
-  (xemacs
-   (if (boundp 'xft-version)
-       (if laptop-mode
-	   (set-face-font 'default "DejaVu Sans Mono-12")
-	 (set-face-font 'default "DejaVu Sans Mono-10"))
-     (when laptop-mode
-       (dolist (face '(default bold italic bold-italic))
-	 (set-face-font face laptop-mode-font))
-       ;; We need a frame redraw after changing the fonts or we get
-       ;; artifacts at the bottom of the display
-       (redraw-frame nil t))))
-  (emacs
-   (when laptop-mode
-     (set-face-attribute 'default nil :height (* laptop-mode-font-size 10))))
-  )
-
 ;; ---------------------------------------------
 ;; Colour
 ;;XEmacs*background: #d0ccb8
@@ -150,6 +131,9 @@
 
 ;; Do this *after* setting the modeline colours
 (and nil (fboundp 'display-time) (display-time))
+
+;; Deal with laptop-mode after all fonts setup
+(load (concat rcfiles-directory "laptop-mode"))
 
 ;; -------
 ;; MISC

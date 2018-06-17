@@ -8,8 +8,11 @@ Setting laptop mode to 'auto tries to guess setting.")
 (defvar laptop-mode-font "10x20"
   "*The font to use for laptop mode. (XEmacs)")
 
-(defvar laptop-mode-font-size 12
-  "*The font size to use for laptop mode. (GNU Emacs)")
+(defvar laptop-mode-font-size 120
+  "*The font size to use for laptop mode in pixels. (GNU Emacs).
+When a list, it is the sizes for normal and laptop
+mode. Generally you don't need to setup the list, laptop-mode
+will do it for you.")
 
 (defvar laptop-mode-fixup nil
   "Do we need to fixup the laptop-mode-font? (XEmacs)")
@@ -26,13 +29,32 @@ Setting laptop mode to 'auto tries to guess setting.")
 
 (and running-xemacs laptop-mode (setq laptop-mode-fixup t))
 
-(defun laptop-mode-toggle ()
+(my-feature-cond
+  (emacs
+   (unless (listp laptop-mode-font-size)
+     (setq laptop-mode-font-size (list (face-attribute 'default :height)
+				       laptop-mode-font-size)))))
+
+(defun laptop-mode-toggle (&optional on)
   "Toggle laptop-mode. Doesn't work that well on XEmacs :("
   (interactive)
-  (setq laptop-mode (not laptop-mode))
-  (let ((font (if laptop-mode laptop-mode-font "7x13")))
-    (dolist (face '(default bold italic bold-italic))
-      (set-face-font face font))))
+  (unless on (setq laptop-mode (not laptop-mode)))
+  (my-feature-cond
+    (xemacs
+     (let ((font (if laptop-mode laptop-mode-font "7x13")))
+       (dolist (face '(default bold italic bold-italic))
+	 (set-face-font face font)))
+     ;; We need a frame redraw after changing the fonts or we get
+     ;; artifacts at the bottom of the display
+     (redraw-frame nil t))
+    (emacs
+     (set-face-attribute 'default nil :height
+			 (if laptop-mode
+			     (nth 1 laptop-mode-font-size)
+			   (nth 0 laptop-mode-font-size))))
+    ))
+
+(when laptop-mode (laptop-mode-toggle t))
 
 ;; -------------------
 ;; Laptop Mode Helpers
