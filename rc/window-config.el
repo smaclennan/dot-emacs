@@ -16,13 +16,26 @@
 	  (setq height (string-to-number (match-string 1 wininfo))))
 	(and width height (setq x-root-size (list width height)))))))
 
-(unless running-windoze
-  (if (boundp 'xft-version)
-      (set-face-font 'default "DejaVu Sans Mono-10")
-    (if laptop-mode
-	(dolist (face '(default bold italic bold-italic))
-	  (set-face-font face laptop-mode-font))
-      (set-face-font 'default "7x13"))))
+;; GNU Emacs
+;;(set-face-attribute 'default nil :family "Input Mono" :foundry "unknown"
+;;		    :slant 'normal :weight 'extra-light :height 98 :width 'normal)
+
+(load (concat rcfiles-directory "laptop-mode"))
+
+(my-feature-cond
+  (xemacs
+   (if (boundp 'xft-version)
+       (if laptop-mode
+	   (set-face-font 'default "DejaVu Sans Mono-12")
+	 (set-face-font 'default "DejaVu Sans Mono-10"))
+     (if laptop-mode
+	 (dolist (face '(default bold italic bold-italic))
+	   (set-face-font face laptop-mode-font))
+       (set-face-font 'default "7x13"))))
+  (emacs
+   (when laptop-mode
+     (set-face-attribute 'default nil :height (* laptop-mode-font-size 10))))
+  )
 
 ;; ---------------------------------------------
 ;; Colour

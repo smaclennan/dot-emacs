@@ -1,13 +1,18 @@
+;; laptop-mode isn't a true mode, but I think it makes sense to keep
+;; it in rc.
+
 (defvar laptop-mode nil
   "*Set laptop mode (larger font).
 Setting laptop mode to 'auto tries to guess setting.")
 
 (defvar laptop-mode-font "10x20"
-  "*The font to use for laptop mode.")
+  "*The font to use for laptop mode. (XEmacs)")
 
-(defvar laptop-mode-fixup 'auto
-  "*Do we need to fixup the laptop-mode-font?
-Setting to 'auto tries to guess the setting.")
+(defvar laptop-mode-font-size 12
+  "*The font size to use for laptop mode. (GNU Emacs)")
+
+(defvar laptop-mode-fixup nil
+  "Do we need to fixup the laptop-mode-font? (XEmacs)")
 
 (when (eq laptop-mode 'auto)
   (if (eq window-system 'x)
@@ -19,8 +24,7 @@ Setting to 'auto tries to guess the setting.")
 	(setq laptop-mode (eq count 1)))
     (setq laptop-mode nil)))
 
-(when (eq laptop-mode-fixup 'auto)
-  (setq laptop-mode-fixup (and laptop-mode running-xemacs)))
+(and running-xemacs laptop-mode (setq laptop-mode-fixup t))
 
 (defun laptop-mode-toggle ()
   "Toggle laptop-mode. Doesn't work that well on XEmacs :("

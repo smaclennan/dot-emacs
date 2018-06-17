@@ -85,10 +85,7 @@
 		load-history)))
 
 ;; The standard doesn't support sxemacs
-(setq rcfiles-directory (concat dot-dir "rc"))
-
-;; Load laptop mode early before window-config
-(load (concat rcfiles-directory "/laptop-mode"))
+(setq rcfiles-directory (concat dot-dir "rc/"))
 
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
@@ -151,7 +148,7 @@ Simple version."
 ;; Windowing System Customization
 
 (if window-system
-    (load (concat rcfiles-directory "/window-config"))
+    (load (concat rcfiles-directory "window-config"))
   ;; Yes, emacs has a menu bar in console mode
   (if (fboundp 'menu-bar-mode)
       (menu-bar-mode -1)))

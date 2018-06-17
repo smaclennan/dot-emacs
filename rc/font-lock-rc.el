@@ -37,16 +37,7 @@
 ;(set-face-foreground 'font-lock-string-face "green4")
 
 (if window-system
-    (progn
-      ;; Emacs calls font-lock before window-config
-      (unless (boundp 'laptop-mode)
-	(load (concat dot-dir "rc/window-config")))
-      (set-face-foreground 'font-lock-comment-face "FireBrick")
-      (when laptop-mode-fixup
-	(dolist (face '(font-lock-function-name-face
-			font-lock-comment-warn-face
-			font-lock-warning-face))
-	  (set-face-font face laptop-mode-font))))
+    (set-face-foreground 'font-lock-comment-face "FireBrick")
   ;; Consoles have less colors to play with
   (set-face-foreground 'font-lock-comment-face "red")
   (set-face-foreground 'font-lock-string-face "green")
@@ -59,4 +50,10 @@
    ;; indicator. If the buffer is colourful, font-lock is on.
    ;; The only thing you lose is the ability to toggle it.
    (let ((el (assq 'font-lock-mode minor-mode-alist)))
-     (if el (setcdr el '("")))))
+     (if el (setcdr el '(""))))
+
+   (when laptop-mode-fixup
+     (dolist (face '(font-lock-function-name-face
+		     font-lock-comment-warn-face
+		     font-lock-warning-face))
+       (set-face-font face laptop-mode-font))))
