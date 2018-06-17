@@ -28,10 +28,12 @@
        (if laptop-mode
 	   (set-face-font 'default "DejaVu Sans Mono-12")
 	 (set-face-font 'default "DejaVu Sans Mono-10"))
-     (if laptop-mode
-	 (dolist (face '(default bold italic bold-italic))
-	   (set-face-font face laptop-mode-font))
-       (set-face-font 'default "7x13"))))
+     (when laptop-mode
+       (dolist (face '(default bold italic bold-italic))
+	 (set-face-font face laptop-mode-font))
+       ;; We need a frame redraw after changing the fonts or we get
+       ;; artifacts at the bottom of the display
+       (redraw-frame nil t))))
   (emacs
    (when laptop-mode
      (set-face-attribute 'default nil :height (* laptop-mode-font-size 10))))

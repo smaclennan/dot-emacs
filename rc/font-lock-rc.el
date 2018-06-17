@@ -52,6 +52,7 @@
    (let ((el (assq 'font-lock-mode minor-mode-alist)))
      (if el (setcdr el '(""))))
 
+   (load (concat rcfiles-directory "window-config"))
    (when laptop-mode-fixup
      (dolist (face '(font-lock-function-name-face
 		     font-lock-comment-warn-face
