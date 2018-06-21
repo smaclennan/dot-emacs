@@ -152,3 +152,5 @@ instead, uses tag around or before point."
 (when (eq emacs-major-version 23)
   (mapc 'require '(git-diff my-calc my-tags smerge))
   )
+
+(provide 'esp)
