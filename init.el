@@ -169,7 +169,7 @@ Simple version."
 
 ;;{{{ Keys
 
-;; For Emacs this breaks the minibuffer. Emacs delt with in rc/ files.
+;; For Emacs this breaks the minibuffer. Emacs dealt with in rc/ files.
 (when running-xemacs
   ;; This should always do the right thing
   (global-set-key [(return)] 'newline-and-indent)
