@@ -7,6 +7,6 @@
 ;; Bold SAM comments
 (if running-xemacs
     (comment-warn (list makefile-font-lock-keywords) nil)
-  (comment-warn (list makefile-font-lock-keywords) 'makefile-mode)
-  (comment-warn (list makefile-font-lock-keywords) 'makefile-gmake-mode)
+  (comment-warn nil 'makefile-mode)
+  (comment-warn nil 'makefile-gmake-mode)
   )
