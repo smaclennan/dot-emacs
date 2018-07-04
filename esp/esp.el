@@ -3,7 +3,10 @@
 
 (defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
 
-(with-no-warnings (require 'cl))
+;; I don't know why the hate against common-lisp
+(setq byte-compile-warnings '(not cl-functions))
+
+(require 'cl)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file t)
