@@ -1,11 +1,14 @@
 ;; Check for older (21.x) GNU Emacs
 (unless (featurep 'emacs) (provide 'emacs))
 
+;; When building outside emacs dot-dir may not be set
+(if (not (boundp 'dot-dir))
+    (setq dot-dir (expand-file-name "~/.emacs.d/")))
+
 (defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
 
 ;; I don't know why the hate against common-lisp
 (setq byte-compile-warnings '(not cl-functions))
-
 (require 'cl)
 
 (setq custom-file "~/.emacs.d/custom.el")
