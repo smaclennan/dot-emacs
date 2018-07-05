@@ -1,6 +1,4 @@
-.SUFFIXES: .el .elc
-
-EMACS = emacs
+include ../Rules.mk
 
 .el.elc:
 	$(EMACS) -batch -q -f batch-byte-compile $<
@@ -15,21 +13,9 @@ EXTRA = esp-loaddefs.elc
 
 all:	$(ELCS) $(EXTRA)
 
-# Dummy... we already build elc files
-elcs:
-
 esp-loaddefs.el: $(ELCS)
 	@echo Create $(EMACS) esp-loaddefs.el ...
 	@$(EMACS) -batch -q $(HELPER) -l build-loaddefs.el -f build-loaddefs
-
-mmm:	mmm-mode/Makefile
-	$(MAKE) $(MFLAGS) -C mmm-mode
-
-mmm-mode/Makefile:
-	cd mmm-mode; ./autogen.sh; ./configure --with-emacs
-
-tags:
-	etags *.el
 
 clean:
 	rm -f *.elc esp-loaddefs.el TAGS
