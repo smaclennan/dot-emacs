@@ -32,4 +32,4 @@ endif
 
 .el.elc:
 	$(EMACS) -batch -q $(HELPER) -f batch-byte-compile $<
-	@rm -f $(SUBDIR)-loaddefs.el
+	@rm -f $(SUBDIR)-loaddefs.el auto-autoloads.el
