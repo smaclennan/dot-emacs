@@ -1,6 +1,7 @@
 .SUFFIXES: .el .elc
+.PHONY: first-rule
 
-first_rule: all
+first-rule: all
 
 # When building inside of Emacs it seems EMACS=t
 ifeq ($(EMACS),t)

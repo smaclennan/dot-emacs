@@ -5,9 +5,9 @@ include ./Rules.mk
 all:
 	@echo $(MAKE) $(EMACS) ...
 ifeq ($(EMACS),emacs)
-	$(MAKE) EMACS=$(EMACS) -C esp
+	@$(MAKE) EMACS=$(EMACS) -C esp all
 endif
-	$(MAKE) EMACS=$(EMACS) -C site-packages/lisp
+	@$(MAKE) EMACS=$(EMACS) -C site-packages/lisp all
 
 clean:
 	@echo Clean $(EMACS) ...
