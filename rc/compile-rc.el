@@ -4,6 +4,11 @@
       compilation-error-regexp-systems-list '(gnu)
       compile-command "make ")
 
+(unless running-xemacs
+  ;; Let's see how we like this. Unfortunately it also stops at the
+  ;; first warning. Which may be irritating.
+  (setq compilation-scroll-output 'first-error))
+
 ;; This gives the compilation buffer its own frame
 ;;(push "*compilation*" special-display-buffer-names)
 

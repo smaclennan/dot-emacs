@@ -1,11 +1,11 @@
 ;; Check for older (21.x) GNU Emacs
 (unless (featurep 'emacs) (provide 'emacs))
 
+(defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
+
 ;; When building outside emacs dot-dir may not be set
 (if (not (boundp 'dot-dir))
     (setq dot-dir (expand-file-name "~/.emacs.d/")))
-
-(defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
 
 ;; I don't know why the hate against common-lisp
 (setq byte-compile-warnings '(not cl-functions))
@@ -13,6 +13,13 @@
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file t)
+
+;; Add the local site-packages - must be two loops
+(dolist (dir '("esp" "site-packages/lisp/sam" "site-packages/lisp/misc"))
+  (add-to-list 'load-path (concat dot-dir dir)))
+
+(dolist (file '("esp-loaddefs" "sam-loaddefs" "misc-loaddefs"))
+  (load file t t))
 
 ;; I used to like when the suggestions where good, but not when they
 ;; are just a shortened version of the command.
@@ -37,13 +44,6 @@ Where VERSION is a list of major minor (e.g. (25 1)) or t."
 		     (>= emacs-minor-version (cadr v))))
 	(return (cons 'progn body))))))
 (put 'emacs-version-cond 'lisp-indent-hook 'defun)
-
-;; Add the local site-packages - must be two loops
-(dolist (dir '("esp" "site-packages/lisp/sam" "site-packages/lisp/misc"))
-  (add-to-list 'load-path (concat dot-dir dir)))
-
-(dolist (file '("esp-loaddefs" "sam-loaddefs" "misc-loaddefs"))
-  (load file t t))
 
 (defun locate-data-file (name)
   ;; Try local first
@@ -131,12 +131,9 @@ Not all properties are supported."
 
 (global-font-lock-mode 1) ;; For 21.x
 
-(setq inhibit-startup-echo-area-message "seanm")
 (setq inhibit-startup-echo-area-message "sam")
-
-;; Let's see how we like this. Unfortunately it also stops at the
-;; first warning. Which may be irritating.
-(setq compilation-scroll-output 'first-error)
+(setq inhibit-startup-echo-area-message "seanm")
+(setq inhibit-startup-echo-area-message "smaclennan")
 
 (eval-when-compile (require 'etags))
 
