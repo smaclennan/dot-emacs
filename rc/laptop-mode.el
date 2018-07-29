@@ -5,8 +5,12 @@
   "*Set laptop mode (larger font).
 Setting laptop mode to 'auto tries to guess setting.")
 
-(defvar laptop-mode-font "10x20"
-  "*The font to use for laptop mode. (XEmacs)")
+(defvar laptop-mode-font (if (boundp 'xft-version)
+			     '("Input Mono-10" "Input Mono-12")
+			   '("7x13" "10x20"))
+  "*The font to use for laptop mode. (XEmacs).
+When a list, it is the fonts to use for normal and laptop
+mode.")
 
 (defvar laptop-mode-font-size 120
   "*The font size to use for laptop mode in pixels. (GNU Emacs).
@@ -38,10 +42,15 @@ will do it for you.")
 (defun laptop-mode-toggle (&optional on)
   "Toggle laptop-mode. Doesn't work that well on XEmacs :("
   (interactive)
-  (unless on (setq laptop-mode (not laptop-mode)))
+  (setq laptop-mode (if on t (not laptop-mode)))
   (my-feature-cond
     (xemacs
-     (let ((font (if laptop-mode laptop-mode-font "7x13")))
+     (let (font)
+       (if (listp laptop-mode-font)
+	   (if laptop-mode
+	       (setq font (nth 1 laptop-mode-font))
+	     (setq font (nth 0 laptop-mode-font)))
+	 (setq font (if laptop-mode laptop-mode-font "7x13")))
        (dolist (face '(default bold italic bold-italic))
 	 (set-face-font face font)))
      ;; We need a frame redraw after changing the fonts or we get
