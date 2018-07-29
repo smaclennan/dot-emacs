@@ -53,9 +53,4 @@
      (if el (setcdr el '(""))))
 
    (when window-system
-     (load (concat rcfiles-directory "window-config"))
-     (when laptop-mode-fixup
-       (dolist (face '(font-lock-function-name-face
-		       font-lock-comment-warn-face
-		       font-lock-warning-face))
-	 (set-face-font face laptop-mode-font)))))
+     (load (concat rcfiles-directory "window-config"))))
