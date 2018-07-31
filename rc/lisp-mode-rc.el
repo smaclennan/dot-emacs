@@ -26,9 +26,13 @@ If `compilation-ask-about-save' is nil, saves the file without asking."
 ;; Bold SAM comments
 (require 'font-lock) ; lisp mode called very early in startup
 
-(comment-warn (list lisp-font-lock-keywords-1 lisp-font-lock-keywords-2)
+(my-feature-cond
+  (emacs
+   (comment-warn nil 'emacs-lisp-mode ";+ ?\\<SAM\\>.*"))
+  (xemacs
+   (comment-warn (list lisp-font-lock-keywords-1 lisp-font-lock-keywords-2)
 	      'emacs-lisp-mode
-	      ";+ ?\\<SAM\\>.*")
+	      ";+ ?\\<SAM\\>.*")))
 
 ;; I don't like the warning-face used in GNU Emacs for functions like `error'.
 ;; However, the keywords are a defconst, so we must work around that by
