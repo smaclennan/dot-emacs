@@ -36,7 +36,7 @@ $(SUBDIR)-loaddefs.el:
 	@echo Create $(EMACS) $(SUBDIR)-loaddefs.el ...
 	@$(EMACS) -batch -q $(HELPER) -l build-loaddefs.el -f build-loaddefs
 
-LOAD_FILES=$(SUBDIR)-loaddefs.el
+LOAD_FILES = $(SUBDIR)-loaddefs.el
 
 LISP := $(filter-out $(SUBDIR)-loaddefs.el,$(LISP))
 
@@ -44,6 +44,9 @@ else
 # XEmacs
 
 VERSION := $(shell $(EMACS) -V | cut -d' ' -f2)
+
+LISP := $(filter-out auto-autoloads.el,$(LISP))
+LISP := $(filter-out custom-load.el,$(LISP))
 
 auto-autoloads.el:
 ifeq ($(EMACS),sxemacs)
@@ -61,10 +64,7 @@ endif
 custom-load.el: $(LISP)
 	$(EMACS) -batch -vanilla -l cus-dep -f Custom-make-dependencies .
 
-LOAD_FILES=auto-autoloads.el custom-load.el
-
-LISP := $(filter-out auto-autoloads.el,$(LISP))
-LISP := $(filter-out custom-load.el,$(LISP))
+LOAD_FILES = auto-autoloads.el custom-load.el
 
 endif
 
