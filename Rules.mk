@@ -23,6 +23,10 @@ endif
 endif
 endif
 
+ifeq ($(LISP),)
+LISP := $(wildcard *.el)
+endif
+
 ifeq ($(findstring xemacs,$(EMACS)),)
 # GNU Emacs
 
@@ -33,6 +37,8 @@ $(SUBDIR)-loaddefs.el:
 	@$(EMACS) -batch -q $(HELPER) -l build-loaddefs.el -f build-loaddefs
 
 LOAD_FILES=$(SUBDIR)-loaddefs.el
+
+LISP := $(filter-out $(SUBDIR)-loaddefs.el,$(LISP))
 
 else
 # XEmacs
@@ -57,6 +63,13 @@ custom-load.el: $(LISP)
 
 LOAD_FILES=auto-autoloads.el custom-load.el
 
+LISP := $(filter-out auto-autoloads.el,$(LISP))
+LISP := $(filter-out custom-load.el,$(LISP))
+
+endif
+
+ifeq ($(ELCS),)
+ELCS = $(LISP:.el=.elc)
 endif
 
 .el.elc:
