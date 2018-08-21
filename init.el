@@ -195,7 +195,7 @@ Simple version."
 (global-set-key [XF86_Switch_VT_7] 'make-clean)
 (global-set-key [(control f7)]	'my-set-compile)
 (global-set-key [f8] 'my-grep)
-(global-set-key [(shift f8)] 'igrep-find)
+(global-set-key [(shift f8)] 'my-grep-find)
 (global-set-key [(control f8)]	'my-checkpatch)
 ; f9 is isearch
 (global-set-key [f10]		'find-tag-at-point)
