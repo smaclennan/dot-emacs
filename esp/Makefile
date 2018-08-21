@@ -4,7 +4,7 @@ include ../Rules.mk
 ELCS =  esp.elc extent.elc itimer.elc
 
 # Others
-ELCS += igrep.elc rcfiles.elc hide-copyleft.elc
+ELCS += rcfiles.elc hide-copyleft.elc
 
 all:	$(ELCS) $(LOAD_FILES)
 

@@ -15,5 +15,5 @@ XEmacs. DO NOT use these under XEmacs.
 
 These are just XEmacs files that Emacs is missing:
 
-* igrep.el
+* hide-copyleft.el
 * rcfiles.el
