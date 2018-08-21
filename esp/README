@@ -15,6 +15,5 @@ XEmacs. DO NOT use these under XEmacs.
 
 These are just XEmacs files that Emacs is missing:
 
-* filladapt.el
 * igrep.el
 * rcfiles.el
