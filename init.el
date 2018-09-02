@@ -189,6 +189,7 @@ Simple version."
 (global-set-key [XF86_Switch_VT_5] 'query-replace-regexp)
 (global-set-key [f6]		'git-grep-at-point)
 (global-set-key [(shift f6)]	'git-grep)
+(global-set-key [(control f6)]	'git-grep-toggle-top-of-tree)
 (global-set-key [XF86_Switch_VT_6] 'git-grep)
 (global-set-key [f7]		'compile)
 (global-set-key [(shift f7)]    'make-clean)
