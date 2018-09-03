@@ -66,6 +66,8 @@ fi
 # Should work even with earlier compilers
 patch -p1 < $CWD/patches/gcc5.3.0.patch
 
+patch -p1 < $CWD/patches/default_source.patch
+
 patch -p1 < $CWD/patches/select-warning.patch
 
 # Thanks to Jerry James for letting me know about the
