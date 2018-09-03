@@ -144,8 +144,8 @@ Identical to `find-tag' but does not prompt for tag when called interactively;
 instead, uses tag around or before point."
   (interactive)
   (find-tag (if current-prefix-arg
-		(find-tag-tag "Find tag: "))
-	    (find-tag (find-tag-default))))
+		(find-tag-tag "Find tag: ")
+	      (find-tag-default))))
 
 (defun push-tag-mark () (ring-insert find-tag-marker-ring (point-marker)))
 

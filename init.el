@@ -228,6 +228,14 @@ Simple version."
 (global-set-key "\C-c8" '80-scan)
 (global-set-key "\C-c9" '80-cleanup) ;; shift-8 and ctrl-8 did not work
 
+(when (not running-xemacs)
+  (defun xref-find-def ()
+    "Call `xref-find-definition' but always prompt for identifier."
+    (interactive)
+    (let ((current-prefix-arg t))
+      (call-interactively 'xref-find-definitions)))
+  (global-set-key "\M-." 'xref-find-def))
+
 (defun lxr-or-ogrok-at-point ()
   (interactive)
   (if (and ogrok-url ogrok-project)
