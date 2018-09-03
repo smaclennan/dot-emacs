@@ -56,6 +56,7 @@ CFLAGS="$SLKCFLAGS" \
  --without-error-checking \
  --without-mule \
  --with-default-eol-detection \
+ --with-xft \
  $ARCH-slackware-linux
 
 make -j8

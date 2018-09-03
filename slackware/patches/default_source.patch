@@ -1,0 +1,34 @@
+diff -r 995257d0c590 configure
+--- a/configure	Tue Aug 27 01:33:34 2013 +0900
++++ b/configure	Mon Sep 03 11:38:38 2018 -0400
+@@ -9205,6 +9205,8 @@
+ 
+         $as_echo "#define _XOPEN_SOURCE 500" >>confdefs.h
+ 
++    $as_echo "#define _DEFAULT_SOURCE 1" >>confdefs.h
++
+     $as_echo "#define _XOPEN_SOURCE_EXTENDED 1" >>confdefs.h
+ 
+     ;;
+diff -r 995257d0c590 configure.ac
+--- a/configure.ac	Tue Aug 27 01:33:34 2013 +0900
++++ b/configure.ac	Mon Sep 03 11:38:38 2018 -0400
+@@ -1656,6 +1656,7 @@
+     AC_DEFINE(_POSIX_C_SOURCE,199506L)
+     dnl #### should this be 600?
+     AC_DEFINE(_XOPEN_SOURCE,500)
++    AC_DEFINE(_DEFAULT_SOURCE)
+     AC_DEFINE(_XOPEN_SOURCE_EXTENDED)
+     ;;
+   freebsd4*)
+diff -r 995257d0c590 src/config.h.in
+--- a/src/config.h.in	Tue Aug 27 01:33:34 2013 +0900
++++ b/src/config.h.in	Mon Sep 03 11:38:38 2018 -0400
+@@ -118,6 +118,7 @@
+ 
+ /* Make some functions from Unix98 available. */
+ #undef _XOPEN_SOURCE
++#undef _DEFAULT_SOURCE
+ 
+ /* Make "extensions" from Unix98 available. */
+ #undef _XOPEN_SOURCE_EXTENDED
