@@ -26,11 +26,17 @@
     ))
 
 ;; -------------------
+(when (not running-xemacs)
+  ;; Hack to put the ediff control in the right place. If we don't do
+  ;; this then the window loses focus under dwm.
+  (setf (alist-get 'top ediff-control-frame-parameters) 1)
+  (setf (alist-get 'left ediff-control-frame-parameters) 856)
+  )
+
 (when nil ;; SAM doesn't seem to be needed any more
-;; Hack to put the ediff control in the window (rather than off it)
 ;; Needed for window manager like PWM that do not honor the window move
 ;; request. The window will look strange until XEmacs updates it.
-(defvar ediff-control-frame-position (list (cons 'top 10) (cons 'left 10))
+(defvar ediff-control-frame-position (list (cons 'top 1) (cons 'left 856))
   "* Where to put the control frame on the screen.")
 
 (defun ediff-control-frame-hack ()
