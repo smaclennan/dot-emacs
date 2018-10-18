@@ -1,8 +1,0 @@
-For SLES emacs: If you can't get 7x13 font: export EMACS_TOOLKIT=x11
-
-XEmacs ubuntu:
-	xbitmaps
-	libxmu-dev
-	libxpm-dev
-	libpng-dev
-	ncurses-dev
