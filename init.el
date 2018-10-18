@@ -474,9 +474,9 @@ Use region if it exists. My replacement for isearch-yank-word."
    (paren-set-mode 'paren t)
    (iswitchb-default-keybindings)
    (would-like 'redo))
-  (ido-mode
-   (show-paren-mode t)
-   (ido-mode 1))
+;;  (ido-mode
+;;   (show-paren-mode t)
+;;   (ido-mode 1))
   (t
    (show-paren-mode t)
    (require 'iswitchb)

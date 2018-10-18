@@ -13,7 +13,6 @@ clean:
 	@echo Clean $(EMACS) ...
 	find . -name "*.elc" -delete
 	$(MAKE) -C site-packages/lisp clean
-	$(MAKE) -C site-packages/src clean
 	$(MAKE) -C esp clean
 
 clean-sam:
