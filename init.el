@@ -471,16 +471,19 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; Some edit-utils packages
 (my-feature-cond
   (xemacs
-   (paren-set-mode 'paren t)
    (iswitchb-default-keybindings)
    (would-like 'redo))
-;;  (ido-mode
-;;   (show-paren-mode t)
-;;   (ido-mode 1))
+;;;  (icomplete-mode
+;;;   (icomplete-mode 1))
+;;;  (ido-mode
+;;;   (ido-mode 1))
   (t
-   (show-paren-mode t)
    (require 'iswitchb)
    (iswitchb-mode 1)))
+
+(my-feature-cond
+  (xemacs (paren-set-mode 'paren t))
+  (t (show-paren-mode t)))
 
 (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
