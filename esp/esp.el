@@ -10,6 +10,7 @@
 ;; I don't know why the hate against common-lisp
 (setq byte-compile-warnings '(not cl-functions))
 (require 'cl)
+(require 'cl-extra)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file t)
