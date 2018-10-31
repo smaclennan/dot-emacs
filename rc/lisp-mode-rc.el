@@ -1,9 +1,20 @@
-(defun my-byte-compile-buffer ()
-  "Byte compile and load the current buffer.
-If `compilation-ask-about-save' is nil, saves the file without asking."
-  (interactive)
+(defun makefile-exists-p ()
+  (or (file-exists-p "Makefile")
+      (file-exists-p "makefile")
+      (file-exists-p "GNUmakefile")))
+
+(defun my-byte-compile-buffer (ignore-makefile)
+  "If a makefile exists in the current directory, call make. Always byte
+compile and load the current buffer. With a prefix arg do not check
+for a local makefile.
+
+If `compilation-ask-about-save' is nil, saves the file without
+asking."
+  (interactive "P")
   (require 'compile)
   (save-some-buffers (not compilation-ask-about-save))
+  (when (and (not ignore-makefile) (makefile-exists-p))
+    (compile compile-command))
   (emacs-lisp-byte-compile-and-load))
 
 ;; Redefine compile
