@@ -1,10 +1,6 @@
 ;; S?X?Emacs setup -*- Mode:emacs-lisp -*-
 ;; This file should work with XEmacs 2x.x, Emacs >= 22.1, or SXEmacs
 
-;; RH 5 = Emacs 22.1
-;; RH 6 = Emacs 23.1
-;; RH 7 = Emacs 24.3
-
 ;;{{{ Configuration variables / functions
 
 ; This is the one key binding I must have... switch ASAP
@@ -34,7 +30,7 @@
   (setq load-path
 	(append load-path
 		(mapcar (lambda(dir) (concat dot-dir "/site-packages/lisp/" dir))
-			'("introspector" "sam" "misc" "xemacs")))))
+			'("sam" "misc" "xemacs")))))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
