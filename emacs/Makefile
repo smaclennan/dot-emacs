@@ -1,10 +1,4 @@
-include ../../Rules.mk
-
-# Mine
-ELCS =  esp.elc extent.elc
-
-# Others
-ELCS += rcfiles.elc hide-copyleft.elc
+include ../Rules.mk
 
 all:	$(ELCS) $(LOAD_FILES)
 

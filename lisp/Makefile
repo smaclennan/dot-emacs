@@ -1,18 +1,12 @@
 include ../Rules.mk
 
-DIRS := sam misc
-ifneq ($(findstring xemacs,$(EMACS)),)
-DIRS += xemacs
-else
-DIRS += emacs
-endif
+# Don't build windoze.el
+ELCS := $(filter-out windoze.elc,$(ELCS))
 
-all:
-	@for d in $(DIRS); do \
-		$(MAKE) -C $$d $(MFLAGS) all; \
-	done
+all:	$(ELCS) $(LOAD_FILES)
+
+tags:
+	etags *.el
 
 clean:
-	@for d in $(DIRS); do \
-		$(MAKE) -C $$d $(MFLAGS) clean; \
-	done
+	rm -f *.elc $(LOAD_FILES) TAGS *~

@@ -1,7 +1,86 @@
-* misc - lisp files not written by me but that I find useful
+* cpuinfo.el	Some CPU info. Some functions work with Linux and
+		Windows, some info is Linux only.
 
-* sam - lisp files written by me
+* diff-kconfig.el Attempt to diff kconfig files.
 
-* xemacs - XEmacs specific lisp files
+* dirfiles.el	Walk files in directories recursively.
 
-* emacs - GNU Emacs specific lisp files
+* eighty.el	Mark lines longer than 80 characters.
+
+* elapsed-time.el Time between two dates.
+
+* errno.el	Convert an errno number to string.
+
+* filter.el	Simple resister/capacitor filter calculator.
+
+* find-selects.el Search for matching lines in Kconfig files. If you
+		don't know what Kconfig files are you don't need this.
+
+* git-diff.el	Git diff the current file using ediff.
+
+* gpl.el	Handy functions to add GPL copylefts to the starts of
+		files. 
+
+* h2t.el	Very simple html to text converter. Currently used to
+		convert the output from lxr to text.
+
+* handy-dandy.el Catchall for miscellaneous functions.
+
+* hmac.el	Hash based Message Authentication Code.
+
+* http.el	Some generic http routines. Now supports HTTP/1.1. Will
+		use curl/wget if available (highly recommended). Now
+		supports port numbers in url (e.g.
+		http://host:81/page.html).
+
+* inches.el	Various inch and conversion functions.
+
+* intellimouse.el Support for a wheel mouse.
+
+* kloc.el	Interface to Klockworks kwcheck.
+
+* lxr.el	An an lxr interface for emacs.
+
+* mpg.el	Given distance in kms and gas in litres, calculate mpg,
+		US mpg, and l/100km.
+
+* my-c-tools.el	A collection of useful tools for C programming.
+		Currently sparse and checkpatch support.
+
+* my-calc.el	A very simple calculator.
+
+* my-compile.el Very handy function for people who work with large code
+		bases. See REAMDE.my-compile.
+
+* my-cscope.el	My interface to cscope.
+
+* my-grep.el	My interface to grep.
+
+* my-tags.el	Some handy tag functions. In particular, `my-tags-tree'
+		runs tags on an entire directory tree rather than one
+		directory.
+
+* ocra.el	OATH Challenge Response Algorithm.
+
+* ogrok.el	Interface to Open GROK.
+
+* rc-compile.el	For compiling the top level rc files inside emacs.
+
+* sam-common.el Common functions used by a lot of my packages. These are
+		mainly portability functions.
+
+* scamble.el	Solve scramble puzzles.
+
+* slashdot.el	Reads RSS feeds and places the headers in a browsable
+		buffer.
+
+* smerge.el	SAM's merge. It is basically a layer on top of `ediff'.
+
+* svn.el	Some svn helpers. Mainly svn-diff.
+
+* trim.el	This file provides functions which "trim" things (mainly
+		whitespace) from lines.
+
+* vc-ediff.el	A replacement for vc-diff that uses ediff to diff the versions.
+
+* windoze.el	Lisp configuration for Windows.

@@ -15,10 +15,10 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file t)
 
-(dolist (dir '("lisp/emacs" "lisp/sam" "lisp/misc"))
+(dolist (dir '("emacs" "lisp" "misc"))
   (add-to-list 'load-path (concat dot-dir dir)))
 
-(dolist (file '("emacs-loaddefs" "sam-loaddefs" "misc-loaddefs"))
+(dolist (file '("emacs-loaddefs" "lisp-loaddefs" "misc-loaddefs"))
   (load file t t))
 
 ;; I used to like when the suggestions where good, but not when they

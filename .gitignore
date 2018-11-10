@@ -2,8 +2,9 @@
 user-init.el
 auto-autoloads.el
 custom-load.el
-sam-loaddefs.el
+lisp-loaddefs.el
 misc-loaddefs.el
+emacs-loaddefs.el
 xemacs-loaddefs.el
 slashdots
 *~

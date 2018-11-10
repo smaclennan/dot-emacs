@@ -2,12 +2,19 @@
 
 include ./Rules.mk
 
+ifneq ($(findstring xemacs,$(EMACS)),)
+SPECIFIC = xemacs
+else
+SPECIFIC = emacs
+endif
+
 all:
-	@echo $(MAKE) $(EMACS) ...
-	@$(MAKE) EMACS=$(EMACS) -C lisp all
+	$(MAKE) -C lisp $(MFLAGS) all
+	$(MAKE) -C misc $(MFLAGS) all
+	$(MAKE) -C $(SPECIFIC) $(MFLAGS) all
 
 clean:
-	@echo Clean $(EMACS) ...
 	find . -name "*.elc" -delete
-	$(MAKE) -C lisp clean
-
+	$(MAKE) -C lisp $(MFLAGS) clean
+	$(MAKE) -C misc $(MFLAGS) clean
+	$(MAKE) -C $(SPECIFIC) $(MFLAGS) clean

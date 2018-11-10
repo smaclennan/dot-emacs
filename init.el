@@ -27,10 +27,10 @@
 
 (if (featurep 'xemacs)
     (progn
-      (dolist (dir '("lisp/sam" "lisp/misc" "lisp/xemacs"))
+      (dolist (dir '("lisp" "misc" "xemacs"))
 	(add-to-list 'load-path (concat dot-dir dir)))
       (add-to-list 'data-directory-list (concat dot-dir "etc") t))
-  (load (concat dot-dir "lisp/emacs/esp")))
+  (load (concat dot-dir "emacs/esp")))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
