@@ -1,4 +1,4 @@
-include ../../../Rules.mk
+include ../../Rules.mk
 
 # Don't build windoze.el
 ELCS := $(filter-out windoze.elc,$(ELCS))

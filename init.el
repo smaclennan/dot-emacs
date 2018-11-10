@@ -23,14 +23,12 @@
 	  (replace-match "" nil nil dir)))))
   "The init file directory.")
 
-;; We need to setup for GNU Emacs
-(if (not (featurep 'xemacs)) (load (concat dot-dir "esp/esp")))
+;; Common
 
-(when (featurep 'sxemacs)
-  (setq load-path
-	(append load-path
-		(mapcar (lambda(dir) (concat dot-dir "/site-packages/lisp/" dir))
-			'("sam" "misc" "xemacs")))))
+(if (featurep 'xemacs)
+    (dolist (dir '("lisp/sam" "lisp/misc" "lisp/xemacs"))
+      (add-to-list 'load-path (concat dot-dir dir)))
+  (load (concat dot-dir "lisp/emacs/esp")))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the

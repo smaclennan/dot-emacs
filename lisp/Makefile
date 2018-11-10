@@ -1,8 +1,10 @@
-include ../../Rules.mk
+include ../Rules.mk
 
 DIRS := sam misc
 ifneq ($(findstring xemacs,$(EMACS)),)
 DIRS += xemacs
+else
+DIRS += emacs
 endif
 
 all:

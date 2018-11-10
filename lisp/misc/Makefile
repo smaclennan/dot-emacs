@@ -1,4 +1,4 @@
-include ../../../Rules.mk
+include ../../Rules.mk
 
 all:	$(ELCS) $(LOAD_FILES)
 

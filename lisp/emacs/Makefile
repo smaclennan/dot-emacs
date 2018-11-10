@@ -1,4 +1,4 @@
-include ../Rules.mk
+include ../../Rules.mk
 
 # Mine
 ELCS =  esp.elc extent.elc

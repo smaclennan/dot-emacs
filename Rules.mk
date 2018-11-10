@@ -30,7 +30,7 @@ endif
 ifeq ($(findstring xemacs,$(EMACS)),)
 # GNU Emacs
 
-HELPER := -l ~/.emacs.d/esp/esp
+HELPER := -l ~/.emacs.d/lisp/emacs/esp
 
 $(SUBDIR)-loaddefs.el:
 	@echo Create $(EMACS) $(SUBDIR)-loaddefs.el ...

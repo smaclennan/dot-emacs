@@ -15,11 +15,10 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file t)
 
-;; Add the local site-packages - must be two loops
-(dolist (dir '("esp" "site-packages/lisp/sam" "site-packages/lisp/misc"))
+(dolist (dir '("lisp/emacs" "lisp/sam" "lisp/misc"))
   (add-to-list 'load-path (concat dot-dir dir)))
 
-(dolist (file '("esp-loaddefs" "sam-loaddefs" "misc-loaddefs"))
+(dolist (file '("emacs-loaddefs" "sam-loaddefs" "misc-loaddefs"))
   (load file t t))
 
 ;; I used to like when the suggestions where good, but not when they
@@ -48,7 +47,7 @@ Where VERSION is a list of major minor (e.g. (25 1)) or t."
 
 (defun locate-data-file (name)
   ;; Try local first
-  (let ((file (concat dot-dir "site-packages/etc/" name)))
+  (let ((file (concat dot-dir "etc/" name)))
     (if (file-exists-p file)
 	file
       (setq file (concat data-directory name))
