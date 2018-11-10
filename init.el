@@ -507,7 +507,7 @@ Use region if it exists. My replacement for isearch-yank-word."
       (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
       (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
       (add-hook 'text-mode-hook 'flyspell-mode))
-  (add-to-list 'would-have-liked-list 'spell))
+  (add-to-list 'would-have-liked-list 'spell running-windoze))
 
 ;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
 
@@ -574,12 +574,10 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
 ;; one. So use a timer to get past them.
 (unless noninteractive
-  (if running-windoze
-      (friendly-message)
-    (if (and (featurep 'emacs) (not window-system))
-	;; Need a long delay to get around Emacs delayed message
-	(start-itimer "delayed-msg" 'friendly-message 2.5 nil nil t t)
-      (start-itimer "delayed-msg" 'friendly-message 1 nil nil t t))))
+  (if (and (featurep 'emacs) (not window-system))
+      ;; Need a long delay to get around Emacs delayed message
+      (start-itimer "delayed-msg" 'friendly-message 2.5 nil nil t t)
+    (start-itimer "delayed-msg" 'friendly-message 1 nil nil t t)))
 
 ;;}}}
 
