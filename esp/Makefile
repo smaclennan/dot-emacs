@@ -1,7 +1,7 @@
 include ../Rules.mk
 
 # Mine
-ELCS =  esp.elc extent.elc itimer.elc
+ELCS =  esp.elc extent.elc
 
 # Others
 ELCS += rcfiles.elc hide-copyleft.elc

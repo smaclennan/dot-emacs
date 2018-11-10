@@ -10,8 +10,6 @@ XEmacs. DO NOT use these under XEmacs.
 
 * extent.el: Simple XEmacs extent compatibility for Emacs.
 
-* itimer.el: Simple XEmacs itimer compatibility for Emacs.
-
 
 These are just XEmacs files that Emacs is missing:
 
