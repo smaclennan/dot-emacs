@@ -149,8 +149,6 @@ instead, uses tag around or before point."
 
 (defun push-tag-mark () (ring-insert find-tag-marker-ring (point-marker)))
 
-(defalias 'kill-entire-line 'kill-whole-line)
-
 ;; Hacks for Emacs 23
 (when (eq emacs-major-version 23)
   (mapc 'require '(git-diff my-calc my-tags smerge))

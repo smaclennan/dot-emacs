@@ -120,7 +120,7 @@ This variable is buffer local.")
       (goto-char (point-min))
       (when (re-search-forward regexp nil t)
 	(setq nchars (string-to-number (match-string 1)))
-	(kill-entire-line) ;; delete the filename line
+	(kill-whole-line) ;; delete the filename line
 	(delete-char nchars t)
 	(if (eq (following-char) ?\f)
 	    (delete-char 2 t) ;; delete \f and \n

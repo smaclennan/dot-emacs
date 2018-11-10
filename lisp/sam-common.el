@@ -22,11 +22,9 @@ Each clause is (FEATURE BODY...)."
 
 (my-feature-cond
   (xemacs ;; Must be a defalias for my-isearch-word-forward
-   (defalias 'my-interactive-p 'interactive-p))
+   (defalias 'my-interactive-p 'interactive-p)
+   (defalias 'kill-whole-line 'kill-entire-line))
   (t ;; Must be a macro to work
    (defmacro my-interactive-p () `(called-interactively-p 'interactive))))
-
-(my-feature-cond
-  (emacs (defalias 'kill-entire-line 'kill-whole-line)))
 
 (provide 'sam-common)

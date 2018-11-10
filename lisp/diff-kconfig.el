@@ -22,12 +22,12 @@
 	(progn
 	  (beginning-of-line)
 	  (delete-char 2))
-      (kill-entire-line)))
+      (kill-whole-line)))
 
   (when dkc-no-arch
     (goto-char (point-min))
     (while (re-search-forward "^CONFIG_ARCH_" nil t)
-      (kill-entire-line)))
+      (kill-whole-line)))
 
   (when dkc-set-or-not
     (goto-char (point-min))

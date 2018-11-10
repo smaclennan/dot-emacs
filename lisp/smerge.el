@@ -101,7 +101,7 @@ Each clause is (FEATURE BODY...)."
 	 dir))
      )
 
-   (defalias 'kill-entire-line 'kill-whole-line)
+   (defalias 'kill-whole-line 'kill-whole-line)
    )) ;; emacs
 
 (defvar smerge-diff-program ediff-diff-program
@@ -320,7 +320,7 @@ Top level directories end in /, subdirs do not."
 		  (smerge-make-extent (match-beginning 0) (match-end 0) 'smerge-only1-face))
 	    (set-extent-property extent 'type 2)
 	    (replace-match file))
-	(kill-entire-line))
+	(kill-whole-line))
       )
 
     ;; Only in 2
@@ -337,7 +337,7 @@ Top level directories end in /, subdirs do not."
 		  (smerge-make-extent (match-beginning 0) (match-end 0) 'smerge-only2-face))
 	    (set-extent-property extent 'type 1)
 	    (replace-match (concat "\t\t\t\t" file)))
-	(kill-entire-line))
+	(kill-whole-line))
       )
 
     ;; Both
