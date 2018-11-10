@@ -555,13 +555,9 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 (defun friendly-message (&optional full)
   (interactive "P")
-  (unless running-windoze
-    (when (get-itimer "delayed-msg")
-      (delete-itimer "delayed-msg")))
   (if (and full would-have-liked-list)
       ;; Warn that some features not found
-      (progn (ding)
-	     (message "Features not found: %S" would-have-liked-list))
+      (message "Features not found: %S" would-have-liked-list)
     ;; Else display a friendly message
     (let ((hour (nth 2 (decode-time))))
       (message "Good %s %s"
@@ -576,8 +572,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 (unless noninteractive
   (if (and (featurep 'emacs) (not window-system))
       ;; Need a long delay to get around Emacs delayed message
-      (start-itimer "delayed-msg" 'friendly-message 2.5 nil nil t t)
-    (start-itimer "delayed-msg" 'friendly-message 1 nil nil t t)))
+      (run-at-time 2.5 nil 'friendly-message t)
+    (run-at-time 1 nil 'friendly-message t)))
 
 ;;}}}
 
