@@ -11,19 +11,9 @@
 (defvar running-windoze (eq system-type 'windows-nt)
   "Non-nil if running Windows.")
 
-(defvar dot-dir
-  (if user-init-file
-      (file-name-directory user-init-file)
-    ;; When called from load
-    (if load-file-name
-	(file-name-directory load-file-name)
-      ;; for batch mode
-      (let ((dir (pwd)))
-	(when (string-match "^Directory " dir)
-	  (replace-match "" nil nil dir)))))
+(defvar dot-dir (expand-file-name
+		 (if (featurep 'xemacs) "~/.xemacs/" "~/.emacs.d/"))
   "The init file directory.")
-
-;; Common
 
 (if (featurep 'xemacs)
     (progn
@@ -101,6 +91,18 @@
       inhibit-startup-message t
       visible-bell t
       initial-scratch-message ";; This buffer is for goofing around in.\n\n")
+
+;; This has got to be the hardest variable to set. It seems you *must*
+;; hardcode the name and it can't be in a compiled file. Yes, the
+;; docs say it can, but the eval form does not work.
+(cond
+ ((equal (user-login-name) "sam")
+  (setq inhibit-startup-echo-area-message "sam"))
+ ((equal (user-login-name) "smaclennan")
+  (setq inhibit-startup-echo-area-message "smaclennan"))
+ ((equal (user-login-name) "seanm")
+  (setq inhibit-startup-echo-area-message "seanm"))
+ )
 
 (put 'narrow-to-region 'disabled nil)
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -474,7 +476,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;;  (ido-mode
 ;;;   (ido-mode 1))
   (t
-   (require 'iswitchb)
+   ;; We have a local copy of iswitchb to get around the deprecated message.
+   (load (concat dot-dir "emacs/iswitchb"))
    (iswitchb-mode 1)))
 
 (my-feature-cond
@@ -566,13 +569,14 @@ Use region if it exists. My replacement for isearch-yank-word."
 		     (t           "evening"))
 	       (user-full-name)))))
 
-;; Every time you turn around Emacs is displaying yet another
-;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
-;; one. So use a timer to get past them.
+;; I have been able to disable all the Emacs messages in non-console mode... so we
+;; only need the timer for console modes.
 (unless noninteractive
-  (if (and (featurep 'emacs) (not window-system))
-      ;; Need a long delay to get around Emacs delayed message
-      (run-at-time 2.5 nil 'friendly-message t)
+  (if (or running-xemacs window-system)
+      (friendly-message t)
+    ;; Every time you turn around Emacs is displaying yet another
+    ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
+    ;; one. So use a timer to get past them.
     (run-at-time 1 nil 'friendly-message t)))
 
 ;;}}}

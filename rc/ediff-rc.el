@@ -6,10 +6,13 @@
 ;; Needed by ediff - exists in `efs'
 (or (boundp 'allow-remote-paths) (setq allow-remote-paths nil))
 
-(defun my-set-face (face fg bg &optional prop)
+(defun my-set-face (face fg bg &optional highlight)
   (set-face-foreground face fg)
   (set-face-background face bg)
-  (when prop (set-face-property face prop t)))
+  (when highlight
+    (if running-xemacs
+	(set-face-property face 'highlight t)
+      (set-face-attribute face nil :weight 'bold))))
 
 (unless window-system
   (when (or running-xemacs (>= emacs-major-version 22))
