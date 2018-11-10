@@ -26,8 +26,10 @@
 ;; Common
 
 (if (featurep 'xemacs)
-    (dolist (dir '("lisp/sam" "lisp/misc" "lisp/xemacs"))
-      (add-to-list 'load-path (concat dot-dir dir)))
+    (progn
+      (dolist (dir '("lisp/sam" "lisp/misc" "lisp/xemacs"))
+	(add-to-list 'load-path (concat dot-dir dir)))
+      (add-to-list 'data-directory-list (concat dot-dir "etc") t))
   (load (concat dot-dir "lisp/emacs/esp")))
 
 ;; With the new package system, there is a greater chance a
