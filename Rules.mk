@@ -43,6 +43,8 @@ LISP := $(filter-out $(SUBDIR)-loaddefs.el,$(LISP))
 else
 # XEmacs
 
+HELPER := -l ~/.xemacs/xemacs/helper.el
+
 VERSION := $(shell $(EMACS) -V | cut -d' ' -f2)
 
 LISP := $(filter-out auto-autoloads.el,$(LISP))
