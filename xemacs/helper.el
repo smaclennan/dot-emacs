@@ -7,6 +7,9 @@
 (add-to-list 'data-directory-list (concat dot-dir "etc") t)
 (add-to-list 'data-directory-list (concat dot-dir "xemacs/etc") t)
 
+(dolist (dir '("lisp" "misc" "xemacs"))
+  (load (concat dot-dir dir "/auto-autoloads.el") t))
+
 ;; For rcfiles to be able to match loaded lisp such as lisp-mode we
 ;; need to turn the file names into simple load names.
 (setq load-history

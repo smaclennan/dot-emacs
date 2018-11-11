@@ -44,7 +44,7 @@
   (interactive)
   (let (dirs)
     (dolist (dir load-path)
-      (when (string-match "/lisp.*" dir)
+      (when (string-match "/lisp/.*" dir)
 	(setq dir (replace-match "" nil nil dir)))
       (add-to-list 'dirs dir))
     (if (my-interactive-p) (message "%S" dirs))
