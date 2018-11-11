@@ -179,7 +179,9 @@ non-nil, returns all .el files in `dot-dir'."
 		      ;; generated files
 		      "emacs/emacs-loaddefs.el" "lisp/lisp-loaddefs.el"
 		      "lisp/auto-autoloads.el" "lisp/custom-load.el"
-		      "xemacs/auto-autloads.el" "xemacs/custom-load.el"
+		      "xemacs/auto-autoloads.el" "xemacs/custom-load.el"
+		      ;; ignore this to make comparisons
+		      "user-init.el"
 		      ))
 	(setq files (delete (concat base file) files)))
       )
