@@ -1,6 +1,7 @@
 ;; Handy Dandy(tm) Functions
 
 (require 'sam-common)
+(require 'dirfiles)
 
 ;;;###autoload
 (defun unixtime (seconds)
