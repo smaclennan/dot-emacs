@@ -163,17 +163,25 @@ non-nil, returns all .el files in `dot-dir'."
   (let* ((base (file-name-directory user-init-file))
 	 (files (directory-files-recursive base ".*\.el$")))
     (unless all
-      ;; esp files that are missing from gnu emacs
-      (dolist (file '("esp/rcfiles.el" "esp/hide-copyleft.el"))
-	(setq files (delete (concat base file) files)))
-
-      ;; misc/xemacs not mine (except backup.el)
+      ;; misc not mine
       ;; also ignore symlinks
       (dolist (file files)
-	(when (or (string-match ".*/\\(misc\\|xemacs\\)/.*" file)
+	(when (or (string-match ".*/misc/.*" file)
 		  (file-symlink-p file))
 	  (setq files (delete file files))))
-      (nconc files (list (concat base "site-packages/lisp/xemacs/backup.el")))
+
+      (dolist (file '(;; emacs files that are not mine
+		      "emacs/rcfiles.el" "emacs/hide-copyleft.el"
+		      "emacs/iswitchb.el"
+		      ;; xemacs files that are not mine
+		      "xemacs/frame-utils.el" "xemacs/introspector.el"
+		      "xemacs/ksh-mode.el" "xemacs/time-date.el"
+		      ;; generated files
+		      "emacs/emacs-loaddefs.el" "lisp/lisp-loaddefs.el"
+		      "lisp/auto-autoloads.el" "lisp/custom-load.el"
+		      "xemacs/auto-autloads.el" "xemacs/custom-load.el"
+		      ))
+	(setq files (delete (concat base file) files)))
       )
     files))
 
@@ -186,7 +194,7 @@ non-nil, returns all .el files in `dot-dir'."
       (dolist (file files)
 	(insert-file-contents-safe file))
       (goto-char (point-min))
-      (while (re-search-forward "(\\(defun\\|defmacro\\) " nil t)
+      (while (re-search-forward "(\\(defun\\|defmacro\\|defalias\\) " nil t)
 	(setq count (1+ count)))
       (goto-char (point-max))
       (setq lines (count-lines (point-min) (point-max))))
