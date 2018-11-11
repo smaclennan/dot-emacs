@@ -204,31 +204,34 @@
 (when (featurep 'xemacs)
   (require 'overlay))
 
+(require 'sam-common)
+
 (defun browse-kill-ring-depropertize-string (str)
   "Return a copy of STR with text properties removed."
   (let ((str (copy-sequence str)))
     (set-text-properties 0 (length str) nil str)
     str))
 
-(cond ((fboundp 'propertize)
-       (defalias 'browse-kill-ring-propertize 'propertize))
-      ;; Maybe save some memory :)
-      ((fboundp 'ibuffer-propertize)
-       (defalias 'browse-kill-ring-propertize 'ibuffer-propertize))
-      (t
-       (defun browse-kill-ring-propertize (string &rest properties)
-	 "Return a copy of STRING with text properties added.
+(my-feature-cond
+  (propertize
+   (defalias 'browse-kill-ring-propertize 'propertize))
+  ;; Maybe save some memory :)
+  (ibuffer-propertize
+   (defalias 'browse-kill-ring-propertize 'ibuffer-propertize))
+  (t
+   (defun browse-kill-ring-propertize (string &rest properties)
+     "Return a copy of STRING with text properties added.
 
  [Note: this docstring has been copied from the Emacs 21 version]
 
 First argument is the string to copy.
 Remaining arguments form a sequence of PROPERTY VALUE pairs for text
 properties to add to the result."
-	 (let ((str (copy-sequence string)))
-	   (add-text-properties 0 (length str)
-				properties
-				str)
-	   str))))
+     (let ((str (copy-sequence string)))
+       (add-text-properties 0 (length str)
+			    properties
+			    str)
+       str))))
 
 (defgroup browse-kill-ring nil
   "A package for browsing and inserting the items in `kill-ring'."
@@ -391,20 +394,22 @@ call `browse-kill-ring' again.")
     (browse-kill-ring-do-insert buf pt))
   (browse-kill-ring-quit))
 
-(if (fboundp 'fit-window-to-buffer)
-    (defalias 'browse-kill-ring-fit-window 'fit-window-to-buffer)
-  (defun browse-kill-ring-fit-window (window max-height min-height)
-    (setq min-height (or min-height window-min-height))
-    (setq max-height (or max-height (- (frame-height) (window-height) 1)))
-    (let* ((window-min-height min-height)
-           (windows (count-windows))
-           (config (current-window-configuration)))
-      (enlarge-window (- max-height (window-height)))
-      (when (> windows (count-windows))
-        (set-window-configuration config))
-      (if (/= (point-min) (point-max))
-          (shrink-window-if-larger-than-buffer window)
-        (shrink-window (- (window-height) window-min-height))))))
+(my-feature-cond
+  (fit-window-to-buffer
+   (defalias 'browse-kill-ring-fit-window 'fit-window-to-buffer))
+  (t
+   (defun browse-kill-ring-fit-window (window max-height min-height)
+     (setq min-height (or min-height window-min-height))
+     (setq max-height (or max-height (- (frame-height) (window-height) 1)))
+     (let* ((window-min-height min-height)
+	    (windows (count-windows))
+	    (config (current-window-configuration)))
+       (enlarge-window (- max-height (window-height)))
+       (when (> windows (count-windows))
+	 (set-window-configuration config))
+       (if (/= (point-min) (point-max))
+	   (shrink-window-if-larger-than-buffer window)
+	 (shrink-window (- (window-height) window-min-height)))))))
 
 (defun browse-kill-ring-resize-window ()
   (when browse-kill-ring-resize-window
@@ -672,7 +677,7 @@ of the *Kill Ring*."
 	     (overlays-at (point)))
     (let ((overs (overlay-lists))
 	  (current-overlay (car (overlays-at (point)))))
-      (mapcar #'(lambda (o)
+      (mapc #'(lambda (o)
 		  (overlay-put o 'face nil))
 	      (nconc (car overs) (cdr overs)))
       (overlay-put current-overlay 'face 'highlight)))

@@ -558,8 +558,7 @@ detects both these cases."
   (while ws-trim-buffers
     (if (and (buffer-live-p (car ws-trim-buffers))
 	     (not (local-variable-p 'ws-trim-mode (car ws-trim-buffers))))
-	(save-excursion
-	  (set-buffer (car ws-trim-buffers))
+	(with-current-buffer (car ws-trim-buffers)
 	  (ws-trim-mode
 	   (cond ((eq ws-trim-global-modes t) 1)
 		 ((eq ws-trim-global-modes 'guess) (ws-trim-mode-heuristic))
