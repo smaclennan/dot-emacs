@@ -5,6 +5,7 @@
 (dolist (dir '("lisp" "misc" "xemacs"))
   (add-to-list 'load-path (concat dot-dir dir)))
 (add-to-list 'data-directory-list (concat dot-dir "etc") t)
+(add-to-list 'data-directory-list (concat dot-dir "xemacs/etc") t)
 
 ;; For rcfiles to be able to match loaded lisp such as lisp-mode we
 ;; need to turn the file names into simple load names.
