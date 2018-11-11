@@ -4,13 +4,13 @@
 (defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
 
 ;; When building outside emacs dot-dir may not be set
-(if (not (boundp 'dot-dir))
-    (setq dot-dir (expand-file-name "~/.emacs.d/")))
+(defvar dot-dir (expand-file-name "~/.emacs.d/"))
 
 ;; I don't know why the hate against common-lisp
 (setq byte-compile-warnings '(not cl-functions))
 (require 'cl)
 (require 'cl-extra)
+(require 'ring)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file t)
@@ -118,7 +118,7 @@ Where VERSION is a list of major minor (e.g. (25 1)) or t."
 
 (global-font-lock-mode 1) ;; For 21.x
 
-(eval-when-compile (require 'etags))
+(require 'etags)
 
 ;; Mimics version from XEmacs 21.2
 (defun find-tag-at-point ()
