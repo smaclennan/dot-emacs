@@ -15,12 +15,7 @@
 		 (if (featurep 'xemacs) "~/.xemacs/" "~/.emacs.d/"))
   "The init file directory.")
 
-(if (featurep 'xemacs)
-    (progn
-      (dolist (dir '("lisp" "misc" "xemacs"))
-	(add-to-list 'load-path (concat dot-dir dir)))
-      (add-to-list 'data-directory-list (concat dot-dir "etc") t))
-  (load (concat dot-dir "emacs/esp")))
+(load (concat dot-dir (if (featurep 'xemacs) "xemacs/helper" "emacs/esp")))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -58,17 +53,6 @@
 ;; early for variables like laptop-mode to work. Use `after-init-hook'
 ;; if you need to clean something up at the end.
 (load (concat dot-dir "user-init") t)
-
-(when running-xemacs
-  ;; For rcfiles to be able to match loaded lisp such as lisp-mode we
-  ;; need to turn the file names into simple load names.
-  (setq load-history
-	(mapcar (lambda (elt)
-		  (let ((a (car elt)))
-		    (if (eq 0 (string-match "/.*/\\([^/]+\\)\.elc" a))
-			(list (match-string 1 a))
-		      (list a))))
-		load-history)))
 
 ;; The standard doesn't support sxemacs
 (setq rcfiles-directory (concat dot-dir "rc/"))
@@ -134,15 +118,6 @@ Simple version."
 	(when (file-exists-p path)
 	  (throw 'found path))))))
 
-;; XEmacs 21.5 cruft
-(my-feature-cond
-  (sxemacs nil)
-  (xemacs
-   (when (emacs-version>= 21 5)
-     ;; For some reason the file coding was gutted - put it back
-     (setq buffer-file-coding-system-for-read 'undecided
-	   default-buffer-file-coding-system  'raw-text))))
-
 ;; Windowing System Customization
 
 (if window-system
@@ -156,12 +131,6 @@ Simple version."
 	 (cursize (- (nth 3 edges) (nth 1 edges) -1)))
     (unless (= size cursize)
       (enlarge-window (- size cursize)))))
-
-(my-feature-cond
-  (xemacs
-   (defadvice abbreviate-file-name (before add-hack-homedir activate)
-     "Always set HACK-HOMEDIR to t ala GNU Emacs."
-     (ad-set-arg 1 t))))
 
 ;;}}}
 
@@ -354,28 +323,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; Always want font-lock
 ;; Use require. (turn-on-font-lock) caused no end of grief on my work computers.
 (unless noninteractive (require 'font-lock))
-
-;; -------------------------------------------------------------------------
-;; KSH MODE
-
-;; sh-mode doesn't work too well in XEmacs. It doesn't handle case
-;; labels properly. GNU Emacs handles case labels, but doesn't indent
-;; comments properly. ksh-mode seems to handle case labels and
-;; comments, so let's switch to that if it is available.
-;;
-;; ksh-mode not avaliable in Emacs, and turning it on loses font-lock
-;; and bracket matching... so enable it only for xemacs for now
-
-(when running-xemacs
-  (defun sh-to-ksh (entry)
-    (when (eq (cdr entry) 'sh-mode)
-      (setcdr entry 'ksh-mode))
-    entry)
-
-  ;; Convert sh-mode to ksh-mode
-  (mapc 'sh-to-ksh auto-mode-alist)
-  (mapc 'sh-to-ksh interpreter-mode-alist)
-  )
 
 ;;; -------------------------------------------------------------------------
 ;; hide-copyleft
@@ -572,7 +519,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; I have been able to disable all the Emacs messages in non-console mode... so we
 ;; only need the timer for console modes.
 (unless noninteractive
-  (if (or running-xemacs window-system)
+  (if (and (not running-xemacs) window-system)
       (friendly-message t)
     ;; Every time you turn around Emacs is displaying yet another
     ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
