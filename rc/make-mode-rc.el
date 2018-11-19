@@ -15,8 +15,7 @@
   (interactive "sProg: ")
   (goto-char (point-min))
 
-  (insert ".PHONY: all clean\n\n"
-	  "PROG = " prog "\n\n")
+  (insert ".PHONY: all clean\n\n")
 
   (insert "# If you set D=1 on the command line then $(D:1=-g) returns -g,\n"
 	  "# else it returns the default (-O2).\n"
@@ -32,9 +31,9 @@
 	  ".c.o:\n"
 	  "\t$(QUIET_CC)$(CC) -o $@ -c $(CFLAGS) $<\n\n")
 
-  (insert "all: $(PROG)\n\n"
-	  "$(PROG): $(PROG).c\n"
+  (insert "all: " prog "\n\n"
+	  prog ": " prog ".c\n"
 	  "\t$(QUIET_CC)$(CC) $(CFLAGS) -o $@ $+\n\n"
 	  "clean:\n"
-	  "\t$(QUIET_RM)rm -f $(PROG) *.o\n")
+	  "\t$(QUIET_RM)rm -f " prog " *.o\n")
   )
