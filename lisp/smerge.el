@@ -70,6 +70,7 @@ Each clause is (FEATURE BODY...)."
   (xemacs
    (defalias 'smerge-dirlist 'directory-files)
    (defalias 'smerge-read-only 'toggle-read-only)
+   (defalias 'kill-whole-line 'kill-entire-line)
    )
 
   (emacs
@@ -100,8 +101,6 @@ Each clause is (FEATURE BODY...)."
 	 (unless (eq (car attr) t) (error "Must be a directory"))
 	 dir))
      )
-
-   (defalias 'kill-whole-line 'kill-whole-line)
    )) ;; emacs
 
 (defvar smerge-diff-program ediff-diff-program
