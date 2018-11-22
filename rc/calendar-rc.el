@@ -52,3 +52,13 @@
 	(holiday-fixed 12 25	"Christmas (S)")
 	(holiday-fixed 12 26	"Boxing Day (S)")
 	))
+
+;; -------------------------
+;; Diary is part of calendar
+
+;; Handy function for those who work Monday to Friday
+(defun diary-workday () (memq (calendar-day-of-week date) '(1 2 3 4 5)))
+
+(setq diary-comment-start "#")
+
+(add-hook 'diary-list-entries-hook 'diary-sort-entries t)
