@@ -59,7 +59,7 @@
 
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
-  (load (concat dot-dir "esp/rcfiles")))
+  (load (concat dot-dir "emacs/rcfiles")))
 
 ;;}}}
 
@@ -283,10 +283,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 (global-set-key [button8] 'yank)
 (global-set-key [button9] 'kill-region)
 
-;; C-h =
-(my-feature-cond
-  (xemacs (define-key help-map ?= #'introspect-cursor-position)))
-
 (global-set-key "\C-x\C-l"	'list-buffers)
 
 (global-set-key "\C-x\C-k"	'kill-buffer)
@@ -439,17 +435,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; -------------------------------------------------------------------------
 ;;; Some text-modes packages
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-
-(my-feature-cond
-  (xemacs
-   ;; Filladapt is a syntax-highlighting package.  When it is enabled it
-   ;; makes filling (e.g. using M-q) much much smarter about paragraphs
-   ;; that are indented and/or are set off with semicolons, dashes, etc.
-   (defun add-filladapt()
-     (require 'filladapt) ;; No autoloads
-     (turn-on-filladapt-mode))
-   (add-hook 'text-mode-hook 'add-filladapt)
-   (add-hook 'mail-mode-hook 'add-filladapt)))
 
 ;; Flyspell
 (if (or (my-exec-installed-p "hunspell") (my-exec-installed-p "aspell"))

@@ -30,6 +30,46 @@
   "Always set HACK-HOMEDIR to t ala GNU Emacs."
   (ad-set-arg 1 t))
 
+;; Filladapt is a syntax-highlighting package.  When it is enabled it
+;; makes filling (e.g. using M-q) much much smarter about paragraphs
+;; that are indented and/or are set off with semicolons, dashes, etc.
+(defun add-filladapt()
+  (require 'filladapt) ;; No autoloads
+  (turn-on-filladapt-mode))
+(add-hook 'text-mode-hook 'add-filladapt)
+(add-hook 'mail-mode-hook 'add-filladapt)
+
+;; C-h =
+(define-key help-map ?= #'introspect-cursor-position)
+
+;; Handy functions that where hard to work out
+(defun my-get-face-foreground (face)
+  (cdr (specifier-specs (face-foreground face) 'global)))
+(defun my-get-face-background (face)
+  (cdr (specifier-specs (face-background face) 'global)))
+;; (my-get-face-background 'default)
+
+(defun hack-modeline-background ()
+  (let ((bg (face-background-instance 'modeline)))
+    (when (color-instance-p bg)
+      (set-face-background 'modeline bg))))
+(when window-system
+  (add-hook 'after-init-hook 'hack-modeline-background))
+
+;; -------------------
+;; Laptop Mode Helper
+(defun check-faces ()
+  (interactive)
+  (let (found-one
+	(font (if (listp laptop-mode-font) (nth 1 laptop-mode-font) laptop-mode-font)))
+    (dolist (face (face-list))
+      (unless (equal (face-font-name face) font)
+	(setq found-one t)
+	(message "%S %s" face (face-font-name face))))
+    (if found-one
+	(message "Check the message log")
+      (message "OK"))))
+
 ;; -------------------------------------------------------------------------
 ;; KSH MODE
 
@@ -49,3 +89,7 @@
 ;; Convert sh-mode to ksh-mode
 (mapc 'sh-to-ksh auto-mode-alist)
 (mapc 'sh-to-ksh interpreter-mode-alist)
+
+(setq package-get-remote
+      ;;'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
+      '("ftp.xemacs.org" "/pub/xemacs/xemacs-21.5/experimental/packages"))

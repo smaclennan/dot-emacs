@@ -20,19 +20,6 @@
 ;;(set-face-attribute 'default nil :family "Input Mono" :foundry "unknown"
 ;;		    :slant 'normal :weight 'extra-light :height 98 :width 'normal)
 
-;; ---------------------------------------------
-;; Colour
-;;XEmacs*background: #d0ccb8
-;;XEmacs*menubar.background: #607860
-;;XEmacs*menubar.foreground: #d0ccb8
-(when nil
-  (set-face-background 'default "#d0ccb8")
-  (set-face-background 'gui-button-face "#d0ccb8")
-  (set-face-background 'zmacs-region "#cec180")
-  ;;(set-face-background 'modeline "#ccc088")
-  )
-;; ---------------------------------------------
-
 (my-feature-cond
   (xemacs
    ;; Performance optimizations
@@ -55,18 +42,19 @@
 ;; -------
 ;; Title bar - almost every window system supports a title bar
 ;; The first element must be a string... sighhh.
-(unless (boundp 'emacs-program-version) (defvar emacs-program-version emacs-version))
+(defvar emacs-str (concat
+		   (if (featurep 'sxemacs) "S")
+		   (if (featurep 'xemacs)  "X")
+		   "Emacs "
+		   (if running-xemacs emacs-program-version emacs-version)
+		   " " host-name ":"))
 
-(defvar emacs-str (concat (if (featurep 'sxemacs) "S")
-			  (if (featurep 'xemacs)  "X")
-			  "Emacs " emacs-program-version " " host-name ":"))
-
-(if (not running-xemacs)
-    (setq frame-title-format '("" emacs-str
-			       (buffer-file-name
-				(:eval (abbreviate-file-name buffer-file-name))
-				"%b")))
-  (setq frame-title-format '("" emacs-str (buffer-file-name "%f" "%b"))))
+(if running-xemacs
+    (setq frame-title-format '("" emacs-str (buffer-file-name "%f" "%b")))
+  (setq frame-title-format '("" emacs-str
+			     (buffer-file-name
+			      (:eval (abbreviate-file-name buffer-file-name))
+			      "%b"))))
 
 ;; -------
 (my-feature-cond
@@ -134,21 +122,3 @@
 
 ;; Deal with laptop-mode after all fonts setup
 (load (concat rcfiles-directory "laptop-mode"))
-
-;; -------
-;; MISC
-
-(my-feature-cond
-  (xemacs
-   ;; Handy functions that where hard to work out
-   (defun my-get-face-foreground (face)
-     (cdr (specifier-specs (face-foreground face) 'global)))
-   (defun my-get-face-background (face)
-     (cdr (specifier-specs (face-background face) 'global)))
-   ;; (my-get-face-background 'default)
-
-   (defun hack-modeline-background ()
-     (let ((bg (face-background-instance 'modeline)))
-       (when (color-instance-p bg)
-	 (set-face-background 'modeline bg))))
-   (add-hook 'after-init-hook 'hack-modeline-background)))
