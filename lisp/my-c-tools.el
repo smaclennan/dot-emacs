@@ -43,10 +43,7 @@ compilation buffer so that `next-error' will work."
 		     my-sparse-args " "
 		     user-args " "
 		     (buffer-file-name))))
-    (save-some-buffers (not compilation-ask-about-save) nil)
-    (my-feature-cond
-     (emacs (compilation-start cmd))
-     (xemacs (compile-internal cmd "No more errors")))))
+    (my-do-compile cmd)))
 
 ;;;; The rest is kernel specific
 
@@ -87,10 +84,7 @@ args. Output goes to the compilation buffer so that `next-error' will
 work."
   (interactive)
   (let ((cmd (concat "make C=2 " user-args)))
-    (save-some-buffers (not compilation-ask-about-save) nil)
-    (my-feature-cond
-     (emacs (compilation-start cmd))
-     (xemacs (compile-internal cmd "No more errors")))))
+    (my-do-compile cmd)))
 
 ;;;; ---- Checkpatch
 
@@ -120,9 +114,7 @@ compilation buffer so that `next-error' will work."
     (when (my-kernel>= 4 2)
       (setq args (concat args " --no-color")))
     (setq cmd (format "%s %s %s" my-checkpatch-prog args (buffer-file-name)))
-    (my-feature-cond
-     (emacs (compilation-start cmd))
-     (xemacs (compile-internal cmd "No more errors")))))
+    (my-do-compile cmd)))
 
 (defun my-checkpatch-cleanup (buf status)
   "Massage the checkpatch compilation buffer. This removes a final

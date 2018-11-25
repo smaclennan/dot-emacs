@@ -12,12 +12,6 @@
 ;; This gives the compilation buffer its own frame
 ;;(push "*compilation*" special-display-buffer-names)
 
-(defun my-do-compile (cmd)
-  (save-some-buffers (not compilation-ask-about-save) nil)
-  (my-feature-cond
-    (xemacs (compile-internal cmd "No more errors"))
-    (t (compilation-start cmd))))
-
 (defun my-set-compile ()
   (interactive)
   (let ((cmd (read-string "Compile Command: " compile-command)))
