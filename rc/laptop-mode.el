@@ -57,20 +57,3 @@ will do it for you.")
     ))
 
 (when laptop-mode (laptop-mode-toggle t))
-
-;; -------------------
-;; Laptop Mode Helpers
-
-(my-feature-cond
-  (xemacs
-   (defun check-faces ()
-     (interactive)
-     (let (found-one
-	   (font (if (listp laptop-mode-font) (nth 1 laptop-mode-font) laptop-mode-font)))
-       (dolist (face (face-list))
-	 (unless (equal (face-font-name face) font)
-	   (setq found-one t)
-	   (message "%S %s" face (face-font-name face))))
-       (if found-one
-	   (message "Check the message log")
-	 (message "OK"))))))
