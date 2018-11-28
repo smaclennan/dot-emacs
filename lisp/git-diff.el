@@ -101,7 +101,8 @@ A prefix arg allows you to edit the grep command"
     (when (not running-xemacs) (grep-compute-defaults))
 
     (if git-grep-top-of-tree
-	(let ((default-directory (git-dir)))
+	(let ((default-directory (git-dir))
+	      (grep-use-null-device nil)) ;; Emacs
 	  (grep cmd))
       (grep cmd))))
 
