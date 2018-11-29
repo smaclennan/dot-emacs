@@ -480,7 +480,10 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;;; ------------------------------------------------------------
 ;; Some non-standard init files. Start them last so they can override defaults.
-(when running-windoze (load "windoze"))
+
+;; Load a file called `system-type' if it exists. The symbol is
+;; sanitized so gnu/linux becomes gnu-linux.
+(load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t)
 
 (load (concat dot-dir "work") t)
 
