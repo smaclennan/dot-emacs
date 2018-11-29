@@ -25,6 +25,9 @@ Optional config files called from init.el:
 * work.el: This provides work related configs. This is very specific
   to my job, you probably want to override it.
 
+* `system-type'.el: For system specific config. This one is sanitized
+  so gnu/linux becomes gnu-linux.
+
 * mail-<domain name>.el: This is called from the sendmail rc file if
   it exists.
 
