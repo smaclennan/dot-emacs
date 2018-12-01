@@ -56,6 +56,25 @@
 (when window-system
   (add-hook 'after-init-hook 'hack-modeline-background))
 
+(when window-system
+  ;; Pointer used during garbage collection.
+  ;; .xbm not supported under windoze
+  (let ((dir (concat dot-dir "xemacs/etc/")) img mask)
+    (if (string= (x-server-vendor) "Colin Harrison")
+	;; xming only supports 32x32
+	(setq img  (concat dir "recycle-image-32.xbm")
+	      mask (concat dir "recycle-mask-32.xbm"))
+      (setq img  (concat dir "recycle-image.xbm")
+	    mask (concat dir "recycle-mask.xbm")))
+    (if (and img mask (not running-windoze))
+	(set-glyph-image gc-pointer-glyph
+			 (vector 'xbm
+				 :file img
+				 :mask-file mask
+				 :foreground "black"
+				 :background "chartreuse1"))
+      (set-glyph-image gc-pointer-glyph "recycle2.xpm"))))
+
 ;; -------------------
 ;; Laptop Mode Helper
 (defun check-faces ()
