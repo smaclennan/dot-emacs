@@ -1,0 +1,23 @@
+Motley is my attempt at a cscope-like program. The output should be
+readable by cscope if -c is specified.
+
+The basic concept is to strip out as much code as possible: what is
+left should be the symbols we want. Motley is more or less stateless
+and doesn't really know how to parse C.
+
+Motley can only give definitions, it cannot find all the functions
+that call a function for example. This greatly reduces the parsing and
+the size of the output at a loss of functionality.
+
+It also does not keep any information about functions other than the
+function name. It cannot show args or return values.
+
+So, really, Motley is more like ctags than cscope. But I have a nicer
+cscope interface in Emacs than tags ;)
+
+So why write motley? I am finding that cscope struggles with newer C
+code. I am just getting too many false, or missing, results.
+
+WARNING: Motley should be considered extremely experimental. In
+particular, the native output format may change as I try different
+ideas.
