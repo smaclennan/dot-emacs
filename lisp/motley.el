@@ -29,7 +29,7 @@ Each clause is (FEATURE BODY...)."
     (when (or (featurep (car x)) (fboundp (car x)))
       (return (cons 'progn (cdr x))))))
 
-(defun motley-dir ()
+(defun motley-dir (&optional no-error)
   "Find the motley.out file directory. Use `motley-dir' if
 set, else start looking at `default-directory'."
   (let ((dir (if motley-dir motley-dir default-directory)))
@@ -41,7 +41,9 @@ set, else start looking at `default-directory'."
 	  (throw 'found dir))
 	;; This removes the last directory
 	(setq dir (file-name-directory (directory-file-name dir))))
-      (error "No motley.out file found."))))
+      (unless no-error
+	(error "No motley.out file found."))
+      nil)))
 
 (defun motley-parse-output (mode)
   "Deal with XEmacs vs GNU Emacs differences in compile"

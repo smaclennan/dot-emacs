@@ -136,6 +136,30 @@ Simple version."
 
 ;;{{{ Keys
 
+(defvar preferred-tags 'tags
+  "* Can be tags or cscope or motley.
+If set to cscope or motley and the out file is not found falls
+back to tags.")
+
+(defun preferred-find-tag-at-point ()
+  (interactive)
+  (if (and (eq preferred-tags 'motley) (motley-dir t))
+      (motley-at-point)
+    (if (and (eq preferred-tags 'cscope) (my-cscope-dir t))
+	(my-cscope-at-point)
+      (find-tag-at-point))))
+
+(defun preferred-find-tag ()
+  (interactive)
+  (if (and (eq preferred-tags 'motley) (motley-dir t))
+    (call-interactively (motley))
+    (if (and (eq preferred-tags 'cscope) (my-cscope-dir t))
+	(call-interactively (my-cscope))
+      (if running-xemacs
+	  (callinteractively (find-tag))
+	(let ((current-prefix-arg t))
+	  (call-interactively 'xref-find-definitions))))))
+
 ;; For Emacs this breaks the minibuffer. Emacs dealt with in rc/ files.
 (when running-xemacs
   ;; This should always do the right thing
@@ -166,7 +190,8 @@ Simple version."
 (global-set-key [(shift f8)] 'my-grep-find)
 (global-set-key [(control f8)]	'my-checkpatch)
 ; f9 is isearch
-(global-set-key [f10]		'find-tag-at-point)
+(global-set-key [f10]		'preferred-find-tag-at-point)
+(global-set-key "\M-."		'preferred-find-tag)
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
 (global-set-key [f20] 'pop-tag-mark)
@@ -194,14 +219,6 @@ Simple version."
 
 (global-set-key "\C-c8" '80-scan)
 (global-set-key "\C-c9" '80-cleanup) ;; shift-8 and ctrl-8 did not work
-
-(when (not running-xemacs)
-  (defun xref-find-def ()
-    "Call `xref-find-definition' but always prompt for identifier."
-    (interactive)
-    (let ((current-prefix-arg t))
-      (call-interactively 'xref-find-definitions)))
-  (global-set-key "\M-." 'xref-find-def))
 
 (defun lxr-or-ogrok-at-point ()
   (interactive)

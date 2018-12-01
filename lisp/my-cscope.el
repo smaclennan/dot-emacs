@@ -42,7 +42,7 @@ Each clause is (FEATURE BODY...)."
     (when (or (featurep (car x)) (fboundp (car x)))
       (return (cons 'progn (cdr x))))))
 
-(defun mcs-dir ()
+(defun mcs-dir (&optional no-error)
   "Find the cscope.out file directory. Use `my-cscope-dir' if
 set, else start looking at `default-directory'."
   (let ((dir (if my-cscope-dir my-cscope-dir default-directory)))
@@ -54,7 +54,9 @@ set, else start looking at `default-directory'."
 	  (throw 'found dir))
 	;; This removes the last directory
 	(setq dir (file-name-directory (directory-file-name dir))))
-      (error "No cscope.out file found."))))
+      (unless no-error
+	(error "No cscope.out file found."))
+      nil)))
 
 (defun mcs-parse-output (mode)
   "Deal with XEmacs vs GNU Emacs differences in compile"
