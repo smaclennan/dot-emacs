@@ -15,6 +15,7 @@
 // #endif, #elif, or #else.  Nested if blocks will not work right.
 #define IGNORE_IF0
 
+// The get_line() line
 #define LINE_SIZE (16 * 1024)
 
 int cscope_mode;
@@ -193,7 +194,8 @@ static void maybe_skip_if0(int c, FILE *fp)
 #endif
 }
 
-// This just deals with preprocessor statements.
+// This deals with things we can't do in __getc()
+//   - preprocessor statements
 static int _getc(FILE *fp)
 {
 	int c;
@@ -201,22 +203,36 @@ static int _getc(FILE *fp)
 again:
 	c = __getc(fp);
 
-	if (c == '\n')
+	switch (c) {
+	case '\n':
 		// don't clear sol
 		return c;
-
-	if (c == '#' && sol) {
-		sol = 0;
-		if ((c = __getc(fp)) == ' ')
-			c = __getc(fp);
-		if (c == 'd') {
-			ungetc(c, fp);
-			return '#';
+	case '#':
+		if (sol) {
+			sol = 0;
+			if ((c = __getc(fp)) == ' ')
+				c = __getc(fp);
+			if (c == 'd') {
+				ungetc(c, fp);
+				return '#';
+			}
+			maybe_skip_if0(c, fp);
+			// skip to EOL
+			while (__getc(fp) != EOF && sol == 0) ;
+			goto again;
 		}
-		maybe_skip_if0(c, fp);
-		// skip to EOL
-		while (__getc(fp) != EOF && sol == 0) ;
-		goto again;
+		break;
+#if 0
+		// Hmmm... problems with typedef (*func)()
+	case '(':
+		count = 1;
+		while (count > 0 && (c = __getc(fp)) != EOF)
+			if (c == ')') --count;
+			else if (c == '(') ++count;
+		ungetc(c, fp);
+		c = '(';
+		break;
+#endif
 	}
 
 	sol = 0;
@@ -321,7 +337,7 @@ again:
 		} else if (c == '{') {
 			*p++ = '{';
 			// for enums we need the body
-			if (strncmp(str, "enum", 4)) {
+			if (strncmp(str, "enum", 4) || strchr(str, '(')) {
 				skip_body(fp);
 				*p++ = '}';
 			}
@@ -349,32 +365,17 @@ static int try_match_func(char *line, char *func, FILE *fp)
 	memcpy(func, line + match[1].rm_so, len);
 	func[len] = 0;
 
-	// Try to find the closing bracket
-	int count = 1;
-	char *p = line + match[1].rm_eo;
+	char *p = line + match[0].rm_eo;
 	if (*p == ' ') ++p;
-	assert(*p == '(');
-	++p;
-keep_looking:
-	while (*p && count > 0) {
-		if (*p == ')')
-			--count;
-		else if (*p == '(')
-			++count;
-		++p;
-	}
-	if (count) {
-		if (!get_line(line, LINE_SIZE, fp))
-			return 2; // count as reference
-		p = line;
-		goto keep_looking;
-	}
-	if (*p == ' ') ++p;
-	if (*p == ';') return 2; // reference
+	if (*p == ';')
+		return 2; //forward reference
+	if (*p == '{')
+		return 1; // func - normal case
 
-	while (strchr(line, '{') == NULL)
+	// Look for {. This is to remove old-school arg definitions
+	while (!strchr(line, '{'))
 		if (!get_line(line, LINE_SIZE, fp))
-			return 2; // count as reference
+			return 1;
 
 	return 1;
 }
