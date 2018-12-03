@@ -136,7 +136,7 @@ Simple version."
 
 ;;{{{ Keys
 
-(defvar preferred-tags 'tags
+(defvar preferred-tags 'motley
   "* Can be tags or cscope or motley.
 If set to cscope or motley and the out file is not found falls
 back to tags.")
