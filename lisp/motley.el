@@ -29,22 +29,6 @@ Each clause is (FEATURE BODY...)."
     (when (or (featurep (car x)) (fboundp (car x)))
       (return (cons 'progn (cdr x))))))
 
-(defun motley-dir (&optional no-error)
-  "Find the motley.out file directory. Use `motley-dir' if
-set, else start looking at `default-directory'."
-  (let ((dir (if motley-dir motley-dir default-directory)))
-    ;; Sanitize the directory
-    (setq dir (expand-file-name (file-name-as-directory dir)))
-    (catch 'found
-      (while (not (equal dir "/"))
-	(when (file-exists-p (concat dir "motley.out"))
-	  (throw 'found dir))
-	;; This removes the last directory
-	(setq dir (file-name-directory (directory-file-name dir))))
-      (unless no-error
-	(error "No motley.out file found."))
-      nil)))
-
 (defun motley-parse-output (mode)
   "Deal with XEmacs vs GNU Emacs differences in compile"
   (compilation-mode mode)
@@ -65,6 +49,23 @@ set, else start looking at `default-directory'."
    (xemacs (push-tag-mark))
    (xref-push-marker-stack (xref-push-marker-stack))
    (emacs (ring-insert find-tag-marker-ring (point-marker)))))
+
+;;;###autoload
+(defun motley-dir (&optional no-error)
+  "Find the motley.out file directory. Use `motley-dir' if
+set, else start looking at `default-directory'."
+  (let ((dir (if motley-dir motley-dir default-directory)))
+    ;; Sanitize the directory
+    (setq dir (expand-file-name (file-name-as-directory dir)))
+    (catch 'found
+      (while (not (equal dir "/"))
+	(when (file-exists-p (concat dir "motley.out"))
+	  (throw 'found dir))
+	;; This removes the last directory
+	(setq dir (file-name-directory (directory-file-name dir))))
+      (unless no-error
+	(error "No motley.out file found."))
+      nil)))
 
 ;;;###autoload
 (defun motley (&optional sym)
