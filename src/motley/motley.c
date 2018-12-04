@@ -28,6 +28,43 @@ static int verbose;
 
 static regex_t func_re;
 
+#define MAX_PEEK 4
+static int peek_buf[MAX_PEEK];
+static int peeked;
+
+static int getch(FILE *fp)
+{
+	if (peeked > 0)
+		return peek_buf[--peeked];
+	return getc(fp);
+}
+
+static void ungetch(int c, FILE *fp)
+{
+	ungetc(c, fp);
+}
+
+static char *peek(char *str, int len, FILE *fp)
+{
+	assert(len <= MAX_PEEK);
+
+	char *ptr = str;
+
+	while (len > 0) {
+		int c = getc(fp);
+		if (c == EOF)
+			break;
+		peek_buf[--len] = c;
+		++peeked;
+		*ptr++ = c;
+	}
+	*ptr = 0;
+
+	return str;
+}
+#undef getc
+#define getc bogus
+
 static inline int ishex(int c)
 {
 	switch (c) {
@@ -46,17 +83,17 @@ static void quote(FILE *fp)
 	int c;
 
 again:
-	c = getc(fp);
+	c = getch(fp);
 
 	switch (c) {
 	case '0' ... '7':
-		while ((c = getc(fp)) != EOF && (c >= '0' && c <= '7')) ;
-		ungetc(c, fp); // we read one too far
+		while ((c = getch(fp)) != EOF && (c >= '0' && c <= '7')) ;
+		ungetch(c, fp); // we read one too far
 		break;
 	case 'x':
 	case 'X':
-		while ((c = getc(fp)) != EOF && ishex(c)) ;
-		ungetc(c, fp); // we read one too far
+		while ((c = getch(fp)) != EOF && ishex(c)) ;
+		ungetch(c, fp); // we read one too far
 		break;
 	case '\r':
 		goto again;
@@ -73,7 +110,7 @@ static void skip_comments(FILE *fp)
 	int state = 0;
 	int c;
 
-	while (count > 0 && (c = getc(fp)) != EOF) {
+	while (count > 0 && (c = getch(fp)) != EOF) {
 		if (c == '\n')
 			++cur_line;
 		switch (state) {
@@ -116,7 +153,7 @@ static int __getc(FILE *fp)
 	int c;
 
 again:
-	c = getc(fp);
+	c = getch(fp);
 	switch (c) {
 	case '\n':
 		++cur_line;
@@ -130,8 +167,8 @@ again:
 	case '\t':
 		if (sol)
 			goto again;
-		while ((c = getc(fp)) == ' ' || c == '\t' || c == '\r') ;
-		ungetc(c, fp); // we read one too far
+		while ((c = getch(fp)) == ' ' || c == '\t' || c == '\r') ;
+		ungetch(c, fp); // we read one too far
 		if (c == '\n')
 			goto again;
 		c = ' ';
@@ -140,30 +177,30 @@ again:
 		quote(fp);
 		goto again;
 	case '/': // possible comment
-		c = getc(fp);
+		c = getch(fp);
 		if (c == '/') {
-			while ((c = getc(fp)) != '\n' && c != EOF) ;
-			ungetc('\n', fp); // deal with \n
+			while ((c = getch(fp)) != '\n' && c != EOF) ;
+			ungetch('\n', fp); // deal with \n
 			goto again;
 		} else if (c == '*') {
 			skip_comments(fp);
 			goto again;
 		}
-		ungetc(c, fp);
+		ungetch(c, fp);
 		c = '/';
 		break;
 	case '"':
-		while ((c = getc(fp)) != '"' && c != EOF) {
+		while ((c = getch(fp)) != '"' && c != EOF) {
 			if (c == '\\') // still must deal with backquotes
 				quote(fp);
 		}
 		goto again;
 	case '\'': ;
-		c = getc(fp);
+		c = getch(fp);
 		do {
 			if (c == '\\')
 				quote(fp);
-			c = getc(fp);
+			c = getch(fp);
 		} while (c != '\'' && c != EOF);
 		goto again;
 	case '#':
@@ -174,8 +211,6 @@ again:
 	sol = 0;
 	return c;
 }
-#undef getc
-#define getc bogus
 
 static void maybe_skip_if0(int c, FILE *fp)
 {
@@ -194,10 +229,26 @@ static void maybe_skip_if0(int c, FILE *fp)
 #endif
 }
 
+static void skip_body(FILE *fp)
+{
+	int count = 1;
+	int c;
+
+	while (count > 0 && (c = __getc(fp)) != EOF)
+		if (c == '{')
+			++count;
+		else if (c == '}')
+			--count;
+	ungetc(c, fp);
+}
+
 // This deals with things we can't do in __getc()
 //   - preprocessor statements
+//   - body {}
 static int _getc(FILE *fp)
 {
+	static int saw_enum;
+	char str[4];
 	int c;
 
 again:
@@ -206,6 +257,7 @@ again:
 	switch (c) {
 	case '\n':
 		// don't clear sol
+		saw_enum = 0;
 		return c;
 	case '#':
 		if (sol) {
@@ -213,7 +265,7 @@ again:
 			if ((c = __getc(fp)) == ' ')
 				c = __getc(fp);
 			if (c == 'd') {
-				ungetc(c, fp);
+				ungetch(c, fp);
 				return '#';
 			}
 			maybe_skip_if0(c, fp);
@@ -222,6 +274,17 @@ again:
 			goto again;
 		}
 		break;
+	case 'e':
+		if (sol)
+			saw_enum = strcmp(peek(str, 3, fp), "num") == 0;
+		break;
+	case '(':
+		saw_enum = 0;
+		break;
+	case '{':
+		if (!saw_enum)
+			skip_body(fp);
+		break;
 #if 0
 		// Hmmm... problems with typedef (*func)()
 	case '(':
@@ -229,7 +292,7 @@ again:
 		while (count > 0 && (c = __getc(fp)) != EOF)
 			if (c == ')') --count;
 			else if (c == '(') ++count;
-		ungetc(c, fp);
+		ungetch(c, fp);
 		c = '(';
 		break;
 #endif
@@ -237,18 +300,6 @@ again:
 
 	sol = 0;
 	return c;
-}
-
-static void skip_body(FILE *fp)
-{
-	int count = 1;
-	int c;
-
-	while (count > 0 && (c = _getc(fp)) != EOF)
-		if (c == '{')
-			++count;
-		else if (c == '}')
-			--count;
 }
 
 static void strip_attributes(char *line, char **p)
@@ -334,13 +385,6 @@ again:
 				return NULL;
 			// need more - keep going
 			*p++ = ' ';
-		} else if (c == '{') {
-			*p++ = '{';
-			// for enums we need the body
-			if (strncmp(str, "enum", 4) || strchr(str, '(')) {
-				skip_body(fp);
-				*p++ = '}';
-			}
 		} else {
 			*p++ = c;
 			--plen;
