@@ -28,40 +28,16 @@ static int verbose;
 
 static regex_t func_re;
 
-#define MAX_PEEK 4
-static int peek_buf[MAX_PEEK];
-static int peeked;
-
-static int getch(FILE *fp)
+static inline int getch(FILE *fp)
 {
-	if (peeked > 0)
-		return peek_buf[--peeked];
 	return getc(fp);
 }
 
-static void ungetch(int c, FILE *fp)
+static inline void ungetch(int c, FILE *fp)
 {
 	ungetc(c, fp);
 }
 
-static char *peek(char *str, int len, FILE *fp)
-{
-	assert(len <= MAX_PEEK);
-
-	char *ptr = str;
-
-	while (len > 0) {
-		int c = getc(fp);
-		if (c == EOF)
-			break;
-		peek_buf[--len] = c;
-		++peeked;
-		*ptr++ = c;
-	}
-	*ptr = 0;
-
-	return str;
-}
 #undef getc
 #define getc bogus
 
@@ -247,8 +223,7 @@ static void skip_body(FILE *fp)
 //   - body {}
 static int _getc(FILE *fp)
 {
-	static int saw_enum;
-	char str[4];
+	static int state;
 	int c;
 
 again:
@@ -257,7 +232,7 @@ again:
 	switch (c) {
 	case '\n':
 		// don't clear sol
-		saw_enum = 0;
+		state = 0;
 		return c;
 	case '#':
 		if (sol) {
@@ -276,13 +251,13 @@ again:
 		break;
 	case 'e':
 		if (sol)
-			saw_enum = strcmp(peek(str, 3, fp), "num") == 0;
+			state = 1;
 		break;
 	case '(':
-		saw_enum = 0;
+		state = 0;
 		break;
 	case '{':
-		if (!saw_enum)
+		if (state != 5)
 			skip_body(fp);
 		break;
 #if 0
@@ -296,6 +271,21 @@ again:
 		c = '(';
 		break;
 #endif
+	}
+
+	switch (state) {
+	case 1:
+		state = 2;
+		break;
+	case 2:
+		state = c == 'n' ? 3 : 0;
+		break;
+	case 3:
+		state = c == 'u' ? 4 : 0;
+		break;
+	case 4:
+		state = c == 'm' ? 5 : 0;
+		break;
 	}
 
 	sol = 0;
@@ -410,6 +400,17 @@ static int try_match_func(char *line, char *func, FILE *fp)
 	func[len] = 0;
 
 	char *p = line + match[0].rm_eo;
+
+	// skip the args
+	int count = 1;
+	while (count > 0 && *p) {
+		if (*p == ')')
+			--count;
+		else if (*p == '(')
+			++count;
+		++p;
+	}
+
 	if (*p == ' ') ++p;
 	if (*p == ';')
 		return 2; //forward reference
