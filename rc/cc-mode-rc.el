@@ -259,11 +259,12 @@ actually update the associated `compile-command' variable."
 
 (defun open-helper(fname flags &optional mode)
   "Helper for C open() function.
-Flags are: r = read, w = write, rw = read + write,
+FLAGS are: r = read, w = write, rw = read + write,
 	   c = create, t = truncate, a = append.
 The x flag adds exit(1) on error, else it returns -1.
-Default flags value is read only."
-  (interactive "sFname: \nsFlags [rwctax]: ")
+And you can add b for binary if you must.
+Default FLAGS value is read only."
+  (interactive "sFname: \nsFlags [rwctaxb]: ")
   (let (out (rw 0) exit start mark end)
     (dolist (f (string-to-list flags))
       (cond
@@ -272,6 +273,7 @@ Default flags value is read only."
        ((eq f ?c) (setq out (concat out " | O_CREAT") mode "0644"))
        ((eq f ?t) (setq out (concat out " | O_TRUNC")))
        ((eq f ?a) (setq out (concat out " | O_APPEND")))
+       ((eq f ?b) (setq out (concat out " | O_BINARY")))
        ((eq f ?x) (setq exit t))
        (t (error "Invalid flag %c" f))))
     (cond
