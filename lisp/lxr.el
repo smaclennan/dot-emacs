@@ -118,15 +118,6 @@ You should never need to set this....")
    (require 'extent)
 
    (defsubst region-exists-p () mark-active)
-
-   (defun push-tag-mark ()
-     (let ((marker (make-marker)))
-       (set-marker marker (point))
-       (my-feature-cond
-	 (xref-push-marker-stack
-	  (xref-push-marker-stack marker))
-	 (t
-	  (ring-insert find-tag-marker-ring marker)))))
    ))
 
 (defun lxr-word-at-point ()

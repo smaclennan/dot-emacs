@@ -27,10 +27,4 @@ Each clause is (FEATURE BODY...)."
   (t ;; Must be a macro to work
    (defmacro my-interactive-p () `(called-interactively-p 'interactive))))
 
-(defun my-do-compile (cmd)
-  (save-some-buffers (not compilation-ask-about-save) nil)
-  (my-feature-cond
-    (xemacs (compile-internal cmd "No more errors"))
-    (t (compilation-start cmd))))
-
 (provide 'sam-common)

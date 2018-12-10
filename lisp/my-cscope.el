@@ -35,13 +35,6 @@
 (require 'compile)
 (require 'etags)
 
-(defmacro mcs-feature-cond (&rest clauses)
-  "Test CLAUSES for feature or function at compile time.
-Each clause is (FEATURE BODY...)."
-  (dolist (x clauses)
-    (when (or (featurep (car x)) (fboundp (car x)))
-      (return (cons 'progn (cdr x))))))
-
 (defun mcs-dir (&optional no-error)
   "Find the cscope.out file directory. Use `my-cscope-dir' if
 set, else start looking at `default-directory'."
@@ -57,27 +50,6 @@ set, else start looking at `default-directory'."
       (unless no-error
 	(error "No cscope.out file found."))
       nil)))
-
-(defun mcs-parse-output (mode)
-  "Deal with XEmacs vs GNU Emacs differences in compile"
-  (compilation-mode mode)
-  (mcs-feature-cond
-   (xemacs
-    (goto-char (point-min))
-    (compilation-parse-errors nil nil))
-   (emacs
-    ;; I tried to use compilation but it only worked 90% of the time.
-    (setq buffer-read-only nil)
-    (compilation--parse-region (point-min) (point-max))
-    (setq buffer-read-only t)))
-  (goto-char (point-min)))
-
-(defun mcs-push-tag-mark ()
-  "Deal with, mainly GNU Emacs, push-tag-mark differences"
-  (mcs-feature-cond
-   (xemacs (push-tag-mark))
-   (xref-push-marker-stack (xref-push-marker-stack))
-   (emacs (ring-insert find-tag-marker-ring (point-marker)))))
 
 (defconst mcs-prompts
   '("0 Find this C symbol"
@@ -138,9 +110,9 @@ The cscope command run is:
 	(setq count (1+ count))
 	(replace-match (concat (match-string 1) ":" (match-string 3) ":1 " (match-string 2))))
 
-      (mcs-parse-output "cscope"))
+      (my-compilation-parse "cscope"))
 
-    (mcs-push-tag-mark)
+    (push-tag-mark)
     (display-buffer "*cscope*" '(nil (window-height . 16)))
     (when (eq count 1) (first-error))))
 

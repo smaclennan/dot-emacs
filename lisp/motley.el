@@ -19,36 +19,6 @@
 (defvar motley-dir nil "* Directory to start looking for motley files in.")
 
 (require 'cl)
-(require 'compile)
-(require 'etags)
-
-(defmacro motley-feature-cond (&rest clauses)
-  "Test CLAUSES for feature or function at compile time.
-Each clause is (FEATURE BODY...)."
-  (dolist (x clauses)
-    (when (or (featurep (car x)) (fboundp (car x)))
-      (return (cons 'progn (cdr x))))))
-
-(defun motley-parse-output (mode)
-  "Deal with XEmacs vs GNU Emacs differences in compile"
-  (compilation-mode mode)
-  (motley-feature-cond
-   (xemacs
-    (goto-char (point-min))
-    (compilation-parse-errors nil nil))
-   (emacs
-    ;; I tried to use compilation but it only worked 90% of the time.
-    (setq buffer-read-only nil)
-    (compilation--parse-region (point-min) (point-max))
-    (setq buffer-read-only t)))
-  (goto-char (point-min)))
-
-(defun motley-push-tag-mark ()
-  "Deal with, mainly GNU Emacs, push-tag-mark differences"
-  (motley-feature-cond
-   (xemacs (push-tag-mark))
-   (xref-push-marker-stack (xref-push-marker-stack))
-   (emacs (ring-insert find-tag-marker-ring (point-marker)))))
 
 ;;;###autoload
 (defun motley-dir (&optional no-error)
@@ -86,9 +56,9 @@ or use `next-error' to go through the results."
       (erase-buffer)
       (insert cmd "\n\n")
       (call-process-shell-command cmd nil t)
-      (motley-parse-output "motley")
+      (my-compilation-parse "motley")
       (setq count (count-lines (point-min) (point-max))))
-    (motley-push-tag-mark)
+    (push-tag-mark)
     (display-buffer "*motley*" '(nil (window-height . 16)))
     (when (eq count 3) (first-error))))
 
