@@ -36,7 +36,7 @@ int do_lookup(const char *sym)
 	while (fgets(line, sizeof(line), fp))
 		if (*line == '@')
 			strcpy(fname, line + 1);
-		else if (strncmp(line, sym, len) == 0) {
+		else if (strncmp(line, sym, len) == 0 && line[len] == ' ') {
 			int lineno = strtol(line + len, &e, 10);
 			if (lineno > 0) {
 				if (*e == ' ') ++e;
