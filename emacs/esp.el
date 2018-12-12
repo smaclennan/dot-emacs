@@ -133,7 +133,7 @@ instead, uses tag around or before point."
 (defun push-tag-mark ()
   (my-feature-cond
     (xref-push-marker-stack (xref-push-marker-stack))
-    (emacs (ring-insert find-tag-marker-ring (point-marker)))))
+    (t (ring-insert find-tag-marker-ring (point-marker)))))
 
 ;; Hacks for Emacs 23
 (when (eq emacs-major-version 23)
