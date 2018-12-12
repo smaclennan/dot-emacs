@@ -78,7 +78,8 @@
 ;; Diary is part of calendar
 
 ;; Handy function for those who work Monday to Friday
-(defun diary-workday (date) (memq (calendar-day-of-week date) '(1 2 3 4 5)))
+(defun diary-workday (&optional time)
+  (memq (nth 6 (decode-time time)) '(1 2 3 4 5)))
 
 (setq diary-comment-start "#")
 
