@@ -346,7 +346,9 @@ again:
 			// End of work specific
 
 			*p = 0;
-			strip_attributes(str, &p);
+			if (*str != '#')
+				// attributes on defines are generally safe
+				strip_attributes(str, &p);
 
 			// This can happen with 'code; // comment'
 			if (*(p - 1) == ' ')
@@ -565,13 +567,20 @@ static void handle_enum(char *line)
 
 static void handle_struct(char *line)
 {
-	char sym[128];
+	char sym[128], *e;
 
 	char *p = get_sym(line + 6, sym);
 
-	if (strchr(p, '{')) {
+	if ((e = strchr(p, '{'))) {
 		// struct definition
-		out_sym('s', lineno, sym);
+		if (*sym)
+			out_sym('s', lineno, sym);
+		++e;
+		if (*e == '}') ++e;
+
+		get_sym(e, sym);
+		if (*sym)
+			out_sym('g', lineno, sym);
 		return;
 	}
 
@@ -613,6 +622,8 @@ static int process_one(const char *fname)
 			handle_struct(line);
 		} else if (strncmp(line, "enum", 4) == 0) {
 			handle_enum(line);
+		} else if (strncmp(line, "namespace", 9) == 0) {
+			// silently ignore namespace entries
 		} else if (!process_globals(line)) {
 			fprintf(stderr, "%s:%d Hmmm %s\n", cur_fname, lineno, line);
 		}
@@ -682,7 +693,8 @@ int main(int argc, char *argv[])
 		return do_lookup(argv[optind]);
 	}
 
-	int rc = regcomp(&func_re, "(_*[a-zA-Z][a-zA-Z0-9_]*) ?\\(", REG_EXTENDED);
+	// Note: (asctime)(const struct tm *t)
+	int rc = regcomp(&func_re, "\\(?(_*[a-zA-Z][a-zA-Z0-9_]*)\\)? ?\\(", REG_EXTENDED);
 	if (rc) {
 		char err[100];
 		regerror(rc, &func_re, err, sizeof(err));
