@@ -10,9 +10,7 @@
 #include <regex.h>
 #include "motley.h"
 
-// If this is defined, try to ignore #if 0 blocks that are outside of
-// bodies. We make a half hearted attempt, we just go to the first
-// #endif, #elif, or #else.  Nested if blocks will not work right.
+// If this is defined, try to ignore #if 0 blocks that are outside of bodies.
 #define IGNORE_IF0
 
 // The get_line() line
@@ -194,12 +192,22 @@ static void maybe_skip_if0(int c, FILE *fp)
 	if (c != 'i' || __getc(fp) != 'f' || __getc(fp) != ' ' || __getc(fp) != '0')
 		return;
 
-	while ((c = __getc(fp)) != EOF)
+	int count = 1;
+	while (count > 0 && (c = __getc(fp)) != EOF)
 		if (c == '#' && sol) {
 			c = __getc(fp);
-			if (c == 'e') {
+			if (c == 'i') {
+				if (__getc(fp) == 'f')
+					++count;
+			} else if (c == 'e') {
 				// #endif or #elif or #else
-				return;
+				if ((c = __getc(fp) == 'n'))
+					--count;
+				else if (c == 'l' && __getc(fp) == 's') {
+					if (count == 1)
+						// our else
+						--count;
+				}
 			}
 		}
 #endif
