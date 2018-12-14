@@ -19,7 +19,7 @@ QUIET_RM      = $(Q:@=@echo    '     RM       '$@;)
 
 all: motley
 
-motley: motley.c output.c lookup.c
+motley: motley.c lookup.c
 	$(QUIET_CC)$(CC) -o $@ $(CFLAGS) $+
 
 install: motley

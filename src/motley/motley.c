@@ -18,12 +18,24 @@
 
 int verbose;
 
+static FILE *out;
 static const char *cur_fname; // for debugging save the current filename
 static int cur_line;
 static int lineno;
 static int sol;
 
 static regex_t func_re;
+
+static void out_sym(char type, int lineno, const char *sym)
+{
+	if (!*sym) {
+		if (verbose && type != 'e' && type != 'g') // SAM DBG
+			fprintf(stderr, "%s:%d empty sym %c\n", cur_fname, lineno, type);
+		return;
+	}
+
+	fprintf(out, "%s %d %c\n", sym, lineno, type);
+}
 
 static inline int getch(FILE *fp)
 {
@@ -441,7 +453,7 @@ static void add_file(const char *fname)
 	lineno = 0;
 	sol = 1;
 
-	out_file(fname);
+	fprintf(out, "@%s\n", fname);
 }
 
 /* Returns where it stopped in in */
@@ -708,7 +720,11 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	out_init();
+	out = fopen("motley.out", "w");
+	if (!out) {
+		perror("motley.out");
+		exit(1);
+	}
 
 	if (optind == argc) {
 		FILE *fp = fopen("motley.files", "r");
@@ -730,5 +746,17 @@ int main(int argc, char *argv[])
 		for (int arg = optind; arg < argc; ++arg)
 			process_one(argv[arg]);
 
-	return out_fini();
+	rc = 0; // reset
+
+	if (ferror(out)) {
+		perror("error motley.out");
+		rc = 1;
+	}
+
+	if (fclose(out)) {
+		perror("close motley.out");
+		rc = 1;
+	}
+
+	return rc;
 }
