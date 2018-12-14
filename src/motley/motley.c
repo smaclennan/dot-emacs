@@ -8,7 +8,6 @@
 #include <errno.h>
 #include <assert.h>
 #include <regex.h>
-#include "motley.h"
 
 // If this is defined, try to ignore #if 0 blocks that are outside of bodies.
 #define IGNORE_IF0
@@ -674,6 +673,48 @@ static void dump_one(const char *fname, int level)
 	}
 
 	fclose(fp);
+}
+
+static int do_lookup(const char *sym)
+{
+	static char *types[] = {
+		"$()",
+		"# define",
+		"t typedef",
+		"s struct",
+		"e enum",
+		"g global",
+		"X unknown"
+	};
+
+	char fname[256];
+	int i, rc = 1, len = strlen(sym);
+
+	FILE *fp = fopen("motley.out", "r");
+	if (!fp) {
+		perror("motley.out");
+		return 1;
+	}
+
+	char line[256], *e;
+	while (fgets(line, sizeof(line), fp))
+		if (*line == '@')
+			strcpy(fname, line + 1);
+		else if (strncmp(line, sym, len) == 0 && line[len] == ' ') {
+			int lineno = strtol(line + len, &e, 10);
+			if (lineno > 0) {
+				if (*e == ' ') ++e;
+				for (i = 0; i < (sizeof(types) / sizeof(char *)) - 1; ++i)
+					if (*types[i] == *e)
+						break;
+				if ((e = strchr(fname, '\n'))) *e = 0;
+				printf("%s:%d:1    %s%s\n", fname, lineno, sym, types[i] + 1);
+				rc = 0;
+			}
+		}
+
+	fclose(fp);
+	return rc;
 }
 
 int main(int argc, char *argv[])

@@ -14,12 +14,9 @@ Q	      = $(V:1=)
 QUIET_CC      = $(Q:@=@echo    '     CC       '$@;)
 QUIET_RM      = $(Q:@=@echo    '     RM       '$@;)
 
-.c.o:
-	$(QUIET_CC)$(CC) -o $@ -c $(CFLAGS) $<
-
 all: motley
 
-motley: motley.c lookup.c
+motley: motley.c
 	$(QUIET_CC)$(CC) -o $@ $(CFLAGS) $+
 
 install: motley
