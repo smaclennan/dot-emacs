@@ -16,13 +16,12 @@
 // The get_line() line
 #define LINE_SIZE (16 * 1024)
 
-int cscope_mode;
+int verbose;
 
 static const char *cur_fname; // for debugging save the current filename
 static int cur_line;
 static int lineno;
 static int sol;
-static int verbose;
 
 static regex_t func_re;
 
@@ -610,12 +609,12 @@ static int process_one(const char *fname)
 	}
 
 	add_file(fname);
-	if (verbose == 1) printf("%s\n", cur_fname);
+	if (verbose > 1) printf("%s\n", cur_fname);
 
 	int rc;
 	char line[LINE_SIZE], func[126];
 	while (get_line(line, sizeof(line), fp)) {
-		if (verbose > 1) printf(">> %s:%d: %s\n", cur_fname, lineno, line);
+		if (verbose > 2) printf(">> %s:%d: %s\n", cur_fname, lineno, line);
 		if (*line == '#') {
 			assert(strncmp(line, "#define", 7) == 0);
 			get_sym(line + 7, func);
@@ -633,7 +632,7 @@ static int process_one(const char *fname)
 		} else if (strncmp(line, "namespace", 9) == 0) {
 			// silently ignore namespace entries
 		} else if (!process_globals(line)) {
-			fprintf(stderr, "%s:%d Hmmm %s\n", cur_fname, lineno, line);
+			if(verbose) fprintf(stderr, "%s:%d Hmmm %s\n", cur_fname, lineno, line);
 		}
 	}
 
@@ -669,11 +668,8 @@ int main(int argc, char *argv[])
 {
 	int c, dump_only = 0, lookup = 0;
 
-	while ((c = getopt(argc, argv, "cDlLv")) != EOF)
+	while ((c = getopt(argc, argv, "DlLv")) != EOF)
 		switch (c) {
-		case 'c':
-			cscope_mode = 1;
-			break;
 		case 'D':
 			++dump_only;
 			break;
@@ -692,10 +688,6 @@ int main(int argc, char *argv[])
 	if (lookup) {
 		if (optind == argc) {
 			fputs("Lookup what?\n", stderr);
-			exit(1);
-		}
-		if (cscope_mode) {
-			fputs("For cscope mode use cscope\n", stderr);
 			exit(1);
 		}
 		return do_lookup(argv[optind]);
@@ -719,11 +711,10 @@ int main(int argc, char *argv[])
 	out_init();
 
 	if (optind == argc) {
-		// This mimics cscope
-		FILE *fp = fopen("cscope.files", "r");
+		FILE *fp = fopen("motley.files", "r");
 		if (fp == NULL) {
 			if (errno != ENOENT) {
-				perror("cscope.files");
+				perror("motley.files");
 				exit(1);
 			}
 		} else {
@@ -739,7 +730,5 @@ int main(int argc, char *argv[])
 		for (int arg = optind; arg < argc; ++arg)
 			process_one(argv[arg]);
 
-	out_fini();
-
-	return 0;
+	return out_fini();
 }
