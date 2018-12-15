@@ -433,16 +433,6 @@ static int try_match_func(char *line, char *func, FILE *fp)
 
 	char *p = line + match[0].rm_eo;
 
-	// skip the args
-	int count = 1;
-	while (count > 0 && *p) {
-		if (*p == ')')
-			--count;
-		else if (*p == '(')
-			++count;
-		++p;
-	}
-
 	if (*p == ' ') ++p;
 	if (*p == ';')
 		return 2; //forward reference
@@ -779,7 +769,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Note: (asctime)(const struct tm *t)
-	int rc = regcomp(&func_re, "\\(?(_*[a-zA-Z][a-zA-Z0-9_]*)\\)? ?\\(", REG_EXTENDED);
+	int rc = regcomp(&func_re, "\\(?(_*[a-zA-Z][a-zA-Z0-9_]*)\\)? ?\\(\\)", REG_EXTENDED);
 	if (rc) {
 		char err[100];
 		regerror(rc, &func_re, err, sizeof(err));
