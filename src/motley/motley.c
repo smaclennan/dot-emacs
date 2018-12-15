@@ -29,7 +29,7 @@ static void out_sym(char type, int lineno, const char *sym)
 {
 	if (!*sym) {
 		if (verbose && type != 'e') // SAM DBG
-			fprintf(stderr, "%s:%d empty sym %c\n", cur_fname, lineno, type);
+			printf("%s:%d empty sym %c\n", cur_fname, lineno, type);
 		return;
 	}
 
@@ -653,7 +653,7 @@ static int process_one(const char *fname)
 		} else if (strncmp(line, "namespace", 9) == 0) {
 			// silently ignore namespace entries
 		} else if (!process_globals(line)) {
-			if(verbose) fprintf(stderr, "%s:%d Hmmm %s\n", cur_fname, lineno, line);
+			if(verbose) printf("%s:%d Hmmm %s\n", cur_fname, lineno, line);
 		}
 	}
 
