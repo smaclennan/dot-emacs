@@ -36,7 +36,7 @@ static void out_sym(char type, int lineno, const char *sym)
 	fprintf(out, "%s %d %c\n", sym, lineno, type);
 }
 
-static inline int getch(FILE *fp)
+static inline int __getch(FILE *fp)
 {
 	return getc(fp);
 }
@@ -67,16 +67,16 @@ static void quote(FILE *fp)
 	int c;
 
 again:
-	c = getch(fp);
+	c = __getch(fp);
 
 	switch (c) {
 	case '0' ... '7':
-		while ((c = getch(fp)) != EOF && (c >= '0' && c <= '7')) ;
+		while ((c = __getch(fp)) != EOF && (c >= '0' && c <= '7')) ;
 		ungetch(c, fp); // we read one too far
 		break;
 	case 'x':
 	case 'X':
-		while ((c = getch(fp)) != EOF && ishex(c)) ;
+		while ((c = __getch(fp)) != EOF && ishex(c)) ;
 		ungetch(c, fp); // we read one too far
 		break;
 	case '\r':
@@ -94,7 +94,7 @@ static void skip_comments(FILE *fp)
 	int state = 0;
 	int c;
 
-	while (count > 0 && (c = getch(fp)) != EOF) {
+	while (count > 0 && (c = __getch(fp)) != EOF) {
 		if (c == '\n')
 			++cur_line;
 		switch (state) {
@@ -132,12 +132,12 @@ static void skip_comments(FILE *fp)
 //   - It deals with the backslash.
 //   - It deals with C comments.
 //   - It deals with double and single quotes.
-static int __getc(FILE *fp)
+static int _getch(FILE *fp)
 {
 	int c;
 
 again:
-	c = getch(fp);
+	c = __getch(fp);
 	switch (c) {
 	case '\n':
 		++cur_line;
@@ -151,7 +151,7 @@ again:
 	case '\t':
 		if (sol)
 			goto again;
-		while ((c = getch(fp)) == ' ' || c == '\t' || c == '\r') ;
+		while ((c = __getch(fp)) == ' ' || c == '\t' || c == '\r') ;
 		ungetch(c, fp); // we read one too far
 		if (c == '\n')
 			goto again;
@@ -161,9 +161,9 @@ again:
 		quote(fp);
 		goto again;
 	case '/': // possible comment
-		c = getch(fp);
+		c = __getch(fp);
 		if (c == '/') {
-			while ((c = getch(fp)) != '\n' && c != EOF) ;
+			while ((c = __getch(fp)) != '\n' && c != EOF) ;
 			ungetch('\n', fp); // deal with \n
 			goto again;
 		} else if (c == '*') {
@@ -174,17 +174,17 @@ again:
 		c = '/';
 		break;
 	case '"':
-		while ((c = getch(fp)) != '"' && c != EOF) {
+		while ((c = __getch(fp)) != '"' && c != EOF) {
 			if (c == '\\') // still must deal with backquotes
 				quote(fp);
 		}
 		goto again;
 	case '\'': ;
-		c = getch(fp);
+		c = __getch(fp);
 		do {
 			if (c == '\\')
 				quote(fp);
-			c = getch(fp);
+			c = __getch(fp);
 		} while (c != '\'' && c != EOF);
 		goto again;
 	case '#':
@@ -199,21 +199,21 @@ again:
 static void maybe_skip_if0(int c, FILE *fp)
 {
 #ifdef IGNORE_IF0
-	if (c != 'i' || __getc(fp) != 'f' || __getc(fp) != ' ' || __getc(fp) != '0')
+	if (c != 'i' || _getch(fp) != 'f' || _getch(fp) != ' ' || _getch(fp) != '0')
 		return;
 
 	int count = 1;
-	while (count > 0 && (c = __getc(fp)) != EOF)
+	while (count > 0 && (c = _getch(fp)) != EOF)
 		if (c == '#' && sol) {
-			c = __getc(fp);
+			c = _getch(fp);
 			if (c == 'i') {
-				if (__getc(fp) == 'f')
+				if (_getch(fp) == 'f')
 					++count;
 			} else if (c == 'e') {
 				// #endif or #elif or #else
-				if ((c = __getc(fp) == 'n'))
+				if ((c = _getch(fp) == 'n'))
 					--count;
-				else if (c == 'l' && __getc(fp) == 's') {
+				else if (c == 'l' && _getch(fp) == 's') {
 					if (count == 1)
 						// our else
 						--count;
@@ -228,7 +228,7 @@ static void skip_body(FILE *fp)
 	int count = 1;
 	int c;
 
-	while (count > 0 && (c = __getc(fp)) != EOF)
+	while (count > 0 && (c = _getch(fp)) != EOF)
 		if (c == '{')
 			++count;
 		else if (c == '}')
@@ -236,18 +236,18 @@ static void skip_body(FILE *fp)
 	ungetc(c, fp);
 }
 
-// This deals with things we can't do in __getc()
+// This deals with things we can't do in _getch()
 //   - preprocessor statements
 //   - body {}
 //   - brackets ()
 //   - array []
-static int _getc(FILE *fp)
+static int getch(FILE *fp)
 {
 	static int state;
 	int c, count;
 
 again:
-	c = __getc(fp);
+	c = _getch(fp);
 
 	switch (c) {
 	case '\n':
@@ -257,15 +257,15 @@ again:
 	case '#':
 		if (sol) {
 			sol = 0;
-			if ((c = __getc(fp)) == ' ')
-				c = __getc(fp);
+			if ((c = _getch(fp)) == ' ')
+				c = _getch(fp);
 			if (c == 'd') {
 				ungetch(c, fp);
 				return '#';
 			}
 			maybe_skip_if0(c, fp);
 			// skip to EOL
-			while (__getc(fp) != EOF && sol == 0) ;
+			while (_getch(fp) != EOF && sol == 0) ;
 			goto again;
 		}
 		break;
@@ -280,14 +280,14 @@ again:
 	case '(':
 		state = 0;
 		count = 1;
-		if ((c = __getc(fp)) == ' ') c = __getc(fp);
+		if ((c = _getch(fp)) == ' ') c = _getch(fp);
 		if (c == '*') { // typedef (*func)
 			ungetch(c, fp);
 			c = '(';
 			break;
 		}
 		ungetch(c, fp);
-		while (count > 0 && (c = __getc(fp)) != EOF)
+		while (count > 0 && (c = _getch(fp)) != EOF)
 			if (c == ')') --count;
 			else if (c == '(') ++count;
 		ungetch(c, fp);
@@ -295,7 +295,7 @@ again:
 		break;
 	case '[':
 		count = 1;
-		while (count > 0 && (c = __getc(fp)) != EOF)
+		while (count > 0 && (c = _getch(fp)) != EOF)
 			if (c == ']') --count;
 			else if (c == '[') ++count;
 		ungetch(c, fp);
@@ -362,7 +362,7 @@ static char *get_line(char *str, int len, FILE *fp)
 again:
 	p = str;
 	plen = len;
-	c = _getc(fp);
+	c = getch(fp);
 	if (c == EOF)
 		return NULL;
 	lineno = cur_line + 1;
@@ -388,7 +388,7 @@ again:
 				// This is to deal with typedef struct foo { bar } foo;
 				if (*(p - 1) != ';') {
 					// need more
-					c = _getc(fp);
+					c = getch(fp);
 					continue;
 				}
 			}
@@ -416,7 +416,7 @@ again:
 				return str;
 			}
 		}
-		c = _getc(fp);
+		c = getch(fp);
 	}
 }
 
@@ -684,7 +684,7 @@ static void dump_one(const char *fname, int level)
 
 	if (level > 1) {
 		int c;
-		while ((c = _getc(fp)) != EOF) {
+		while ((c = getch(fp)) != EOF) {
 			putchar(c);
 		}
 	} else {
