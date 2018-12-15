@@ -15,7 +15,7 @@
 // The get_line() line
 #define LINE_SIZE (16 * 1024)
 
-int verbose;
+static int verbose;
 
 static FILE *out;
 static const char *cur_fname; // for debugging save the current filename
@@ -28,7 +28,7 @@ static regex_t func_re;
 static void out_sym(char type, int lineno, const char *sym)
 {
 	if (!*sym) {
-		if (verbose && type != 'e' && type != 'g') // SAM DBG
+		if (verbose && type != 'e') // SAM DBG
 			fprintf(stderr, "%s:%d empty sym %c\n", cur_fname, lineno, type);
 		return;
 	}
@@ -521,6 +521,13 @@ static int process_globals(char *line)
 		process_globals(p + 1);
 		*p++ = ';';
 		*p = 0;
+	}
+
+	p = strchr(line, '[');
+	if (p) {
+		get_word_backwards(line, p - 1, word);
+		out_sym('g', lineno, word);
+		return 1;
 	}
 
 	p = strchr(line, '=');
