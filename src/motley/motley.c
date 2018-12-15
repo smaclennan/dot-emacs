@@ -590,16 +590,17 @@ static void handle_enum(char *line)
 	}
 }
 
-static void handle_struct(char *line)
+static void handle_struct(char *line, char type)
 {
 	char sym[128], *e;
 
-	char *p = get_sym(line + 6, sym);
+	// we already incremented past struct or union
+	char *p = get_sym(line, sym);
 
 	if ((e = strchr(p, '{'))) {
 		// struct definition
 		if (*sym)
-			out_sym('s', lineno, sym);
+			out_sym(type, lineno, sym);
 		++e;
 		if (*e == '}') ++e;
 
@@ -644,7 +645,9 @@ static int process_one(const char *fname)
 			if (rc == 1)
 				out_sym('$', lineno, func);
 		} else if (strncmp(line, "struct", 6) == 0) {
-			handle_struct(line);
+			handle_struct(line + 6, 's');
+		} else if (strncmp(line, "union", 5) == 0) {
+			handle_struct(line + 5, 'u');
 		} else if (strncmp(line, "enum", 4) == 0) {
 			handle_enum(line);
 		} else if (strncmp(line, "namespace", 9) == 0) {
@@ -689,6 +692,7 @@ static int do_lookup(const char *sym)
 		"# define",
 		"t typedef",
 		"s struct",
+		"u union",
 		"e enum",
 		"g global",
 		"X unknown"
