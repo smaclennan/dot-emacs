@@ -464,6 +464,14 @@ static void add_file(const char *fname)
 	lineno = 0;
 	sol = 1;
 
+	if (out == NULL) {
+		out = fopen("motley.out", "w");
+		if (!out) {
+			perror("motley.out");
+			exit(1);
+		}
+	}
+
 	fprintf(out, "@%s\n", fname);
 }
 
@@ -681,6 +689,7 @@ static void dump_one(const char *fname, int level)
 		return;
 	}
 
+	out = stdout;
 	add_file(fname);
 
 	if (level > 1) {
@@ -784,20 +793,10 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	out = fopen("motley.out", "w");
-	if (!out) {
-		perror("motley.out");
-		exit(1);
-	}
-
 	if (optind == argc) {
+		// first check for motley.files
 		FILE *fp = fopen("motley.files", "r");
-		if (fp == NULL) {
-			if (errno != ENOENT) {
-				perror("motley.files");
-				exit(1);
-			}
-		} else {
+		if (fp) {
 			char line[1024];
 			while (fgets(line, sizeof(line), fp)) {
 				strtok(line, "\r\n");
@@ -805,6 +804,9 @@ int main(int argc, char *argv[])
 			}
 
 			fclose(fp);
+		} else if (errno != ENOENT) {
+			perror("motley.files");
+			exit(1);
 		}
 	} else
 		for (int arg = optind; arg < argc; ++arg)
@@ -812,14 +814,16 @@ int main(int argc, char *argv[])
 
 	rc = 0; // reset
 
-	if (ferror(out)) {
-		perror("error motley.out");
-		rc = 1;
-	}
+	if (out) {
+		if (ferror(out)) {
+			perror("error motley.out");
+			rc = 1;
+		}
 
-	if (fclose(out)) {
-		perror("close motley.out");
-		rc = 1;
+		if (fclose(out)) {
+			perror("close motley.out");
+			rc = 1;
+		}
 	}
 
 	return rc;
