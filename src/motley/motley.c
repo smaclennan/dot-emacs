@@ -239,10 +239,12 @@ static void skip_body(FILE *fp)
 // This deals with things we can't do in __getc()
 //   - preprocessor statements
 //   - body {}
+//   - brackets ()
+//   - array []
 static int _getc(FILE *fp)
 {
 	static int state;
-	int c;
+	int c, count;
 
 again:
 	c = __getc(fp);
@@ -271,24 +273,34 @@ again:
 		if (sol)
 			state = 1;
 		break;
-	case '(':
-		state = 0;
-		break;
 	case '{':
 		if (state != 5)
 			skip_body(fp);
 		break;
-#if 0
-		// Hmmm... problems with typedef (*func)()
 	case '(':
+		state = 0;
 		count = 1;
+		if ((c = __getc(fp)) == ' ') c = __getc(fp);
+		if (c == '*') { // typedef (*func)
+			ungetch(c, fp);
+			c = '(';
+			break;
+		}
+		ungetch(c, fp);
 		while (count > 0 && (c = __getc(fp)) != EOF)
 			if (c == ')') --count;
 			else if (c == '(') ++count;
 		ungetch(c, fp);
 		c = '(';
 		break;
-#endif
+	case '[':
+		count = 1;
+		while (count > 0 && (c = __getc(fp)) != EOF)
+			if (c == ']') --count;
+			else if (c == '[') ++count;
+		ungetch(c, fp);
+		c = '[';
+		break;
 	}
 
 	switch (state) {
