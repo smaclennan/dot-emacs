@@ -322,6 +322,32 @@ again:
 	return c;
 }
 
+static inline int issym(int c)
+{
+	return isalnum(c) || c == '_';
+}
+
+static int get_token(char *token, FILE *fp)
+{
+	int c = getch(fp);
+
+	// keep the # with the #define
+	if (issym(c) || c == '#') {
+		do {
+			*token++ = c;
+			// while we are parsing a sym it is safe to call the
+			// lowest level function. This gets around problems with
+			// NL and sol.
+			c = __getch(fp);
+		} while (issym(c));
+		ungetch(c, fp);
+		*token = 0;
+		return 0;
+	}
+
+	return c;
+}
+
 static void strip_attributes(char *line, char **p)
 {
 	char *s = strstr(line, "__attribute__");
@@ -473,7 +499,7 @@ static char *get_sym(char *in, char *out)
 		++in;
 	if (*in == ' ') ++in;
 
-	while (isalnum(*in) || *in == '_')
+	while (issym(*in))
 		*out++ = *in++;
 	*out = 0;
 
@@ -682,15 +708,28 @@ static void dump_one(const char *fname, int level)
 	out = stdout;
 	add_file(fname);
 
-	if (level > 1) {
-		int c;
-		while ((c = getch(fp)) != EOF) {
-			putchar(c);
-		}
-	} else {
-		char line[LINE_SIZE];
+	char line[LINE_SIZE];
+	int c;
+
+	switch (level) {
+	case 1: // lines
 		while (get_line(line, sizeof(line), fp))
 			printf("%d: %s\n", lineno, line);
+		break;
+	case 2: // tokens
+		while ((c = get_token(line, fp)) != EOF)
+			if (c == 0) // token
+				printf("'%s'", line);
+			else
+				putchar(c);
+		break;
+	case 3: // chars
+		while ((c = getch(fp)) != EOF)
+			putchar(c);
+		putchar('\n');
+		break;
+	default:
+		fprintf(stderr, "Unsupported dump level %d\n", level);
 	}
 
 	fclose(fp);
