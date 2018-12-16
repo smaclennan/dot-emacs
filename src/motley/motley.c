@@ -900,7 +900,7 @@ static int do_lookup(const char *sym)
 		"X unknown"
 	};
 
-	char fname[256];
+	char fname[512];
 	int i, rc = 1, len = strlen(sym);
 
 	FILE *fp = fopen("motley.out", "r");
@@ -930,14 +930,58 @@ static int do_lookup(const char *sym)
 	return rc;
 }
 
+static int do_etags_lookup(const char *sym)
+{
+	char fname[512];
+	int rc = 1, len = strlen(sym);
+
+	FILE *fp = fopen("TAGS", "r");
+	if (!fp) {
+		perror("TAGS");
+		return 1;
+	}
+
+	char line[1024], *p, *e;
+	while (fgets(line, sizeof(line), fp)) {
+		if (*line == '\f') {
+			// next line is filename
+			if (!fgets(fname, sizeof(fname), fp))
+				break;
+			e = strchr(fname, ',');
+			assert(e);
+			*e = 0;
+		} else if ((p = strstr(line, sym))) {
+			if (p != line && (isalnum(*(p - 1)) || *(p - 1) == '_'))
+				continue;
+			e = p + len;
+			if (isalnum(*e) || *e == '_') continue;
+
+			e = strchr(line, 0177);
+			assert(e);
+			*e = 0;
+
+			int lineno = strtol(e + 1, NULL, 10);
+			printf("%s:%d:1    %s %s\n", fname, lineno, sym, line);
+			rc = 0;
+		}
+	}
+
+	fclose(fp);
+	return rc;
+}
+
 int main(int argc, char *argv[])
 {
-	int c, dump_only = 0, lookup = 0;
+	int c, dump_only = 0, lookup = 0, etags_lookup = 0;
 
-	while ((c = getopt(argc, argv, "DlLNv")) != EOF)
+	while ((c = getopt(argc, argv, "DeElLNv")) != EOF)
 		switch (c) {
 		case 'D':
 			++dump_only;
+			break;
+		case 'e':
+		case 'E':
+			etags_lookup = 1;
 			break;
 		case 'l':
 		case 'L':
@@ -953,6 +997,14 @@ int main(int argc, char *argv[])
 			puts("Sorry!");
 			exit(1);
 		}
+
+	if (etags_lookup) {
+		if (optind == argc) {
+			fputs("Lookup what?\n", stderr);
+			exit(1);
+		}
+		return do_etags_lookup(argv[optind]);
+	}
 
 	if (lookup) {
 		if (optind == argc) {
