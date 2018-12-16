@@ -12,6 +12,16 @@
 // If this is defined, try to ignore #if 0 blocks that are outside of bodies.
 #define IGNORE_IF0
 
+// For some reason, Dinkumware likes put brackets around functions
+// that have a pointer. e.g. char *(index)(...)
+#define DINKUMWARE_HACK
+
+#ifdef DINKUMWARE_HACK
+#define FUNC_RE "\\(?(_*[a-zA-Z][a-zA-Z0-9_]*)\\)? ?\\(\\)"
+#else
+#define FUNC_RE "(_*[a-zA-Z][a-zA-Z0-9_]*) ?\\(\\)"
+#endif
+
 // The get_line() line
 #define LINE_SIZE (16 * 1024)
 
@@ -28,7 +38,7 @@ static regex_t func_re;
 static void out_sym(char type, int lineno, const char *sym)
 {
 	if (!*sym) {
-		if (verbose && type != 'e') // SAM DBG
+		if (verbose && type != 'e' && type != 'g') // SAM DBG
 			printf("%s:%d empty sym %c\n", cur_fname, lineno, type);
 		return;
 	}
@@ -277,7 +287,16 @@ again:
 		if (state != 5)
 			skip_body(fp);
 		break;
+#ifdef DINKUMWARE_HACK
+	case '*':
+		state = 6;
+		break;
+#endif
 	case '(':
+#ifdef DINKUMWARE_HACK
+		if (state == 7)
+			break;
+#endif
 		state = 0;
 		count = 1;
 		if ((c = _getch(fp)) == ' ') c = _getch(fp);
@@ -304,7 +323,7 @@ again:
 	}
 
 	switch (state) {
-	case 1:
+	case 1: // e
 		state = 2;
 		break;
 	case 2:
@@ -316,6 +335,14 @@ again:
 	case 4:
 		state = c == 'm' ? 5 : 0;
 		break;
+#ifdef DINKUMWARE_HACK
+	case 6: // *
+		state = 7;
+		break;
+	case 7:
+		state = 0;
+		break;
+#endif
 	}
 
 	sol = 0;
@@ -808,7 +835,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Note: (asctime)(const struct tm *t)
-	int rc = regcomp(&func_re, "\\(?(_*[a-zA-Z][a-zA-Z0-9_]*)\\)? ?\\(\\)", REG_EXTENDED);
+	int rc = regcomp(&func_re, FUNC_RE, REG_EXTENDED);
 	if (rc) {
 		char err[100];
 		regerror(rc, &func_re, err, sizeof(err));
