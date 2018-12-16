@@ -115,6 +115,11 @@ static int peek(const char *str, int len)
 	return 0;
 }
 
+static int peek_one(char c)
+{
+	return *gptr == c;
+}
+
 static int close_file(void)
 {
 	munmap(gmem, glen);
@@ -172,6 +177,15 @@ static int peek(const char *str, int len)
 	}
 
 	return i == len;
+}
+
+static int _getch(void);
+
+static int peek_one(char c)
+{
+	int p = _getch();
+	ungetch(p);
+	return p == c;
 }
 
 static int close_file(void)
@@ -409,24 +423,26 @@ again:
 	case 'e':
 		if (sol)
 			if (peek("num", 3))
-				state = 5;
+				state = 1;
 		break;
 	case '{':
-		if (state != 5)
+		if (state != 1)
 			skip_body();
+		state = 0;
 		break;
 #ifdef DINKUMWARE_HACK
 	case '*':
-		state = 6;
+		if (peek_one('('))
+			state = 2;
 		break;
-#endif
 	case '(':
-#ifdef DINKUMWARE_HACK
-		if (state == 7)
+		if (state == 2) {
+			state = 0;
 			break;
+		}
+#else
+	case '('
 #endif
-		state = 0;
-		count = 1;
 		if ((c = _getch()) == ' ') c = _getch();
 		if (c == '*') { // typedef (*func)
 			ungetch(c);
@@ -434,6 +450,7 @@ again:
 			break;
 		}
 		ungetch(c);
+		count = 1;
 		while (count > 0 && (c = _getch()) != EOF)
 			if (c == ')') --count;
 			else if (c == '(') ++count;
@@ -448,17 +465,6 @@ again:
 		ungetch(c);
 		c = '[';
 		break;
-	}
-
-	switch (state) {
-#ifdef DINKUMWARE_HACK
-	case 6: // *
-		state = 7;
-		break;
-	case 7:
-		state = 0;
-		break;
-#endif
 	}
 
 	sol = 0;
