@@ -108,6 +108,13 @@ static inline void _ungetch(int c, int line)
 	}
 }
 
+static int peek(const char *str, int len)
+{
+	if ((gptr + len) <= gend)
+		return memcmp(gptr, str, len) == 0;
+	return 0;
+}
+
 static int close_file(void)
 {
 	munmap(gmem, glen);
@@ -117,6 +124,10 @@ static int close_file(void)
 #define ungetch(c) _ungetch(c, __LINE__) // SAM DBG
 #else
 static FILE *gfp;
+
+#define MAX_PUSH 4
+static char pushed[MAX_PUSH];
+static int cur_push;
 
 static int open_file(const char *fname)
 {
@@ -130,12 +141,37 @@ static int open_file(const char *fname)
 
 static inline int __getch(void)
 {
+	if (cur_push > 0)
+		return pushed[--cur_push];
+
 	return getc(gfp);
 }
 
 static inline void ungetch(int c)
 {
 	ungetc(c, gfp);
+}
+
+static int peek(const char *str, int len)
+{
+	assert(cur_push == 0);
+	assert(len > 0 && len <= MAX_PUSH);
+
+	int i, j = MAX_PUSH;
+	for (i = 0; i < len; ++i) {
+		pushed[--j] = getc(gfp);
+		if (pushed[j] != str[i])
+			break;
+	}
+
+	if (j == MAX_PUSH - 1)
+		ungetc(pushed[j], gfp);
+	else {
+		memmove(pushed, pushed + j, MAX_PUSH - j);
+		cur_push = MAX_PUSH - j;
+	}
+
+	return i == len;
 }
 
 static int close_file(void)
@@ -372,7 +408,8 @@ again:
 		break;
 	case 'e':
 		if (sol)
-			state = 1;
+			if (peek("num", 3))
+				state = 5;
 		break;
 	case '{':
 		if (state != 5)
@@ -414,18 +451,6 @@ again:
 	}
 
 	switch (state) {
-	case 1: // e
-		state = 2;
-		break;
-	case 2:
-		state = c == 'n' ? 3 : 0;
-		break;
-	case 3:
-		state = c == 'u' ? 4 : 0;
-		break;
-	case 4:
-		state = c == 'm' ? 5 : 0;
-		break;
 #ifdef DINKUMWARE_HACK
 	case 6: // *
 		state = 7;
