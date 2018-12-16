@@ -35,6 +35,9 @@ static int cur_line;
 static int lineno;
 static int sol;
 
+// For debugging - makes it easier to diff against other tools
+static int no_types;
+
 static regex_t func_re;
 
 static void out_sym(char type, int lineno, const char *sym)
@@ -45,7 +48,10 @@ static void out_sym(char type, int lineno, const char *sym)
 		return;
 	}
 
-	fprintf(out, "%s %d %c\n", sym, lineno, type);
+	if (no_types)
+		fprintf(out, "%s %d\n", sym, lineno);
+	else
+		fprintf(out, "%s %d %c\n", sym, lineno, type);
 }
 
 #ifdef USE_MMAP
@@ -928,7 +934,7 @@ int main(int argc, char *argv[])
 {
 	int c, dump_only = 0, lookup = 0;
 
-	while ((c = getopt(argc, argv, "DlLv")) != EOF)
+	while ((c = getopt(argc, argv, "DlLNv")) != EOF)
 		switch (c) {
 		case 'D':
 			++dump_only;
@@ -939,6 +945,9 @@ int main(int argc, char *argv[])
 			break;
 		case 'v':
 			++verbose;
+			break;
+		case 'N':
+			no_types = 1;
 			break;
 		default:
 			puts("Sorry!");
