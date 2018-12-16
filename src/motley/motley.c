@@ -392,9 +392,10 @@ static void skip_body(void)
 //   - body {}
 //   - brackets ()
 //   - array []
+//   - =
 static int getch(void)
 {
-	static int state;
+	static int state, in_define;
 	int c, count;
 
 again:
@@ -403,6 +404,7 @@ again:
 	switch (c) {
 	case '\n':
 		// don't clear sol
+		in_define = 0;
 		state = 0;
 		return c;
 	case '#':
@@ -412,6 +414,7 @@ again:
 				c = _getch();
 			if (c == 'd') {
 				ungetch(c);
+				in_define = 1;
 				return '#';
 			}
 			maybe_skip_if0(c);
@@ -429,6 +432,12 @@ again:
 		if (state != 1)
 			skip_body();
 		state = 0;
+		break;
+	case '=':
+		if (in_define) // in define
+			break;
+		// skip to ;
+		while ((c = getch()) != EOF && c != ';') ;
 		break;
 #ifdef DINKUMWARE_HACK
 	case '*':
