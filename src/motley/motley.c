@@ -452,13 +452,8 @@ again:
 #else
 	case '('
 #endif
-		if ((c = _getch()) == ' ') c = _getch();
-		if (c == '*') { // typedef (*func)
-			ungetch(c);
-			c = '(';
+		if (peek_one('*'))
 			break;
-		}
-		ungetch(c);
 		count = 1;
 		while (count > 0 && (c = _getch()) != EOF)
 			if (c == ')') --count;
