@@ -16,6 +16,9 @@
 ;; Boston, MA 02111-1307, USA.
 
 (defvar motley-prog "motley" "* The motley program.")
+(defvar motley-out "motley.out"
+  "* The motley.out file. Motley supports etags and if this is
+set to TAGS, motley will use that.")
 (defvar motley-dir nil "* Directory to start looking for motley files in.")
 
 (require 'cl)
@@ -29,12 +32,12 @@ set, else start looking at `default-directory'."
     (setq dir (expand-file-name (file-name-as-directory dir)))
     (catch 'found
       (while (not (equal dir "/"))
-	(when (file-exists-p (concat dir "motley.out"))
+	(whe (file-exists-p (concat dir motley-out))
 	  (throw 'found dir))
 	;; This removes the last directory
 	(setq dir (file-name-directory (directory-file-name dir))))
       (unless no-error
-	(error "No motley.out file found."))
+	(error (format "No %s file found." motley-out)))
       nil)))
 
 ;;;###autoload
