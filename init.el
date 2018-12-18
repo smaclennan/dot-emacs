@@ -469,11 +469,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; 13 5 * * * find $HOME/.backup -mtime +7 -delete
 ;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
 
-(my-feature-cond
-  (xemacs (would-like 'backup))
-  (t
-   (setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
-   (setq backup-directory-alist '(("." . "~/.backup")))))
+(setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
+(setq backup-directory-alist '((".*" . "~/.backup")))
 
 ;;; ----------------------------------------------
 ;; ws-trim-mode
