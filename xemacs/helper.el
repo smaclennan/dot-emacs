@@ -89,26 +89,6 @@
 	(message "Check the message log")
       (message "OK"))))
 
-;; -------------------------------------------------------------------------
-;; KSH MODE
-
-;; sh-mode doesn't work too well in XEmacs. It doesn't handle case
-;; labels properly. GNU Emacs handles case labels, but doesn't indent
-;; comments properly. ksh-mode seems to handle case labels and
-;; comments, so let's switch to that if it is available.
-;;
-;; ksh-mode not avaliable in Emacs, and turning it on loses font-lock
-;; and bracket matching... so enable it only for xemacs for now
-
-(defun sh-to-ksh (entry)
-  (when (eq (cdr entry) 'sh-mode)
-    (setcdr entry 'ksh-mode))
-  entry)
-
-;; Convert sh-mode to ksh-mode
-(mapc 'sh-to-ksh auto-mode-alist)
-(mapc 'sh-to-ksh interpreter-mode-alist)
-
 (setq package-get-remote
       ;;'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
       '("ftp.xemacs.org" "/pub/xemacs/xemacs-21.5/experimental/packages"))
