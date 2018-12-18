@@ -3,62 +3,12 @@
 
 (defvar bells-and-whistles nil "*If non-nil, enable all graphical widgets.")
 
-(when nil ;; Disable for now
-  (defvar x-root-size nil "X root window width and height")
-
-  (when (eq window-system 'x)
-    (when (eq x-root-size nil)
-      (let ((wininfo (shell-command-to-string "xwininfo -root"))
-	    width height)
-	(when (string-match "Width: \\([0-9]+\\)" wininfo)
-	  (setq width (string-to-number (match-string 1 wininfo))))
-	(when (string-match "Height: \\([0-9]+\\)" wininfo)
-	  (setq height (string-to-number (match-string 1 wininfo))))
-	(and width height (setq x-root-size (list width height)))))))
-
-;; GNU Emacs
-;;(set-face-attribute 'default nil :family "Input Mono" :foundry "unknown"
-;;		    :slant 'normal :weight 'extra-light :height 98 :width 'normal)
-
 (my-feature-cond
   (xemacs
-   ;; Performance optimizations
-   ;; Use C-Insert and Shift-Insert for clipboard
-   (setq interprogram-cut-function nil
-	 interprogram-paste-function nil)
+   (setq frame-title-format
+	 '("XEmacs " emacs-program-version " " host-name ":"
+	   (buffer-file-name "%f" "%b")))
 
-   (setq shifted-motion-keys-select-region t)
-   (eval-when-compile (would-like 'pending-del))
-   (when (would-like 'pending-del)
-     (setq pending-delete-modeline-string "")
-     (turn-on-pending-delete)))
-  (delete-selection-mode
-   (delete-selection-mode))
-  (emacs
-   (and (< emacs-major-version 23)
-	(would-like 'pc-select)
-	(pc-selection-mode))))
-
-;; -------
-;; Title bar - almost every window system supports a title bar
-;; The first element must be a string... sighhh.
-(defvar emacs-str (concat
-		   (if (featurep 'sxemacs) "S")
-		   (if (featurep 'xemacs)  "X")
-		   "Emacs "
-		   (if running-xemacs emacs-program-version emacs-version)
-		   " " host-name ":"))
-
-(if running-xemacs
-    (setq frame-title-format '("" emacs-str (buffer-file-name "%f" "%b")))
-  (setq frame-title-format '("" emacs-str
-			     (buffer-file-name
-			      (:eval (abbreviate-file-name buffer-file-name))
-			      "%b"))))
-
-;; -------
-(my-feature-cond
-  (xemacs
    ;; Menubar
    (setq menu-accelerator-enabled 'menu-fallback
 	 menu-accelerator-modifiers '(alt))
@@ -72,6 +22,17 @@
 				      (frame-live-p speedbar-frame)
 				      (frame-visible-p speedbar-frame))]
 		      "--"))
+
+   ;; Performance optimizations
+   ;; Use C-Insert and Shift-Insert for clipboard
+   (setq interprogram-cut-function nil
+	 interprogram-paste-function nil)
+
+   (setq shifted-motion-keys-select-region t)
+   (eval-when-compile (would-like 'pending-del))
+   (when (would-like 'pending-del)
+     (setq pending-delete-modeline-string "")
+     (turn-on-pending-delete))
 
    (unless bells-and-whistles
      (setq use-dialog-box nil)
@@ -88,6 +49,17 @@
    ) ;; xemacs
 
   (emacs
+   (setq frame-title-format '("Emacs " emacs-version " " host-name ":"
+			      (buffer-file-name
+			       (:eval (abbreviate-file-name buffer-file-name))
+			       "%b")))
+
+   (if (fboundp 'delete-selection-mode)
+       (delete-selection-mode)
+     (and (< emacs-major-version 23)
+	  (would-like 'pc-select)
+	  (pc-selection-mode)))
+
    (unless bells-and-whistles
      (setq use-dialog-box nil)
      ;; Toolbar
