@@ -54,9 +54,7 @@
 ;; if you need to clean something up at the end.
 (load (concat dot-dir "user-init") t)
 
-;; The standard doesn't support sxemacs
 (setq rcfiles-directory (concat dot-dir "rc/"))
-
 (if (would-like 'rcfiles)
     (rcfiles-register-rc-files)
   (load (concat dot-dir "emacs/rcfiles")))
@@ -482,11 +480,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; ------------------------------------------------------------
 ;; Start the server program
 (unless (or noninteractive running-windoze (string= (user-login-name) "root"))
-  (my-feature-cond
-    (xemacs
-     (gnuserv-start)
-     (setq gnuserv-frame (selected-frame)))
-    (t (server-start))))
+  (server-start))
 
 ;;}}}
 

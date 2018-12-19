@@ -92,3 +92,7 @@
 (setq package-get-remote
       ;;'("ftp.ca.xemacs.org" "/pub/Mirror/xemacs/beta/experimental/packages")))
       '("ftp.xemacs.org" "/pub/xemacs/xemacs-21.5/experimental/packages"))
+
+(defun server-start ()
+  (gnuserv-start)
+  (setq gnuserv-frame (selected-frame)))
