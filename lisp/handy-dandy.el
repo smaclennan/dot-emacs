@@ -174,8 +174,7 @@ non-nil, returns all .el files in `dot-dir'."
 		      "emacs/rcfiles.el" "emacs/hide-copyleft.el"
 		      "emacs/iswitchb.el"
 		      ;; xemacs files that are not mine
-		      "xemacs/frame-utils.el" "xemacs/introspector.el"
-		      "xemacs/ksh-mode.el" "xemacs/time-date.el"
+		      "xemacs/time-date.el"
 		      ;; generated files
 		      "emacs/emacs-loaddefs.el" "lisp/lisp-loaddefs.el"
 		      "lisp/auto-autoloads.el" "lisp/custom-load.el"

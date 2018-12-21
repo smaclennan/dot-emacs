@@ -41,7 +41,16 @@ Note: The hash-func must be the binary version. (e.g. sha1-binary)."
 
     (apply hash-func (concat o-pad (apply hash-func (concat i-pad msg) nil)) nil)))
 
-; (encode-hex-string (hmac "key" "abc" 'sha1-binary 20))
+(defun hmac-sha1-binary (string) (sha1 string nil nil t))
+
+;; Probably not the most efficient
+(defun encode-hex-string (binary)
+  (let ((len (length binary)) str)
+    (loop for i from 0 below len do
+	  (setq str (concat str (format "%02x" (aref binary i)))))
+    str))
+
+; (encode-hex-string (hmac "key" "abc" 'hmac-sha1-binary 20))
 ; => "4fd0b215276ef12f2b3e4c8ecac2811498b656fc"
 
 (provide 'hmac)
