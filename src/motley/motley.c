@@ -8,6 +8,8 @@
 #include <errno.h>
 #include <assert.h>
 #include <regex.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
 
 // If this is defined, try to ignore #if 0 blocks that are outside of bodies.
 #define IGNORE_IF0
@@ -15,8 +17,6 @@
 // For some reason, Dinkumware likes put brackets around functions
 // that have a pointer. e.g. char *(index)(...)
 #define DINKUMWARE_HACK
-
-#define USE_MMAP
 
 #ifdef DINKUMWARE_HACK
 #define FUNC_RE "\\(?(_*[a-zA-Z][a-zA-Z0-9_]*)\\)? ?\\(\\)"
@@ -53,10 +53,6 @@ static void out_sym(char type, int lineno, const char *sym)
 	else
 		fprintf(out, "%s %d %c\n", sym, lineno, type);
 }
-
-#ifdef USE_MMAP
-#include <sys/stat.h>
-#include <sys/mman.h>
 
 static int gfd;
 static char *gmem;
@@ -133,75 +129,6 @@ static int close_file(void)
 }
 
 #define ungetch(c) _ungetch(c, __LINE__) // SAM DBG
-#else
-static FILE *gfp;
-
-#define MAX_PUSH 4
-static char pushed[MAX_PUSH];
-static int cur_push;
-
-static int open_file(const char *fname)
-{
-	gfp = fopen(fname, "r");
-	if (!gfp) {
-		perror(fname);
-		return 1;
-	}
-	return 0;
-}
-
-static inline int __getch(void)
-{
-	if (cur_push > 0)
-		return pushed[--cur_push];
-
-	return getc(gfp);
-}
-
-static inline void ungetch(int c)
-{
-	ungetc(c, gfp);
-}
-
-static int peek(const char *str, int len)
-{
-	assert(cur_push == 0);
-	assert(len > 0 && len <= MAX_PUSH);
-
-	int i, j = MAX_PUSH;
-	for (i = 0; i < len; ++i) {
-		pushed[--j] = getc(gfp);
-		if (pushed[j] != str[i])
-			break;
-	}
-
-	if (j == MAX_PUSH - 1)
-		ungetc(pushed[j], gfp);
-	else {
-		memmove(pushed, pushed + j, MAX_PUSH - j);
-		cur_push = MAX_PUSH - j;
-	}
-
-	return i == len;
-}
-
-static int _getch(void);
-
-static int peek_one(char c)
-{
-	int p = _getch();
-	ungetch(p);
-	return p == c;
-}
-
-static int close_file(void)
-{
-	if (gfp)
-		fclose(gfp);
-	gfp = NULL;
-	return 0;
-}
-#endif
 
 #undef getc
 #define getc bogus
