@@ -32,7 +32,7 @@ set, else start looking at `default-directory'."
     (setq dir (expand-file-name (file-name-as-directory dir)))
     (catch 'found
       (while (not (equal dir "/"))
-	(whe (file-exists-p (concat dir motley-out))
+	(when (file-exists-p (concat dir motley-out))
 	  (throw 'found dir))
 	;; This removes the last directory
 	(setq dir (file-name-directory (directory-file-name dir))))
