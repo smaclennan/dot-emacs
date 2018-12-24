@@ -21,6 +21,18 @@
 (dolist (file '("emacs-loaddefs" "lisp-loaddefs" "misc-loaddefs"))
   (load file t t))
 
+(defmacro my-feature-cond (&rest clauses)
+  "Test CLAUSES for feature, function, or variable at compile time.
+Each clause is (FEATURE BODY...)."
+  (dolist (x clauses)
+    (let ((feature (car x))
+	  (body (cdr x)))
+      (when (or (eq feature t)
+		(featurep feature)
+		(fboundp feature)
+		(boundp feature))
+	(return (cons 'progn body))))))
+
 ;; I used to like when the suggestions where good, but not when they
 ;; are just a shortened version of the command.
 (setq suggest-key-bindings nil)
