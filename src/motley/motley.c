@@ -55,8 +55,8 @@ static void out_sym(char type, int lineno, const char *sym)
 }
 
 static int gfd;
-static char *gmem;
-static char *gptr, *gend;
+static unsigned char *gmem;
+static unsigned char *gptr, *gend;
 static size_t glen;
 
 static int open_file(const char *fname)
@@ -93,21 +93,10 @@ static inline int __getch(void)
 	return gptr < gend ? *gptr++ : EOF;
 }
 
-static inline void _ungetch(int c, int line)
+static inline void ungetch(int c)
 {
-	if (c == EOF)
-		return;
-	if (gptr > gmem) {
+	if (gptr > gmem && c != EOF)
 		--gptr;
-		// SAM DBG
-		if (c == ' ' && isspace(*gptr)) return;
-		if (*gptr != c) {
-			printf("probs: %s:%d %d %c (%02x) vs %c (%02x)\n",
-				   cur_fname, cur_line, line, *gptr, *gptr, c, c);
-		}
-		assert(*gptr == c);
-		// SAM DBG
-	}
 }
 
 static int peek(const char *str, int len)
@@ -127,8 +116,6 @@ static int close_file(void)
 	munmap(gmem, glen);
 	return close(gfd);
 }
-
-#define ungetch(c) _ungetch(c, __LINE__) // SAM DBG
 
 #undef getc
 #define getc bogus
@@ -245,17 +232,14 @@ again:
 		quote();
 		goto again;
 	case '/': // possible comment
-		c = __getch();
-		if (c == '/') {
+		if (peek_one('/')) {
 			while ((c = __getch()) != '\n' && c != EOF) ;
 			ungetch(c); // deal with \n
 			goto again;
-		} else if (c == '*') {
+		} else if (peek_one('*')) {
 			skip_comments();
 			goto again;
 		}
-		ungetch(c);
-		c = '/';
 		break;
 	case '"':
 		while ((c = __getch()) != '"' && c != EOF) {
