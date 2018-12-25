@@ -413,21 +413,61 @@ static inline int issym(int c)
 	return isalnum(c) || c == '_';
 }
 
+static int check_blacklist(const char *token)
+{
+	static char *blacklist[] = {
+		"const",
+		"static",
+		// "extern",
+		"auto",
+		"register",
+		"volatile",
+#if 1
+		"double",
+		"float",
+		"int",
+		"short",
+		"unsigned",
+		"long",
+		"signed",
+		"void",
+		"char",
+#endif
+	};
+#define N_BLACKLIST (sizeof(blacklist) / sizeof(char *))
+
+//	if (strchr("acrsv", *token))
+		for (int i = 0; i < N_BLACKLIST; ++i)
+			if (strcmp(token, blacklist[i]) == 0)
+				return 1;
+	return 0;
+}
+
 static int get_token(char *token)
 {
-	int c = getch();
+	int c;
+	char *p;
+
+again:
+	p = token;
+	c = getch();
 
 	// keep the # with the #define
 	if (issym(c) || c == '#') {
 		do {
-			*token++ = c;
+			*p++ = c;
 			// while we are parsing a sym it is safe to call the
 			// lowest level function. This gets around problems with
 			// NL and sol.
 			c = __getch();
 		} while (issym(c));
 		ungetch(c);
-		*token = 0;
+		*p = 0;
+		if (check_blacklist(token)) {
+			if ((c = getch()) != ' ')
+				ungetch(c);
+			goto again;
+		}
 		return 0;
 	}
 
