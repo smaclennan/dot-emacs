@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <assert.h>
 #include <regex.h>
+#include <dirent.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
 
@@ -803,6 +804,39 @@ static int process_one(const char *fname)
 	return close_file();
 }
 
+static int go_recursive(const char *dname)
+{
+	char path[1024];
+	int rc = 0;
+
+	DIR *dir = opendir(dname);
+	if (!dir) {
+		perror(dname);
+		return 1;
+	}
+
+	struct dirent ent, *result;
+	while (readdir_r(dir, &ent, &result) == 0 && result) {
+		if (*ent.d_name == '.')
+			continue;
+		if (ent.d_type == DT_DIR) {
+			snprintf(path, sizeof(path), "%s/%s", dname, ent.d_name);
+			rc |= go_recursive(path);
+		} else {
+			char *ext = strrchr(ent.d_name, '.');
+			if (ext)
+				if (strcmp(ext, ".c") == 0 || strcmp(ext, ".h") == 0) {
+					snprintf(path, sizeof(path), "%s/%s", dname, ent.d_name);
+					rc |= process_one(path);
+				}
+		}
+	}
+
+	closedir(dir);
+
+	return rc;
+}
+
 static void dump_one(const char *fname, int level)
 {
 	if (open_file(fname))
@@ -978,6 +1012,8 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
+	rc = 0; // reset
+
 	if (optind == argc) {
 		// first check for motley.files
 		FILE *fp = fopen("motley.files", "r");
@@ -989,15 +1025,15 @@ int main(int argc, char *argv[])
 			}
 
 			fclose(fp);
-		} else if (errno != ENOENT) {
+		} else if (errno == ENOENT)
+			rc = go_recursive(".");
+		else {
 			perror("motley.files");
 			exit(1);
 		}
 	} else
 		for (int arg = optind; arg < argc; ++arg)
 			process_one(argv[arg]);
-
-	rc = 0; // reset
 
 	if (out) {
 		if (ferror(out)) {
