@@ -910,9 +910,14 @@ static int do_etags_lookup(const char *sym)
 			e = strchr(line, 0177);
 			assert(e);
 			*e = 0;
+			if (*(e - 1) == '(') {
+				// looks nicer if we add the matching bracket
+				*e++ = ')';
+				*e = 0;
+			}
 
 			int lineno = strtol(e + 1, NULL, 10);
-			printf("%s:%d:1    %s %s\n", fname, lineno, sym, line);
+			printf("%s:%d:1    %s\n", fname, lineno, line);
 			rc = 0;
 		}
 	}
@@ -923,7 +928,8 @@ static int do_etags_lookup(const char *sym)
 
 int main(int argc, char *argv[])
 {
-	int c, dump_only = 0, lookup = 0, etags_lookup = 0;
+	int c, dump_only = 0;
+	int (*lookup)(const char *sym) = NULL;
 
 	while ((c = getopt(argc, argv, "DeElLNv")) != EOF)
 		switch (c) {
@@ -932,11 +938,11 @@ int main(int argc, char *argv[])
 			break;
 		case 'e':
 		case 'E':
-			etags_lookup = 1;
+			lookup = do_etags_lookup;
 			break;
 		case 'l':
 		case 'L':
-			lookup = 1;
+			lookup = do_lookup;
 			break;
 		case 'v':
 			++verbose;
@@ -949,20 +955,12 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 
-	if (etags_lookup) {
-		if (optind == argc) {
-			fputs("Lookup what?\n", stderr);
-			exit(1);
-		}
-		return do_etags_lookup(argv[optind]);
-	}
-
 	if (lookup) {
 		if (optind == argc) {
 			fputs("Lookup what?\n", stderr);
 			exit(1);
 		}
-		return do_lookup(argv[optind]);
+		return lookup(argv[optind]);
 	}
 
 	// Note: (asctime)(const struct tm *t)
