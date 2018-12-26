@@ -265,11 +265,18 @@ again:
 	return c;
 }
 
-static void maybe_skip_if0(int c)
+// We cannot increment gptr here until we know it is if 0
+static int maybe_skip_if0(int c)
 {
 #ifdef IGNORE_IF0
-	if (c != 'i' || _getch() != 'f' || _getch() != ' ' || _getch() != '0')
-		return;
+	unsigned char *ptr = gptr;
+
+	while (*ptr == ' ' || *ptr == '\t') ++ptr;
+	if (*ptr != '0')
+		return 0;
+
+	// Safe to use gptr
+	gptr = ptr;
 
 	int count = 1;
 	while (count > 0 && (c = _getch()) != EOF)
@@ -289,7 +296,60 @@ static void maybe_skip_if0(int c)
 				}
 			}
 		}
+
+	return 1;
+#else
+	return 0;
 #endif
+}
+
+// This is mainly to deal with extern "C"
+// We cannot increment gptr here until we know it is cplusplus
+static int maybe_skip_cplusplus(int c)
+{
+	unsigned char *ptr = gptr;
+
+	if (peek("def", 3)) {
+		ptr += 3;
+		goto maybe;
+	}
+	while (*ptr == ' ' || *ptr == '\t') ++ptr;
+	if (ptr + 7 >= gend || memcmp(ptr, "defined", 7))
+		return 0;
+	ptr += 7;
+	while (*ptr == ' ' || *ptr == '\t') ++ptr;
+	if (*ptr != '(')
+		return 0;
+	++ptr;
+
+maybe:
+	while (*ptr == ' ' || *ptr == '\t') ++ptr;
+	if (ptr + 11 >= gend || memcmp(ptr, "__cplusplus", 11))
+		return 0;
+
+	// Now we can use gptr
+	gptr = ptr;
+
+	int count = 1;
+	while (count > 0 && (c = _getch()) != EOF)
+		if (c == '#' && sol) {
+			c = _getch();
+			if (c == 'i') {
+				if (_getch() == 'f')
+					++count;
+			} else if (c == 'e') {
+				// #endif or #elif or #else
+				if ((c = _getch() == 'n'))
+					--count;
+				else if (c == 'l' && _getch() == 's') {
+					if (count == 1)
+						// our else
+						--count;
+				}
+			}
+		}
+
+	return 1;
 }
 
 static void skip_body(void)
@@ -335,7 +395,11 @@ again:
 				in_define = 1;
 				return '#';
 			}
-			maybe_skip_if0(c);
+			if (c == 'i' && peek_one('f')) {
+				_getch(); // skip the f
+				if (maybe_skip_if0(c) == 0)
+					maybe_skip_cplusplus(c);
+			}
 			// skip to EOL
 			while (_getch() != EOF && sol == 0) ;
 			goto again;
