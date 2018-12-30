@@ -405,12 +405,10 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; I have been able to disable all the XEmacs messages and Emacs messages in non-console mode.
 ;; Not sure why Emacs wipes the message in console mode.
 (unless noninteractive
-  (if (or window-system running-xemacs)
-      (friendly-message t)
-    ;; Every time you turn around Emacs is displaying yet another
-    ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
-    ;; one. So use a timer to get past them.
-    (run-at-time 1 nil 'friendly-message t)))
+  ;; Every time you turn around Emacs is displaying yet another
+  ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
+  ;; one. So use a timer to get past them.
+  (run-at-time .2 nil 'friendly-message t))
 
 ;;}}}
 
