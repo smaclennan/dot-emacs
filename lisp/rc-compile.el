@@ -39,8 +39,7 @@ Warning: Erases the compile log output buffer."
 	  (setq files (delete (concat dot-dir "rc/efs-rc.el") files))
 	  (setq files (delete (concat dot-dir "rc/ksh-mode-rc.el") files))
 	  (setq files (delete (concat dot-dir "rc/package-ui-rc.el") files))
-	  (setq files (delete (concat dot-dir "rc/python-mode-rc.el") files))
-	  (setq files (delete (concat dot-dir "rc/xcscope-rc.el") files)))
+	  (setq files (delete (concat dot-dir "rc/python-mode-rc.el") files)))
       (setq files (delete (concat dot-dir "rc/python-rc.el") files)))
     (dolist (rcfile files) (rc-compile rcfile))
 

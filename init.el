@@ -134,29 +134,11 @@ Simple version."
 
 ;;{{{ Keys
 
-(defvar preferred-tags 'motley
-  "* Can be tags or cscope or motley.
-If set to cscope or motley and the out file is not found falls
-back to tags.")
-
-(defun preferred-find-tag-at-point ()
+(defun my-find-tag ()
   (interactive)
-  (if (and (eq preferred-tags 'motley) (motley-dir t))
-      (motley-at-point)
-    (if (and (eq preferred-tags 'cscope) (mcs-dir t))
-	(call-interactively 'my-cscope-at-point)
-      (find-tag-at-point))))
-
-(defun preferred-find-tag ()
-  (interactive)
-  (if (and (eq preferred-tags 'motley) (motley-dir t))
-      (motley)
-    (if (and (eq preferred-tags 'cscope) (my-cscope-dir t))
-	(call-interactively 'my-cscope)
-      (if running-xemacs
-	  (call-interactively 'find-tag)
-	(let ((current-prefix-arg t))
-	  (call-interactively 'xref-find-definitions))))))
+  (if running-xemacs
+      (call-interactively 'find-tag)
+    (call-interactively 'xref-find-definitions)))
 
 ;; For Emacs this breaks the minibuffer. Emacs dealt with in rc/ files.
 (when running-xemacs
@@ -188,12 +170,11 @@ back to tags.")
 (global-set-key [(shift f8)] 'my-grep-find)
 (global-set-key [(control f8)]	'my-checkpatch)
 ; f9 is isearch
-(global-set-key [f10]		'preferred-find-tag-at-point)
-(global-set-key "\M-."		'preferred-find-tag)
+(global-set-key [f10]		'find-tag-at-point)
+(global-set-key "\M-."		'my-find-tag)
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
 (global-set-key [f20] 'pop-tag-mark)
-(global-set-key [(control f10)]	'my-cscope)
 ;; I keep f11 free for temporary bindings
 (global-set-key [(shift f11)] 'my-show-messages)
 (global-set-key [XF86_Switch_VT_11] 'my-show-messages)
@@ -403,9 +384,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 	(when (or my-tags-dir my-tags-file)
 	  (princ (format "My tag dir:   %S\n" my-tags-dir))
 	  (princ (format "My tag file:  %S\n" my-tags-file)))
-      (error nil))
-    (condition-case nil
-	(princ (format "Cscope dir:   %S\n" (mcs-dir)))
       (error nil))
     (when (local-variable-p 'kloc-dir)
       (princ (format "Kloc:         %S\n" kloc-dir)))

@@ -305,6 +305,3 @@ Default FLAGS value is read only."
   (emacs
    (add-hook 'c-initialization-hook
 	     (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))))
-
-;; (when (would-like 'xcscope) (cscope-setup))
-(when (would-like 'my-cscope) (add-hook 'c-mode-hook 'my-cscope-setup))
