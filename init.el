@@ -402,10 +402,10 @@ Use region if it exists. My replacement for isearch-yank-word."
 		     (t           "evening"))
 	       (user-full-name)))))
 
-;; I have been able to disable all the Emacs messages in non-console mode... so we
-;; only need the timer for console modes.
+;; I have been able to disable all the XEmacs messages and Emacs messages in non-console mode.
+;; Not sure why Emacs wipes the message in console mode.
 (unless noninteractive
-  (if (and (not running-xemacs) window-system)
+  (if (or window-system running-xemacs)
       (friendly-message t)
     ;; Every time you turn around Emacs is displaying yet another
     ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly

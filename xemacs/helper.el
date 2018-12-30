@@ -2,6 +2,8 @@
 
 (defvar dot-dir (expand-file-name "~/.xemacs/"))
 
+(defvar exec-suffixes nil)
+
 (dolist (dir '("lisp" "misc" "xemacs"))
   (add-to-list 'load-path (concat dot-dir dir)))
 (add-to-list 'data-directory-list (concat dot-dir "etc") t)
@@ -98,3 +100,6 @@
   (setq gnuserv-frame (selected-frame)))
 
 (defun xref-find-definitions (find-tag))
+
+;; Loading this here means it doesn't overwrite `friendly-message'.
+(require 'efs-cu)
