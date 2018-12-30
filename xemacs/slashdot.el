@@ -67,6 +67,10 @@ If nil, `locate-data-file' will be used to find the icons.")
 (defvar slashdot-hide nil
   "*If non-nil, hides all read entries")
 
+(defun my-exec-installed-p (file)
+  "Return absolute-path of FILE if FILE is executable."
+  (locate-file file exec-path exec-suffixes 'executable))
+
 ;; If you edit this, run (slashdot-load-headings)
 (defvar slashdot-url-alist
   '(

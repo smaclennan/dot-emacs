@@ -55,9 +55,7 @@
 (load (concat dot-dir "user-init") t)
 
 (setq rcfiles-directory (concat dot-dir "rc/"))
-(if (would-like 'rcfiles)
-    (rcfiles-register-rc-files)
-  (load (concat dot-dir "emacs/rcfiles")))
+(rcfiles-register-rc-files)
 
 ;;}}}
 
@@ -100,22 +98,6 @@
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
 
-(defun my-exec-installed-p (file)
-  "Return absolute-path of FILE if FILE is executable.
-Simple version."
-  (and running-windoze
-       (not (file-name-extension file))
-       (setq file (concat file ".exe")))
-  (if (file-exists-p file)
-      t
-    (catch 'found
-      (dolist (path exec-path)
-	(when (string-match "/+$" path)
-	  (setq path (replace-match "" nil nil path)))
-	(setq path (concat path "/" file))
-	(when (file-exists-p path)
-	  (throw 'found path))))))
-
 ;; Windowing System Customization
 
 (if window-system
@@ -124,21 +106,9 @@ Simple version."
   (if (fboundp 'menu-bar-mode)
       (menu-bar-mode -1)))
 
-(defun size-window (size)
-  (let* ((edges (window-edges))
-	 (cursize (- (nth 3 edges) (nth 1 edges) -1)))
-    (unless (= size cursize)
-      (enlarge-window (- size cursize)))))
-
 ;;}}}
 
 ;;{{{ Keys
-
-(defun my-find-tag ()
-  (interactive)
-  (if running-xemacs
-      (call-interactively 'find-tag)
-    (call-interactively 'xref-find-definitions)))
 
 ;; For Emacs this breaks the minibuffer. Emacs dealt with in rc/ files.
 (when running-xemacs
@@ -146,14 +116,13 @@ Simple version."
   (global-set-key [(return)] 'newline-and-indent)
   (global-set-key [(linefeed)] 'newline))
 
-;;;; Function keys. Only f1 is bound in XEmacs. We move it to shift-f1.
-(global-set-key [(shift f1)]    (global-key-binding [f1]))
+;;;; Function keys.
 (global-set-key [XF86_Switch_VT_1] (global-key-binding [f1]))
 (global-set-key [f1]            'find-file)
 (global-set-key [f2]		'undo)
-(global-set-key [(shift f2)]	'redo)
-(global-set-key [XF86_Switch_VT_2] 'redo)
-; f3 is isearch
+(global-set-key [f3]		'isearch-repeat-forward)
+(global-set-key [(shift f3)]    'isearch-repeat-backward)
+(global-set-key [XF86_Switch_VT_3] 'isearch-repeat-backward)
 (global-set-key [f4]		'next-error)
 (global-set-key [f5]		'query-replace)
 (global-set-key [(shift f5)]    'query-replace-regexp)
@@ -169,12 +138,15 @@ Simple version."
 (global-set-key [f8] 'my-grep)
 (global-set-key [(shift f8)] 'my-grep-find)
 (global-set-key [(control f8)]	'my-checkpatch)
-; f9 is isearch
+(global-set-key [f9]		'my-isearch-word-forward)
+(global-set-key [(shift f9)]    'my-toggle-case-search)
+(global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
 (global-set-key [f10]		'find-tag-at-point)
-(global-set-key "\M-."		'my-find-tag)
+(global-set-key "\M-."		'xref-find-definitions)
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
 (global-set-key [f20] 'pop-tag-mark)
+(global-set-key [(control f10)] 'xref-find-references)
 ;; I keep f11 free for temporary bindings
 (global-set-key [(shift f11)] 'my-show-messages)
 (global-set-key [XF86_Switch_VT_11] 'my-show-messages)
@@ -182,13 +154,6 @@ Simple version."
 (global-set-key [(shift f12)]	'lxr-next-defined)
 (global-set-key [XF86_Switch_VT_12] 'lxr-next-defined)
 (global-set-key [(control f12)] 'lxr-defined-at-point)
-
-(global-set-key [f3]		'isearch-repeat-forward)
-(global-set-key [(shift f3)]    'isearch-repeat-backward)
-(global-set-key [XF86_Switch_VT_3] 'isearch-repeat-backward)
-(global-set-key [f9]		'my-isearch-word-forward)
-(global-set-key [(shift f9)]    'my-toggle-case-search)
-(global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
 
 (global-set-key "\C-cd" 'dup-line)
 (global-set-key "\C-ce" 'errno-string)
@@ -198,12 +163,6 @@ Simple version."
 
 (global-set-key "\C-c8" '80-scan)
 (global-set-key "\C-c9" '80-cleanup) ;; shift-8 and ctrl-8 did not work
-
-(defun lxr-or-ogrok-at-point ()
-  (interactive)
-  (if (and ogrok-url ogrok-project)
-      (ogrok-at-point)
-    (lxr-at-point)))
 
 (defun my-show-messages ()
   "Show messages in other window."
@@ -275,7 +234,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;(global-set-key [button7] ')
 
 ;; Side buttons on Logitech M500 + others
-;; NOTE: Needs patch
+;; NOTE: Needs patch on XEmacs
 (global-set-key [button8] 'yank)
 (global-set-key [button9] 'kill-region)
 
@@ -337,8 +296,6 @@ Use region if it exists. My replacement for isearch-yank-word."
     (autoload 'gtags-mode "gtags" "" t)))
 
 ;;; -------------------------------------------------------------------------
-;; (unless running-windoze (would-like 'svn))
-
 (defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
   "* List of commit buffer names.")
 
@@ -350,52 +307,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 	(when (string= buff name)
 	  (text-mode))))))
 (add-hook 'find-file-hooks 'check-for-commit t)
-
-;;; -------------------------------------------------------------------------
-;; because this spans multiple packages... it makes sense to put it here
-
-(defun my-tools-config (verbose)
-  "Dump config information for the current buffer."
-  (interactive "P")
-  (require 'git-diff) ;; for git-dir
-  (with-output-to-temp-buffer "*my-config*"
-    ;; Common
-    (princ (format "File name:    %S\n" (buffer-file-name)))
-    (let ((git-dir (condition-case nil (git-dir) (error nil))))
-      (princ (format "Git dir:      %S\n" git-dir)))
-    (princ (format "Compile:      %S\n" compile-command))
-
-    ;; C-ish files
-    (when (and (boundp 'c-buffer-is-cc-mode) c-buffer-is-cc-mode)
-      (princ (format "C Style:      %S" c-indentation-style))
-      (princ (if indent-tabs-mode " tabs " " spaces "))
-      (if (eq c-basic-offset tab-width) ;; 99.99% case
-	  (princ (format "%d\n" c-basic-offset))
-	(princ (format "%d/%d\n" c-basic-offset tab-width))))
-
-    ;; optional files
-    (if tags-file-name
-	(princ (format "Tag file:     %S %s\n"
-		       tags-file-name
-		       (if (file-exists-p tags-file-name) "OK" "missing")))
-      (if (file-exists-p "TAGS")
-	  (princ (format "Tag file:     \"TAGS\"\n"))))
-    (condition-case nil
-	(when (or my-tags-dir my-tags-file)
-	  (princ (format "My tag dir:   %S\n" my-tags-dir))
-	  (princ (format "My tag file:  %S\n" my-tags-file)))
-      (error nil))
-    (when (local-variable-p 'kloc-dir)
-      (princ (format "Kloc:         %S\n" kloc-dir)))
-
-    ;; verbose and C
-    (when (and verbose (boundp 'my-compile-dir-list))
-      (require 'cl-extra)
-      (princ "\nmy-compile-dir-list:")
-      (princ (with-temp-buffer
-	       (cl-prettyprint my-compile-dir-list)
-	       (buffer-string))))
-    ))
 
 ;;}}}
 
@@ -430,7 +341,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;; Flyspell
-(if (or (my-exec-installed-p "hunspell") (my-exec-installed-p "aspell"))
+(if (or (locate-file "hunspell" exec-path exec-suffixes 'executable)
+	(locate-file "aspell"   exec-path exec-suffixes 'executable))
     (progn
       (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
       (add-hook 'lisp-mode-hook 'flyspell-prog-mode)

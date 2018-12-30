@@ -96,3 +96,5 @@
 (defun server-start ()
   (gnuserv-start)
   (setq gnuserv-frame (selected-frame)))
+
+(defun xref-find-definitions (find-tag))
