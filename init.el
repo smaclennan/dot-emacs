@@ -6,11 +6,6 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
-;;(setq debug-on-error t)
-
-(defvar running-windoze (eq system-type 'windows-nt)
-  "Non-nil if running Windows.")
-
 (defvar dot-dir (expand-file-name
 		 (if (featurep 'xemacs) "~/.xemacs/" "~/.emacs.d/"))
   "The init file directory.")
@@ -25,13 +20,11 @@
 (defvar would-have-liked-list nil
   "List of features that `would-like' could not find.")
 
-(defun would-like (feature &optional no-list)
+(defun would-like (feature)
   "A less strident `require'."
-  (condition-case nil
-      (require feature)
+  (condition-case nil (require feature)
     (error
-     (unless no-list (add-to-list 'would-have-liked-list feature))
-     nil)))
+     (add-to-list 'would-have-liked-list feature) nil)))
 
 (require 'sam-common)
 
@@ -347,7 +340,7 @@ Use region if it exists. My replacement for isearch-yank-word."
       (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
       (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
       (add-hook 'text-mode-hook 'flyspell-mode))
-  (add-to-list 'would-have-liked-list 'spell running-windoze))
+  (add-to-list 'would-have-liked-list 'spell))
 
 ;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
 
@@ -369,7 +362,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;;; ------------------------------------------------------------
 ;; Start the server program
-(unless (or noninteractive running-windoze (string= (user-login-name) "root"))
+(unless (or noninteractive (string= (user-login-name) "root"))
   (server-start))
 
 ;;}}}

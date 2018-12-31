@@ -14,7 +14,7 @@
 	 menu-accelerator-modifiers '(alt))
 
    ;; Speedbar
-   (when (and bells-and-whistles (would-like 'speedbar t))
+   (when (and bells-and-whistles (would-like 'speedbar))
      (add-menu-button '("Tools")
 		      ["Speedbar" speedbar-frame-mode
 		       :style toggle

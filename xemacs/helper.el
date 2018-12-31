@@ -68,7 +68,7 @@
 	      mask (concat dir "recycle-mask-32.xbm"))
       (setq img  (concat dir "recycle-image.xbm")
 	    mask (concat dir "recycle-mask.xbm")))
-    (if (and img mask (not running-windoze))
+    (if (and img mask (not (eq system-type 'windows-nt)))
 	(set-glyph-image gc-pointer-glyph
 			 (vector 'xbm
 				 :file img

@@ -120,3 +120,12 @@ See also `auto-save-file-name-p'."
 		      inhibit-file-name-handlers)))
 	(inhibit-file-name-operation op))
       (apply op args))))
+
+;; Different excludes for windows
+(setq smerge-diff-excludes
+      '("*.obj" "*.lib" "*.dll" "*.sbr" ".svn" "*.scc"
+	"*.plg" "*.pdb" "*.dep" "*.ncb" "*.opt"
+	"*.log" "*.wrn" "*.err"
+	"*.mak"
+	"objchk*" "objfre*"
+	"debug" "release" "Debug" "Release"))
