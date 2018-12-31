@@ -335,7 +335,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;; Flyspell
 (if (or (locate-file "hunspell" exec-path exec-suffixes 'executable)
-	(locate-file "aspell"   exec-path exec-suffixes 'executable))
+	(locate-file "aspell"   exec-path exec-suffixes 'executable)
+	(locate-file "ispell"   exec-path exec-suffixes 'executable))
     (progn
       (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
       (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
