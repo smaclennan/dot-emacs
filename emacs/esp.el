@@ -12,9 +12,6 @@
 (require 'cl-extra)
 (require 'ring)
 
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file t)
-
 (dolist (dir '("emacs" "lisp" "misc"))
   (add-to-list 'load-path (concat dot-dir dir)))
 

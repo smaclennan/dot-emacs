@@ -372,6 +372,10 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; ------------------------------------------------------------
 ;; Some non-standard init files. Start them last so they can override defaults.
 
+;; Ok, this is actually standard...
+(setq custom-file (concat dot-dir "custom.el"))
+(load custom-file t)
+
 ;; Load a file called `system-type' if it exists. The symbol is
 ;; sanitized so gnu/linux becomes gnu-linux.
 (load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t)
