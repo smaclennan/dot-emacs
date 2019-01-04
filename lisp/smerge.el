@@ -359,14 +359,14 @@ Top level directories end in /, subdirs do not."
 (autoload 'defadvice "advice" nil nil 'macro)
 
 (defadvice ediff-quit (after smerge activate)
-  (when (extentp smerge-extent)
+  (when (overlayp smerge-extent)
     (overlay-put smerge-extent 'face 'smerge-merged-face)
     (delete-other-windows)
     (switch-to-buffer smerge-buffer)
     (let ((next (next-extent smerge-extent))
 	  start)
       (when next
-	(setq start (extent-start-position next))
+	(setq start (overlay-start next))
 	(goto-char start)
 	(if (re-search-forward "\\w" nil t) (forward-char -1))
 	))

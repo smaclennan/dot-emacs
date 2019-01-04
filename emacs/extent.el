@@ -26,16 +26,9 @@
 
 ;; complete - except that we do not support strings
 (defalias 'make-extent 'make-overlay)
-(defalias 'set-extent-endpoints 'move-overlay)
 
 ;; complete
 (defalias 'delete-extent 'delete-overlay)
-(defalias 'extent-start-position 'overlay-start)
-(defalias 'extent-end-position 'overlay-end)
-(defalias 'extentp 'overlayp)
-
-(defun extent-live-p (extent)
-  (and (overlayp extent) (overlay-start extent)))
 
 ;; Currently only returns first overlay in list...
 ;; Not correct but works for slashdot.el and lxr.el
@@ -90,35 +83,8 @@
 ;; Does not support optional object
 (defalias 'previous-extent-change 'previous-overlay-change)
 
-;; complete
-(defun extent-string (extent)
-  (buffer-substring (overlay-start extent) (overlay-end extent)))
-
-;; No optional args supported except a buff
-(defun extent-list (&optional buff)
-  (save-excursion
-    (when buff (set-buffer buff))
-    (let ((lists (overlay-lists)))
-      (nconc (car lists) (cdr lists)))))
-
 ;; These should really not be here. But I use it with extents.
 ;; complete
 (defun event-point (event) (nth 1 (event-start event)))
-
-;; complete
-(defun event-window (event) (car (event-start event)))
-
-;; complete
-(defun event-button (event)
-  (let ((mouse (car event)))
-    (cond ((eq mouse 'mouse-1) 1)
-	  ((eq mouse 'mouse-2) 2)
-	  ((eq mouse 'mouse-3) 3)
-	  ((eq mouse 'mouse-4) 4)
-	  ((eq mouse 'mouse-5) 5)
-	  (t (error "Unsupported mouse event %S" mouse)))))
-
-;; complete
-(defun event-buffer (event) (current-buffer))
 
 (provide 'extent)
