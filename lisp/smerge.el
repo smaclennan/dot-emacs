@@ -68,6 +68,8 @@ Each clause is (FEATURE BODY...)."
 
 (smerge-feature-cond
   (xemacs
+   (require 'overlay)
+
    (defalias 'smerge-dirlist 'directory-files)
    (defalias 'smerge-read-only 'toggle-read-only)
    (defalias 'kill-whole-line 'kill-entire-line)
@@ -317,7 +319,7 @@ Top level directories end in /, subdirs do not."
 	  (progn
 	    (setq extent
 		  (smerge-make-extent (match-beginning 0) (match-end 0) 'smerge-only1-face))
-	    (set-extent-property extent 'type 2)
+	    (overlay-put extent 'type 2)
 	    (replace-match file))
 	(kill-whole-line))
       )
@@ -334,7 +336,7 @@ Top level directories end in /, subdirs do not."
 	  (progn
 	    (setq extent
 		  (smerge-make-extent (match-beginning 0) (match-end 0) 'smerge-only2-face))
-	    (set-extent-property extent 'type 1)
+	    (overlay-put extent 'type 1)
 	    (replace-match (concat "\t\t\t\t" file)))
 	(kill-whole-line))
       )
@@ -345,7 +347,7 @@ Top level directories end in /, subdirs do not."
       (setq file (match-string 1))
       (setq extent
 	    (smerge-make-extent (match-beginning 0) (match-end 0) 'smerge-diff-face))
-      (set-extent-property extent 'type 3)
+      (overlay-put extent 'type 3)
       (replace-match (concat "\t\t" file))
       )
 
@@ -358,7 +360,7 @@ Top level directories end in /, subdirs do not."
 
 (defadvice ediff-quit (after smerge activate)
   (when (extentp smerge-extent)
-    (set-extent-property smerge-extent 'face 'smerge-merged-face)
+    (overlay-put smerge-extent 'face 'smerge-merged-face)
     (delete-other-windows)
     (switch-to-buffer smerge-buffer)
     (let ((next (next-extent smerge-extent))
@@ -374,8 +376,8 @@ Top level directories end in /, subdirs do not."
 (defun smerge-file (extent)
   "Given a smerge extent, return the file name."
   (let ((file (buffer-substring
-	       (extent-start-position extent)
-	       (extent-end-position extent))))
+	       (overlay-start extent)
+	       (overlay-end extent))))
     (string-match "\t*\\(.*\\)" file)
     (match-string 1 file)))
 
@@ -408,7 +410,7 @@ Pops up a menu that allows copying the file to directory one or two."
   "Ediff or copy the file."
   (interactive)
   (let* ((extent (smerge-nearest-extent (point)))
-	 (type (extent-property extent 'type)))
+	 (type (overlay-get extent 'type)))
     (unless extent (error "No extent at point"))
     (cond ((or (eq type 1) (eq type 2))
 	   (setq smerge-file (smerge-file extent))
@@ -423,7 +425,7 @@ Pops up a menu that allows copying the file to directory one or two."
     (unless extent
       (setq extent (extent-at (point)))
       (unless extent (error "No extent at point")))
-    (unless (eq (extent-property extent 'type) 3)
+    (unless (eq (overlay-get extent 'type) 3)
       (error "Smerge internal error. Wrong extent type."))
     (setq smerge-extent extent)
     (setq file (smerge-file extent))
@@ -433,9 +435,9 @@ Pops up a menu that allows copying the file to directory one or two."
 
 (defun smerge-allow-dir (dir)
   "Are we allowed to copy to this directory."
-  (let ((type (extent-property smerge-extent 'type)))
+  (let ((type (overylay-get smerge-extent 'type)))
     (if type
-	(> (logand (extent-property smerge-extent 'type) dir) 0)
+	(> (logand (overlay-get smerge-extent 'type) dir) 0)
       (message "WARNING: No type for extent!")
       0)))
 
@@ -459,20 +461,20 @@ Pops up a menu that allows copying the file to directory one or two."
 	      (yes-or-no-p (format "Copy to %s? " dst)))
       (smerge-copy-file src dst t t)
       ;; Mark as merged
-      (set-extent-property smerge-extent 'face 'smerge-merged-face)
+      (overlay-put smerge-extent 'face 'smerge-merged-face)
       ;; If this is an "only" mark as copied
-      (when (< (extent-property smerge-extent 'type) 3)
-	(set-extent-property smerge-extent 'type 0))
+      (when (< (overlay-get smerge-extent 'type) 3)
+	(overlay-put smerge-extent 'type 0))
       (setq smerge-extent nil)
       )))
 
 (defun smerge-make-extent (start end face)
   (let (extent)
     (setq end (1+ end)) ;; include the NL
-    (setq extent (make-extent start end))
-    (set-extent-face extent face)
-    (set-extent-mouse-face extent 'highlight)
-    (set-extent-keymap extent smerge-keymap)
+    (setq extent (make-overlay start end))
+    (overlay-put extent 'face face)
+    (overlay-put extent 'mouse-face 'highlight)
+    (overlay-put extent 'keymap smerge-keymap)
     extent
     ))
 
