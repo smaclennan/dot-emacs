@@ -10,7 +10,7 @@
 		 (if (featurep 'xemacs) "~/.xemacs/" "~/.emacs.d/"))
   "The init file directory.")
 
-(load (concat dot-dir (if (featurep 'xemacs) "xemacs/helper" "emacs/esp")))
+(load (concat dot-dir (if (featurep 'xemacs) "xemacs" "emacs") "/helper"))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the

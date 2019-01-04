@@ -48,6 +48,8 @@
 ;; various copyrights I've run across.  Let me know if you find one on which
 ;; it fails.
 
+(require 'sam-common)
+
 (defgroup hide-copyleft nil
   "Hide copyright prologs."
   :group 'matching)
