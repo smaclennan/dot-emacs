@@ -25,9 +25,9 @@
   (let* ((col (current-column))
 	 (to (point))
 	 (from (- to col -80))
-	 (extent (make-extent from to)))
-    (set-extent-face extent '80-highlight)
-    (set-extent-property extent 'tag 80)
+	 (extent (make-overlay from to)))
+    (overlay-put extent 'face '80-highlight)
+    (overlay-put extent 'tag 80)
     (setq 80-list (nconc 80-list (list extent)))))
 
 ;;;###autoload
@@ -52,7 +52,7 @@
   "Remove all the 80 column highlighting."
   (interactive)
   (dolist (extent 80-list)
-    (delete-extent extent))
+    (delete-overlay extent))
   (setq 80-list nil))
 
 ;;;###autoload

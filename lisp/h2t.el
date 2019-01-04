@@ -202,21 +202,21 @@ in the extent as an `anchor' property."
       (setq start (point))
       (re-search-forward "</h[1-6]>" nil t)
       (replace-match "")
-      (setq extent (make-extent start (point)))
-      (set-extent-face extent 'bold)
+      (setq extent (make-overlay start (point)))
+      (overlay-put extent 'face 'bold)
       (end-of-line)
       (unless (looking-at "\n[ \t]*\n") (insert "\n"))
       )))
 
 (defun h2t-make-extent (start end anchor &optional keymap buff)
-  (let ((extent (make-extent start end buff)))
+  (let ((extent (make-overlay start end buff)))
     (if keymap
 	(progn
-	  (set-extent-face extent 'blue)
-	  (set-extent-mouse-face extent 'highlight)
-	  (set-extent-keymap extent keymap))
-      (set-extent-face extent 'red))
-    (set-extent-property extent 'anchor anchor)
+	  (overlay-put extent 'face 'blue)
+	  (overlay-put extent 'mouse-face 'highlight)
+	  (overlay-put extent 'keymap keymap))
+      (overlay-put extent 'face 'red))
+    (overlay-put extent 'anchor anchor)
     extent))
 
 ;; We add a nice extent around anchors
@@ -249,7 +249,7 @@ This version can only handle urls."
   (interactive "e")
   (let* ((extent (extent-at (event-point event)
 			    (current-buffer)))
-	 (anchor (extent-property extent 'anchor)))
+	 (anchor (overlay-get extent 'anchor)))
     (message "%s" anchor)
     (browse-url anchor)))
 

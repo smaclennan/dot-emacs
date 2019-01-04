@@ -24,12 +24,6 @@
 
 (require 'overlay)
 
-;; complete - except that we do not support strings
-(defalias 'make-extent 'make-overlay)
-
-;; complete
-(defalias 'delete-extent 'delete-overlay)
-
 ;; Currently only returns first overlay in list...
 ;; Not correct but works for slashdot.el and lxr.el
 ;; incomplete (very)
@@ -41,31 +35,6 @@
     (let ((overlays (overlays-at pos)))
       (car overlays))))
 
-;; complete
-(defalias 'set-extent-property 'overlay-put)
-
-;; complete
-(defun extent-property (extent property &optional default)
-  (if default
-      ;; Trickier - must handle nil property values
-      (if (plist-member (overlay-properties extent) property)
-	  (overlay-get extent property)
-	default)
-    (overlay-get extent property)))
-
-;; complete
-(defun set-extent-face (extent face)
-  (overlay-put extent 'face face))
-
-
-;; complete
-(defun set-extent-mouse-face (extent face)
-  (overlay-put extent 'mouse-face face))
-
-;; complete
-(defun set-extent-keymap (extent keymap)
-  (overlay-put extent 'keymap keymap))
-
 ;; SAM ???
 (defun next-extent (extent)
   (let* ((pos (1- (overlay-end extent)))
@@ -76,12 +45,6 @@
       (when (eq overlay extent) (error "PROBLEMS"))
       )
     overlay))
-
-;; Does not support optional object
-(defalias 'next-extent-change 'next-overlay-change)
-
-;; Does not support optional object
-(defalias 'previous-extent-change 'previous-overlay-change)
 
 ;; These should really not be here. But I use it with extents.
 ;; complete

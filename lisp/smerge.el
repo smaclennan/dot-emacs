@@ -47,8 +47,6 @@
 ;; two files. mouse 3 opens a menu that lets you copy the file to the other
 ;; directory.
 ;;
-;; Note: For GNU Emacs you must have my extent.el
-;;
 ;; Warning for windows users: You must have:
 ;;     (setq directory-sep-char ?/)
 ;; somewhere before running smerge.
@@ -76,8 +74,6 @@ Each clause is (FEATURE BODY...)."
    )
 
   (emacs
-   (require 'extent)
-
    (defalias 'smerge-read-only 'read-only-mode)
 
    (defun smerge-dirlist (directory &optional full match nosort files-only)
@@ -188,6 +184,8 @@ regular expressions.")
 (defvar smerge-file nil)
 (defvar smerge-extent nil)
 
+
+(defun overlay-at (pos) (car (overlays-at pos)))
 
 (defconst smerge-copy-menu
   (list "Copy to ..."
@@ -385,7 +383,7 @@ Top level directories end in /, subdirs do not."
   "This is called on a right mouse click in the display window.
 Pops up a menu that allows copying the file to directory one or two."
   (interactive "e")
-  (let ((extent (extent-at (event-point event))))
+  (let ((extent (overlay-at (event-point event))))
     (unless extent (error "No extent at point"))
     (setq smerge-file (smerge-file extent))
     (setq smerge-extent extent)
@@ -393,11 +391,11 @@ Pops up a menu that allows copying the file to directory one or two."
 
 ;; Find the extent nearest pos. Can return nil.
 (defun smerge-nearest-extent (pos)
-  (let ((extent (extent-at pos)))
+  (let ((extent (overlay-at pos)))
     (unless extent
-      (setq extent (extent-at (next-extent-change pos)))
+      (setq extent (overlay-at (next-overlay-change pos)))
       (unless extent
-	(setq extent (extent-at (previous-extent-change pos)))
+	(setq extent (overlay-at (previous-overlay-change pos)))
 	))
     extent))
 
@@ -423,7 +421,7 @@ Pops up a menu that allows copying the file to directory one or two."
   (interactive)
   (let (file)
     (unless extent
-      (setq extent (extent-at (point)))
+      (setq extent (overlay-at (point)))
       (unless extent (error "No extent at point")))
     (unless (eq (overlay-get extent 'type) 3)
       (error "Smerge internal error. Wrong extent type."))

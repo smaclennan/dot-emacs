@@ -281,15 +281,15 @@ You should never need to set this....")
 (defun lxr-nearest-extent (pos)
   (let ((extent (extent-at pos)))
     (unless extent
-      (setq extent (extent-at (next-extent-change pos)))
+      (setq extent (extent-at (next-overlay-change pos)))
       (unless extent
-	(setq extent (extent-at (previous-extent-change pos)))
+	(setq extent (extent-at (previous-overlay-change pos)))
 	))
     extent))
 
 (defun lxr-doit (pos)
   (let* ((extent (lxr-nearest-extent pos))
-	 (anchor (extent-property extent 'anchor))
+	 (anchor (overlay-get extent 'anchor))
 	 line file)
     (cond
      ;; source file
