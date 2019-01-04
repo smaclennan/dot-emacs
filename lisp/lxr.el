@@ -118,6 +118,9 @@ You should never need to set this....")
    (require 'extent)
 
    (defsubst region-exists-p () mark-active)
+
+   (defun http-get (url bufname callback)
+     (url-retrieve url callback (list url bufname)))
    ))
 
 (defun lxr-word-at-point ()
