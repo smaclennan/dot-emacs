@@ -71,6 +71,7 @@ Each clause is (FEATURE BODY...)."
 (global-set-key (kbd "<up>") 'my-previous-line)
 (global-set-key (kbd "<down>") 'my-next-line)
 
+(defun event-point (event) (nth 1 (event-start event)))
 
 (defun my-clipboard-copy (beg end)
   (interactive "r")

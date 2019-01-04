@@ -356,12 +356,22 @@ Top level directories end in /, subdirs do not."
 
 (autoload 'defadvice "advice" nil nil 'macro)
 
+(defun next-overlay (extent)
+  (let* ((pos (1- (overlay-end extent)))
+	 (next (next-overlay-change pos))
+	 (overlay (overlays-at next)))
+    (when overlay
+      (setq overlay (car overlay))
+      (when (eq overlay extent) (error "PROBLEMS"))
+      )
+    overlay))
+
 (defadvice ediff-quit (after smerge activate)
   (when (overlayp smerge-extent)
     (overlay-put smerge-extent 'face 'smerge-merged-face)
     (delete-other-windows)
     (switch-to-buffer smerge-buffer)
-    (let ((next (next-extent smerge-extent))
+    (let ((next (next-overlay smerge-extent))
 	  start)
       (when next
 	(setq start (overlay-start next))

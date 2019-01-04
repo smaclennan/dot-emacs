@@ -247,8 +247,7 @@ in the extent as an `anchor' property."
   "This is called on a mouse click if the user did not specify a keymap.
 This version can only handle urls."
   (interactive "e")
-  (let* ((extent (extent-at (event-point event)
-			    (current-buffer)))
+  (let* ((extent (car (overlays-at (event-point event))))
 	 (anchor (overlay-get extent 'anchor)))
     (message "%s" anchor)
     (browse-url anchor)))

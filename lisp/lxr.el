@@ -116,13 +116,14 @@ You should never need to set this....")
    (defalias 'read-only-mode 'toggle-read-only))
   (emacs
    (require 'ring)
-   (require 'extent)
 
    (defsubst region-exists-p () mark-active)
 
    (defun http-get (url bufname callback)
      (url-retrieve url callback (list url bufname)))
    ))
+
+(defun overlay-at (pos) (car (overlays-at pos)))
 
 (defun lxr-word-at-point ()
   "Get the word at the point. Use the region if it exists."
@@ -279,11 +280,11 @@ You should never need to set this....")
 
 ;; Find the extent nearest pos. Can return nil.
 (defun lxr-nearest-extent (pos)
-  (let ((extent (extent-at pos)))
+  (let ((extent (overlay-at pos)))
     (unless extent
-      (setq extent (extent-at (next-overlay-change pos)))
+      (setq extent (overlay-at (next-overlay-change pos)))
       (unless extent
-	(setq extent (extent-at (previous-overlay-change pos)))
+	(setq extent (overlay-at (previous-overlay-change pos)))
 	))
     extent))
 
