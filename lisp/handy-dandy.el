@@ -73,7 +73,7 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
 
 ;; For when you need a good excuse...
 ;; From BOHF
-(defvar excuse-phrase-file (locate-data-file "excuses.lines")
+(defvar excuse-phrase-file (concat dot-dir "etc/excuses.lines")
   "*File containing excuses")
 
 ;;;###autoload

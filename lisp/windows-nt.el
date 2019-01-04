@@ -29,6 +29,11 @@
 
 (defvar vs-tools-dir "c:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/Tools/")
 
+(defun emacs-version>= (major minor)
+  (or (> emacs-major-version major)
+      (and (eq emacs-major-version major)
+	   (>= emacs-minor-version minor))))
+
 (when nil ;; SAM not working
 (if (file-exists-p vs-tools-dir)
     (progn

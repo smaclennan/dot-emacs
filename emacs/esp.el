@@ -13,10 +13,8 @@
 (require 'ring)
 
 (dolist (dir '("emacs" "lisp" "misc"))
-  (add-to-list 'load-path (concat dot-dir dir)))
-
-(dolist (file '("emacs-loaddefs" "lisp-loaddefs" "misc-loaddefs"))
-  (load file t t))
+  (add-to-list 'load-path (concat dot-dir dir))
+  (load (concat dir "-loaddefs") t t))
 
 (defmacro my-feature-cond (&rest clauses)
   "Test CLAUSES for feature, function, or variable at compile time.
@@ -33,34 +31,6 @@ Each clause is (FEATURE BODY...)."
 ;; I used to like when the suggestions where good, but not when they
 ;; are just a shortened version of the command.
 (setq suggest-key-bindings nil)
-
-(defun emacs-version>= (major minor)
-  (or (> emacs-major-version major)
-      (and (eq emacs-major-version major)
-	   (>= emacs-minor-version minor))))
-
-(defmacro emacs-version-cond (&rest clauses)
-  "Test CLAUSES for version >= at compile time.
-Each clause is (VERSION BODY...).
-Where VERSION is a list of major minor (e.g. (25 1)) or t."
-  (dolist (x clauses)
-    (let ((v (car x))
-	  (body (cdr x)))
-      (when (or (eq v t)
-		;; Unroll emacs-verion>= or we get void function definiton
-		(> emacs-major-version (car v))
-		(and (eq emacs-major-version (car v))
-		     (>= emacs-minor-version (cadr v))))
-	(return (cons 'progn body))))))
-(put 'emacs-version-cond 'lisp-indent-hook 'defun)
-
-(defun locate-data-file (name)
-  ;; Try local first
-  (let ((file (concat dot-dir "etc/" name)))
-    (if (file-exists-p file)
-	file
-      (setq file (concat data-directory name))
-      (if (file-exists-p file) file nil))))
 
 (defun region-exists-p ()
   (if mark-active
@@ -105,11 +75,11 @@ Where VERSION is a list of major minor (e.g. (25 1)) or t."
 (defun my-clipboard-copy (beg end)
   (interactive "r")
   (let ((text (buffer-substring beg end)))
-    (emacs-version-cond
-      ((25 1)
+    (my-feature-cond
+      (gui-set-selection
        (gui-set-selection 'CLIPBOARD text) ;; for C-v
        (gui-set-selection 'PRIMARY text))  ;; for mouse paste
-      (t
+      (t ;; older than 25.1
        (x-set-selection 'CLIPBOARD text) ;; for C-v
        (x-set-selection 'PRIMARY text))) ;; for mouse paste
     (copy-region-as-kill beg end))) ;; and the kill buffer
