@@ -100,16 +100,6 @@ Each clause is (FEATURE BODY...)."
 
 (require 'etags)
 
-;; Mimics version from XEmacs 21.2
-(defun find-tag-at-point ()
-  "*Find tag whose name contains TAGNAME.
-Identical to `find-tag' but does not prompt for tag when called interactively;
-instead, uses tag around or before point."
-  (interactive)
-  (find-tag (if current-prefix-arg
-		(find-tag-tag "Find tag: ")
-	      (find-tag-default))))
-
 (defun push-tag-mark ()
   (my-feature-cond
     (xref-push-marker-stack (xref-push-marker-stack))

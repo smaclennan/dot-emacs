@@ -134,7 +134,7 @@
 (global-set-key [f9]		'my-isearch-word-forward)
 (global-set-key [(shift f9)]    'my-toggle-case-search)
 (global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
-(global-set-key [f10]		'find-tag-at-point)
+(global-set-key [f10]		'xref-find-definitions)
 (global-set-key "\M-."		'xref-find-definitions)
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
