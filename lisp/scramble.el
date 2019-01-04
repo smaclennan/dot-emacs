@@ -1,5 +1,5 @@
 ;; My wife likes to do the "ryhmes with bumble" in the newspaper.
-;; This helps to unscrable the words she can't get.
+;; This helps to unscramble the words she can't get.
 ;; It works great up to 8 chars... which is more than enough.
 ;; 9 chars = ~5s, 10 chars = ~45s, 11 chars = ~10m.
 ;; 12 chars needs too much memory/disk space.
