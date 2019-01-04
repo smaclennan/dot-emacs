@@ -116,7 +116,7 @@ with C-u \\[hide-copyleft-region]."
 			 pair (car rest))))
 	    (setq rest (cdr rest)))
 	  (or pair
-	      (if (called-interactively-p 'interactive) ;; SAM gnu emacs change
+	      (if (my-interactive-p) ;; SAM gnu emacs change
 		  (error "Couldn't find a CopyLeft to hide.")
 		(throw 'Abort nil)))
 	  (goto-char end)
