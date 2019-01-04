@@ -104,7 +104,6 @@ You should never need to set this....")
 (provide 'lxr)
 
 (require 'sam-common)
-(require 'http)
 (require 'h2t)
 (require 'etags)
 (require 'trim)
@@ -112,6 +111,8 @@ You should never need to set this....")
 
 (my-feature-cond
   (xemacs
+   (require 'http)
+
    (defalias 'read-only-mode 'toggle-read-only))
   (emacs
    (require 'ring)
