@@ -38,7 +38,6 @@
 
 (my-feature-cond
   (emacs
-   (require 'extent)
    (defun get-face (face) (facep face))
 
    (define-key h2t-keymap [mouse1] 'h2t-mousable)

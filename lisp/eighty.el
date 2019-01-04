@@ -3,8 +3,6 @@
 
 (require 'sam-common)
 
-(my-feature-cond (emacs (require 'extent)))
-
 (defvar 80-list nil "Internal list of lines >= 80 columns.")
 
 (defvar 80-state nil "Internal state of 80.")
