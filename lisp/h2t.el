@@ -248,7 +248,7 @@ in the extent as an `anchor' property."
 This version can only handle urls."
   (interactive "e")
   (let* ((extent (extent-at (event-point event)
-			    (event-buffer event)))
+			    (current-buffer)))
 	 (anchor (extent-property extent 'anchor)))
     (message "%s" anchor)
     (browse-url anchor)))
