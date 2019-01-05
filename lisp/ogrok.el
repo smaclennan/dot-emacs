@@ -117,7 +117,7 @@
       (when more (insert "\nMore...\n"))
       (compilation-mode "ogrok")
       (setq default-directory ogrok-base)
-      (mcs-parse-output "ogrok"))
+      (my-compilation-parse "ogrok"))
     ogrok-list))
 
 (defun ogrok-strip-tags (line)

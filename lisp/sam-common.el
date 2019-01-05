@@ -38,6 +38,8 @@ Each clause is (FEATURE BODY...)."
   (t ;; Must be a macro to work
    (defmacro my-interactive-p () `(called-interactively-p 'interactive))
 
+   (defun event-point (event) (nth 1 (event-start event)))
+
    (defun push-tag-mark ()
      (my-feature-cond
        (xref-push-marker-stack (xref-push-marker-stack))

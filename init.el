@@ -178,8 +178,6 @@
 (global-set-key [(shift insert)] 'x-clipboard-yank)
 (global-set-key [(control insert)] 'my-clipboard-copy)
 
-(defun event-point (event) (nth 1 (event-start event)))
-
 (defun my-show-messages ()
   "Show messages in other window."
   (interactive)

@@ -34,6 +34,10 @@
 
 (require 'sam-common)
 
+(defun my-do-compile (cmd)
+  (save-some-buffers (not compilation-ask-about-save) nil)
+  (compilation-start cmd))
+
 ;;;###autoload
 (defun my-sparse (&optional user-args)
   "Run sparse against the current buffer. Output goes to the
