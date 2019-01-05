@@ -35,15 +35,8 @@
 
 (require 'sam-common)
 
-(my-feature-cond
-  (emacs
-   (define-key h2t-keymap [mouse1] 'h2t-mousable)
-   (define-key h2t-keymap [mouse2] 'h2t-mousable))
-  (xemacs
-   (defalias 'facep 'get-face)
-   (define-key h2t-keymap 'button1 'h2t-mousable)
-   (define-key h2t-keymap 'button2 'h2t-mousable)))
-
+(define-key h2t-keymap [mouse1] 'h2t-mousable)
+(define-key h2t-keymap [mouse2] 'h2t-mousable)
 (define-key h2t-keymap "g" 'h2t-mousable)
 
 ;; Make sure the faces exist

@@ -108,14 +108,8 @@ You should never need to set this....")
 (require 'trim)
 
 
-(my-feature-cond
-  (xemacs
-   (require 'http)
-   (defalias 'read-only-mode 'toggle-read-only))
-  (emacs
-   (defun http-get (url bufname callback)
-     (url-retrieve url callback (list url bufname)))
-   ))
+(defun http-get (url bufname callback)
+  (url-retrieve url callback (list url bufname)))
 
 (defun overlay-at (pos) (car (overlays-at pos)))
 
@@ -149,13 +143,8 @@ You should never need to set this....")
 (defun lxr-make-keymap ()
   (unless lxr-keymap
     (setq lxr-keymap (make-sparse-keymap "lxr"))
-    (my-feature-cond
-      (xemacs
-       (define-key lxr-keymap 'button1 'lxr-mousable)
-       (define-key lxr-keymap 'button2 'lxr-mousable))
-      (emacs
-       (define-key lxr-keymap [mouse-1] 'lxr-mousable)
-       (define-key lxr-keymap [mouse-2] 'lxr-mousable)))
+    (define-key lxr-keymap [mouse-1] 'lxr-mousable)
+    (define-key lxr-keymap [mouse-2] 'lxr-mousable)
     (define-key lxr-keymap "\C-m" 'lxr-keystroke)
     (define-key lxr-keymap "g" 'lxr-keystroke)))
 

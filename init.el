@@ -44,7 +44,6 @@
 ;; if you need to clean something up at the end.
 (load (concat dot-dir "user-init") t)
 
-(setq rcfiles-directory (concat dot-dir "rc/"))
 (rcfiles-register-rc-files)
 
 ;;}}}
@@ -89,7 +88,7 @@
 ;; Windowing System Customization
 
 (if window-system
-    (load (concat rcfiles-directory "window-config"))
+    (load (concat rcfiles-directory "/window-config"))
   ;; Yes, emacs has a menu bar in console mode
   (if (fboundp 'menu-bar-mode)
       (menu-bar-mode -1)))
@@ -348,6 +347,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; 13 5 * * * find $HOME/.backup -mtime +7 -delete
 ;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
 
+(setq auto-save-list-file-prefix nil) ;; don't create auto-save-list directory
 (setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
 (setq backup-directory-alist '((".*" . "~/.backup")))
 
