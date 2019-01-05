@@ -157,6 +157,9 @@
 (global-set-key "\C-c8" '80-scan)
 (global-set-key "\C-c9" '80-cleanup) ;; shift-8 and ctrl-8 did not work
 
+(global-set-key [(meta right)] 'forward-sexp)
+(global-set-key [(meta left)]  'backward-sexp)
+
 (defun my-show-messages ()
   "Show messages in other window."
   (interactive)
@@ -227,7 +230,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;(global-set-key [button7] ')
 
 ;; Side buttons on Logitech M500 + others
-;; NOTE: Needs patch on XEmacs
 (global-set-key [button8] 'yank)
 (global-set-key [button9] 'kill-region)
 
@@ -239,12 +241,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;(when (fboundp 'mwheel-install)
 ;    (mwheel-install)
 ;    (setq mwheel-follow-mouse t))
-
-;; Fixup GNU Emacs
-(when (not running-xemacs)
-  (global-set-key [M-right] 'forward-sexp)
-  (global-set-key [M-left]  'backward-sexp)
-  )
 
 ;; -------------------------------------------------------
 ;; The standard blows away emacs just a little to easily
@@ -309,8 +305,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; Some edit-utils packages
 (my-feature-cond
   (xemacs
-   (iswitchb-default-keybindings)
-   (would-like 'redo))
+   (iswitchb-default-keybindings))
 ;;;  (icomplete-mode
 ;;;   (icomplete-mode 1))
 ;;;  (ido-mode
@@ -320,9 +315,7 @@ Use region if it exists. My replacement for isearch-yank-word."
    (load (concat dot-dir "emacs/iswitchb"))
    (iswitchb-mode 1)))
 
-(my-feature-cond
-  (xemacs (paren-set-mode 'paren t))
-  (t (show-paren-mode t)))
+(show-paren-mode t)
 
 (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
@@ -400,7 +393,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 		     (t           "evening"))
 	       (user-full-name)))))
 
-;; I have been able to disable all the XEmacs messages and Emacs messages in non-console mode.
 ;; Not sure why Emacs wipes the message in console mode.
 (unless noninteractive
   ;; Every time you turn around Emacs is displaying yet another

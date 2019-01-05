@@ -79,6 +79,8 @@
 				 :background "chartreuse1"))
       (set-glyph-image gc-pointer-glyph "recycle2.xpm"))))
 
+(defun show-paren-mode (arg) (paren-set-mode 'paren arg))
+
 ;; -------------------
 ;; Laptop Mode Helper
 (defun check-faces ()
