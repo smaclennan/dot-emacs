@@ -193,7 +193,7 @@ non-nil, returns all .el files in `dot-dir'."
 	(count 0) (lines 0))
     (with-temp-buffer
       (dolist (file files)
-	(insert-file-contents-safe file))
+	(insert-file-contents file))
       (goto-char (point-min))
       (while (re-search-forward "(\\(defun\\|defmacro\\|defalias\\) " nil t)
 	(setq count (1+ count)))

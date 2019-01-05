@@ -54,13 +54,10 @@
 (setq track-eol t
       kill-whole-line t
       next-line-add-newlines nil
-      delete-key-deletes-forward t
-      find-file-compare-truenames t
-      signal-error-on-buffer-boundary nil
       inhibit-default-init t
       inhibit-startup-message t
-      visible-bell t
-      initial-scratch-message ";; This buffer is for goofing around in.\n\n")
+      initial-scratch-message ";; This buffer is for goofing around in.\n\n"
+      visible-bell t)
 
 ;; I used to like when the suggestions where good, but not when they
 ;; are just a shortened version of the command.
@@ -84,10 +81,7 @@
 ;; Let's try making _ part of a "word". C & C++ done in cc-mode-rc.el
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 
-;; (would-like 'uncompress) ;; os-utils
-(and (not noninteractive)
-     (would-like 'jka-compr)
-     (auto-compression-mode 1))
+(when (would-like 'jka-compr) (auto-compression-mode 1))
 
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
@@ -272,9 +266,9 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;; Always want font-lock
 ;; Use require. (turn-on-font-lock) caused no end of grief on my work computers.
-(unless noninteractive (require 'font-lock))
-
-(global-font-lock-mode 1) ;; For 21.x
+(unless noninteractive
+  (require 'font-lock)
+  (global-font-lock-mode 1)) ;; For 21.x
 
 ;;; -------------------------------------------------------------------------
 ;; hide-copyleft

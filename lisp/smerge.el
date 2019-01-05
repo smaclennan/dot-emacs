@@ -17,11 +17,6 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;; TODO:
-;;      - windows way could work in general case
-;;      - keymap for buffer!
-;;	- ediff needs a list of args
-
 ;; 			      Introduction
 ;;
 ;; I am a huge fan of ediff. Once you are used to markups of changes within

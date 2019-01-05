@@ -111,29 +111,18 @@ You should never need to set this....")
 (my-feature-cond
   (xemacs
    (require 'http)
-
    (defalias 'read-only-mode 'toggle-read-only))
   (emacs
-   (require 'ring)
-
-   (defsubst region-exists-p () mark-active)
-
    (defun http-get (url bufname callback)
      (url-retrieve url callback (list url bufname)))
    ))
 
 (defun overlay-at (pos) (car (overlays-at pos)))
 
-(defun lxr-word-at-point ()
-  "Get the word at the point. Use the region if it exists."
-  (if (region-exists-p)
-      (buffer-substring (region-beginning) (region-end))
-    (current-word)))
-
 ;;;###autoload
 (defun lxr-at-point ()
   (interactive)
-  (lxr (lxr-word-at-point)))
+  (lxr (current-word)))
 
 ;;;###autoload
 (defun lxr-defined (ident)
@@ -143,7 +132,7 @@ You should never need to set this....")
 ;;;###autoload
 (defun lxr-defined-at-point ()
   (interactive)
-  (lxr-defined (lxr-word-at-point)))
+  (lxr-defined (current-word)))
 
 ;;;###autoload
 (defun lxr-next-defined ()

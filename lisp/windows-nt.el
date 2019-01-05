@@ -42,6 +42,8 @@
   (message "Can't find %s" vs-tools-dir))
 )
 
+(setq find-file-compare-truenames t)
+
 ;; NT uses nmake and findstr
 (set-variable 'grep-command "findstr -n ")
 (setq compile-command "nmake ")

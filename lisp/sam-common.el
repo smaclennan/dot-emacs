@@ -15,9 +15,6 @@
 (require 'cl-extra)
 (require 'xref)
 
-;; GNU emacs sets emacs
-;; XEmacs sets xemacs
-;; SXEmacs sets sxemacs and xemacs
 (defmacro my-feature-cond (&rest clauses)
   "Test CLAUSES for feature, function, or variable at compile time.
 Each clause is (FEATURE BODY...)."
@@ -31,19 +28,14 @@ Each clause is (FEATURE BODY...)."
 	(return (cons 'progn body))))))
 (put 'my-feature-cond 'lisp-indent-hook 'defun)
 
-(my-feature-cond
-  (xemacs ;; Must be a defalias for my-isearch-word-forward
-   (defalias 'my-interactive-p 'interactive-p)
-   (defalias 'kill-whole-line 'kill-entire-line))
-  (t ;; Must be a macro to work
-   (defmacro my-interactive-p () `(called-interactively-p 'interactive))
+;; Must be a macro to work
+(defmacro my-interactive-p () `(called-interactively-p 'interactive))
 
-   (defun event-point (event) (nth 1 (event-start event)))
+(defun event-point (event) (nth 1 (event-start event)))
 
-   (defun push-tag-mark ()
-     (my-feature-cond
-       (xref-push-marker-stack (xref-push-marker-stack))
-       (t (ring-insert find-tag-marker-ring (point-marker)))))
-   ))
+(defun push-tag-mark ()
+  (my-feature-cond
+    (xref-push-marker-stack (xref-push-marker-stack))
+    (t (ring-insert find-tag-marker-ring (point-marker)))))
 
 (provide 'sam-common)

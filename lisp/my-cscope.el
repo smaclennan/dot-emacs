@@ -71,7 +71,7 @@ SYM into current buffer."
   (let ((default-directory (mcs-dir))
 	(cmd (concat my-cscope-prog " " my-cscope-args " -L -"
 		     (number-to-string type) sym)))
-    (insert cmd "\n\n") ;; XEmacs needs the blank line
+    (insert cmd "\n\n")
     (call-process-shell-command cmd nil t)))
 
 ;;----------------------------------------------------------------
