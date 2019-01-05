@@ -29,5 +29,6 @@ ELCS = $(LISP:.el=.elc)
 endif
 
 .el.elc:
-	$(EMACS) -batch -q $(HELPER) -f batch-byte-compile $<
+	@echo Compile $<
+	@$(EMACS) -batch -q $(HELPER) -f batch-byte-compile $<
 	@rm -f $(LOAD_FILES)
