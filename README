@@ -9,10 +9,6 @@ A brief rundown:
 
 * Other lisp code is in misc.
 
-* Emacs specific code is in emacs.
-
-* XEmacs specific code is in xemacs.
-
 * I use Didier Verna's el-rcfiles package. The rc files are in the rc
   directory. https://github.com/didierverna/el-rcfiles
 

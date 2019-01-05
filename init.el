@@ -1,5 +1,5 @@
-;; S?X?Emacs setup -*- Mode:emacs-lisp -*-
-;; This file should work with XEmacs 2x.x, Emacs >= 22.1, or SXEmacs
+;; Emacs setup -*- Mode:emacs-lisp -*-
+;; This file should work with Emacs >= 22.1
 
 ;;{{{ Configuration variables / functions
 
@@ -102,12 +102,6 @@
 
 ;;{{{ Keys
 
-;; For Emacs this breaks the minibuffer. Emacs dealt with in rc/ files.
-(when running-xemacs
-  ;; This should always do the right thing
-  (global-set-key [(return)] 'newline-and-indent)
-  (global-set-key [(linefeed)] 'newline))
-
 ;;;; Function keys.
 (global-set-key [XF86_Switch_VT_1] (global-key-binding [f1]))
 (global-set-key [f1]            'find-file)
@@ -162,10 +156,7 @@
 (defun my-show-messages ()
   "Show messages in other window."
   (interactive)
-  (my-feature-cond
-    (xemacs (show-message-log))
-    (t (switch-to-buffer-other-window "*Messages*"))
-    ))
+  (switch-to-buffer-other-window "*Messages*"))
 
 (defun grab-word ()
   "Grab the word on or after the point."
@@ -209,13 +200,8 @@ Use region if it exists. My replacement for isearch-yank-word."
   "Search for current word. Region is used if set."
   (interactive "P")
   ;; Push the C-w and call 'isearch-forward'
-  (my-feature-cond
-    (xemacs
-     (setq unread-command-events
-	   (list (make-event 'key-press '(key ?w modifiers (control))))))
-    (t
-     (setq unread-command-events
-	   (listify-key-sequence "\C-w"))))
+  (setq unread-command-events
+	(listify-key-sequence "\C-w"))
   (isearch-mode t (not (null regexp-p)) nil (not (my-interactive-p))))
 
 (defun my-toggle-case-search ()
@@ -303,8 +289,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; -------------------------------------------------------------------------
 ;;; Some edit-utils packages
 (my-feature-cond
-  (xemacs
-   (iswitchb-default-keybindings))
 ;;;  (icomplete-mode
 ;;;   (icomplete-mode 1))
 ;;;  (ido-mode
