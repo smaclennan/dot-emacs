@@ -9,9 +9,7 @@
       calendar-latitude  '[45 23 north]
       calendar-longitude '[75 44 west])
 
-(if (boundp 'calendar-mark-holidays-flag)
-    (setq calendar-mark-holidays-flag t)
-  (setq mark-holidays-in-calendar t))
+(setq calendar-mark-holidays-flag t)
 
 (defun corrected-dow (date)
   "Given a list of month, day, year return the week day. Sunday = 7."

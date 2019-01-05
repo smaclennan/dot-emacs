@@ -8,11 +8,13 @@
 			    (:eval (abbreviate-file-name buffer-file-name))
 			    "%b")))
 
-(if (fboundp 'delete-selection-mode)
-    (delete-selection-mode)
-  (and (< emacs-major-version 23)
-       (would-like 'pc-select)
-       (pc-selection-mode)))
+(my-feature-cond
+  (delete-selection-mode
+   (delete-selection-mode))
+  (t
+   (and (< emacs-major-version 23)
+	(would-like 'pc-select)
+	(pc-selection-mode))))
 
 (unless bells-and-whistles
   (setq use-dialog-box nil)
