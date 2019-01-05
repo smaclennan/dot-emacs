@@ -35,6 +35,8 @@
 ;; Filladapt is a syntax-highlighting package.  When it is enabled it
 ;; makes filling (e.g. using M-q) much much smarter about paragraphs
 ;; that are indented and/or are set off with semicolons, dashes, etc.
+(eval-when-compile (require 'filladapt))
+
 (defun add-filladapt()
   (require 'filladapt) ;; No autoloads
   (turn-on-filladapt-mode))
@@ -99,7 +101,15 @@
   (gnuserv-start)
   (setq gnuserv-frame (selected-frame)))
 
-(defun xref-find-definitions (find-tag))
+(defun xref-find-definitions ()
+  "Find the definition of the identifier at point.
+With prefix argument or when there's no identifier at point,
+prompt for it."
+  (interactive)
+   (if (and (not current-prefix-arg) (looking-at "[a-zA-Z0-9_]"))
+       (call-interactively 'find-tag-at-point)
+     (setq current-prefix-arg nil)
+     (call-interactively 'find-tag)))
 
 ;; Loading this here means it doesn't overwrite `friendly-message'.
 (require 'efs-cu)
