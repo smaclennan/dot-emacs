@@ -1,11 +1,19 @@
 ;;; sam-common.el --- SAM's Common macros/functions
 
-;; SAM Once helper.el is cleaned up, this could go there... or it
-;; could go here.
-
 ;; Copyright (C) 2011 Sean MacLennan
 
-(eval-when-compile (require 'cl))
+;; When building outside emacs dot-dir may not be set
+(defvar dot-dir (expand-file-name "~/.emacs.d/"))
+
+(dolist (dir '("lisp" "misc"))
+  (add-to-list 'load-path (concat dot-dir dir))
+  (load (concat dir "-loaddefs") t t))
+
+;; I don't know why the hate against common-lisp
+(setq byte-compile-warnings '(not cl-functions))
+(require 'cl)
+(require 'cl-extra)
+(require 'xref)
 
 ;; GNU emacs sets emacs
 ;; XEmacs sets xemacs

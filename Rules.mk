@@ -14,7 +14,7 @@ endif
 
 # GNU Emacs
 
-HELPER := -l ~/.emacs.d/lisp/helper
+HELPER := -l ~/.emacs.d/lisp/sam-common
 
 $(SUBDIR)-loaddefs.el:
 	@echo Create $(EMACS) $(SUBDIR)-loaddefs.el ...

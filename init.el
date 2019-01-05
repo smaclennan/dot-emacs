@@ -9,7 +9,7 @@
 (defvar dot-dir (expand-file-name "~/.emacs.d/")
   "The init file directory.")
 
-(load (concat dot-dir "lisp/helper"))
+(load (concat dot-dir "lisp/sam-common"))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -24,8 +24,6 @@
   (condition-case nil (require feature)
     (error
      (add-to-list 'would-have-liked-list feature) nil)))
-
-(require 'sam-common)
 
 ;; Split the system-name up into host and domain name.
 ;; We need this up front for sendmail-rc.
