@@ -1,5 +1,4 @@
-;;; XEmacs windoze setup -*- Mode:emacs-lisp -*-
-;;; This file should work with XEmacs 20.x and greater
+;;; Emacs windoze setup -*- Mode:emacs-lisp -*-
 
 ;; For Windoze, the HOME and DOMAINNAME environment variables *must* be set
 

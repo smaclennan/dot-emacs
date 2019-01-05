@@ -177,15 +177,8 @@ non-nil, returns all .el files in `dot-dir'."
 		  (file-symlink-p file))
 	  (setq files (delete file files))))
 
-      (dolist (file '(;; emacs files that are not mine
-		      "emacs/rcfiles.el" "emacs/hide-copyleft.el"
-		      "emacs/iswitchb.el"
-		      ;; xemacs files that are not mine
-		      "xemacs/time-date.el"
-		      ;; generated files
-		      "emacs/emacs-loaddefs.el" "lisp/lisp-loaddefs.el"
-		      "lisp/auto-autoloads.el" "lisp/custom-load.el"
-		      "xemacs/auto-autoloads.el" "xemacs/custom-load.el"
+      (dolist (file '(;; generated files
+		      "lisp/lisp-loaddefs.el" "misc/misc-loaddefs.el"
 		      ;; ignore this to make comparisons
 		      "user-init.el"
 		      ))
