@@ -188,7 +188,7 @@ actually update the associated `compile-command' variable."
 (defun c-macro-expand-at-point (subst)
   (interactive "P")
   (let (start end)
-    (if (region-exists-p)
+    (if mark-active
 	(setq start (region-beginning)
 	      end (region-end))
       ;; symbol-near-point from 21.2-b45

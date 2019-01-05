@@ -21,27 +21,48 @@
 
 (eval-when-compile (require 'sam-common))
 
-(my-feature-cond
- (xemacs
-  ;; Using the mouse-* keys works under XEmacs but displays an irritating button* message
-  (global-set-key [button4] 'fine-scroll-down)
-  (global-set-key [button5] 'fine-scroll-up)
-  (global-set-key [(shift button4)] 'coarse-scroll-down)
-  (global-set-key [(shift button5)] 'coarse-scroll-up)
+;; GNU Emacs really really needs a `signal-error-on-buffer-boundary'
 
-  (defalias 'scroll-event-window 'event-window)
+(defadvice scroll-down (around my-scroll-down activate)
+  "`scroll-down' with no signal on end-of-buffer."
+  (condition-case nil
+      ad-do-it
+    (beginning-of-buffer)))
 
-  ;; This is required to disable mwheel.
-  (dolist (key '([(mouse-4)] [(mouse-5)] [(shift mouse-4)] [(shift mouse-5)]))
-    (global-set-key key nil)))
+(defadvice scroll-up (around my-scroll-up activate)
+  "`scroll-up' with no signal on end-of-buffer."
+  (condition-case nil
+      ad-do-it
+    (end-of-buffer)))
 
- (emacs
-  (defun scroll-event-window (event) (car (event-start event)))
+;; Using defadvice for these functions breaks minibuffer history
+(defun my-previous-line (&optional arg try-vscroll)
+  "`previous-line' with no signal on end-of-buffer."
+  (interactive "p")
+  (condition-case nil
+      (with-no-warnings ;; Yes, I want the interactive version
+	(previous-line arg try-vscroll))
+    (beginning-of-buffer)))
 
-  (global-set-key [(mouse-4)] 'fine-scroll-down)
-  (global-set-key [(mouse-5)] 'fine-scroll-up)
-  (global-set-key [(shift mouse-4)] 'coarse-scroll-down)
-  (global-set-key [(shift mouse-5)] 'coarse-scroll-up)))
+(defun my-next-line (&optional arg try-vscroll)
+  "`previous-line' with no signal on end-of-buffer."
+  (interactive "p")
+  (condition-case nil
+      (with-no-warnings ;; Yes, I want the interactive version
+	(next-line arg try-vscroll))
+    (end-of-buffer)))
+
+(global-set-key (kbd "<up>") 'my-previous-line)
+(global-set-key (kbd "<down>") 'my-next-line)
+
+;; GNU Emacs really really needs a `signal-error-on-buffer-boundary'
+
+(defun scroll-event-window (event) (car (event-start event)))
+
+(global-set-key [(mouse-4)] 'fine-scroll-down)
+(global-set-key [(mouse-5)] 'fine-scroll-up)
+(global-set-key [(shift mouse-4)] 'coarse-scroll-down)
+(global-set-key [(shift mouse-5)] 'coarse-scroll-up)
 
 (defun my-scroll-down-command (event &optional lines)
   (with-selected-window (scroll-event-window event)

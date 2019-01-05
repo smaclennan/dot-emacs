@@ -64,6 +64,10 @@
       visible-bell t
       initial-scratch-message ";; This buffer is for goofing around in.\n\n")
 
+;; I used to like when the suggestions where good, but not when they
+;; are just a shortened version of the command.
+(setq suggest-key-bindings nil)
+
 ;; This has got to be the hardest variable to set. It seems you *must*
 ;; hardcode the name and it can't be in a compiled file. Yes, the
 ;; docs say it can, but the eval form does not work.
@@ -153,6 +157,31 @@
 (global-set-key [(meta right)] 'forward-sexp)
 (global-set-key [(meta left)]  'backward-sexp)
 
+;; Hyper-apropos bindings
+(define-key global-map [(control h) a] 'hyper-apropos)
+(define-key global-map [(control h) c] 'hyper-describe-key-briefly)
+(define-key global-map [(control h) f] 'hyper-describe-function)
+(define-key global-map [(control h) k] 'hyper-describe-key)
+(define-key global-map [(control h) v] 'hyper-describe-variable)
+(define-key global-map [(control h) w] 'hyper-where-is)
+
+(defun my-clipboard-copy (beg end)
+  (interactive "r")
+  (let ((text (buffer-substring beg end)))
+    (my-feature-cond
+      (gui-set-selection
+       (gui-set-selection 'CLIPBOARD text) ;; for C-v
+       (gui-set-selection 'PRIMARY text))  ;; for mouse paste
+      (t ;; older than 25.1
+       (x-set-selection 'CLIPBOARD text) ;; for C-v
+       (x-set-selection 'PRIMARY text))) ;; for mouse paste
+    (copy-region-as-kill beg end))) ;; and the kill buffer
+
+(global-set-key [(shift insert)] 'x-clipboard-yank)
+(global-set-key [(control insert)] 'my-clipboard-copy)
+
+(defun event-point (event) (nth 1 (event-start event)))
+
 (defun my-show-messages ()
   "Show messages in other window."
   (interactive)
@@ -181,7 +210,7 @@
   "Pull current word from buffer into search string.
 Use region if it exists. My replacement for isearch-yank-word."
   (interactive)
-  (let ((word (if (region-exists-p)
+  (let ((word (if mark-active
 		  (buffer-substring (region-beginning) (region-end))
 		(current-word))))
     (forward-char 1) ;; make sure we are not on first char of word
@@ -248,6 +277,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; Always want font-lock
 ;; Use require. (turn-on-font-lock) caused no end of grief on my work computers.
 (unless noninteractive (require 'font-lock))
+
+(global-font-lock-mode 1) ;; For 21.x
 
 ;;; -------------------------------------------------------------------------
 ;; hide-copyleft
