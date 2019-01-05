@@ -1,1 +1,2 @@
-python-mode-rc.el
+;; Bold SAM comments
+(comment-warn 'python-mode)

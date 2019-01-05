@@ -56,7 +56,7 @@ will do it for you.")
 				    laptop-mode-font-size)))
 
 (defun laptop-mode-toggle (&optional on)
-  "Toggle laptop-mode. Doesn't work that well on XEmacs :("
+  "Toggle laptop-mode."
   (interactive)
   (setq laptop-mode (if on t (not laptop-mode)))
   (set-face-attribute 'default nil :height

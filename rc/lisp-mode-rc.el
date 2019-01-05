@@ -48,28 +48,17 @@ allows lisp code to be compiled while doing another compile."
 
 ;; Bold SAM comments
 (require 'font-lock) ; lisp mode called very early in startup
-
-(my-feature-cond
-  (emacs
-   (comment-warn nil 'emacs-lisp-mode ";+ ?\\<SAM\\>.*"))
-  (xemacs
-   (comment-warn (list lisp-font-lock-keywords-1 lisp-font-lock-keywords-2)
-	      'emacs-lisp-mode
-	      ";+ ?\\<SAM\\>.*")))
+(comment-warn 'emacs-lisp-mode ";+ ?\\<SAM\\>.*")
 
 ;; I don't like the warning-face used in GNU Emacs for functions like `error'.
 ;; However, the keywords are a defconst, so we must work around that by
-;; making a copy. XEmacs doesn't consider error a keyword.
+;; making a copy.
 
-(my-feature-cond
-  (xemacs
-   (nconc lisp-font-lock-keywords-2 '(("(\\(error\\|warn\\)\\>" 1 'font-lock-keyword-face))))
-  (t
-   (let ((mine (copy-tree lisp-el-font-lock-keywords-2))
-	 str)
-     (dolist (face mine)
-       (setq str (car face))
-       (and (stringp str)
-	    (string-match "\\berror\\b" str)
-	    (setf (cdadr face) (list 'font-lock-keyword-face))))
-     (setq lisp-el-font-lock-keywords-2 mine))))
+(let ((mine (copy-tree lisp-el-font-lock-keywords-2))
+      str)
+  (dolist (face mine)
+    (setq str (car face))
+    (and (stringp str)
+	 (string-match "\\berror\\b" str)
+	 (setf (cdadr face) (list 'font-lock-keyword-face))))
+  (setq lisp-el-font-lock-keywords-2 mine))

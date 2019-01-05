@@ -4,12 +4,8 @@
 ;; So makefiles get nice compile commands
 (require 'my-compile)
 
-;; Bold SAM comments
-(if running-xemacs
-    (comment-warn (list makefile-font-lock-keywords) nil)
-  (comment-warn nil 'makefile-mode)
-  (comment-warn nil 'makefile-gmake-mode)
-  )
+(comment-warn 'makefile-mode)
+(comment-warn 'makefile-gmake-mode)
 
 (defun makefile-template (prog)
   (interactive "sProg: ")

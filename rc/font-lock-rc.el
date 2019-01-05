@@ -21,20 +21,15 @@
 (defconst sh-comment-warn "# ?\\<SAM\\>.*"
   "Regular expression used in scripts.")
 
-(defun comment-warn (keywords mode &optional re)
-  "Helper for comment bolding. `keywords' are used by XEmacs. `mode' is used by GNU Emacs."
+(defun comment-warn (mode &optional re)
+  "Helper for comment bolding."
   (unless re (setq re sh-comment-warn))
   (let ((keyword (list (list re 0 (quote `font-lock-comment-warn-face) t))))
-    (if running-xemacs
-	(dolist (kw keywords)
-	  (nconc kw keyword))
-      (font-lock-add-keywords mode keyword))))
+    (font-lock-add-keywords mode keyword)))
 
 ;; Change a couple of faces
 (make-face-bold 'font-lock-function-name-face)
 (set-face-foreground 'font-lock-function-name-face "blue")
-;; Um, this is the default
-;(set-face-foreground 'font-lock-string-face "green4")
 
 (if window-system
     (set-face-foreground 'font-lock-comment-face "FireBrick")
@@ -44,13 +39,3 @@
   (set-face-foreground 'font-lock-keyword-face "blue")
   (set-face-foreground 'font-lock-variable-name-face "purple")
   )
-
-(when running-xemacs
-   ;; Of all the modes, font-lock *least* needs a modeline
-   ;; indicator. If the buffer is colourful, font-lock is on.
-   ;; The only thing you lose is the ability to toggle it.
-   (let ((el (assq 'font-lock-mode minor-mode-alist)))
-     (if el (setcdr el '(""))))
-
-   (when window-system
-     (load (concat rcfiles-directory "window-config"))))

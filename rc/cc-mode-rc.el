@@ -31,30 +31,17 @@
   (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
   (setq case-fold-search nil) ;; C is case sensitive
 
-  ;; Let's try this...
-  (setq c-enable-xemacs-performance-kludge-p t)
-
-  (unless running-xemacs
-    (let ((tags (concat default-directory "TAGS")))
-      (when (file-exists-p tags)
-	(set (make-local-variable 'tags-file-name) tags))))
+  (let ((tags (concat default-directory "TAGS")))
+    (when (file-exists-p tags)
+      (set (make-local-variable 'tags-file-name) tags)))
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
-(my-feature-cond
-  (xemacs
-   (defun my-read-number (prompt default-value)
-     (let* ((default (number-to-string default-value))
-	    (prompt (concat prompt "[" default "] ")))
-       (read-number prompt t default))))
-  (t
-   (defalias 'my-read-number 'read-number)))
 
 (defun set-c-vars (tabs width)
   "Set C tab mode and tab width"
   (interactive (list
 		(yes-or-no-p "Tabs? ")
-		(my-read-number "Width: " c-basic-offset)))
+		(read-number "Width: " c-basic-offset)))
   (setq indent-tabs-mode tabs
 	c-basic-offset width
 	tab-width width))
@@ -100,7 +87,7 @@
 (defvar local-compile-go "gccgo")
 (defvar local-compile-offset 4)
 
-;; We need to obfuscate this string or XEmacs gets confused
+;; We need to obfuscate this string or Emacs gets confused
 (defvar local-vars-str (concat "Local Variables" ":"))
 
 (defun add-local-vars (block)
@@ -231,8 +218,7 @@ actually update the associated `compile-command' variable."
   (and (stringp obj)
        (string-match "^\\(cc\\|gcc\\|clang\\) [a-zA-Z0-9. -]+$" obj)))
 
-(unless (featurep 'xemacs)
-  (put 'compile-command 'safe-local-variable #'cc-string))
+(put 'compile-command 'safe-local-variable #'cc-string)
 
 (defun my-c-settings ()
   "Show the basic C settings for the buffer."
@@ -247,11 +233,9 @@ actually update the associated `compile-command' variable."
 ;; Bold SAM comments
 
 (comment-warn
- (list c-font-lock-keywords-1 c-font-lock-keywords-2 c-font-lock-keywords-3)
  'c-mode
  "\\(/\\*\\|//\\) ?\\<SAM\\>.*")
 (comment-warn
- (list c++-font-lock-keywords-1 c++-font-lock-keywords-2 c++-font-lock-keywords-3)
  'c++-mode
  "\\(/\\*\\|//\\) ?\\<SAM\\>.*")
 
