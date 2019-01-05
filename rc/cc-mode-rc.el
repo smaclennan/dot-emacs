@@ -284,8 +284,5 @@ Default FLAGS value is read only."
 
 ;;; -------------------------------------------------------------------------
 
-;; GNU emacs
-(my-feature-cond
-  (emacs
-   (add-hook 'c-initialization-hook
-	     (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))))
+(add-hook 'c-initialization-hook
+	  (lambda  () (define-key c-mode-base-map [(return)] 'newline-and-indent)))

@@ -37,10 +37,8 @@ allows lisp code to be compiled while doing another compile."
   (setq gd-indicator-string nil)
   (gd-add-to-mode))
 
-(my-feature-cond
-  (emacs
-   (add-hook 'emacs-lisp-mode-hook
-	     (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))))
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))
 
 ;; Let's try making - part of a "word".
 (modify-syntax-entry ?- "w" lisp-mode-syntax-table)
