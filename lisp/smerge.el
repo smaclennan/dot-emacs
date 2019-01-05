@@ -443,7 +443,7 @@ Pops up a menu that allows copying the file to directory one or two."
 
 (defun smerge-allow-dir (dir)
   "Are we allowed to copy to this directory."
-  (let ((type (overylay-get smerge-extent 'type)))
+  (let ((type (overlay-get smerge-extent 'type)))
     (if type
 	(> (logand (overlay-get smerge-extent 'type) dir) 0)
       (message "WARNING: No type for extent!")

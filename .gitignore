@@ -1,14 +1,7 @@
 *.elc
 user-init.el
-auto-autoloads.el
-custom-load.el
 lisp-loaddefs.el
 misc-loaddefs.el
-emacs-loaddefs.el
-xemacs-loaddefs.el
-slashdots
 *~
-package-index.LATEST.gpg
-xemacs-packages
 ido.last
 diary

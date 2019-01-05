@@ -105,27 +105,6 @@ See also `auto-save-file-name-p'."
   (when (string-match "3.0" ispell-version)
     (setq ispell-extra-args '("--reverse"))))
 
-(when running-xemacs
-  ;; -----------------------------------------------------------
-  ;; XEmacs NT does not downcase truenames (NTEmacs does).
-  ;; This adds a handler that downcases the truenames.
-  (setq file-name-handler-alist
-	(nconc file-name-handler-alist
-	       '(("^[a-zA-Z]:" . downcase-filename-handler))))
-
-  (defun downcase-filename-handler (op &rest args)
-    (if (eq op 'file-truename)
-	;; first argument is the filename
-	(setcar args (downcase (car args))))
-    ;; Now call the real handler with possibly changed args.
-    ;; The following comes straight from the documentation in files.el
-    (let ((inhibit-file-name-handlers
-	   (cons 'downcase-filename-handler
-		 (and (eq inhibit-file-name-operation op)
-		      inhibit-file-name-handlers)))
-	(inhibit-file-name-operation op))
-      (apply op args))))
-
 ;; Different excludes for windows
 (setq smerge-diff-excludes
       '("*.obj" "*.lib" "*.dll" "*.sbr" ".svn" "*.scc"

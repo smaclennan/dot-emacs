@@ -1,13 +1,5 @@
 #!/bin/sh
 
-if pgrep xemacs >/dev/null; then
-    PROG=gnuclient
-    FLAG=-q
-else
-    PROG=emacsclient
-    FLAG=-n
-fi
-
 [ -n "$1" ] || { echo "2emacs what?"; exit 1; }
 
 N=`echo $1 | awk -F: '{print $2}'`
@@ -19,8 +11,4 @@ else
     unset ARG
 fi
 
-if [ `basename $0` = "2emacs" ]; then
-    $PROG $FLAG $ARG $FILE
-else
-    $PROG $ARG $FILE
-fi
+emacsclient -n $ARG $FILE

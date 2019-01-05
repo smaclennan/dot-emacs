@@ -25,6 +25,12 @@ Each clause is (FEATURE BODY...)."
    (defalias 'my-interactive-p 'interactive-p)
    (defalias 'kill-whole-line 'kill-entire-line))
   (t ;; Must be a macro to work
-   (defmacro my-interactive-p () `(called-interactively-p 'interactive))))
+   (defmacro my-interactive-p () `(called-interactively-p 'interactive))
+
+   (defun push-tag-mark ()
+     (my-feature-cond
+       (xref-push-marker-stack (xref-push-marker-stack))
+       (t (ring-insert find-tag-marker-ring (point-marker)))))
+   ))
 
 (provide 'sam-common)

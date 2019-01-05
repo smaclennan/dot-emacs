@@ -1,37 +1,27 @@
+;; SAM Most of this can go in init.el and some to sam-common.el
+
 ;; Check for older (21.x) GNU Emacs
 (unless (featurep 'emacs) (provide 'emacs))
 
-(defvar running-xemacs nil "Non-nil when the current emacs is XEmacs.")
-
 ;; When building outside emacs dot-dir may not be set
 (defvar dot-dir (expand-file-name "~/.emacs.d/"))
+
+(dolist (dir '("lisp" "misc"))
+  (add-to-list 'load-path (concat dot-dir dir))
+  (load (concat dir "-loaddefs") t t))
 
 ;; I don't know why the hate against common-lisp
 (setq byte-compile-warnings '(not cl-functions))
 (require 'cl)
 (require 'cl-extra)
 (require 'ring)
-
-(dolist (dir '("emacs" "lisp" "misc"))
-  (add-to-list 'load-path (concat dot-dir dir))
-  (load (concat dir "-loaddefs") t t))
-
-(defmacro my-feature-cond (&rest clauses)
-  "Test CLAUSES for feature, function, or variable at compile time.
-Each clause is (FEATURE BODY...)."
-  (dolist (x clauses)
-    (let ((feature (car x))
-	  (body (cdr x)))
-      (when (or (eq feature t)
-		(featurep feature)
-		(fboundp feature)
-		(boundp feature))
-	(return (cons 'progn body))))))
+(require 'sam-common)
 
 ;; I used to like when the suggestions where good, but not when they
 ;; are just a shortened version of the command.
 (setq suggest-key-bindings nil)
 
+;; SAM multiple definitions of this
 (defun region-exists-p ()
   (if mark-active
       (setq deactivate-mark t)
@@ -98,16 +88,7 @@ Each clause is (FEATURE BODY...)."
 
 (global-font-lock-mode 1) ;; For 21.x
 
-(require 'etags)
-
-(defun push-tag-mark ()
-  (my-feature-cond
-    (xref-push-marker-stack (xref-push-marker-stack))
-    (t (ring-insert find-tag-marker-ring (point-marker)))))
-
 ;; Hacks for Emacs 23
 (when (eq emacs-major-version 23)
   (mapc 'require '(git-diff my-calc my-tags smerge))
   )
-
-(provide 'esp)

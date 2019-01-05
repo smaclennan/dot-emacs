@@ -98,7 +98,7 @@ A prefix arg allows you to edit the grep command"
       (setq cmd (read-string "Cmd: " cmd 'grep-history)))
 
     ;; GNU Emacs - must call this once or first grep fails
-    (when (not running-xemacs) (grep-compute-defaults))
+    (grep-compute-defaults)
 
     (if git-grep-top-of-tree
 	(let ((default-directory (git-dir))
