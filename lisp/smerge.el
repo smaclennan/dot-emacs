@@ -1,7 +1,6 @@
 ;;; smerge.el --- SAM's Merge layer on top of ediff
 
 ;; Copyright (C) 2002-2009 Sean MacLennan
-;; XEmacs
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

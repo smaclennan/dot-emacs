@@ -1,5 +1,8 @@
 ;;; sam-common.el --- SAM's Common macros/functions
 
+;; SAM Once helper.el is cleaned up, this could go there... or it
+;; could go here.
+
 ;; Copyright (C) 2011 Sean MacLennan
 
 (eval-when-compile (require 'cl))

@@ -36,7 +36,7 @@ Normal 32-bit emacs can only support 30-bit numbers.")
 	(t (error "Invalid hexadecimal digit `%c'" chr))))))
 
 ;; This and hex-char-to-num are from hex-utils.el. I just could not
-;; get it to compile cleanly in GNU Emacs or xemacs.
+;; get it to compile cleanly in emacs.
 (defun ocra-decode-hex-string (string)
   "Decode hexadecimal STRING to octet string."
   (let* ((len (length string))
@@ -51,15 +51,6 @@ Normal 32-bit emacs can only support 30-bit numbers.")
       (setq idx (1+ idx)
 	    pos (+ 2 pos)))
     dst))
-
-
-(my-feature-cond
-  (xemacs
-   ;; ecrypto does not have a provide - load sha1
-   (load "sha1")
-   (eval-when-compile (load "sha1" t)))
-  (emacs
-   (defun int-to-char (integer) integer)))
 
 (defun ocra-sha1-binary (string) (sha1 string nil nil t))
 
@@ -78,14 +69,14 @@ Normal 32-bit emacs can only support 30-bit numbers.")
     (setq len (/ len 2)) ; convert from nibbles to bytes
 
     (when odd
-      (aset tmp len (int-to-char (lsh (logand question #xf) 4)))
+      (aset tmp len(lsh (logand question #xf) 4))
       (setq question (lsh question -4))
       )
 
     (setq len (1- len))
 
     (loop for i from len downto 0 do
-      (aset tmp i (int-to-char (logand question #xff)))
+      (aset tmp i (logand question #xff))
       (setq question (lsh question -8)))
 
     tmp))

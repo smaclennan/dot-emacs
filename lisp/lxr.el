@@ -1,8 +1,7 @@
-;;; lxr.el --- XEmacs interface to lxr source browser
+;;; lxr.el --- interface to lxr source browser
 
 ;; Copyright (C) 2000-2009 Sean MacLennan
 ;; Revision:   1.3
-;; XEmacs/Emacs
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

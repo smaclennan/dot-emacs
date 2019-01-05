@@ -2,7 +2,6 @@
 
 ;; Copyright (C) 1998,2002 Sean MacLennan
 ;; $Revision: 1.3 $ $Date: 2003/03/19 02:53:29 $
-;; XEmacs/Emacs
 
 ;; License agrement
 

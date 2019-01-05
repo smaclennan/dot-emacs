@@ -1,7 +1,6 @@
 ;;; ogrok.el --- Emacs interface to OpenGrok source browser
 ;; Copyright (C) 2017 Sean MacLennan
 ;; Revision:   0.3
-;; XEmacs/Emacs
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -72,24 +71,11 @@
 
 ;; We want this synchronous so we can make decisions based on the results
 (defun ogrok-get-page (url)
-  (my-feature-cond
-    (xemacs
-     (with-current-buffer (get-buffer-create "*ogrok*")
-       (setq buffer-read-only nil)
-       (erase-buffer)
-       (unless (eq (call-process "curl" nil t nil "-si" url) 0)
-	 (error "curl failed: %s" url))
-       (goto-char (point-min))
-       (unless (looking-at "HTTP/[1-9]\\.[0-9]+ 200")
-	 (error "http request failed: %s" url))))
-
-    (emacs
-     (let ((buf (url-retrieve-synchronously url t)))
-       (unless buf (error "get failed: %s" url))
-       (with-current-buffer buf
-	 (when (get-buffer "*ogrok*") (kill-buffer "*ogrok*"))
-	 (rename-buffer "*ogrok*"))))
-    ))
+  (let ((buf (url-retrieve-synchronously url t)))
+    (unless buf (error "get failed: %s" url))
+    (with-current-buffer buf
+      (when (get-buffer "*ogrok*") (kill-buffer "*ogrok*"))
+      (rename-buffer "*ogrok*"))))
 
 (defun ogrok-parse-page ()
   (let (ogrok-list more this regex)
