@@ -76,17 +76,10 @@ SYM into current buffer."
 
 ;;----------------------------------------------------------------
 (defun my-compilation-parse (mode)
-  "Deal with XEmacs vs GNU Emacs differences in compile"
-  (compilation-mode mode)
-  (my-feature-cond
-   (xemacs
-    (goto-char (point-min))
-    (compilation-parse-errors nil nil))
-   (emacs
-    ;; I tried to use compilation but it only worked 90% of the time.
-    (setq buffer-read-only nil)
-    (compilation--parse-region (point-min) (point-max))
-    (setq buffer-read-only t)))
+  ;; I tried to use compilation but it only worked 90% of the time.
+  (setq buffer-read-only nil)
+  (compilation--parse-region (point-min) (point-max))
+  (setq buffer-read-only t)
   (goto-char (point-min)))
 
 ;;;###autoload

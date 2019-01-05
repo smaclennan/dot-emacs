@@ -191,14 +191,15 @@ regular expressions.")
   "This creates the keymap."
   (unless smerge-keymap
     (setq smerge-keymap (make-sparse-keymap "smerge"))
-    (if (featurep 'xemacs)
-	(progn
-	  (define-key smerge-keymap 'button1 'smerge-mousable)
-	  (define-key smerge-keymap 'button2 'smerge-mousable)
-	  (define-key smerge-keymap 'button3 'smerge-menu))
+    (smerge-feature-cond
+     (xemacs
+      (define-key smerge-keymap 'button1 'smerge-mousable)
+      (define-key smerge-keymap 'button2 'smerge-mousable)
+      (define-key smerge-keymap 'button3 'smerge-menu))
+     (t
       (define-key smerge-keymap [mouse-1] 'smerge-mousable)
       (define-key smerge-keymap [mouse-2] 'smerge-mousable)
-      (define-key smerge-keymap [mouse-3] 'smerge-menu))
+      (define-key smerge-keymap [mouse-3] 'smerge-menu)))
 
     (define-key smerge-keymap "\C-m" 'smerge-ediff-or-copy)
     (define-key smerge-keymap "g"    'smerge-reload)

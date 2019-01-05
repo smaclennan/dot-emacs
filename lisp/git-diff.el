@@ -92,8 +92,7 @@ of the git dir. Else it starts at the current directory.
 A prefix arg allows you to edit the grep command"
   (interactive "P\nsRegexp: ")
   (let ((cmd (concat "git grep " git-grep-args " '" str "' | " git-grep-pipe-cmd))
-	(grep-null-device nil) ;; XEmacs
-	(grep-use-null-device nil)) ;; Emacs
+	(grep-use-null-device nil))
     (when arg
       (setq cmd (read-string "Cmd: " cmd 'grep-history)))
 
