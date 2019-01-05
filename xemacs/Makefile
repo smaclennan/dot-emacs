@@ -1,9 +1,0 @@
-include ../Rules.mk
-
-all:	$(ELCS) $(LOAD_FILES)
-
-tags:
-	etags *.el
-
-clean:
-	rm -f *.elc $(LOAD_FILES) TAGS *~

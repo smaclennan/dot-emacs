@@ -6,11 +6,10 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
-(defvar dot-dir (expand-file-name
-		 (if (featurep 'xemacs) "~/.xemacs/" "~/.emacs.d/"))
+(defvar dot-dir (expand-file-name "~/.emacs.d/")
   "The init file directory.")
 
-(load (concat dot-dir (if (featurep 'xemacs) "xemacs" "emacs") "/helper"))
+(load (concat dot-dir "lisp/helper"))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -312,7 +311,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;;   (ido-mode 1))
   (t
    ;; We have a local copy of iswitchb to get around the deprecated message.
-   (load (concat dot-dir "emacs/iswitchb"))
+   (load (concat dot-dir "misc/iswitchb"))
    (iswitchb-mode 1)))
 
 (show-paren-mode t)
