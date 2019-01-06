@@ -378,7 +378,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; sanitized so gnu/linux becomes gnu-linux.
 (load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t)
 
-(load (concat dot-dir "work") t)
+(unless noninteractive
+  (load (concat dot-dir "work") t))
 
 ;;}}}
 
