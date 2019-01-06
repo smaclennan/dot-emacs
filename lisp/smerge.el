@@ -48,52 +48,29 @@
 (eval-when-compile (require 'cl))
 (require 'ediff)
 
-(defmacro smerge-feature-cond (&rest clauses)
-  "Test CLAUSES for feature at compile time.
-Each clause is (FEATURE BODY...)."
-  (dolist (x clauses)
-    (let ((feature (car x))
-	  (body (cdr x)))
-      (when (or (eq feature t)
-		(featurep feature))
-	(return (cons 'progn body))))))
+(defun smerge-dirlist (directory &optional full match nosort files-only)
+  (if (eq files-only nil)
+      (directory-files directory full match nosort)
+    (let ((rawlist (directory-files-and-attributes
+		    directory full match nosort))
+	  dirlist)
+      (setq files-only (if (eq files-only t) nil t))
+      (dolist (entry rawlist)
+	(when (eq (nth 1 entry) files-only)
+	  (setq dirlist (cons (car entry) dirlist))))
+      dirlist)))
 
-(smerge-feature-cond
-  (xemacs
-   (require 'overlay)
+(defun temp-directory ()
+  (let ((tmp (getenv "TMPDIR")))
+    (if tmp tmp "/tmp")))
 
-   (defalias 'smerge-dirlist 'directory-files)
-   (defalias 'smerge-read-only 'toggle-read-only)
-   (defalias 'kill-whole-line 'kill-entire-line)
-   )
-
-  (emacs
-   (defalias 'smerge-read-only 'read-only-mode)
-
-   (defun smerge-dirlist (directory &optional full match nosort files-only)
-     (if (eq files-only nil)
-	 (directory-files directory full match nosort)
-       (let ((rawlist (directory-files-and-attributes
-		       directory full match nosort))
-	     dirlist)
-	 (setq files-only (if (eq files-only t) nil t))
-	 (dolist (entry rawlist)
-	   (when (eq (nth 1 entry) files-only)
-	     (setq dirlist (cons (car entry) dirlist))))
-	 dirlist)))
-
-   (defun temp-directory ()
-     (let ((tmp (getenv "TMPDIR")))
-       (if tmp tmp "/tmp")))
-
-   (unless (fboundp 'read-directory-name)
-     (defun read-directory-name (prompt &optional dir default mustmatch)
-       (let* ((dir (read-file-name prompt dir default mustmatch))
-	      (attr (file-attributes dir)))
-	 (unless (eq (car attr) t) (error "Must be a directory"))
-	 dir))
-     )
-   )) ;; emacs
+(unless (fboundp 'read-directory-name)
+  (defun read-directory-name (prompt &optional dir default mustmatch)
+    (let* ((dir (read-file-name prompt dir default mustmatch))
+	   (attr (file-attributes dir)))
+      (unless (eq (car attr) t) (error "Must be a directory"))
+      dir))
+  )
 
 (defvar smerge-diff-program ediff-diff-program
   "*Program to use to diff the directories. Must support --brief option.")
@@ -191,16 +168,9 @@ regular expressions.")
   "This creates the keymap."
   (unless smerge-keymap
     (setq smerge-keymap (make-sparse-keymap "smerge"))
-    (smerge-feature-cond
-     (xemacs
-      (define-key smerge-keymap 'button1 'smerge-mousable)
-      (define-key smerge-keymap 'button2 'smerge-mousable)
-      (define-key smerge-keymap 'button3 'smerge-menu))
-     (t
-      (define-key smerge-keymap [mouse-1] 'smerge-mousable)
-      (define-key smerge-keymap [mouse-2] 'smerge-mousable)
-      (define-key smerge-keymap [mouse-3] 'smerge-menu)))
-
+    (define-key smerge-keymap [mouse-1] 'smerge-mousable)
+    (define-key smerge-keymap [mouse-2] 'smerge-mousable)
+    (define-key smerge-keymap [mouse-3] 'smerge-menu)
     (define-key smerge-keymap "\C-m" 'smerge-ediff-or-copy)
     (define-key smerge-keymap "g"    'smerge-reload)
     (define-key smerge-keymap "r"    'smerge-reload)
@@ -218,7 +188,7 @@ regular expressions.")
   (unless dir2
     (setq dir2 (read-directory-name "Directory 2: " nil nil t)))
   (switch-to-buffer smerge-buffer) ;; Yes I want to be in the output buffer
-  (smerge-read-only 0) ;; writable
+  (read-only-mode 0) ;; writable
   (setq smerge-mode t)
   (setq smerge-flags flags)
   (setq smerge-dir1 (file-name-as-directory (expand-file-name dir1)))
@@ -227,7 +197,7 @@ regular expressions.")
   (smerge-recursive-diff)
   (smerge-fixup-filenames)
   (smerge-post-process flags)
-  (smerge-read-only 1) ;; read-only
+  (read-only-mode 1) ;; read-only
   (message "Done.")
   )
 
