@@ -6,10 +6,7 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
-(defvar dot-dir (expand-file-name "~/.emacs.d/")
-  "The init file directory.")
-
-(load (concat dot-dir "lisp/sam-common"))
+(load (concat user-emacs-directory "lisp/sam-common"))
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the
@@ -42,7 +39,7 @@
 ;; allows for user/machine specific initialization. It must be very
 ;; early for variables like laptop-mode to work. Use `after-init-hook'
 ;; if you need to clean something up at the end.
-(load (concat dot-dir "user-init") t)
+(load (concat user-emacs-directory "user-init") t)
 
 (rcfiles-register-rc-files)
 
@@ -315,7 +312,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;;   (ido-mode 1))
   (t
    ;; We have a local copy of iswitchb to get around the deprecated message.
-   (load (concat dot-dir "misc/iswitchb"))
+   (load "iswitchb")
    (iswitchb-mode 1)))
 
 (show-paren-mode t)
@@ -371,7 +368,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; Some non-standard init files. Start them last so they can override defaults.
 
 ;; Ok, this is actually standard...
-(setq custom-file (concat dot-dir "custom.el"))
+(setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file t)
 
 ;; Load a file called `system-type' if it exists. The symbol is
@@ -379,7 +376,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 (load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t)
 
 (unless noninteractive
-  (load (concat dot-dir "work") t))
+  (load "work")) ;; SAM DBG
 
 ;;}}}
 
