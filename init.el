@@ -357,8 +357,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;;; ------------------------------------------------------------
 ;; Start the server program
-(unless (or noninteractive (string= (user-login-name) "root"))
-  (server-start))
+(unless noninteractive (server-start))
 
 ;;}}}
 
