@@ -8,16 +8,17 @@ ELCS = $(LISP:.el=.elc)
 
 .el.elc:
 	@echo Compile $<
-	@echo "(require '`basename $< -rc.el`)" > build.sh
-	@emacs -batch -q $(HELPER) -l build.sh -f batch-byte-compile $< > build.out 2>&1
-	@grep -v "^Loading" build.out || true
+	@emacs -batch -q $(HELPER) \
+		-eval "(require '`basename $< -rc.el`)" \
+		-f batch-byte-compile $< \
+		2>&1 | grep -v "^Loading" || true
 
 all: $(ELCS) window-config.elc
 
 window-config.elc: window-config.el
-	@emacs -batch -q $(HELPER) -f batch-byte-compile window-config.el  > build.out 2>&1
-	@grep -v "^Loading" build.out || true
-	@rm -f build.sh build.out
+	@echo Compile $<
+	@emacs -batch -q $(HELPER) -f batch-byte-compile $< \
+		2>&1 | grep -v "^Loading" || true
 
 clean:
-	rm -f *.elc build.sh build.out
+	rm -f *.elc
