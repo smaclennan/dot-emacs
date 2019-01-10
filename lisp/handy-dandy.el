@@ -73,7 +73,7 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
 
 ;; For when you need a good excuse...
 ;; From BOHF
-(defvar excuse-phrase-file (concat dot-dir "etc/excuses.lines")
+(defvar excuse-phrase-file (concat user-emacs-directory "lisp/excuses.lines")
   "*File containing excuses")
 
 ;;;###autoload
@@ -165,8 +165,8 @@ Shows the time to the nearest quarter of an hour."
     str))
 
 (defun mine (&optional all)
-  "Return a list of all my .el files in `dot-dir'. If `all' is
-non-nil, returns all .el files in `dot-dir'."
+  "Return a list of all my .el files. If `all' is non-nil,
+returns all .el files."
   (let* ((base (file-name-directory user-init-file))
 	 (files (directory-files-recursive base ".*\.el$")))
     (unless all

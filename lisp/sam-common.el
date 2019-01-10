@@ -2,11 +2,8 @@
 
 ;; Copyright (C) 2011 Sean MacLennan
 
-;; When building outside emacs dot-dir may not be set
-(defvar dot-dir (expand-file-name "~/.emacs.d/"))
-
 (dolist (dir '("lisp" "misc"))
-  (add-to-list 'load-path (concat dot-dir dir))
+  (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
 ;; I don't know why the hate against common-lisp

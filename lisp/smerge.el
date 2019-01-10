@@ -75,7 +75,7 @@
 (defvar smerge-diff-program ediff-diff-program
   "*Program to use to diff the directories. Must support --brief option.")
 
-(defvar smerge-diff-options ediff-diff-options
+(defvar smerge-diff-options "-w"
   "*Options used to compare directories. See `ediff-diff-options'.")
 
 (defvar smerge-ediff-options nil
@@ -83,7 +83,9 @@
 `ediff-diff-options'. You must call `ediff-set-actual-diff-options'
 after changing this.")
 
-(defvar smerge-diff-excludes '("*.o" "*.obj" "*.a" "*.lib" "*~" ".#*")
+(defvar smerge-diff-excludes '("*.o" "*.a" "*~" ".#*" ".svn"
+	".git" "*.cmd" "*.lo" "*.ko" ".tmp_versions" "*.Plo"
+	"modules.order" "*.elc" "*.mod.c" "TAGS" "*.builtin")
   "*List of patterns of files and subdirectories to ignore.
 smerge builds a temprorary file (`smerge-exclude-file') based on this list
 and passes it to `smerge-diff-program' with the --exclude-from option.
