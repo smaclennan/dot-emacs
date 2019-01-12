@@ -23,15 +23,6 @@
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
-(defun set-c-vars (tabs width)
-  "Set C tab mode and tab width"
-  (interactive (list
-		(yes-or-no-p "Tabs? ")
-		(read-number "Width: " c-basic-offset)))
-  (setq indent-tabs-mode tabs
-	c-basic-offset width
-	tab-width width))
-
 (would-like 'my-compile)
 
 ;; Turn off gcc colours

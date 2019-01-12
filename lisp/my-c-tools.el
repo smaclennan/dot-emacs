@@ -198,4 +198,13 @@ rather than the current buffer."
 	(message "You da man!")
       (display-buffer "*gcov*"))))
 
+(defun set-c-vars (tabs width)
+  "Set C tab mode and tab width"
+  (interactive (list
+		(yes-or-no-p "Tabs? ")
+		(read-number "Width: " c-basic-offset)))
+  (setq indent-tabs-mode tabs
+	c-basic-offset width
+	tab-width width))
+
 (provide 'my-c-tools)

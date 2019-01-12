@@ -12,16 +12,12 @@
 ;;(push "*compilation*" special-display-buffer-names)
 
 ;;----------------------------------------------------------------
-(defun my-do-compile (cmd)
-  (save-some-buffers (not compilation-ask-about-save) nil)
-  (compilation-start cmd))
-
 (defun my-set-compile ()
   (interactive)
   (let ((cmd (read-string "Compile Command: " compile-command)))
-    (make-local-variable 'compile-command)
-    (setq compile-command cmd)
-    (my-do-compile compile-command)))
+    (set (make-local-variable 'compile-command) cmd)
+    (save-some-buffers (not compilation-ask-about-save) nil)
+    (compilation-start cmd)))
 
 (defvar make-clean-command "make clean all"
   "*Command used by the `my-make-clean' function.")
@@ -31,4 +27,5 @@
   (interactive "P")
   (if arg
       (setq make-clean-command (read-string "Command: " make-clean-command)))
-  (my-do-compile make-clean-command))
+  (save-some-buffers (not compilation-ask-about-save) nil)
+  (compilation-start make-clean-command))
