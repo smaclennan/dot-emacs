@@ -33,9 +33,9 @@ allows lisp code to be compiled while doing another compile."
 (setq compilation-buffer-name-function 'gen-compilation-name)
 
 ;; greedy-delete
-;(when (would-like 'greedy-delete)
-;  (setq gd-indicator-string nil)
-;  (gd-add-to-mode))
+(when (would-like 'greedy-delete)
+  (setq gd-indicator-string nil)
+  (gd-add-to-mode))
 
 (add-hook 'emacs-lisp-mode-hook
 	  (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))
