@@ -18,7 +18,7 @@
 
 (defun would-like (feature)
   "A less strident `require'."
-  (condition-case nil (require feature)
+  (condition-case nil (load (symbol-name feature))
     (error
      (add-to-list 'would-have-liked-list feature) nil)))
 
@@ -110,8 +110,8 @@
 (global-set-key [(control f6)]	'git-grep-toggle-top-of-tree)
 (global-set-key [XF86_Switch_VT_6] 'git-grep)
 (global-set-key [f7]		'compile)
-(global-set-key [(shift f7)]    'make-clean)
-(global-set-key [XF86_Switch_VT_7] 'make-clean)
+(global-set-key [(shift f7)]    'my-make-clean)
+(global-set-key [XF86_Switch_VT_7] 'my-make-clean)
 (global-set-key [(control f7)]	'my-set-compile)
 (global-set-key [f8] 'my-grep)
 (global-set-key [(shift f8)] 'my-grep-find)

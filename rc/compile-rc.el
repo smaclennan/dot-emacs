@@ -24,9 +24,9 @@
     (my-do-compile compile-command)))
 
 (defvar make-clean-command "make clean all"
-  "*Command used by the `make-clean' function.")
+  "*Command used by the `my-make-clean' function.")
 
-(defun make-clean (&optional arg)
+(defun my-make-clean (&optional arg)
   "Run a make clean."
   (interactive "P")
   (if arg

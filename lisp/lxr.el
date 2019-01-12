@@ -64,6 +64,18 @@
 ; the list (if any). Again tags are marked so you can pop back through the
 ; list of files.
 
+;(let ((lxr-menu
+;       `("----"
+;	 ["lxr" lxr-at-point lxr-url]
+;	 ["lxr defined" lxr-defined-at-point lxr-url]
+;	 ["lxr next" lxr-next-defined lxr-url])))
+
+;  (nconc c-c-menu lxr-menu)
+;  (nconc c-c++-menu lxr-menu)
+;  )
+; )
+; (add-hook 'c-initialization-hook 'my-c-initialization-hook)
+
 (defvar lxr-url nil
   "*URL to use for lxr")
 (make-variable-buffer-local 'lxr-url)
