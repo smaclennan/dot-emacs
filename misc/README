@@ -11,6 +11,9 @@ https://github.com/thorstadt/json.el.git
 s.el:
 https://github.com/magnars/s.el
 
+ws-butler.el:
+https://github.com/lewang/ws-butler.git
+
 ws-trim.el:
 https://github.com/windley/emacs/blob/master/ws-trim.el
 

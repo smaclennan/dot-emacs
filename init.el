@@ -349,11 +349,14 @@ Use region if it exists. My replacement for isearch-yank-word."
 (setq backup-directory-alist '((".*" . "~/.backup")))
 
 ;;; ----------------------------------------------
-;; ws-trim-mode
-(when (fboundp 'global-ws-trim-mode)
-  (global-ws-trim-mode t)
-  (setq ws-trim-mode-line-string nil)
-  (set-default 'ws-trim-level 1))
+;; whitespace trimming
+
+(if (would-like 'ws-butler)
+    (add-hook 'prog-mode-hook #'ws-butler-mode)
+  (when (fboundp 'global-ws-trim-mode)
+    (global-ws-trim-mode t)
+    (setq ws-trim-mode-line-string nil)
+    (set-default 'ws-trim-level 1)))
 
 ;;; ------------------------------------------------------------
 ;; Start the server program
