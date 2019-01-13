@@ -104,9 +104,7 @@ with C-u \\[hide-copyleft-region]."
       ;; SAM (if selective-display (error "selective-display is already on."))
       (if hide-copyleft-overlay (error "copyleft is already hidden"))
       (catch 'Abort
-	(let ((mod-p (buffer-modified-p))
-	      (buffer-read-only nil)
-	      (rest copylefts-to-hide)
+	(let ((rest copylefts-to-hide)
 	      pair start end)
 	  (widen)
 	  (goto-char (point-min))
@@ -132,18 +130,13 @@ with C-u \\[hide-copyleft-region]."
 	  (goto-char start)
 	  (forward-line 1)
 	  ;; SAM gnu emacs change
-	  ;; (while (< (point) end)
-	  ;;   (delete-char -1)
-	  ;;   (insert "\^M")
-	  ;;   (forward-line 1))
-	  ;; (setq selective-display t)
 	  (setq hide-copyleft-overlay (make-overlay (point) end))
 	  (overlay-put hide-copyleft-overlay 'invisible 'hide-copyleft)
 	  ;; SAM
-	  (set-buffer-modified-p mod-p)))))))
+	  ))))))
 
-;;;###autoload
 ;; SAM complete rewrite
+;;;###autoload
 (defun unhide-copyleft-region ()
   (interactive)
   "If the legal nonsense at the top of this file is elided, make it visible again."
