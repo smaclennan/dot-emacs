@@ -28,14 +28,11 @@
 
 * hmac.el	Hash based Message Authentication Code.
 
-* http.el	Some generic http routines. Now supports HTTP/1.1. Will
-		use curl/wget if available (highly recommended). Now
-		supports port numbers in url (e.g.
-		http://host:81/page.html).
-
 * inches.el	Various inch and conversion functions.
 
 * intellimouse.el Support for a wheel mouse.
+
+* ip.el		Some IPv4 routines.
 
 * kloc.el	Interface to Klockworks kwcheck.
 
@@ -43,6 +40,8 @@
 
 * mpg.el	Given distance in kms and gas in litres, calculate mpg,
 		US mpg, and l/100km.
+
+* my-c-helpers.el Helper functions for C.
 
 * my-c-tools.el	A collection of useful tools for C programming.
 		Currently sparse and checkpatch support.
@@ -60,19 +59,17 @@
 		runs tags on an entire directory tree rather than one
 		directory.
 
+* my-tools-config.el In it's own file since it touches so many other
+		packages.
+
 * ocra.el	OATH Challenge Response Algorithm.
 
 * ogrok.el	Interface to Open GROK.
-
-* rc-compile.el	For compiling the top level rc files inside emacs.
 
 * sam-common.el Common functions used by a lot of my packages. These are
 		mainly portability functions.
 
 * scamble.el	Solve scramble puzzles.
-
-* slashdot.el	Reads RSS feeds and places the headers in a browsable
-		buffer.
 
 * smerge.el	SAM's merge. It is basically a layer on top of `ediff'.
 
@@ -81,6 +78,4 @@
 * trim.el	This file provides functions which "trim" things (mainly
 		whitespace) from lines.
 
-* vc-ediff.el	A replacement for vc-diff that uses ediff to diff the versions.
-
-* windoze.el	Lisp configuration for Windows.
+* windows-nt.el	Lisp configuration for Windows.

@@ -46,21 +46,20 @@ will do it for you.")
 (when (eq laptop-mode 'auto)
   (if (eq window-system 'x)
       (let ((out (shell-command-to-string "xrandr -q"))
-	    (count 0))
-	(while (string-match "^[^ ]+ connected" out)
+	    (count 0) (start 0))
+	(while (string-match "^[^ ]+ connected" out start)
 	  (setq count (1+ count))
-	  (setq out (replace-match "" nil nil out)))
+	  (setq start (match-end 0)))
 	(setq laptop-mode (eq count 1)))
     (setq laptop-mode nil)))
-
-(unless (listp laptop-mode-font-size)
-  (setq laptop-mode-font-size (list (face-attribute 'default :height)
-				    laptop-mode-font-size)))
 
 (defun laptop-mode-toggle (&optional on)
   "Toggle laptop-mode."
   (interactive)
   (setq laptop-mode (if on t (not laptop-mode)))
+  (unless (listp laptop-mode-font-size)
+    (setq laptop-mode-font-size (list (face-attribute 'default :height)
+				      laptop-mode-font-size)))
   (set-face-attribute 'default nil :height
 		      (if laptop-mode
 			  (nth 1 laptop-mode-font-size)
