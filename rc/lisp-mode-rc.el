@@ -35,25 +35,20 @@ allows lisp code to be compiled while doing another compile."
 ;; greedy-delete
 (when (would-like 'greedy-delete)
   (setq gd-indicator-string nil)
-  (gd-add-to-mode))
-
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda () (define-key emacs-lisp-mode-map [(return)] 'newline-and-indent)))
+  (add-hook 'emacs-lisp-mode-hook 'gd-add-to-mode))
 
 ;; Let's try making - part of a "word".
 (modify-syntax-entry ?- "w" lisp-mode-syntax-table)
 (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
 
 ;; Bold SAM comments
-(require 'font-lock) ; lisp mode called very early in startup
 (comment-warn 'emacs-lisp-mode ";+ ?\\<SAM\\>.*")
 
 ;; I don't like the warning-face used in GNU Emacs for functions like `error'.
 ;; However, the keywords are a defconst, so we must work around that by
 ;; making a copy.
 
-(let ((mine (copy-tree lisp-el-font-lock-keywords-2))
-      str)
+(let ((mine (copy-tree lisp-el-font-lock-keywords-2)) str)
   (dolist (face mine)
     (setq str (car face))
     (and (stringp str)
