@@ -29,8 +29,7 @@
 (setenv "GCC_COLORS" "")
 
 ;; Just allow compile commands
-(defun cc-string (obj) (stringp obj))
-(put 'compile-command 'safe-local-variable #'cc-string)
+(put 'compile-command 'safe-local-variable #'stringp)
 
 ;;; -------------------------------------------------------------------------
 ;; Bold SAM comments
