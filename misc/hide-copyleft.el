@@ -90,6 +90,8 @@ The first one found is hidden, so order is significant."
   :type '(repeat (cons (regexp :tag "Top line")
 		       (regexp :tag "Bottom line"))))
 
+(defvar-local hide-copyleft-overlay nil)
+
 ;;;###autoload
 (defun hide-copyleft-region (&optional arg)
   "Make the legal drivel at the front of this file invisible.  Unhide it again
@@ -99,7 +101,8 @@ with C-u \\[hide-copyleft-region]."
       (unhide-copyleft-region)
     (save-excursion
      (save-restriction
-      (if selective-display (error "selective-display is already on."))
+      ;; SAM (if selective-display (error "selective-display is already on."))
+      (if hide-copyleft-overlay (error "copyleft is already hidden"))
       (catch 'Abort
 	(let ((mod-p (buffer-modified-p))
 	      (buffer-read-only nil)
@@ -128,33 +131,25 @@ with C-u \\[hide-copyleft-region]."
 	  (setq end (point))
 	  (goto-char start)
 	  (forward-line 1)
-	  (while (< (point) end)
-	    (delete-char -1)
-	    (insert "\^M")
-	    (forward-line 1))
-	  (setq selective-display t)
+	  ;; SAM gnu emacs change
+	  ;; (while (< (point) end)
+	  ;;   (delete-char -1)
+	  ;;   (insert "\^M")
+	  ;;   (forward-line 1))
+	  ;; (setq selective-display t)
+	  (setq hide-copyleft-overlay (make-overlay (point) end))
+	  (overlay-put hide-copyleft-overlay 'invisible 'hide-copyleft)
+	  ;; SAM
 	  (set-buffer-modified-p mod-p)))))))
 
 ;;;###autoload
+;; SAM complete rewrite
 (defun unhide-copyleft-region ()
   (interactive)
   "If the legal nonsense at the top of this file is elided, make it visible again."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (goto-char (point-min))
-      (let ((mod-p (buffer-modified-p))
-	    (buffer-read-only nil)
-	    end)
-	(or (search-forward "\^M" nil t) (error "Nothing hidden here, dude."))
-	(end-of-line)
-	(setq end (point))
-	(beginning-of-line)
-	(while (search-forward "\^M" end t)
-	  (delete-char -1)
-	  (insert "\^J"))
-	(set-buffer-modified-p mod-p)
-	(setq selective-display nil)))))
+  (unless hide-copyleft-overlay (error "Nothing hidden here, dude."))
+  (delete-overlay hide-copyleft-overlay)
+  (setq hide-copyleft-overlay nil))
 
 (provide 'hide-copyleft)
 
