@@ -1,34 +1,20 @@
 ;; Windowing system only config.
 ;; No real library to toggle off of so it is not a -rc.el
 
-(defvar bells-and-whistles nil "*If non-nil, enable all graphical widgets.")
-
 (setq frame-title-format '("Emacs " emacs-version " " host-name ":"
 			   (buffer-file-name
 			    (:eval (abbreviate-file-name buffer-file-name))
 			    "%b")))
 
-(my-feature-cond
-  (delete-selection-mode
-   (delete-selection-mode))
-  (t
-   (and (< emacs-major-version 23)
-	(would-like 'pc-select)
-	(pc-selection-mode))))
-
-(unless bells-and-whistles
-  (setq use-dialog-box nil)
-  ;; Toolbar
-  (tool-bar-mode 0)
-  ;; Tooltips hang emacs over VPN
-  (tooltip-mode 0))
+(setq use-dialog-box nil)
+(tool-bar-mode 0)
+;; Tooltips can hang emacs over VPN
+;;(tooltip-mode 0)
+;;(display-time)
 
 ;; Set the cursor properly for Emacs
 (blink-cursor-mode 0)
 (set-cursor-color "red")
-
-;; Do this *after* setting the modeline colours
-(and nil (fboundp 'display-time) (display-time))
 
 ;; --------------------------------------------
 ;; laptop mode
