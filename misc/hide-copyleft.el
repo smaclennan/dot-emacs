@@ -48,8 +48,6 @@
 ;; various copyrights I've run across.  Let me know if you find one on which
 ;; it fails.
 
-(require 'sam-common)
-
 (defgroup hide-copyleft nil
   "Hide copyright prologs."
   :group 'matching)
@@ -118,7 +116,7 @@ with C-u \\[hide-copyleft-region]."
 			 pair (car rest))))
 	    (setq rest (cdr rest)))
 	  (or pair
-	      (if (my-interactive-p) ;; SAM gnu emacs change
+	      (if (called-interactively-p 'interactive) ;; SAM gnu emacs change
 		  (error "Couldn't find a CopyLeft to hide.")
 		(throw 'Abort nil)))
 	  (goto-char end)
