@@ -65,9 +65,7 @@
   (let ((filename (concat ogrok-base "/" (nth 0 this)))
 	(line (string-to-number (nth 1 this))))
     (find-file filename)
-    (my-feature-cond
-      (emacs (with-no-warnings (goto-line line)))
-      (t (goto-line line)))))
+    (with-no-warnings (goto-line line))))
 
 ;; We want this synchronous so we can make decisions based on the results
 (defun ogrok-get-page (url)
