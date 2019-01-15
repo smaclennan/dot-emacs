@@ -31,6 +31,7 @@
 
 (require 'my-compile)
 (require 'my-tags)
+(require 'cc-mode)
 
 (require 'sam-common)
 
