@@ -200,3 +200,10 @@ returns all .el files."
       (goto-char (point-max))
       (setq lines (count-lines (point-min) (point-max))))
     (message "files %d lines %d count %d" (length files) lines count)))
+
+;;;###autoload
+(defmacro measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
