@@ -3,10 +3,18 @@ https://github.com/browse-kill-ring/browse-kill-ring
 
 greedy-delete:
 https://barry.warsaw.us/elisp/greedy-delete.el
-hungry-delete?
+
+hide-copyleft:
+From XEmacs. Heavily modifed for GNU Emacs.
+
+iswitchb.el:
+From Emacs. Local copy to get around warnings.
 
 json.el:
 https://github.com/thorstadt/json.el.git
+
+rcfiles.el:
+https://github.com/didierverna/el-rcfiles
 
 s.el:
 https://github.com/magnars/s.el
@@ -16,6 +24,3 @@ https://github.com/lewang/ws-butler.git
 
 ws-trim.el:
 https://github.com/windley/emacs/blob/master/ws-trim.el
-
-
-Updated: June 2018
