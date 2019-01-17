@@ -31,7 +31,7 @@
 
 (defcustom ogrok-base nil "*Local base for opengrok files" :type 'string)
 
-(defcustom ogrok-smart t "*Try to be smart about matching rather than precise." :type 'bool)
+(defcustom ogrok-smart nil "*Try to be smart about matching rather than precise." :type 'bool)
 
 (provide 'ogrok)
 
@@ -40,26 +40,38 @@
 (require 'etags)
 (require 'my-cscope)
 
-;;;###autoload
-(defun ogrok-at-point ()
-  (interactive)
-  (ogrok (current-word)))
-
-;;;###autoload
-(defun ogrok (ident)
-  (interactive "sIdentifier: ")
+(defun ogrok-common (defs refs)
   (unless ogrok-url (setq ogrok-url (read-string "url: ")))
   (unless ogrok-project (setq ogrok-project (read-string "project: ")))
   (unless ogrok-base (setq ogrok-base (read-string "local base: ")))
   (push-tag-mark)
   (ogrok-get-page
-   (concat ogrok-url "/search?q=&defs=" ident
-	   "&refs=&path=" ogrok-path
+   (concat ogrok-url "/search?q=&defs=" defs "&refs=" refs
+	   "&path=" ogrok-path
 	   "&hist=&type=&project=" ogrok-project))
   (let ((ogrok-list (ogrok-parse-page)))
     (if (and ogrok-smart (eq (length ogrok-list) 1))
 	(ogrok-goto (car ogrok-list))
       (display-buffer "*ogrok*" '(nil (window-height . 16))))))
+
+(defun ogrok-get-ident (prompt)
+  (if (or current-prefix-arg (not (looking-at "[a-zA-Z0-9_]")))
+      (read-string prompt)
+    (current-word)))
+
+;;;###autoload
+(defun ogrok-defs (&optional ident)
+  (interactive)
+  (unless ident
+    (setq ident (ogrok-get-ident "Def: ")))
+  (ogrok-common ident nil))
+
+;;;###autoload
+(defun ogrok-refs (&optional ident)
+  (interactive)
+  (unless ident
+    (setq ident (ogrok-get-ident "Refs: ")))
+  (ogrok-common nil ident))
 
 (defun ogrok-goto (this)
   (let ((filename (concat ogrok-base "/" (nth 0 this)))
@@ -84,7 +96,6 @@
 	(delete-region (point-min) (point)))
       (when (search-forward "</div>" nil t)
 	(delete-region (point) (point-max)))
-
       ;; More?
       (goto-char (point-min))
       (when (search-forward "class=\"more\"" nil t)
@@ -123,6 +134,8 @@
     (setq line (replace-match "" nil nil line)))
   (when (string-match "^[ \t]+" line)
     (setq line (replace-match "" nil nil line)))
+  (while (string-match "&amp;" line)
+    (setq line (replace-match "&" nil nil line)))
   line)
 
 ;; For debugging
@@ -130,6 +143,14 @@
 ;; in_init (single)
 (when nil
   (setq ogrok-url "https://nxr.netbsd.org"
+	ogrok-project "src"
+	ogrok-base (expand-file-name "~/tmp/netbsd/")
+	ogrok-xref "/xref/"
+	ogrok-path nil)
+  )
+
+(when nil
+  (setq ogrok-url "http://localhost:8080"
 	ogrok-project "src"
 	ogrok-base (expand-file-name "~/tmp/netbsd/")
 	ogrok-xref "/xref/"
