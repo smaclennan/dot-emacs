@@ -120,7 +120,7 @@
 (global-set-key [(shift f9)]    'my-toggle-case-search)
 (global-set-key [XF86_Switch_VT_9] 'my-toggle-case-search)
 (global-set-key [f10]		'xref-find-definitions)
-(global-set-key "\M-."		'xref-find-definitions)
+(global-set-key "\M-."		'xref-find-definitions-prompt)
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
 (global-set-key [f20] 'pop-tag-mark)
@@ -152,6 +152,13 @@
 (define-key global-map [(control h) k] 'hyper-describe-key)
 (define-key global-map [(control h) v] 'hyper-describe-variable)
 (define-key global-map [(control h) w] 'hyper-where-is)
+
+(defun xref-find-definitions-prompt ()
+  "Same as `xref-find-defintions' except it always prompts for
+the identifier."
+  (interactive)
+  (let ((current-prefix-arg t))
+    (call-interactively 'xref-find-definitions)))
 
 (defun my-clipboard-copy (beg end)
   (interactive "r")
