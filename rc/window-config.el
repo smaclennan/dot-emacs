@@ -30,14 +30,12 @@ mode. Generally you don't need to setup the list, laptop-mode
 will do it for you.")
 
 (when (eq laptop-mode 'auto)
-  (if (eq window-system 'x)
-      (let ((out (shell-command-to-string "xrandr -q"))
-	    (count 0) (start 0))
-	(while (string-match "^[^ ]+ connected" out start)
-	  (setq count (1+ count))
-	  (setq start (match-end 0)))
-	(setq laptop-mode (eq count 1)))
-    (setq laptop-mode nil)))
+  (setq laptop-mode
+	(if (eq window-system 'x)
+	    (eq 1 (with-temp-buffer
+		    (call-process "xrandr" nil t nil "-q")
+		    (count-matches "^[^ ]+ connected" 0 (point-max))))
+	  nil)))
 
 (defun laptop-mode-toggle (&optional on)
   "Toggle laptop-mode."
