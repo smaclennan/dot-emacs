@@ -17,23 +17,9 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-(defvar fine-scroll-lines 3 "*Number of lines to fine scroll")
-
-(eval-when-compile (require 'sam-common))
+(defvar fine-scroll-lines 4 "*Number of lines to fine scroll")
 
 ;; GNU Emacs really really needs a `signal-error-on-buffer-boundary'
-
-(defadvice scroll-down (around my-scroll-down activate)
-  "`scroll-down' with no signal on end-of-buffer."
-  (condition-case nil
-      ad-do-it
-    (beginning-of-buffer)))
-
-(defadvice scroll-up (around my-scroll-up activate)
-  "`scroll-up' with no signal on end-of-buffer."
-  (condition-case nil
-      ad-do-it
-    (end-of-buffer)))
 
 ;; Using defadvice for these functions breaks minibuffer history
 (defun my-previous-line (&optional arg try-vscroll)
@@ -55,9 +41,17 @@
 (global-set-key (kbd "<up>") 'my-previous-line)
 (global-set-key (kbd "<down>") 'my-next-line)
 
-;; GNU Emacs really really needs a `signal-error-on-buffer-boundary'
+(defadvice scroll-down (around my-scroll-down activate)
+  "`scroll-down' with no signal on end-of-buffer."
+  (condition-case nil
+      ad-do-it
+    (beginning-of-buffer)))
 
-(defun scroll-event-window (event) (car (event-start event)))
+(defadvice scroll-up (around my-scroll-up activate)
+  "`scroll-up' with no signal on end-of-buffer."
+  (condition-case nil
+      ad-do-it
+    (end-of-buffer)))
 
 (global-set-key [(mouse-4)] 'fine-scroll-down)
 (global-set-key [(mouse-5)] 'fine-scroll-up)
@@ -65,13 +59,13 @@
 (global-set-key [(shift mouse-5)] 'coarse-scroll-up)
 
 (defun my-scroll-down-command (event &optional lines)
-  (with-selected-window (scroll-event-window event)
+  (with-selected-window (caadr event)
     (condition-case nil
 	(scroll-down lines)
       (beginning-of-buffer))))
 
 (defun my-scroll-up-command (event &optional lines)
-  (with-selected-window (scroll-event-window event)
+  (with-selected-window (caadr event)
     (condition-case nil
 	(scroll-up lines)
       (end-of-buffer))))
