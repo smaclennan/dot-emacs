@@ -125,7 +125,7 @@
 (global-set-key [XF86_Switch_VT_10] 'pop-tag-mark)
 (global-set-key [f20] 'pop-tag-mark)
 (global-set-key [(control f10)] 'xref-find-references)
-;; I keep f11 free for temporary bindings
+(global-set-key [f11] nil) ;; I keep f11 free for temporary bindings
 (global-set-key [(shift f11)] 'my-show-messages)
 (global-set-key [XF86_Switch_VT_11] 'my-show-messages)
 (global-set-key [f12]		'revert-buffer)
@@ -245,9 +245,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 (global-set-key "\C-x\C-k"	'kill-buffer)
 
 (would-like 'intellimouse)
-;(when (fboundp 'mwheel-install)
-;    (mwheel-install)
-;    (setq mwheel-follow-mouse t))
+;;(mwheel-install)
 
 ;; -------------------------------------------------------
 ;; The standard blows away emacs just a little to easily
