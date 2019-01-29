@@ -337,7 +337,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 	(locate-file "ispell"   exec-path exec-suffixes 'executable))
     (progn
       (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
-      (add-hook 'lisp-mode-hook 'flyspell-prog-mode)
+      (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
       (add-hook 'text-mode-hook 'flyspell-mode))
   (add-to-list 'would-have-liked-list 'spell))
 
