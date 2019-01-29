@@ -17,11 +17,12 @@ match all files against the regular expression."
   (directory-files-recursive-intern dir match))
 
 ;;;###autoload
-(defun subdirs (dir)
+(defun subdirs (dir &optional nosort)
   "Return a list of sub-directories in DIR. All dot directories
-are ignored. The list is not sorted."
+are ignored. If NOSORT is non-nil then the list is not sorted."
   (let (dirlist)
-    (dolist (subdir (directory-files dir t "^[^.]" t))
+    ;; Note: directory-files-and-attributes
+    (dolist (subdir (directory-files dir t "^[^.].*" nosort))
       (when (file-directory-p subdir)
 	(setq dirlist (append dirlist (list subdir)))))
     dirlist))
