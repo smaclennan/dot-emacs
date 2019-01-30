@@ -32,6 +32,6 @@ Each clause is (FEATURE BODY...)."
 (defun push-tag-mark ()
   (my-feature-cond
     (xref-push-marker-stack (xref-push-marker-stack))
-    (t (ring-insert find-tag-marker-ring (point-marker)))))
+    (t (ring-insert find-tag-marker-ring (point-marker))))) ;; < 25.1
 
 (provide 'sam-common)

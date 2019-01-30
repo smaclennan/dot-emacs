@@ -108,10 +108,7 @@ compilation buffer so that `next-error' will work."
 
   (save-some-buffers (not compilation-ask-about-save) nil)
 
-  (my-feature-cond
-   (compilation-finish-functions
-    (add-to-list 'compilation-finish-functions 'my-checkpatch-cleanup))
-   (t (setq compilation-finish-function 'my-checkpatch-cleanup)))
+  (add-to-list 'compilation-finish-functions 'my-checkpatch-cleanup)
 
   ;; We cannot call `compile' here since it sets the compile command
   (let (cmd (args my-checkpatch-args))
@@ -132,19 +129,13 @@ false match."
 	(replace-match "total"))
 
       ;; Emacs also gets the #<lineno>: FILE: <file> lines wrong
-      (my-feature-cond
-       (emacs
-	(goto-char (point-min))
-	(while (re-search-forward "^#[0-9]+: FILE: .*$" nil t)
-	  (replace-match ""))))
+      (goto-char (point-min))
+      (while (re-search-forward "^#[0-9]+: FILE: .*$" nil t)
+	(replace-match ""))
       ))
 
-  (my-feature-cond
-   (compilation-finish-functions
-    (setq compilation-finish-functions
-	  (delete 'my-checkpatch-cleanup compilation-finish-functions)))
-   (t (setq compilation-finish-function nil))))
-
+  (setq compilation-finish-functions
+	(delete 'my-checkpatch-cleanup compilation-finish-functions)))
 
 ;;;###autoload
 (defun lsmod-diff (file)

@@ -167,7 +167,7 @@ the identifier."
       (gui-set-selection
        (gui-set-selection 'CLIPBOARD text) ;; for C-v
        (gui-set-selection 'PRIMARY text))  ;; for mouse paste
-      (t ;; older than 25.1
+      (t ;; < 25.1
        (x-set-selection 'CLIPBOARD text) ;; for C-v
        (x-set-selection 'PRIMARY text))) ;; for mouse paste
     (copy-region-as-kill beg end))) ;; and the kill buffer
@@ -207,9 +207,7 @@ Use region if it exists. My replacement for isearch-yank-word."
 		  (buffer-substring (region-beginning) (region-end))
 		(current-word))))
     (forward-char 1) ;; make sure we are not on first char of word
-    (my-feature-cond
-      (isearch-yank (isearch-yank word))
-      (t (isearch-yank-string word)))))
+    (isearch-yank-string word)))
 
 ;; Warning: If you change this binding, change `my-isearch-word-forward'
 (define-key isearch-mode-map "\C-w"		'my-isearch-yank-word)
@@ -310,15 +308,11 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;;; -------------------------------------------------------------------------
 ;;; Some edit-utils packages
-(my-feature-cond
-;;;  (icomplete-mode
-;;;   (icomplete-mode 1))
-;;;  (ido-mode
-;;;   (ido-mode 1))
-  (t
-   ;; We have a local copy of iswitchb to get around the deprecated message.
-   (load "iswitchb")
-   (iswitchb-mode 1)))
+;; (icomplete-mode 1
+;; (ido-mode 1))
+;; We have a local copy of iswitchb to get around the deprecated message.
+(load "iswitchb")
+(iswitchb-mode 1)
 
 (show-paren-mode t)
 

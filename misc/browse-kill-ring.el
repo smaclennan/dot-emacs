@@ -212,26 +212,7 @@
     (set-text-properties 0 (length str) nil str)
     str))
 
-(my-feature-cond
-  (propertize
-   (defalias 'browse-kill-ring-propertize 'propertize))
-  ;; Maybe save some memory :)
-  (ibuffer-propertize
-   (defalias 'browse-kill-ring-propertize 'ibuffer-propertize))
-  (t
-   (defun browse-kill-ring-propertize (string &rest properties)
-     "Return a copy of STRING with text properties added.
-
- [Note: this docstring has been copied from the Emacs 21 version]
-
-First argument is the string to copy.
-Remaining arguments form a sequence of PROPERTY VALUE pairs for text
-properties to add to the result."
-     (let ((str (copy-sequence string)))
-       (add-text-properties 0 (length str)
-			    properties
-			    str)
-       str))))
+(defalias 'browse-kill-ring-propertize 'propertize)
 
 (defgroup browse-kill-ring nil
   "A package for browsing and inserting the items in `kill-ring'."
@@ -394,22 +375,7 @@ call `browse-kill-ring' again.")
     (browse-kill-ring-do-insert buf pt))
   (browse-kill-ring-quit))
 
-(my-feature-cond
-  (fit-window-to-buffer
-   (defalias 'browse-kill-ring-fit-window 'fit-window-to-buffer))
-  (t
-   (defun browse-kill-ring-fit-window (window max-height min-height)
-     (setq min-height (or min-height window-min-height))
-     (setq max-height (or max-height (- (frame-height) (window-height) 1)))
-     (let* ((window-min-height min-height)
-	    (windows (count-windows))
-	    (config (current-window-configuration)))
-       (enlarge-window (- max-height (window-height)))
-       (when (> windows (count-windows))
-	 (set-window-configuration config))
-       (if (/= (point-min) (point-max))
-	   (shrink-window-if-larger-than-buffer window)
-	 (shrink-window (- (window-height) window-min-height)))))))
+(defalias 'browse-kill-ring-fit-window 'fit-window-to-buffer)
 
 (defun browse-kill-ring-resize-window ()
   (when browse-kill-ring-resize-window
@@ -995,8 +961,8 @@ directly; use `browse-kill-ring' instead.
 	      ;; I'm not going to rewrite `delete-duplicates'.  If
 	      ;; someone really wants to rewrite it here, send me a
 	      ;; patch.
-	      (require 'cl)
-	      (setq items (delete-duplicates items :test #'equal)))
+	      (require 'cl-seq)
+	      (setq items (cl-delete-duplicates items :test #'equal)))
 	    (when (stringp regexp)
 	      (setq items (delq nil
 				(mapcar
