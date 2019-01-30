@@ -337,7 +337,7 @@ See the variable docstring for details about this mode."
 (defun ws-trim-ask-method ()
   (let* ((alist (mapcar (lambda (fn) (cons (symbol-name fn) fn))
 			ws-trim-methods))
-	 (default (or (cdr-safe (assoc (find-if (lambda (item) (assoc item alist))
+	 (default (or (cdr-safe (assoc (cl-find-if (lambda (item) (assoc item alist)) ;; Emacs change
 						minibuffer-history)
 				       alist))
 		      (if (consp ws-trim-method-hook)

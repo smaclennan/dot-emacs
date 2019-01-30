@@ -961,7 +961,6 @@ directly; use `browse-kill-ring' instead.
 	      ;; I'm not going to rewrite `delete-duplicates'.  If
 	      ;; someone really wants to rewrite it here, send me a
 	      ;; patch.
-	      (require 'cl-seq)
 	      (setq items (cl-delete-duplicates items :test #'equal)))
 	    (when (stringp regexp)
 	      (setq items (delq nil

@@ -45,9 +45,6 @@
 
 ;;; Code:
 
-(require 'cl)
-
-
 (defvar rcfiles-version "1.0"
   "Current version number of el-rcfiles.")
 
@@ -90,7 +87,7 @@ File names are expanded but their extension is removed."
   (let ((dir
 	 (concat "^" (regexp-quote (expand-file-name rcfiles-directory)))))
     (setq after-load-alist
-	  (remove-if (lambda (file)
+	  (cl-remove-if (lambda (file) ;; Emacs change
 		       (and (stringp file)
 			    (string-match dir file)
 			    (not (member file rcfiles))))

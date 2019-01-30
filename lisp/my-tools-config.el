@@ -43,10 +43,8 @@
 
     ;; verbose and C
     (when (and verbose (boundp 'my-compile-dir-list))
-      (require 'cl-extra)
       (princ "\nmy-compile-dir-list:")
       (princ (with-temp-buffer
 	       (cl-prettyprint my-compile-dir-list)
 	       (buffer-string))))
     ))
-
