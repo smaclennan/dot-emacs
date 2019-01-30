@@ -3,10 +3,11 @@ include ../Rules.mk
 # Don't build windoze.el
 ELCS := $(filter-out windows-nt.elc,$(ELCS))
 
-all:	$(ELCS) $(LOAD_FILES)
+all:	$(ELCS) ../TAGS
 
-tags:
-	etags *.el
+../TAGS: $(LISP)
+	@echo Building tags...
+	@etags ../*.el ../lisp/*.el ../misc/*.el
 
 clean:
-	rm -f *.elc $(LOAD_FILES) TAGS *~
+	rm -f *.elc TAGS *~ $(CLEAN_EXTRA)

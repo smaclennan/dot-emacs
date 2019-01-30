@@ -1,14 +1,14 @@
-.PHONY: all clean
-
-include ./Rules.mk
-
 # I have had problems byte-compiling the rc directory
 # Emacs will load the rc files multiple times
 
-all:
+all:	TAGS
 	$(MAKE) -C lisp $(MFLAGS) all
 	$(MAKE) -C misc $(MFLAGS) all
 #	$(MAKE) -C rc   $(MFLAGS) all
+
+TAGS:	*.el
+	@echo Building tags...
+	@etags *.el lisp/*.el misc/*.el
 
 clean:
 	find . -name "*.elc" -delete

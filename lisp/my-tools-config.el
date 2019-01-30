@@ -1,6 +1,7 @@
 ;; Because this spans multiple packages... it makes sense to put it in
 ;; it's own file.
 
+(require 'cl-extra)
 (require 'cc-mode)
 (require 'my-tags)
 (require 'git-diff) ;; for git-dir

@@ -6,12 +6,10 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
-;; I don't know why the hate against common-lisp
-(setq byte-compile-warnings '(not cl-functions))
 (require 'cl)
-(require 'cl-extra)
 (require 'xref)
 
+;;;###autoload
 (defmacro my-feature-cond (&rest clauses)
   "Test CLAUSES for feature, function, or variable at compile time.
 Each clause is (FEATURE BODY...)."
@@ -23,13 +21,14 @@ Each clause is (FEATURE BODY...)."
 		(fboundp feature)
 		(boundp feature))
 	(return (cons 'progn body))))))
-(put 'my-feature-cond 'lisp-indent-hook 'defun)
 
-;; Must be a macro to work
+;;;###autoload
 (defmacro my-interactive-p () `(called-interactively-p 'interactive))
 
-(defun event-point (event) (nth 1 (event-start event)))
+;;;###autoload
+(defmacro event-point (event) `(cadadr event))
 
+;;;###autoload
 (defun push-tag-mark ()
   (my-feature-cond
     (xref-push-marker-stack (xref-push-marker-stack))

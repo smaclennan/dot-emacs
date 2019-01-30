@@ -1,34 +1,16 @@
 .SUFFIXES: .el .elc
-.PHONY: first-rule
-
-first-rule: all
+.PHONY: all clean
 
 DIR := $(shell pwd)
 SUBDIR := $(shell basename $(DIR))
+HELPER := -l ~/.emacs.d/lisp/batch-helper
 
 EMACS ?= emacs
 
-ifeq ($(LISP),)
-LISP := $(wildcard *.el)
-endif
-
-# GNU Emacs
-
-HELPER := -l ~/.emacs.d/lisp/sam-common
-
-$(SUBDIR)-loaddefs.el:
-	@echo Create $(EMACS) $(SUBDIR)-loaddefs.el ...
-	@$(EMACS) -batch -q $(HELPER) -l build-loaddefs.el -f build-loaddefs
-
-LOAD_FILES = $(SUBDIR)-loaddefs.el
-
+LISP ?= $(wildcard *.el)
 LISP := $(filter-out $(SUBDIR)-loaddefs.el,$(LISP))
-
-ifeq ($(ELCS),)
-ELCS = $(LISP:.el=.elc)
-endif
+ELCS ?= $(LISP:.el=.elc)
 
 .el.elc:
 	@echo Compile $<
 	@$(EMACS) -batch -q $(HELPER) -f batch-byte-compile $<
-	@rm -f $(LOAD_FILES)

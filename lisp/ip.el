@@ -1,5 +1,7 @@
 ;; Some handy functions for dealing with IPv4
 
+(require 'cl-macs) ;; for loop
+
 (defun ip-to-number (ip)
   "Convert an IP string to a number. Warning: Assumes little endian."
   (unless (string-match (concat "\\([0-9]\\{1,3\\}\\)\\."
@@ -26,7 +28,7 @@ string. The mask is returned as a number."
 string. e.g. 23 = 255.255.254.0"
   (let ((num (bits-to-mask bits)) str)
     (setq str (number-to-string (logand num #xff)))
-    (loop for i from 1 to 3 do
+    (cl-loop for i from 1 to 3 do
 	  (setq num (lsh num -8))
 	  (setq str (concat (number-to-string (logand num #xff)) "." str)))
     str))
