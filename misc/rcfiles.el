@@ -96,7 +96,7 @@ File names are expanded but their extension is removed."
 			    (ignore-errors
 			      (let ((load-form
 				     ;; are we having fun yet?
-				     (caddr (cadr (cadr (cadr form))))))
+				     (cl-caddr (cadr (cadr (cadr form))))))
 				(when (eq (car load-form) 'rcfiles-try-load)
 				  (cadr load-form)))))))))
 

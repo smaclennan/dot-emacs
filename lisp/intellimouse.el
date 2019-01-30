@@ -59,13 +59,13 @@
 (global-set-key [(shift mouse-5)] 'coarse-scroll-up)
 
 (defun my-scroll-down-command (event &optional lines)
-  (with-selected-window (caadr event)
+  (with-selected-window (cl-caadr event)
     (condition-case nil
 	(scroll-down lines)
       (beginning-of-buffer))))
 
 (defun my-scroll-up-command (event &optional lines)
-  (with-selected-window (caadr event)
+  (with-selected-window (cl-caadr event)
     (condition-case nil
 	(scroll-up lines)
       (end-of-buffer))))

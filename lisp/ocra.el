@@ -62,7 +62,7 @@ Normal 32-bit emacs can only support 30-bit numbers.")
     (setq tmp (make-string ocra-question-len 0))
 
     ;; count nibbles
-    (loop for i from 0 to 7 with mask = 0 while (> question mask) finally (setq len i) do
+    (cl-loop for i from 0 to 7 with mask = 0 while (> question mask) finally (setq len i) do
       (setq mask (+ (lsh mask 4) #xf)))
 
     (setq odd (= (logand len 1) 1))
@@ -75,7 +75,7 @@ Normal 32-bit emacs can only support 30-bit numbers.")
 
     (setq len (1- len))
 
-    (loop for i from len downto 0 do
+    (cl-loop for i from len downto 0 do
       (aset tmp i (logand question #xff))
       (setq question (lsh question -8)))
 

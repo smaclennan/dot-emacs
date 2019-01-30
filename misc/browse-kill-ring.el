@@ -830,8 +830,8 @@ directly; use `browse-kill-ring' instead.
     (browse-kill-ring-resize-window)))
 
 (defmacro browse-kill-ring-add-overlays-for (item &rest body)
-  (let ((beg (gensym "browse-kill-ring-add-overlays-"))
-	(end (gensym "browse-kill-ring-add-overlays-")))
+  (let ((beg (cl-gensym "browse-kill-ring-add-overlays-")) ;; GNU Emacs change
+	(end (cl-gensym "browse-kill-ring-add-overlays-"))) ;; GNU Emacs change
     `(let ((,beg (point))
 	   (,end
 	    (progn
