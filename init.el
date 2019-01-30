@@ -6,7 +6,11 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
-(load (concat user-emacs-directory "lisp/sam-common"))
+(dolist (dir '("lisp" "misc"))
+  (add-to-list 'load-path (concat user-emacs-directory dir))
+  (load (concat dir "-loaddefs") t t))
+
+(require 'sam-common)
 
 ;; With the new package system, there is a greater chance a
 ;; package may be missing. Instead of an error, just add the

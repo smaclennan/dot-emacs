@@ -2,11 +2,7 @@
 
 ;; Copyright (C) 2011 Sean MacLennan
 
-(dolist (dir '("lisp" "misc"))
-  (add-to-list 'load-path (concat user-emacs-directory dir))
-  (load (concat dir "-loaddefs") t t))
-
-(require 'xref)
+(require 'xref nil t)
 
 ;;;###autoload
 (defmacro my-feature-cond (&rest clauses)
@@ -14,13 +10,12 @@
 Each clause is (FEATURE BODY...)."
   (cl-block nil
     (dolist (x clauses)
-      (let ((feature (car x))
-	    (body (cdr x)))
+      (let ((feature (car x)))
 	(when (or (eq feature t)
 		  (featurep feature)
 		  (fboundp feature)
 		  (boundp feature))
-	  (cl-return (cons 'progn body)))))))
+	  (cl-return (cons 'progn (cdr x))))))))
 
 ;;;###autoload
 (defmacro my-interactive-p () `(called-interactively-p 'interactive))
