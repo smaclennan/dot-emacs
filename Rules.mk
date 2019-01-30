@@ -12,5 +12,5 @@ LISP := $(filter-out $(SUBDIR)-loaddefs.el,$(LISP))
 ELCS ?= $(LISP:.el=.elc)
 
 .el.elc:
-	@echo Compile $<
+	@echo Compile $(PDIR)$<
 	@$(EMACS) -batch -q $(HELPER) -f batch-byte-compile $<

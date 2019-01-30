@@ -2,9 +2,9 @@
 # Emacs will load the rc files multiple times
 
 all:	TAGS
-	$(MAKE) -C lisp $(MFLAGS) all
-	$(MAKE) -C misc $(MFLAGS) all
-#	$(MAKE) -C rc   $(MFLAGS) all
+	@$(MAKE) -C lisp PDIR=lisp/ -s $(MFLAGS) all
+	@$(MAKE) -C misc PDIR=misc/ -s $(MFLAGS) all
+#	@$(MAKE) -C rc   PDIR=rc    -s $(MFLAGS) all
 
 TAGS:	*.el
 	@echo Building tags...
