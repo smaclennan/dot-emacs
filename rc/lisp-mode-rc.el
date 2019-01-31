@@ -53,5 +53,5 @@ allows lisp code to be compiled while doing another compile."
     (setq str (car face))
     (and (stringp str)
 	 (string-match "\\berror\\b" str)
-	 (setf (cdadr face) (list 'font-lock-keyword-face))))
+	 (setf (cl-cdadr face) (list 'font-lock-keyword-face))))
   (setq lisp-el-font-lock-keywords-2 mine))
