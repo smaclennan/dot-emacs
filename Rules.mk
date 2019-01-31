@@ -4,11 +4,12 @@
 DIR := $(shell pwd)
 SUBDIR := $(shell basename $(DIR))
 HELPER := -l ~/.emacs.d/lisp/batch-helper
+LOADFILE := $(SUBDIR)-loaddefs.el
 
 EMACS ?= emacs
 
 LISP ?= $(wildcard *.el)
-LISP := $(filter-out $(SUBDIR)-loaddefs.el,$(LISP))
+LISP := $(filter-out $(LOADFILE),$(LISP))
 ELCS ?= $(LISP:.el=.elc)
 
 .el.elc:

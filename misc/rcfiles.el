@@ -71,6 +71,8 @@ extension."
   :group 'rcfiles
   :type 'string)
 
+(require 'cl-seq) ;; cl-remove-if
+
 (defun rcfiles-rc-files ()
   "Return the list of configuration files currently available.
 File names are expanded but their extension is removed."

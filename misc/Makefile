@@ -7,4 +7,4 @@ all:	$(ELCS) ../TAGS
 	@etags ../*.el ../lisp/*.el ../misc/*.el
 
 clean:
-	rm -f *.elc TAGS *~ $(CLEAN_EXTRA)
+	rm -f *.elc TAGS *~ $(LOADFILE)

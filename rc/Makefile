@@ -21,4 +21,4 @@ window-config.elc: window-config.el
 		2>&1 | grep -v "^Loading" || true
 
 clean:
-	rm -f *.elc
+	rm -f *.elc *~
