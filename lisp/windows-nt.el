@@ -98,13 +98,13 @@ See also `auto-save-file-name-p'."
 
 ;; -----------------------------------------------------------
 ;; aspell for nt - will not work with ispell.el 3.3 or 3.4
-(when (would-like 'ispell)
-  (let ((aspell-prog "c:/Program Files/aspell/bin/aspell.exe"))
-    (when (file-exists-p aspell-prog)
-      (setq ispell-program-name aspell-prog)))
-  ;;(setq ispell-extra-args '("--conf=d:/aspell/aspell.conf" "--dict-dir=d:/aspell/dict"))
-  (when (string-match "3.0" ispell-version)
-    (setq ispell-extra-args '("--reverse"))))
+(require 'ispell)
+(let ((aspell-prog "c:/Program Files/aspell/bin/aspell.exe"))
+  (when (file-exists-p aspell-prog)
+    (setq ispell-program-name aspell-prog)))
+;;(setq ispell-extra-args '("--conf=d:/aspell/aspell.conf" "--dict-dir=d:/aspell/dict"))
+(when (string-match "3.0" ispell-version)
+  (setq ispell-extra-args '("--reverse")))
 
 ;; Different excludes for windows
 (setq smerge-diff-excludes

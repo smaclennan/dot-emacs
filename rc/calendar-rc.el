@@ -1,7 +1,7 @@
 ;;; ----------------------------------------------
 ;; Calendar
 
-(would-like 'holidays)
+(require 'holidays)
 
 ;; Where in the world is Ottawa?
 ;; google.ca/maps 45.3842398,-75.7337702

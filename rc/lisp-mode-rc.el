@@ -33,9 +33,9 @@ allows lisp code to be compiled while doing another compile."
 (setq compilation-buffer-name-function 'gen-compilation-name)
 
 ;; greedy-delete
-(when (would-like 'greedy-delete)
-  (setq gd-indicator-string nil)
-  (add-hook 'emacs-lisp-mode-hook 'gd-add-to-mode))
+(require 'greedy-delete)
+(setq gd-indicator-string nil)
+(add-hook 'emacs-lisp-mode-hook 'gd-add-to-mode)
 
 ;; Let's try making - part of a "word".
 (modify-syntax-entry ?- "w" lisp-mode-syntax-table)

@@ -23,7 +23,7 @@
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
-(would-like 'my-compile)
+(require 'my-compile)
 
 ;; Turn off gcc colours
 (setenv "GCC_COLORS" "")

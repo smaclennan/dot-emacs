@@ -10,22 +10,6 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
-(require 'sam-common)
-
-;; With the new package system, there is a greater chance a
-;; package may be missing. Instead of an error, just add the
-;; package to a list of missing packages and move on.
-;; Note: returns non-nil if package exists.
-
-(defvar would-have-liked-list nil
-  "List of features that `would-like' could not find.")
-
-(defun would-like (feature)
-  "A less strident `require'."
-  (condition-case nil (load (symbol-name feature))
-    (error
-     (add-to-list 'would-have-liked-list feature) nil)))
-
 ;; Split the system-name up into host and domain name.
 ;; We need this up front for sendmail-rc.
 (defvar host-name nil)
@@ -81,7 +65,8 @@
 ;; Let's try making _ part of a "word". C & C++ done in cc-mode-rc.el
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 
-(when (would-like 'jka-compr) (auto-compression-mode 1))
+(require 'jka-compr)
+(auto-compression-mode 1)
 
 ;; Always turn this mode off
 (fset 'xrdb-mode 'ignore)
@@ -149,13 +134,8 @@
 (global-set-key [(meta right)] 'forward-sexp)
 (global-set-key [(meta left)]  'backward-sexp)
 
-;; Hyper-apropos bindings
-(define-key global-map [(control h) a] 'hyper-apropos)
-(define-key global-map [(control h) c] 'hyper-describe-key-briefly)
-(define-key global-map [(control h) f] 'hyper-describe-function)
-(define-key global-map [(control h) k] 'hyper-describe-key)
-(define-key global-map [(control h) v] 'hyper-describe-variable)
-(define-key global-map [(control h) w] 'hyper-where-is)
+;; For some reason this doesn't have a key binding
+(global-set-key "\C-hz" 'apropos-variable)
 
 (defun xref-find-definitions-prompt ()
   "Same as `xref-find-defintions' except it always prompts for
@@ -163,21 +143,6 @@ the identifier."
   (interactive)
   (let ((current-prefix-arg t))
     (call-interactively 'xref-find-definitions)))
-
-(defun my-clipboard-copy (beg end)
-  (interactive "r")
-  (let ((text (buffer-substring beg end)))
-    (my-feature-cond
-      (gui-set-selection
-       (gui-set-selection 'CLIPBOARD text) ;; for C-v
-       (gui-set-selection 'PRIMARY text))  ;; for mouse paste
-      (t ;; < 25.1
-       (x-set-selection 'CLIPBOARD text) ;; for C-v
-       (x-set-selection 'PRIMARY text))) ;; for mouse paste
-    (copy-region-as-kill beg end))) ;; and the kill buffer
-
-(global-set-key [(shift insert)] 'x-clipboard-yank)
-(global-set-key [(control insert)] 'my-clipboard-copy)
 
 (defun my-show-messages ()
   "Show messages in other window."
@@ -246,17 +211,8 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 (global-set-key "\C-x\C-k"	'kill-buffer)
 
-(would-like 'intellimouse)
-;;(mwheel-install)
+(require 'intellimouse)
 
-;; -------------------------------------------------------
-;; The standard blows away emacs just a little to easily
-(defun my-save-buffers-kill-emacs ()
-  (interactive)
-  (when (or (not window-system) (y-or-n-p "Do you have to go? "))
-    (save-buffers-kill-emacs)))
-
-(global-set-key "\C-x\C-c"	'my-save-buffers-kill-emacs)
 (global-set-key "\C-xw"	'what-line)
 
 (global-set-key "\M-#"		'my-calc)
@@ -277,14 +233,14 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;; hide-copyleft
 ;; If you're sure you're not gonna get sued, you can do something like this
 ;; in your .emacs file:
-(when (would-like 'hide-copyleft)
-  (add-to-list
-   'copylefts-to-hide
-   ;; Apache
-   '(" \\* The Apache Software License, Version 1\\.1" . " \\*/")
-   )
-  (add-hook 'emacs-lisp-mode-hook 'hide-copyleft-region)
-  (add-hook 'c-mode-common-hook 'hide-copyleft-region))
+(require 'hide-copyleft)
+(add-to-list
+ 'copylefts-to-hide
+ ;; Apache
+ '(" \\* The Apache Software License, Version 1\\.1" . " \\*/")
+ )
+(add-hook 'emacs-lisp-mode-hook 'hide-copyleft-region)
+(add-hook 'c-mode-common-hook 'hide-copyleft-region)
 
 ;;; -------------------------------------------------------------------------
 ;; GNU global - gtags
@@ -337,7 +293,7 @@ Use region if it exists. My replacement for isearch-yank-word."
       (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
       (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
       (add-hook 'text-mode-hook 'flyspell-mode))
-  (add-to-list 'would-have-liked-list 'spell))
+  (message "WARNING: No spell program found"))
 
 ;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
 
@@ -354,12 +310,11 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; ----------------------------------------------
 ;; whitespace trimming
 
-(if (would-like 'ws-butler)
-    (add-hook 'prog-mode-hook #'ws-butler-mode)
-  (when (fboundp 'global-ws-trim-mode)
-    (global-ws-trim-mode t)
-    (setq ws-trim-mode-line-string nil)
-    (set-default 'ws-trim-level 1)))
+(require 'ws-butler)
+(add-hook 'prog-mode-hook #'ws-butler-mode)
+;; (global-ws-trim-mode t)
+;; (setq ws-trim-mode-line-string nil)
+;; (set-default 'ws-trim-level 1)))
 
 ;;; ------------------------------------------------------------
 ;; Start the server program
@@ -372,10 +327,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;; ------------------------------------------------------------
 ;; Some non-standard init files. Start them last so they can override defaults.
 
-;; Ok, this is actually standard...
-(setq custom-file (concat user-emacs-directory "custom.el"))
-(load custom-file t)
-
 ;; Load a file called `system-type' if it exists. The symbol is
 ;; sanitized so gnu/linux becomes gnu-linux.
 (load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t)
@@ -386,25 +337,21 @@ Use region if it exists. My replacement for isearch-yank-word."
 
 ;;{{{ Final results
 
-(defun friendly-message (&optional full)
-  (interactive "P")
-  (if (and full would-have-liked-list)
-      ;; Warn that some features not found
-      (message "Features not found: %S" would-have-liked-list)
-    ;; Else display a friendly message
-    (let ((hour (nth 2 (decode-time))))
-      (message "Good %s %s"
-	       (cond ((< hour 12) "morning")
-		     ((< hour 18) "afternoon")
-		     (t           "evening"))
-	       (user-full-name)))))
+(defun friendly-message ()
+  (interactive)
+  (let ((hour (nth 2 (decode-time))))
+    (message "Good %s %s"
+	     (cond ((< hour 12) "morning")
+		   ((< hour 18) "afternoon")
+		   (t           "evening"))
+	     (user-full-name))))
 
 ;; Not sure why Emacs wipes the message in console mode.
 (unless noninteractive
   ;; Every time you turn around Emacs is displaying yet another
   ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
   ;; one. So use a timer to get past them.
-  (run-at-time .2 nil 'friendly-message t))
+  (run-at-time .2 nil 'friendly-message))
 
 ;;}}}
 

@@ -16,6 +16,29 @@
 (blink-cursor-mode 0)
 (set-cursor-color "red")
 
+(when (eq window-system 'x)
+  (my-feature-cond
+   (clipboard-kill-ring-save ;; 25.1.1 has this
+    (global-set-key [(control insert)] 'clipboard-kill-ring-save))
+   (t
+    (defun my-clipboard-copy (beg end)
+      (interactive "r")
+      (let ((text (buffer-substring beg end)))
+	(x-set-selection 'CLIPBOARD text) ;; for C-v
+	(x-set-selection 'PRIMARY text)) ;; for mouse paste
+      (copy-region-as-kill beg end)) ;; and the kill buffer
+    (global-set-key [(control insert)] 'my-clipboard-copy)))
+
+  (global-set-key [(shift insert)] 'x-clipboard-yank))
+
+;; -------------------------------------------------------
+;; The standard blows away emacs just a little to easily
+(defun my-save-buffers-kill-emacs ()
+  (interactive)
+  (if (y-or-n-p "Do you have to go? ") (save-buffers-kill-emacs)))
+
+(global-set-key "\C-x\C-c" 'my-save-buffers-kill-emacs)
+
 ;; --------------------------------------------
 ;; laptop mode
 
