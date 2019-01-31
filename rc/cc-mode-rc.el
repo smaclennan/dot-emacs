@@ -17,6 +17,8 @@
   (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
   (setq case-fold-search nil) ;; C is case sensitive
 
+  (hide-copyleft-region)
+
   (let ((tags (concat default-directory "TAGS")))
     (when (file-exists-p tags)
       (set (make-local-variable 'tags-file-name) tags)))

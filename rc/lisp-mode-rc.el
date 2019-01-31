@@ -37,6 +37,8 @@ allows lisp code to be compiled while doing another compile."
 (setq gd-indicator-string nil)
 (add-hook 'emacs-lisp-mode-hook 'gd-add-to-mode)
 
+(add-hook 'emacs-lisp-mode-hook 'hide-copyleft-region)
+
 ;; Let's try making - part of a "word".
 (modify-syntax-entry ?- "w" lisp-mode-syntax-table)
 (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)

@@ -23,7 +23,7 @@
   (setq host-name my-system-name
 	domain-name (getenv "DOMAINNAME"))))
 
-;; I use a common init.el across many machines. The `user-init' file
+;; I use a common init.el across many machines. The user-init file
 ;; allows for user/machine specific initialization. It must be very
 ;; early for variables like laptop-mode to work. Use `after-init-hook'
 ;; if you need to clean something up at the end.
@@ -64,12 +64,6 @@
 
 ;; Let's try making _ part of a "word". C & C++ done in cc-mode-rc.el
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
-
-(require 'jka-compr)
-(auto-compression-mode 1)
-
-;; Always turn this mode off
-(fset 'xrdb-mode 'ignore)
 
 ;; Windowing System Customization
 
@@ -228,19 +222,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 (unless noninteractive
   (require 'font-lock)
   (global-font-lock-mode 1)) ;; For 21.x
-
-;;; -------------------------------------------------------------------------
-;; hide-copyleft
-;; If you're sure you're not gonna get sued, you can do something like this
-;; in your .emacs file:
-(require 'hide-copyleft)
-(add-to-list
- 'copylefts-to-hide
- ;; Apache
- '(" \\* The Apache Software License, Version 1\\.1" . " \\*/")
- )
-(add-hook 'emacs-lisp-mode-hook 'hide-copyleft-region)
-(add-hook 'c-mode-common-hook 'hide-copyleft-region)
 
 ;;; -------------------------------------------------------------------------
 ;; GNU global - gtags
