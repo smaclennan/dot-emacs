@@ -10,10 +10,10 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
-;; I use a common init.el across many machines. The user-init file
-;; allows for user/machine specific initialization. It must be very
-;; early for variables like laptop-mode to work. Use `after-init-hook'
-;; if you need to clean something up at the end.
+;; The user-init file allows for user/machine specific
+;; initialization. It must be very early for variables like
+;; `laptop-mode' to work. Use `after-init-hook' if you need to clean
+;; something up at the end.
 (load (concat user-emacs-directory "user-init") t)
 
 (rcfiles-register-rc-files)
@@ -43,17 +43,15 @@
  ((equal (user-login-name) "smaclennan")
   (setq inhibit-startup-echo-area-message "smaclennan"))
  ((equal (user-login-name) "seanm")
-  (setq inhibit-startup-echo-area-message "seanm"))
- )
+  (setq inhibit-startup-echo-area-message "seanm")))
 
-(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil) ;; Why? Just why?
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Let's try making _ part of a "word". C & C++ done in cc-mode-rc.el
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 
 ;; Windowing System Customization
-
 (if window-system
     (load (concat rcfiles-directory "/window-config"))
   ;; Yes, emacs has a menu bar in console mode
@@ -147,32 +145,6 @@ the identifier."
 
 ;; emacs has problems with \C-,
 (global-set-key [(control ?.)] 'grab-word)
-
-;;  I don't like the way isearch-yank-word defines word, so I rolled my own
-(defun my-isearch-yank-word ()
-  "Pull current word from buffer into search string.
-Use region if it exists. My replacement for isearch-yank-word."
-  (interactive)
-  (let ((word (if mark-active
-		  (buffer-substring (region-beginning) (region-end))
-		(current-word))))
-    (forward-char 1) ;; make sure we are not on first char of word
-    (isearch-yank-string word)))
-
-;; Warning: If you change this binding, change `my-isearch-word-forward'
-(define-key isearch-mode-map "\C-w"		'my-isearch-yank-word)
-
-(define-key isearch-mode-map [f3]		'isearch-repeat-forward)
-(define-key isearch-mode-map [(shift f3)]	'isearch-repeat-backward)
-(define-key isearch-mode-map "\C-t"		'isearch-toggle-case-fold)
-
-(defun my-isearch-word-forward (&optional regexp-p)
-  "Search for current word. Region is used if set."
-  (interactive "P")
-  ;; Push the C-w and call 'isearch-forward'
-  (setq unread-command-events
-	(listify-key-sequence "\C-w"))
-  (isearch-mode t (not (null regexp-p)) nil (not (my-interactive-p))))
 
 (defun my-toggle-case-search ()
   (interactive)
