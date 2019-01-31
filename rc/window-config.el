@@ -1,7 +1,8 @@
 ;; Windowing system only config.
 ;; No real library to toggle off of so it is not a -rc.el
 
-(setq frame-title-format '("Emacs " emacs-version " " host-name ":"
+;; I believe for Emacs system-name is host name only
+(setq frame-title-format '("Emacs " emacs-version " " system-name ":"
 			   (buffer-file-name
 			    (:eval (abbreviate-file-name buffer-file-name))
 			    "%b")))

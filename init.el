@@ -10,19 +10,6 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
-;; Split the system-name up into host and domain name.
-;; We need this up front for sendmail-rc.
-(defvar host-name nil)
-(defvar domain-name nil)
-(let ((my-system-name (system-name)))
-  (if (string-match "^\\([^.]+\\)\\.\\(.*\\)" my-system-name)
-      ;; fully qualified system-name
-      (setq host-name (match-string 1 my-system-name)
-	    domain-name (match-string 2 my-system-name))
-  ;; system-name is host-name
-  (setq host-name my-system-name
-	domain-name (getenv "DOMAINNAME"))))
-
 ;; I use a common init.el across many machines. The user-init file
 ;; allows for user/machine specific initialization. It must be very
 ;; early for variables like laptop-mode to work. Use `after-init-hook'
@@ -304,9 +291,6 @@ Use region if it exists. My replacement for isearch-yank-word."
 ;;}}}
 
 ;;{{{ Optional Init files
-
-;;; ------------------------------------------------------------
-;; Some non-standard init files. Start them last so they can override defaults.
 
 ;; Load a file called `system-type' if it exists. The symbol is
 ;; sanitized so gnu/linux becomes gnu-linux.
