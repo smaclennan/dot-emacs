@@ -31,6 +31,7 @@
 (defvar mcs-regexp "^\\([^ ]+\\) \\([^ ]+\\) \\([0-9]+\\)"
   "* Regular expression to match filename and line.")
 
+(require 'sam-common)
 (require 'compile)
 (require 'etags)
 

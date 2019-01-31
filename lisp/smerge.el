@@ -45,7 +45,7 @@
 ;;     (setq directory-sep-char ?/)
 ;; somewhere before running smerge.
 
-(eval-when-compile (require 'cl))
+(require 'sam-common)
 (require 'ediff)
 
 (defun smerge-dirlist (directory &optional full match nosort files-only)
@@ -277,7 +277,7 @@ Top level directories end in /, subdirs do not."
     (while (re-search-forward only-1 nil t)
       (setq file (match-string 1))
       (save-match-data
-	(loop for exclude in smerge-only-in-excludes while file do
+	(cl-loop for exclude in smerge-only-in-excludes while file do
 	  (when (string-match exclude file)
 	    (setq file nil))))
       (if file
@@ -294,7 +294,7 @@ Top level directories end in /, subdirs do not."
     (while (re-search-forward only-2 nil t)
       (setq file (match-string 1))
       (save-match-data
-	(loop for exclude in smerge-only-in-excludes while file do
+	(cl-loop for exclude in smerge-only-in-excludes while file do
 	  (when (string-match exclude file)
 	    (setq file nil))))
       (if file
