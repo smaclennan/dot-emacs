@@ -22,7 +22,7 @@
 (defun hmac (key msg hash-func digest-length)
   "Given a key, a message, a hash function, and the hash digest length, return the HMAC of the message.
 The output is in binary, use `encode-hex-string' to make it readable.
-Note: The hash-func must be the binary version. (e.g. sha1-binary)."
+Note: The hash-func must be the binary version. (e.g. `hmac-sha1-binary')."
   (let (o-pad i-pad (key-len (length key)))
 
     (if (> key-len hmac-blocksize)

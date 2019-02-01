@@ -210,8 +210,7 @@ the identifier."
 ;;; Some edit-utils packages
 ;; (icomplete-mode 1
 ;; (ido-mode 1))
-;; We have a local copy of iswitchb to get around the deprecated message.
-(load "iswitchb")
+(require 'iswitchb)
 (iswitchb-mode 1)
 
 (show-paren-mode t)
