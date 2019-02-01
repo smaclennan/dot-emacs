@@ -17,8 +17,6 @@
 ;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-(eval-when-compile (require 'cl))
-
 (defconst hmac-blocksize 64)
 
 (defun hmac (key msg hash-func digest-length)
@@ -35,7 +33,7 @@ Note: The hash-func must be the binary version. (e.g. sha1-binary)."
     (setq o-pad (make-string hmac-blocksize 0))
     (setq i-pad (make-string hmac-blocksize 0))
 
-    (loop for i from 0 below hmac-blocksize do
+    (cl-loop for i from 0 below hmac-blocksize do
       (aset o-pad i (logxor (aref key i) #x5c))
       (aset i-pad i (logxor (aref key i) #x36)))
 
@@ -46,7 +44,7 @@ Note: The hash-func must be the binary version. (e.g. sha1-binary)."
 ;; Probably not the most efficient
 (defun encode-hex-string (binary)
   (let ((len (length binary)) str)
-    (loop for i from 0 below len do
+    (cl-loop for i from 0 below len do
 	  (setq str (concat str (format "%02x" (aref binary i)))))
     str))
 

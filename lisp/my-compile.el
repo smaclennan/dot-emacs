@@ -150,7 +150,6 @@ Only the first match is used so order is important.")
 
 ;; Needed for Emacs.
 (eval-when-compile
-  (require 'cl)
   (require 'svn)
   (require 'cc-vars))
 
@@ -164,7 +163,7 @@ function will be called after the compile command is set."
   (let ((svn-dir (my-compile-svn-url))
 	match dir arg func-or-style matched)
 
-    (loop for list in my-compile-dir-list until dir do
+    (cl-loop for list in my-compile-dir-list until dir do
       (setq match (car list))
       (if (string-match match default-directory)
 	  (progn

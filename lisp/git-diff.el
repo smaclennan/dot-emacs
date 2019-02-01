@@ -1,7 +1,6 @@
 (provide 'git-diff)
 
 (eval-when-compile
-  (require 'cl)
   (require 'ediff)
   (unless (fboundp 'region-exists-p)
     (defsubst region-exists-p () mark-active)))
