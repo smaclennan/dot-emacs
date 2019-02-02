@@ -29,7 +29,6 @@
 
 ;; Change a couple of faces
 (make-face-bold 'font-lock-function-name-face)
-(set-face-foreground 'font-lock-function-name-face "blue")
 
 (if window-system
     (set-face-foreground 'font-lock-comment-face "FireBrick")

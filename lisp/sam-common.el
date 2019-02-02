@@ -2,6 +2,7 @@
 
 ;; Copyright (C) 2011 Sean MacLennan
 
+;;;###autoload
 (defmacro emacs>= (major minor)
   `(or (> emacs-major-version ,major)
       (and (eq emacs-major-version ,major)
@@ -39,5 +40,11 @@ Each clause is (FEATURE BODY...)."
   (my-feature-cond
     (xref-push-marker-stack (xref-push-marker-stack))
     (t (ring-insert find-tag-marker-ring (point-marker))))) ;; < 25.1
+
+;;;###autoload
+(defun basename (name)
+  (if (string-match "/\\([^/]+\\)/?$" name)
+      (match-string 1 name)
+    name))
 
 (provide 'sam-common)

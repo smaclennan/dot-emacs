@@ -221,9 +221,6 @@ the identifier."
 (setq uniquify-buffer-name-style 'post-forward)
 
 ;;; -------------------------------------------------------------------------
-;;; Some text-modes packages
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-
 ;; Flyspell
 (if (or (locate-file "hunspell" exec-path exec-suffixes 'executable)
 	(locate-file "aspell"   exec-path exec-suffixes 'executable)
@@ -233,8 +230,6 @@ the identifier."
       (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
       (add-hook 'text-mode-hook 'flyspell-mode))
   (message "WARNING: No spell program found"))
-
-;; (when (fboundp 'whitespace-global-mode) (whitespace-global-mode))
 
 ;;; -------------------------------------------------------------------------
 ;; The auto-save.el and backup.el packages collect files in one place
@@ -285,7 +280,7 @@ the identifier."
 ;; Not sure why Emacs wipes the message in console mode.
 (unless noninteractive
   ;; Every time you turn around Emacs is displaying yet another
-  ;; stupid^h^h^h^h^h useful message that overwrites my nice friendly
+  ;; stupid^h^h^h^h^h "useful" message that overwrites my nice friendly
   ;; one. So use a timer to get past them.
   (run-at-time .2 nil 'friendly-message))
 

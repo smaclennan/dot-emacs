@@ -171,10 +171,8 @@ returns all .el files."
 	 (files (directory-files-recursive base ".*\.el$")))
     (unless all
       ;; misc not mine
-      ;; also ignore symlinks
       (dolist (file files)
-	(when (or (string-match ".*/misc/.*" file)
-		  (file-symlink-p file))
+	(when (string-match ".*/misc/.*" file)
 	  (setq files (delete file files))))
 
       (dolist (file '(;; generated files
@@ -182,8 +180,7 @@ returns all .el files."
 		      ;; ignore this to make comparisons
 		      "user-init.el"
 		      ))
-	(setq files (delete (concat base file) files)))
-      )
+	(setq files (delete (concat base file) files))))
     files))
 
 ;;;###autoload
