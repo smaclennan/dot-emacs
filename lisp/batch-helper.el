@@ -13,3 +13,7 @@
   (let ((generated-autoload-file
 	 (expand-file-name (car command-line-args-left))))
     (update-directory-autoloads default-directory)))
+
+(defun would-like (pkg)
+  "Helper for building rc files. Some modes do not have a provide."
+  (condition-case nil (require pkg) (error nil)))
