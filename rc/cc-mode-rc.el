@@ -19,7 +19,7 @@
 
   (hide-copyleft-region)
 
-  (let ((tags (concat default-directory "TAGS")))
+  (let ((tags (expand-file-name "TAGS")))
     (when (file-exists-p tags)
       (set (make-local-variable 'tags-file-name) tags)))
   )

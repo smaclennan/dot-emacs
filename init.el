@@ -228,6 +228,7 @@ the identifier."
     (progn
       (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
       (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
+      (add-hook 'make-mode-hook 'flyspell-prog-mode)
       (add-hook 'text-mode-hook 'flyspell-mode))
   (message "WARNING: No spell program found"))
 
