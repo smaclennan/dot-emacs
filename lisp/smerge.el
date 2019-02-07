@@ -38,8 +38,7 @@
 ;;
 ;; In the left and right columns, you can copy the file to the other
 ;; directory. In the middle column, mouse 1 and mouse 2 call ediff on the
-;; two files. mouse 3 opens a menu that lets you copy the file to the other
-;; directory.
+;; two files.
 ;;
 ;; Warning for windows users: You must have:
 ;;     (setq directory-sep-char ?/)
@@ -150,7 +149,6 @@ regular expressions.")
   "*If non-nil, filename to write the raw diff output to. (dbg)")
 
 ;; Internals
-;; SAM This should be a list?
 (defvar smerge-flags nil)
 (defvar smerge-dir1 nil)
 (defvar smerge-dir2 nil)
@@ -160,19 +158,12 @@ regular expressions.")
 
 (defun overlay-at (pos) (car (overlays-at pos)))
 
-(defconst smerge-copy-menu
-  (list "Copy to ..."
-	[(concat smerge-dir1 smerge-file) (smerge-copy 1) (smerge-allow-dir 1)]
-	[(concat smerge-dir2 smerge-file) (smerge-copy 2) (smerge-allow-dir 2)]
-	))
-
 (defun smerge-init ()
   "This creates the keymap."
   (unless smerge-keymap
     (setq smerge-keymap (make-sparse-keymap "smerge"))
     (define-key smerge-keymap [mouse-1] 'smerge-mousable)
     (define-key smerge-keymap [mouse-2] 'smerge-mousable)
-    (define-key smerge-keymap [mouse-3] 'smerge-menu)
     (define-key smerge-keymap "\C-m" 'smerge-ediff-or-copy)
     (define-key smerge-keymap "g"    'smerge-reload)
     (define-key smerge-keymap "r"    'smerge-reload)
@@ -355,16 +346,6 @@ Top level directories end in /, subdirs do not."
 	       (overlay-end extent))))
     (string-match "\t*\\(.*\\)" file)
     (match-string 1 file)))
-
-(defun smerge-menu (event)
-  "This is called on a right mouse click in the display window.
-Pops up a menu that allows copying the file to directory one or two."
-  (interactive "e")
-  (let ((extent (overlay-at (event-point event))))
-    (unless extent (error "No extent at point"))
-    (setq smerge-file (smerge-file extent))
-    (setq smerge-extent extent)
-    (popup-menu smerge-copy-menu)))
 
 ;; Find the extent nearest pos. Can return nil.
 (defun smerge-nearest-extent (pos)
