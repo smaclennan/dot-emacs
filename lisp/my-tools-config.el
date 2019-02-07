@@ -4,7 +4,7 @@
 (require 'cl-extra)
 (require 'cc-mode)
 (require 'my-tags)
-(require 'git-diff) ;; for git-dir
+(require 'git-diff)
 (require 'kloc)
 
 ;;;###autoload
@@ -38,8 +38,11 @@
 	  (princ (format "My tag dir:   %S\n" my-tags-dir))
 	  (princ (format "My tag file:  %S\n" my-tags-file)))
       (error nil))
-    (when (local-variable-p 'kloc-dir)
-      (princ (format "Kloc:         %S\n" kloc-dir)))
+    (let ((kdir (kloc-project-dir buffer-file-name)))
+      (when kdir
+	(and kloc-dir (not (local-variable-p 'kloc-dir))
+	     (setq kdir (concat kdir " (G)")))
+	(princ (format "Kloc:         %S\n" kdir))))
 
     ;; verbose and C
     (when (and verbose (boundp 'my-compile-dir-list))
