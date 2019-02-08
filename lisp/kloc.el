@@ -14,6 +14,7 @@ If `kloc-dir' is not set, `kloc-project-dir' will search this
 list to try to find the kloc directory.")
 
 (require 'compile)
+(require 'git-diff)
 
 ;;;###autoload
 (defun kloc-project-dir (file)
@@ -40,22 +41,46 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
 	;; This removes the last directory
 	(setq dir (file-name-directory (directory-file-name dir)))))))
 
-(defun kloc-parse-buffer (start end)
-  "Parse the current buffer from START to END for klocwork
-output. Returns point after header."
-  ;; Skip the header
-  (let (saved)
-    (goto-char start)
-    (when (or (re-search-forward "Linking stage completed" end t)
-	      (re-search-forward "up to date" end t))
-      (end-of-line) (forward-char))
-    (setq saved (point)) ;; always set it to something
+(defun kloc-do-one (file &optional no-parse-compile)
+  "Run kloc on FILE into the current buffer at the point.
+If NO-PARSE-COMPILE is nil, also do a
+`compilation--parse-region' on the entire buffer.
 
-    (while (re-search-forward "^[^:]+:[0-9]+" nil t)
-      (goto-char (match-end 0))
-      (insert ":1"))
+Returns the kloc project directory or nil."
+  (let ((kdir (kloc-project-dir file))
+	(start (point)))
+    (when kdir
+      (save-excursion
+	(call-process-shell-command (format kloc-cmd kdir file) nil '(t t) t))
 
-    saved))
+      ;; Delete the header
+      (when (or (re-search-forward "Linking stage completed" nil t)
+		(re-search-forward "up to date" nil t))
+	(end-of-line) (forward-char))
+      (kill-region start (point))
+
+      ;; Fixup the lines for compilation
+      (while (re-search-forward "^[^:]+:\\([0-9]+\\)" nil t)
+	(replace-match (concat file ":" (match-string 1) ":1"))))
+    ;; For the kloc-do-many list we want to parse even if no kdir.
+    ;; Doesn't hurt in any case.
+    (unless no-parse-compile
+      (compilation-mode "kloc")
+      (setq buffer-read-only nil)
+      (compilation--parse-region (point-min) (point-max)))
+    kdir))
+
+(defun kloc-do-list (flist)
+  "Perform kloc on a list of files and put the results in one buffer."
+    (with-current-buffer (get-buffer-create "*kloc*")
+      (erase-buffer)
+      (display-buffer "*kloc*")
+      (while flist
+	(goto-char (point-max))
+	(insert "Analyzing " (car flist) "...\n")
+	(unless (kloc-do-one (car flist) (cdr flist))
+	  (insert "%s has no project directory" (car flist)))
+	(setq flist (cdr flist)))))
 
 ;;;###autoload
 (defun kloc ()
@@ -63,19 +88,32 @@ output. Returns point after header."
 Uses `kloc-project-dir' to find the project directory. Puts the
 results in a compilation buffer."
   (interactive)
-  (let* ((kdir (kloc-project-dir buffer-file-name))
-	 (cmd (format kloc-cmd kdir buffer-file-name))
-	 start)
-    (unless kdir (error "No project directory found"))
+  (let ((file buffer-file-name))
     (with-current-buffer (get-buffer-create "*kloc*")
       (erase-buffer)
-      (message "%s" cmd)
-      (shell-command cmd t t)
-      (setq start (kloc-parse-buffer (point-min) (point-max)))
-      (compilation-mode "kloc")
-      (setq buffer-read-only nil)
-      (compilation--parse-region start (point-max)))
-    (display-buffer "*kloc*"))
-  (message "kloc done."))
+      (unless (kloc-do-one file)
+	(error "No project directory found")))
+    (display-buffer "*kloc*")
+    (message "kloc done.")))
+
+;;;###autoload
+(defun kloc-git ()
+  "Diff the branch against master and run klocwork on all the C
+files... collecting the results in one buffer."
+  (interactive)
+  (with-temp-buffer
+    ;; We must be rooted in the git dir
+    (let ((default-directory (git-dir)) flist)
+      ;; Collect the file names
+      (erase-buffer)
+      (shell-command "git diff master --stat" t)
+      (goto-char (point-min))
+      (while (re-search-forward "^ \\([^0-9][^ ]*\\.c\\)" nil t)
+	(setq flist (append flist (list (expand-file-name (match-string 1))))))
+      (if flist
+	  (progn
+	    (kloc-do-list flist)
+	    (message "Kloc done"))
+	(message "No diffs found")))))
 
 (provide 'kloc)
