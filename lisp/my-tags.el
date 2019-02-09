@@ -37,10 +37,11 @@ This variable is buffer local.")
   "* List of dirs and buffer names.")
 
 ;;;###autoload
-(defun my-tags-tree (dir &optional buf)
+(defun my-tags-tree (dir &optional buf tagfile)
   "Call tags on an entire tree rather than just one directory.
-If buf is defined and is not empty, it is assumed to contain lines of
-files to perform tags on."
+If BUF is defined and is not empty, it is assumed to contain lines of
+files to perform tags on.
+If TAGFILE is defined, the tags are put in that file."
   (interactive "DDir: ")
   (if buf
       (when (stringp buf) (setq buf (get-buffer-create buf)))
@@ -55,10 +56,11 @@ files to perform tags on."
     (call-process "find" nil (list buf nil) nil dir "-name" my-tags-c)
     (call-process "find" nil (list buf nil) nil dir "-name" my-tags-h))
 
+  (unless tagfile (setq tagfile (concat dir "TAGS")))
   (with-current-buffer buf
     (call-process-region (point-min) (point-max)
 			 my-tags-prog nil nil nil
-			 "-o" (concat dir "TAGS") "-"))
+			 "-o" tagfile "-"))
     )
 
 ;;;###autoload
