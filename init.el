@@ -164,24 +164,6 @@ the identifier."
   (interactive)
   (switch-to-buffer-other-window "*Messages*"))
 
-(defun grab-word ()
-  "Grab the word on or after the point."
-  (interactive)
-  (let (end)
-    (save-excursion
-      (if (forward-word)
-	  (progn ;; normal case
-	    (setq end (point))
-	    (backward-word))
-	;; special case when point past last word in buffer
-	(backward-word)
-	(setq end (point))
-	(forward-word))
-      (copy-region-as-kill (point) end))))
-
-;; emacs has problems with \C-,
-(global-set-key [(control ?.)] 'grab-word)
-
 (defun my-toggle-case-search ()
   (interactive)
   (setq case-fold-search (not case-fold-search))
