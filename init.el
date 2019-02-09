@@ -263,9 +263,6 @@ the identifier."
 
 (require 'ws-butler)
 (add-hook 'prog-mode-hook #'ws-butler-mode)
-;; (global-ws-trim-mode t)
-;; (setq ws-trim-mode-line-string nil)
-;; (set-default 'ws-trim-level 1)))
 
 ;;; ------------------------------------------------------------
 ;; Start the server program

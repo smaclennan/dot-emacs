@@ -1,23 +1,11 @@
-browse-kill-ring:
-https://github.com/browse-kill-ring/browse-kill-ring
-
 greedy-delete:
 https://barry.warsaw.us/elisp/greedy-delete.el
 
 hide-copyleft:
 From XEmacs. Heavily modifed for GNU Emacs.
 
-json.el:
-https://github.com/thorstadt/json.el.git
-
 rcfiles.el:
 https://github.com/didierverna/el-rcfiles
 
-s.el:
-https://github.com/magnars/s.el
-
 ws-butler.el:
 https://github.com/lewang/ws-butler.git
-
-ws-trim.el:
-https://github.com/windley/emacs/blob/master/ws-trim.el
