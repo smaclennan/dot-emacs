@@ -53,11 +53,6 @@
       ad-do-it
     (end-of-buffer)))
 
-(global-set-key [(mouse-4)] 'fine-scroll-down)
-(global-set-key [(mouse-5)] 'fine-scroll-up)
-(global-set-key [(shift mouse-4)] 'coarse-scroll-down)
-(global-set-key [(shift mouse-5)] 'coarse-scroll-up)
-
 (defun my-scroll-down-command (event &optional lines)
   (with-selected-window (cl-caadr event)
     (condition-case nil
@@ -78,12 +73,7 @@
   (interactive "e")
   (my-scroll-up-command event fine-scroll-lines))
 
-(defun coarse-scroll-down (event)
-  (interactive "e")
-  (my-scroll-down-command event))
-
-(defun coarse-scroll-up (event)
-  (interactive "e")
-  (my-scroll-up-command event))
+(global-set-key [(mouse-4)] 'fine-scroll-down)
+(global-set-key [(mouse-5)] 'fine-scroll-up)
 
 (provide 'intellimouse)
