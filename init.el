@@ -200,8 +200,6 @@ the identifier."
 
 (global-set-key "\C-x\C-k"	'kill-buffer)
 
-(require 'intellimouse)
-
 (global-set-key "\C-xw"	'what-line)
 
 (global-set-key "\M-#"		'my-calc)
