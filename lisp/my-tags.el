@@ -49,7 +49,7 @@ If TAGFILE is defined, the tags are put in that file."
     ;; Emacs does not have (erase-buffer buf) :(
     (save-current-buffer (set-buffer buf) (erase-buffer)))
 
-  (setq dir (expand-file-name dir))
+  (setq dir (file-name-as-directory (expand-file-name dir)))
 
   (when (eq (buffer-size buf) 0)
     ;; Doing the find in two steps seems to work better
