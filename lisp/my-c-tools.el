@@ -30,7 +30,6 @@
   "*Args to pass to sparse")
 
 (require 'my-compile)
-(require 'my-tags)
 (require 'cc-mode)
 
 (require 'sam-common)
