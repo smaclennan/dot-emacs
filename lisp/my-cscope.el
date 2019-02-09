@@ -140,40 +140,4 @@ The cscope command run is:
       (easy-menu-define my-cscope-menu nil "My Cscope Menu" menu)
       (easy-menu-add-item nil '("C") my-cscope-menu ""))))
 
-;;; --- cscope on /usr/include
-
-(defvar my-cscope-include-dir (expand-file-name "~/.cscope-include")
-  "*Where to store the /usr/include cscope output files. Must be the full path.")
-
-;;;###autoload
-(defun my-cscope-include-update ()
-  "Update the cscope files in `my-cscope-include-dir'. This can
-take a long time the first time it is run."
-  (interactive)
-  (unless (file-directory-p my-cscope-include-dir)
-    (make-directory my-cscope-include-dir t))
-  (let ((cmd (concat "cscope -b -R -s/usr/include -f"
-		     my-cscope-include-dir "/cscope.out"))
-	rc)
-    (message "Please wait for %s..." cmd)
-    (unless (eq (call-process-shell-command cmd) 0)
-      (error "Unable to update cscope.out"))))
-
-;;;###autoload
-(defun my-cscope-include (type &optional sym)
-  (interactive "P")
-  (unless type (setq type 0)) ;; type 0 makes more sense for includes
-  (let ((my-cscope-dir my-cscope-include-dir))
-    (unless (file-exists-p (concat my-cscope-include-dir "/cscope.out"))
-      (my-cscope-include-update))
-    (my-cscope type sym)))
-
-;;;###autoload
-(defun my-cscope-include-at-point (type)
-  (interactive "P")
-  (my-cscope-include type (current-word)))
-
-(global-set-key "\C-ci" 'my-cscope-include-at-point)
-
-
 (provide 'my-cscope)
