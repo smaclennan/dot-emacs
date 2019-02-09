@@ -116,6 +116,42 @@
 ;; For some reason this doesn't have a key binding
 (global-set-key "\C-hz" 'apropos-variable)
 
+;;; --- GNU Emacs really really needs a signal-error-on-buffer-boundary
+
+;; Using defadvice for these functions breaks minibuffer history
+(defun my-previous-line (&optional arg try-vscroll)
+  "`previous-line' with no signal on end-of-buffer."
+  (interactive "p")
+  (condition-case nil
+      (with-no-warnings ;; Yes, I want the interactive version
+	(previous-line arg try-vscroll))
+    (beginning-of-buffer)))
+
+(defun my-next-line (&optional arg try-vscroll)
+  "`previous-line' with no signal on end-of-buffer."
+  (interactive "p")
+  (condition-case nil
+      (with-no-warnings ;; Yes, I want the interactive version
+	(next-line arg try-vscroll))
+    (end-of-buffer)))
+
+(global-set-key (kbd "<up>") 'my-previous-line)
+(global-set-key (kbd "<down>") 'my-next-line)
+
+(defadvice scroll-down (around my-scroll-down activate)
+  "`scroll-down' with no signal on end-of-buffer."
+  (condition-case nil
+      ad-do-it
+    (beginning-of-buffer)))
+
+(defadvice scroll-up (around my-scroll-up activate)
+  "`scroll-up' with no signal on end-of-buffer."
+  (condition-case nil
+      ad-do-it
+    (end-of-buffer)))
+
+;;; ----
+
 (defun xref-find-definitions-prompt ()
   "Same as `xref-find-defintions' except it always prompts for
 the identifier."

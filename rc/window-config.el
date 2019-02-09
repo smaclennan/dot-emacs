@@ -40,6 +40,26 @@
 
 (global-set-key "\C-x\C-c" 'my-save-buffers-kill-emacs)
 
+;; -------------------------------------------------------
+;; intellimouse i.e. scroll wheel
+
+(defvar intellimouse-scroll-lines 4 "*Number of lines to scroll")
+
+(defun intellimouse-scroll-down (event)
+  "Mouse scroll wheel down"
+  (interactive "e")
+  (with-selected-window (cl-caadr event)
+    (scroll-down intellimouse-scroll-lines)))
+
+(defun intellimouse-scroll-up (event)
+  "Mouse scroll wheel up"
+  (interactive "e")
+  (with-selected-window (cl-caadr event)
+    (scroll-up intellimouse-scroll-lines)))
+
+(global-set-key [(mouse-4)] 'intellimouse-scroll-down)
+(global-set-key [(mouse-5)] 'intellimouse-scroll-up)
+
 ;; --------------------------------------------
 ;; laptop mode
 
