@@ -1,4 +1,5 @@
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'flyspell-mode)
 
 (defun check-for-readme ()
   "If this is a commit buffer, set to text mode."

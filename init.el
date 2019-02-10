@@ -105,7 +105,6 @@
 (global-set-key "\C-ce" 'errno-string)
 (global-set-key "\C-cg" 'git-diff)
 (global-set-key "\C-ci" 'tag-includes)
-(global-set-key "\C-ck" 'browse-kill-ring)
 (global-set-key "\C-co" 'ogrok)
 
 (global-set-key "\C-c8" '80-scan)
@@ -180,13 +179,9 @@ the identifier."
 (global-set-key [button9] 'kill-region)
 
 (global-set-key "\C-x\C-l"	'list-buffers)
-
 (global-set-key "\C-x\C-k"	'kill-buffer)
-
 (global-set-key "\C-xw"	'what-line)
-
 (global-set-key "\M-#"		'my-calc)
-
 (global-set-key [(iso-left-tab)] 'tab-to-tab-stop)
 
 ;;}}}
@@ -217,18 +212,6 @@ the identifier."
 (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
 ;;; -------------------------------------------------------------------------
-;; Flyspell
-(if (or (locate-file "hunspell" exec-path exec-suffixes 'executable)
-	(locate-file "aspell"   exec-path exec-suffixes 'executable)
-	(locate-file "ispell"   exec-path exec-suffixes 'executable))
-    (progn
-      (add-hook 'c-mode-common-hook 'flyspell-prog-mode)
-      (add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode)
-      (add-hook 'make-mode-hook 'flyspell-prog-mode)
-      (add-hook 'text-mode-hook 'flyspell-mode))
-  (message "WARNING: No spell program found"))
-
-;;; -------------------------------------------------------------------------
 ;; The auto-save.el and backup.el packages collect files in one place
 ;; I added the following to my crontab:
 ;; 13 5 * * * find $HOME/.backup -mtime +7 -delete
@@ -240,8 +223,6 @@ the identifier."
 
 ;;; ----------------------------------------------
 ;; whitespace trimming
-
-(require 'ws-butler)
 (add-hook 'prog-mode-hook #'ws-butler-mode)
 
 ;;; ------------------------------------------------------------
@@ -276,7 +257,7 @@ the identifier."
   ;; Every time you turn around Emacs is displaying yet another
   ;; stupid^h^h^h^h^h "useful" message that overwrites my nice friendly
   ;; one. So use a timer to get past them.
-  (run-at-time .2 nil 'friendly-message))
+  (run-at-time .25 nil 'friendly-message))
 
 ;;}}}
 
