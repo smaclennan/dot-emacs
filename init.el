@@ -28,11 +28,8 @@
       inhibit-default-init t
       inhibit-startup-message t
       initial-scratch-message ";; This buffer is for goofing around in.\n\n"
-      visible-bell t)
-
-;; I used to like when the suggestions where good, but not when they
-;; are just a shortened version of the command.
-(setq suggest-key-bindings nil)
+      visible-bell t
+      extended-command-suggest-shorter nil)
 
 ;; This has got to be the hardest variable to set. It seems you *must*
 ;; hardcode the name and it can't be in a compiled file. Yes, the
