@@ -89,7 +89,7 @@ File names are expanded but their extension is removed."
   (let ((dir
 	 (concat "^" (regexp-quote (expand-file-name rcfiles-directory)))))
     (setq after-load-alist
-	  (cl-remove-if (lambda (file) ;; Emacs change
+	  (cl-remove-if (lambda (file) ;; Emacs remove-if -> cl-remove-if
 		       (and (stringp file)
 			    (string-match dir file)
 			    (not (member file rcfiles))))
