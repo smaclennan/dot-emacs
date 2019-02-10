@@ -77,7 +77,10 @@ extension."
   "Return the list of configuration files currently available.
 File names are expanded but their extension is removed."
   (let ((ext-regexp
-	 (concat (regexp-quote rcfiles-pseudo-extension) "\\.el[c]?$")))
+	 ;; Emacs change... was .el[c]?
+	 ;; The comment below about dups is false for Emacs. Since I
+	 ;; never have just raw .elc files we only look for .el
+	 (concat (regexp-quote rcfiles-pseudo-extension) "\\.el$")))
     (mapcar #'file-name-sans-extension
 	    ;; #### NOTE: potential duplicates (such as when there is
 	    ;; both a .el and a .elc file) are not a problem because
