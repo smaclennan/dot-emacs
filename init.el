@@ -54,7 +54,7 @@
 ;; Windowing System Customization
 (if window-system
     (load (concat rcfiles-directory "/window-config"))
-  ;; Yes, emacs has a menu bar in console mode
+  ;; Yes, Emacs has a menu bar in console mode
   (if (fboundp 'menu-bar-mode)
       (menu-bar-mode -1)))
 
@@ -191,20 +191,7 @@ the identifier."
 
 ;;}}}
 
-;;{{{ Programming Packages
-
-;; Always want font-lock
-;; Use require. (turn-on-font-lock) caused no end of grief on my work computers.
-(unless noninteractive
-  (require 'font-lock)
-  (global-font-lock-mode 1)) ;; For 21.x
-
-;;; -------------------------------------------------------------------------
-;; GNU global - gtags
-(let ((gtag-dir "/usr/share/gtags")) ;; default install location
-  (when (file-directory-p gtag-dir)
-    (add-to-list 'load-path gtag-dir)
-    (autoload 'gtags-mode "gtags" "" t)))
+;;{{{ Packages
 
 ;;; -------------------------------------------------------------------------
 (defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
@@ -219,23 +206,15 @@ the identifier."
 	  (text-mode))))))
 (add-hook 'find-file-hooks 'check-for-commit t)
 
-;;}}}
-
-;;{{{ Packages
-
 ;;; -------------------------------------------------------------------------
 ;;; Some edit-utils packages
 ;; (icomplete-mode 1
 ;; (ido-mode 1))
-(require 'iswitchb)
 (iswitchb-mode 1)
 
 (show-paren-mode t)
 
 (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
-
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward)
 
 ;;; -------------------------------------------------------------------------
 ;; Flyspell
