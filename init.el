@@ -164,8 +164,7 @@ the identifier."
 (defun my-toggle-case-search ()
   (interactive)
   (setq case-fold-search (not case-fold-search))
-  (when (my-interactive-p)
-    (message "Case sensitive search %s." (if case-fold-search "off" "on"))))
+  (message "Case sensitive search %s." (if case-fold-search "off" "on")))
 
 ;; Tilt wheel on Logitech M500 + others
 ;;(global-set-key [button6] ')
