@@ -1,12 +1,15 @@
-;;; sam-common.el --- SAM's Common macros/functions
+;;; sam-common.el --- SAM's Common macros
 
-;; Copyright (C) 2011 Sean MacLennan
+;; Copyright (C) 2011-2019 Sean MacLennan
 
 ;;;###autoload
 (defmacro emacs>= (major minor)
   `(or (> emacs-major-version ,major)
       (and (eq emacs-major-version ,major)
 	   (>= emacs-minor-version ,minor))))
+
+;; Earlier Emacs must require cl
+(unless (emacs>= 25 1) (require 'cl))
 
 ;;;###autoload
 (defmacro my-feature-cond (&rest clauses)
@@ -21,9 +24,6 @@ Each clause is (FEATURE BODY...)."
 		  (boundp feature))
 	  (cl-return (cons 'progn (cdr x))))))))
 
-;; Earlier Emacs must require cl
-(unless (emacs>= 25 1) (require 'cl))
-
 ;;;###autoload
 (defmacro my-interactive-p () `(called-interactively-p 'interactive))
 
@@ -31,20 +31,12 @@ Each clause is (FEATURE BODY...)."
 (defmacro event-point (event) `(cl-cadadr event))
 
 ;;;###autoload
-(defun push-tag-mark ()
-  (eval-and-compile
-    (if (emacs>= 25 1)
-	(require 'xref)
-      (require 'ring)
-      (require 'etags)))
-  (my-feature-cond
-    (xref-push-marker-stack (xref-push-marker-stack))
-    (t (ring-insert find-tag-marker-ring (point-marker))))) ;; < 25.1
+(defalias 'push-tag-mark 'xref-push-marker-stack)
 
 ;;;###autoload
-(defun basename (name)
-  (if (string-match "/\\([^/]+\\)/?$" name)
-      (match-string 1 name)
-    name))
+(defmacro basename (name)
+  `(if (string-match "/\\([^/]+\\)/?$" ,name)
+      (match-string 1 ,name)
+    ,name))
 
 (provide 'sam-common)

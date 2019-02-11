@@ -1,5 +1,5 @@
 ;; Emacs setup -*- Mode:emacs-lisp -*-
-;; This file should work with Emacs >= 22.1
+;; This file should work with Emacs >= 24
 
 ;;{{{ Configuration variables / functions
 
@@ -9,6 +9,11 @@
 (dolist (dir '("lisp" "misc"))
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
+
+;; This split is fairly, but not completely, arbitrary
+(when (< emacs-major-version 25)
+  (add-to-list 'load-path (concat user-emacs-directory "compat"))
+  (load "compat-loaddefs" t))
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
@@ -199,7 +204,7 @@ the identifier."
 
 ;;; -------------------------------------------------------------------------
 ;;; Some edit-utils packages
-;; (icomplete-mode 1
+;; (icomplete-mode 1)
 ;; (ido-mode 1))
 (iswitchb-mode 1)
 

@@ -71,7 +71,9 @@ extension."
   :group 'rcfiles
   :type 'string)
 
-(require 'cl-seq) ;; cl-remove-if
+(if (>= emacs-major-version 25)
+    (require 'cl-seq) ;; cl-remove-if
+  (require 'cl))
 
 (defun rcfiles-rc-files ()
   "Return the list of configuration files currently available.
