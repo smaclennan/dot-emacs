@@ -14,4 +14,4 @@ ELCS ?= $(LISP:.el=.elc)
 
 .el.elc:
 	@echo Compile $(PDIR)$<
-	@$(EMACS) -batch -q $(HELPER) -f batch-byte-compile $<
+	@$(EMACS) -batch -Q $(HELPER) -f batch-byte-compile $<
