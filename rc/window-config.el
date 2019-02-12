@@ -22,11 +22,8 @@
 
 ;; -------------------------------------------------------
 ;; The standard blows away emacs just a little to easily
-(defun my-save-buffers-kill-emacs ()
-  (interactive)
-  (if (y-or-n-p "Do you have to go? ") (save-buffers-kill-emacs)))
-
-(global-set-key "\C-x\C-c" 'my-save-buffers-kill-emacs)
+(defadvice save-buffers-kill-emacs (before ask-first activate)
+  (y-or-n-p "Do you have to go? "))
 
 ;; -------------------------------------------------------
 ;; intellimouse i.e. scroll wheel

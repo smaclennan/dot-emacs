@@ -21,8 +21,7 @@
   (hide-copyleft-region)
 
   (let ((tags (expand-file-name "TAGS")))
-    (when (file-exists-p tags)
-      (set (make-local-variable 'tags-file-name) tags)))
+    (if (file-exists-p tags) (vist-tags-table tags t)))
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
