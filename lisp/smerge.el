@@ -44,7 +44,6 @@
 ;;     (setq directory-sep-char ?/)
 ;; somewhere before running smerge.
 
-(require 'sam-common)
 (require 'ediff)
 
 (defun smerge-dirlist (directory &optional full match nosort files-only)
@@ -360,7 +359,7 @@ Top level directories end in /, subdirs do not."
 (defun smerge-mousable (event)
   "This is called on a left or middle mouse click in the display window."
   (interactive "e")
-  (smerge-ediff (smerge-nearest-extent (event-point event))))
+  (smerge-ediff (smerge-nearest-extent (cl-cadadr event))))
 
 (defun smerge-ediff-or-copy ()
   "Ediff or copy the file."
