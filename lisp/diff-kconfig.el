@@ -1,8 +1,6 @@
 ;;; diff-kconfig.el - A vain attempt to make diffing kernel config files easier
 ;;; Copyright (C) 2016 Sean MacLennan
 
-(require 'sam-common)
-
 (defvar dkc-no-arch t
   "*Remove ARCH entires.")
 

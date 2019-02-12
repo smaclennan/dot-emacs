@@ -114,7 +114,6 @@ You should never need to set this....")
 
 (provide 'lxr)
 
-(require 'sam-common)
 (require 'h2t)
 (require 'etags)
 (require 'trim)

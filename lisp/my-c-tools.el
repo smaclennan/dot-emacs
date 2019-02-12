@@ -32,8 +32,6 @@
 (require 'my-compile)
 (require 'cc-mode)
 
-(require 'sam-common)
-
 (defun my-do-compile (cmd)
   (save-some-buffers (not compilation-ask-about-save) nil)
   (compilation-start cmd))

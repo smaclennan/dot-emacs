@@ -1,8 +1,6 @@
 ;; Hightlight lines >= 80 columns. This is not dynamic, you must keep
 ;; calling `80-scan' after edits.
 
-(require 'sam-common)
-
 (defvar 80-list nil "Internal list of lines >= 80 columns.")
 
 (defvar 80-state nil "Internal state of 80.")
