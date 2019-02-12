@@ -222,10 +222,6 @@ the identifier."
 (setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
 (setq backup-directory-alist '((".*" . "~/.backup")))
 
-;;; ----------------------------------------------
-;; whitespace trimming
-(add-hook 'prog-mode-hook #'ws-butler-mode)
-
 ;;; ------------------------------------------------------------
 ;; Start the server program
 (unless noninteractive (server-start))

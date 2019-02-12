@@ -17,11 +17,8 @@
   (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
   (setq case-fold-search nil) ;; C is case sensitive
 
-  (flyspell-prog-mode)
-  (hide-copyleft-region)
-
   (let ((tags (expand-file-name "TAGS")))
-    (if (file-exists-p tags) (vist-tags-table tags t)))
+    (if (file-exists-p tags) (visit-tags-table tags t)))
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
