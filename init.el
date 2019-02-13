@@ -209,6 +209,7 @@ the identifier."
 (iswitchb-mode 1)
 
 (show-paren-mode t)
+(delete-selection-mode)
 
 (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
