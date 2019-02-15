@@ -18,7 +18,7 @@
 (set-cursor-color "red")
 
 (global-set-key [(control insert)] 'clipboard-kill-ring-save)
-(global-set-key [(shift insert)] 'x-clipboard-yank)
+(global-set-key [(shift insert)] 'clipboard-yank)
 
 ;; -------------------------------------------------------
 ;; The standard blows away emacs just a little to easily
