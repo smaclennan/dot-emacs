@@ -29,6 +29,5 @@ want the top buffer."
 ;; -------------------
 ;; Hack to put the ediff control in the right place. If we don't do
 ;; this then the window loses focus under dwm.
-;; SAM still needed? This is a problem under 24
-;;(setf (alist-get 'top ediff-control-frame-parameters) 1)
-;;(setf (alist-get 'left ediff-control-frame-parameters) 856)
+(setf (alist-get 'top ediff-control-frame-parameters) 1)
+(setf (alist-get 'left ediff-control-frame-parameters) 856)
