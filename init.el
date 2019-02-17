@@ -190,7 +190,7 @@ the identifier."
 ;;{{{ Packages
 
 ;;; -------------------------------------------------------------------------
-(defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp")
+(defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp" "README")
   "* List of commit buffer names.")
 
 (defun check-for-commit ()
