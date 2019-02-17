@@ -1,6 +1,6 @@
-(let ((qnx-base (getenv "QNX_BASE_DIR"))
-      (qnx-sandbox (getenv "QNX_SANDBOX")))
-  (and qnx-base qnx-sandbox
-       (setq qnx-base (file-name-as-directory qnx-base))
-       (setq qnx-sandbox (file-name-as-directory qnx-sandbox))
-       (load (concat qnx-base "emacs/qnx") t)))
+(condition-case nil
+    (and
+     (setq qnx-base (file-name-as-directory (getenv "QNX_BASE_DIR")))
+     (setq qnx-sandbox (file-name-as-directory (getenv "QNX_SANDBOX")))
+     (load (concat qnx-base "emacs/qnx") t))
+  (error nil))
