@@ -19,6 +19,8 @@
 
   (let ((tags (expand-file-name "TAGS")))
     (if (file-exists-p tags) (visit-tags-table tags t)))
+
+  (my-compile-command)
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 

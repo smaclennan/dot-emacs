@@ -113,8 +113,4 @@ Go through the 'my-compile-dir-list' looking for a match."
        ((fboundp func-or-style)
 	(funcall func-or-style dir arg))))))
 
-;; Make sure we are *after* my-c-mode-common-hook
-(add-hook 'c-mode-common-hook 'my-compile-command t)
-(add-hook 'makefile-mode-hook 'my-compile-command t)
-
 (provide 'my-compile)
