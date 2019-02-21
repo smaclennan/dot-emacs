@@ -2,6 +2,7 @@
 
 (require 'sam-common)
 (require 'dirfiles)
+(require 'my-compile)
 
 ;;;###autoload
 (defun unixtime (seconds)
@@ -142,3 +143,28 @@ returns all .el files."
   `(let ((time (current-time)))
      ,@body
      (message "%.06f" (float-time (time-since time)))))
+
+;;;###autoload
+(defun my-kernel-version (&optional kvers)
+  "Splits KVERS (defaults to `my-kernel-vers') up into a list
+of (MAJOR MINOR PATCH BUILD RC EXTRA). All are numbers except
+EXTRA; which is a possibly empty string."
+  (unless kvers (setq kvers my-kernel-vers))
+  (let* ((buildfile (concat "/lib/modules/" kvers "/build/.version"))
+	 (build
+	  (if (file-exists-p buildfile)
+	      (string-to-number (shell-command-to-string (concat "cat " buildfile)))
+	    0))
+	 vers extra)
+    (if (string-match "\\([0-9]+\\).\\([0-9]+\\).\\([0-9]+\\)\\(.*\\)" kvers)
+	(setq vers (list (string-to-number (match-string 1 kvers))
+			(string-to-number (match-string 2 kvers))
+			(string-to-number (match-string 3 kvers))
+			build)
+	      extra (match-string 4 kvers))
+      (setq vers (list 0 0 0 build) extra ""))
+    (if (string-match "-rc\\([0-9]+\\)\\(.*\\)" extra)
+	(setq vers (append vers (list (string-to-number (match-string 1 extra))
+				      (match-string 2 extra))))
+      (setq vers (append vers (list 0 extra))))
+    vers))

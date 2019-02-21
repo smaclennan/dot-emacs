@@ -45,17 +45,20 @@ If the buffer already exists, do nothing."
 cpuinfo- functions."
   (interactive "p")
   (let ((procs 0))
-    (if (eq system-type 'windows-nt)
-	(setq procs (string-to-number (getenv "NUMBER_OF_PROCESSORS")))
-      (if (file-exists-p cpuinfo-sys-dir)
-	  (setq procs (length (directory-files cpuinfo-sys-dir nil "cpu[0-9]*")))
-	(save-current-buffer
-	  (set-buffer (cpuinfo-get))
-	  (goto-char (point-min))
-	  (while (re-search-forward "^processor" nil t)
-	    (setq procs (1+ procs)))
-	  )))
-    (if (eq procs 0) (setq procs 1)) ;; Paranoia
+    (cond
+     ((file-exists-p cpuinfo-sys-dir)
+      (setq procs (length (directory-files cpuinfo-sys-dir nil "cpu[0-9]*"))))
+     ((file-exists-p "/proc/cpuinfo")
+      (with-temp-buffer
+	;; insert-file-contents does not work on /proc
+	(call-process "cat" nil t nil "/proc/cpuinfo")
+	(goto-char (point-min))
+	(while (re-search-forward "^processor" nil t)
+	  (setq procs (1+ procs)))))
+     ((eq system-type 'windows-nt)
+      (setq procs (string-to-number (getenv "NUMBER_OF_PROCESSORS"))))
+     )
+    (if (eq procs 0) (setq procs 4)) ;; Reasonable default
     (when show (message "Procs: %d" procs))
     procs))
 

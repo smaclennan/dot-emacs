@@ -36,6 +36,19 @@
   (save-some-buffers (not compilation-ask-about-save) nil)
   (compilation-start cmd))
 
+;; Basically stolen from XEmacs emacs-version>=
+(defun my-kernel>= (major minor &optional patch)
+  "Return true if the `my-kernel-vers' is >= to the given MAJOR, MINOR,
+   and PATCH numbers.
+The MAJOR and MINOR version numbers are required, but the PATCH is optional."
+  (let ((vers (split-string my-kernel-vers "\\.")))
+    (cond ((> (nth 0 vers)  major))
+	  ((< (nth 0 vers) major) nil)
+	  ((> (nth 1 vers) minor))
+	  ((< (nth 1 vers) minor) nil)
+	  ((null patch))
+	  ((>= (nth 2 vers) patch)))))
+
 ;;;###autoload
 (defun my-sparse (&optional user-args)
   "Run sparse against the current buffer. Output goes to the
