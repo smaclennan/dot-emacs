@@ -114,3 +114,5 @@ See also `auto-save-file-name-p'."
 	"*.mak"
 	"objchk*" "objfre*"
 	"debug" "release" "Debug" "Release"))
+
+(defun sys-nprocs () (string-to-number (getenv "NUMBER_OF_PROCESSORS")))

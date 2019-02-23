@@ -1,8 +1,5 @@
 include ../Rules.mk
 
-# Don't build windoze.el
-ELCS := $(filter-out windows-nt.elc,$(ELCS))
-
 all:	$(LOADFILE)
 
 $(LOADFILE): $(ELCS)

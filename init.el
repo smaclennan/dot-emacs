@@ -21,6 +21,10 @@
 ;; something up at the end.
 (load (concat user-emacs-directory "user-init") t)
 
+(defconst sys-type (replace-regexp-in-string "/" "-" (symbol-name system-type))
+  "The `system-type' as as string.
+Sanitized so that gnu/linux becomes gnu-linux.")
+
 (rcfiles-register-rc-files)
 
 ;;}}}
@@ -231,9 +235,8 @@ the identifier."
 
 ;;{{{ Optional Init files
 
-;; Load a file called `system-type' if it exists. The symbol is
-;; sanitized so gnu/linux becomes gnu-linux.
-(load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t)
+;; Load a file called sys/`sys-type' if it exists.
+(load (expand-file-name (concat "./sys/" sys-type)) t)
 
 (load (concat user-emacs-directory "work") t)
 
