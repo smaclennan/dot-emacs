@@ -32,7 +32,7 @@ called interactively."
        (setq fprompt (concat "Files [" exts "]: ")))
      (list (read-string rprompt nil 'my-grep-regex-history word)
 	   (read-string fprompt nil 'my-grep-files-history exts))))
-  (let ((cmd (concat my-grep-prog " '" regex "' " files)))
+  (let ((cmd (concat my-grep-prog " \"" regex "\" " files)))
     (when current-prefix-arg
       (setq cmd (read-string "Cmd: " cmd 'grep-history)))
     (grep cmd)))
