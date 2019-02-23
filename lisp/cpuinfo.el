@@ -23,7 +23,7 @@
   "Read /proc/cpuinfo into `cpuinfo-bufname' buffer.
 If the buffer already exists, do nothing."
   (unless (get-buffer cpuinfo-bufname)
-    (when (eq system-type 'windows-nt) (error "Not supported."))
+    (unless (eq system-type 'gnu/linux) (error "Not supported."))
     (let ((buffer (get-buffer-create cpuinfo-bufname)))
       ;; insert-file-contents does not work on /proc
       (call-process "cat" nil buffer nil "/proc/cpuinfo")
