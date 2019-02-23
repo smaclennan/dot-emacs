@@ -236,7 +236,7 @@ the identifier."
 ;;{{{ Optional Init files
 
 ;; Load a file called sys/`sys-type' if it exists.
-(load (expand-file-name (concat "./sys/" sys-type)) t)
+(load (concat user-emacs-directory "sys/" sys-type) t)
 
 (load (concat user-emacs-directory "work") t)
 
