@@ -42,7 +42,7 @@ If the buffer already exists, do nothing."
 This is the most generic of the cpuinfo- functions. Should work
 on Linux, BSD, and Windows."
   (interactive "p")
-  (let ((procs (if (fboundp 'sys-nprocs) (sys-nprocs) 1)))
+  (let ((procs (if (fboundp 'sys-nproc) (sys-nproc) 1)))
     (when show (message "Procs: %d" procs))
     procs))
 

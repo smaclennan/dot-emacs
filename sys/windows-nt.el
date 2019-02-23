@@ -115,4 +115,4 @@ See also `auto-save-file-name-p'."
 	"objchk*" "objfre*"
 	"debug" "release" "Debug" "Release"))
 
-(defun sys-nprocs () (string-to-number (getenv "NUMBER_OF_PROCESSORS")))
+(defun sys-nproc () (string-to-number (getenv "NUMBER_OF_PROCESSORS")))

@@ -3,7 +3,7 @@
   "The /sys directory containing cpu* files.")
 
 ;; Used by `cpuinfo-num-processors'
-(defun sys-nprocs ()
+(defun sys-nproc ()
   (if (file-exists-p sys-cpu-dir)
       ;; Does this even not exist any more?
       (length (directory-files sys-cpu-dir nil "cpu[0-9]*"))
