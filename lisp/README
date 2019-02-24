@@ -77,5 +77,3 @@
 
 * trim.el	This file provides functions which "trim" things (mainly
 		whitespace) from lines.
-
-* windows-nt.el	Lisp configuration for Windows.

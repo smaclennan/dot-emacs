@@ -92,40 +92,26 @@ flag."
 centric. The list returned is '(vendor family model step). The
 `vendor' is a string, all others are numbers."
   (interactive "p")
-  (let (vendor family model step)
-    (if (eq system-type 'windows-nt)
-	(let ((ident (getenv "PROCESSOR_IDENTIFIER")))
-	  (unless (string-match (concat "^x86 Family \\([0-9]+\\) "
-					"Model \\([0-9]+\\) "
-					"Stepping \\([0-9]+\\), "
-					"\\(.*$\\)") ident)
-	    (error "Vendor not found in %s" ident))
-	  (setq vendor (string-match 4 ident)
-		family (string-match 1 ident)
-		model  (string-match 2 ident)
-		step   (string-match 3 ident)))
-
-      (save-current-buffer
-	(set-buffer (cpuinfo-get))
-	(setq vendor (cpuinfo-find "vendor_id")
-	      family (cpuinfo-find "cpu family")
-	      model  (cpuinfo-find "model")
-	      step   (cpuinfo-find "stepping"))))
+  (let* ((info
+	  (if (fboundp 'sys-cpuinfo)
+	      (sys-cpuinfo)
+	    (save-current-buffer
+	      (set-buffer (cpuinfo-get))
+	      (list (cpuinfo-find "vendor_id")
+		    (string-to-number (cpuinfo-find "cpu family"))
+		    (string-to-number (cpuinfo-find "model"))
+		    (string-to-number (cpuinfo-find "stepping"))))))
+	 (vendor (car info)))
 
     ;; Pretty print common vendor ids
     (cond
-     ((string= "GenuineIntel" vendor) (setq vendor "Intel"))
-     ((string-match "Authentic ?AMD" vendor) (setq vendor "AMD"))
-     ((string= "CentaurHauls" vendor) (setq vendor "VIA")))
-
-    (setq family (string-to-number family)
-	  model  (string-to-number model)
-	  step   (string-to-number step))
+     ((string= "GenuineIntel" vendor) (setcar info "Intel"))
+     ((string-match "Authentic ?AMD" vendor) (setcar info "AMD"))
+     ((string= "CentaurHauls" vendor) (setcar info "VIA")))
 
     (when show (message "Vendor %s Family %d Model %d Step %d"
-			vendor family model step))
-
-    (list vendor family model step)))
+			(nth 0 info) (nth 1 info) (nth 2 info) (nth 3 info)))
+    info))
 
 ;;;###autoload
 (defun cpuinfo-name (&optional show)
