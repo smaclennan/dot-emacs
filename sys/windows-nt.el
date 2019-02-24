@@ -1,3 +1,7 @@
+;; I recommend setting cygwin-dir in user-init.el
+(when cygwin-dir
+  (add-to-list 'exec-path (concat cygwin-dir "bin")) t)
+
 ;; NT uses findstr
 (set-variable 'grep-command "findstr -n ")
 (setq my-grep-prog "findstr -n ")
