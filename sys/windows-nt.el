@@ -2,14 +2,13 @@
 (set-variable 'grep-command "findstr -n ")
 (setq my-grep-prog "findstr -n ")
 
-;; -----------------------------------------------------------
-;; aspell for nt
-(let ((spell-prog (or (executable-find "aspell")
-		      (executable-find "aspell"))))
-  (when spell-prog
-    (require 'ispell)
-    (setq ispell-program-name spell-prog)
-    (setq ispell-extra-args '("--reverse"))))
+;; -------------------------------------------------------------
+;; flyspell - you may need to hardcode the path
+;; Falls back to a batch file which claims every word is correct
+(setq ispell-program-name
+      (or (executable-find "ispell")
+	  (executable-find "aspell")
+	  (concat user-emacs-directory "src/ispell.bat")))
 
 ;; Different excludes for windows
 (setq smerge-diff-excludes
