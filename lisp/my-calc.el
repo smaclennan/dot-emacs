@@ -45,6 +45,7 @@
 
 ;;{{{ Code
 
+(require 'stack)
 (provide 'my-calc)
 
 (defconst my-calc-f-values
@@ -73,33 +74,6 @@
     (?< . ash) (?> . rash)
     (?& . logand) (?^ . logxor) (?| . logior))
   "Command char to lisp command")
-
-;; From stack-f.el. Trying to require stack-f just causes too much grief.
-
-(defun stack-create ()
-  "Create an empty lifo stack."
-  (cons 'STACK nil))
-
-(defun stack-push (stack element)
-  "Push an element onto the stack."
-  (setcdr stack (cons element (cdr stack))))
-
-(defun stack-pop (stack)
-  "Remove the topmost element from STACK and return it.
-If the stack is empty, return nil."
-  (prog1
-      (car-safe (cdr stack))
-    (setcdr stack (cdr-safe (cdr stack)))))
-
-(defun stack-top (stack)
-  "Return the topmost element of STACK or nil if it is empty."
-  (car-safe (cdr stack)))
-
-(defun stack-clear (stack)
-  "Remove all elements from STACK."
-  (setcdr stack nil))
-
-;; End of stack-f.el
 
 (defvar calc-nums (stack-create)
   "Internal stack of numbers")
