@@ -221,20 +221,22 @@ regular expressions.")
 (defun smerge-fixup-filenames ()
   "Diff splits the `Only in' files into directory and filename.
 Top level directories end in /, subdirs do not."
-  (if (eq system-type 'windows-nt)
-      (progn
-	(goto-char (point-min))
-	(while (re-search-forward "\\(.\\): " nil t)
-	  (if (eq (string-to-char (match-string 1)) ?/)
-	      (replace-match "/") (replace-match "\\1/"))))
-    (goto-char (point-min))
-    (while (re-search-forward "^\\(Only in [^:]*\\)\\(.\\): " nil t)
-      (if (string= (match-string 2) "/")
-	  (replace-match "\\1/" nil nil)
-	(replace-match "\\1\\2/" nil nil)))))
+  (goto-char (point-min))
+  (while (re-search-forward "^\\(Only in [^:]*\\)\\(.\\): " nil t)
+    (if (string= (match-string 2) "/")
+	(replace-match "\\1/" nil nil)
+      (replace-match "\\1\\2/" nil nil))))
+
+(defun smerge-lists ()
+  "Create strings for only-in-1, only-in-2, both."
+  (list (format "^Only in %s\\(.*\\)$" smerge-dir1)
+	(format "^Only in %s\\(.*\\)$" smerge-dir2)
+	(format "^Files %s\\(.+\\) and %s.+ differ$"
+		(regexp-quote smerge-dir1)
+		(regexp-quote smerge-dir2))))
 
 (defun smerge-post-process (flags)
-  (let (only-1 only-2 both extent file start)
+  (let ((list-strings (smerge-lists)) extent file start)
     (goto-char (point-min))
     (insert (format "Diff %s and %s\n\n" smerge-dir1 smerge-dir2))
     (setq start (point))
@@ -249,22 +251,9 @@ Top level directories end in /, subdirs do not."
 	   (while (re-search-forward "^Only in .*\n" nil t)
 	     (replace-match ""))))
 
-
-    (if (eq system-type 'windows-nt)
-	(setq only-1 (format "^Only in %s\\(.*\\)$" smerge-dir1)
-	      only-2 (format "^Only in %s\\(.*\\)$" smerge-dir2)
-	      both (format "^Files %s\\(.+\\) and %s.+ differ$"
-			   (regexp-quote smerge-dir1)
-			   (regexp-quote smerge-dir2)))
-      (setq only-1 (format "^Only in %s:? *\\(.*\\)$" (regexp-quote smerge-dir1))
-	    only-2 (format "^Only in %s:? *\\(.*\\)$" (regexp-quote smerge-dir2))
-	    both (format "^Files %s\\(.+\\) and %s.+ differ$"
-			 (regexp-quote smerge-dir1)
-			 (regexp-quote smerge-dir2))))
-
     ;; Only in 1
     (goto-char (point-min))
-    (while (re-search-forward only-1 nil t)
+    (while (re-search-forward (nth 0 list-strings) nil t)
       (setq file (match-string 1))
       (save-match-data
 	(cl-loop for exclude in smerge-only-in-excludes while file do
@@ -281,7 +270,7 @@ Top level directories end in /, subdirs do not."
 
     ;; Only in 2
     (goto-char (point-min))
-    (while (re-search-forward only-2 nil t)
+    (while (re-search-forward (nth 1 list-strings) nil t)
       (setq file (match-string 1))
       (save-match-data
 	(cl-loop for exclude in smerge-only-in-excludes while file do
@@ -298,7 +287,7 @@ Top level directories end in /, subdirs do not."
 
     ;; Both
     (goto-char (point-min))
-    (while (re-search-forward both nil t)
+    (while (re-search-forward (nth 2 list-strings) nil t)
       (setq file (match-string 1))
       (setq extent
 	    (smerge-make-extent (match-beginning 0) (match-end 0) 'smerge-diff-face))

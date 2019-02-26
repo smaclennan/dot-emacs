@@ -23,6 +23,24 @@
 	"objchk*" "objfre*"
 	"debug" "release" "Debug" "Release"))
 
+(eval-after-load "smerge"
+  `(defun smerge-fixup-filenames ()
+     "Diff splits the `Only in' files into directory and filename.
+Top level directories end in /, subdirs do not. Windows version."
+     (goto-char (point-min))
+     (while (re-search-forward "\\(.\\): " nil t)
+       (if (eq (string-to-char (match-string 1)) ?/)
+	   (replace-match "/") (replace-match "\\1/")))))
+
+(eval-after-load "smerge"
+  `(defun smerge-lists ()
+     "Create strings for only-in-1, only-in-2, both. Windows version."
+     (list (format "^Only in %s:? *\\(.*\\)$" (regexp-quote smerge-dir1))
+	   (format "^Only in %s:? *\\(.*\\)$" (regexp-quote smerge-dir2))
+	   (format "^Files %s\\(.+\\) and %s.+ differ$"
+		   (regexp-quote smerge-dir1)
+		   (regexp-quote smerge-dir2)))))
+
 (defun sys-nproc () (string-to-number (getenv "NUMBER_OF_PROCESSORS")))
 
 (defun sys-cpuinfo ()
