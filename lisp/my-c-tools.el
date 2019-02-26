@@ -26,7 +26,7 @@
 (defvar my-sparse-prog "sparse"
   "*The sparse executable.")
 
-(defvar my-sparse-args (if (eq system-type 'linux) "-D__linux__" nil)
+(defvar my-sparse-args (if (eq system-type 'gnu/linux) "-D__linux__" nil)
   "*Args to pass to sparse")
 
 (require 'my-compile)
