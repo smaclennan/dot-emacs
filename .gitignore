@@ -1,7 +1,6 @@
 *.elc
 user-init.el
-lisp-loaddefs.el
-misc-loaddefs.el
+*-loaddefs.el
 *~
 ido.last
 diary
