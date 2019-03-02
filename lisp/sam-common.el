@@ -5,21 +5,21 @@
 ;;;###autoload
 (defmacro emacs>= (major minor)
   `(or (> emacs-major-version ,major)
-      (and (eq emacs-major-version ,major)
-	   (>= emacs-minor-version ,minor))))
+       (and (eq emacs-major-version ,major)
+	    (>= emacs-minor-version ,minor))))
 
 ;;;###autoload
 (defmacro my-feature-cond (&rest clauses)
   "Test CLAUSES for feature, function, or variable at compile time.
 Each clause is (FEATURE BODY...)."
-  (cl-block nil
-    (dolist (x clauses)
-      (let ((feature (car x)))
-	(when (or (eq feature t)
-		  (featurep feature)
-		  (fboundp feature)
-		  (boundp feature))
-	  (cl-return (cons 'progn (cdr x))))))))
+  `(cl-block nil
+     (dolist (x clauses)
+       (let ((feature (car x)))
+	 (when (or (eq feature t)
+		   (featurep feature)
+		   (fboundp feature)
+		   (boundp feature))
+	   (cl-return (cons 'progn (cdr x))))))))
 
 ;;;###autoload
 (defmacro my-interactive-p () `(called-interactively-p 'interactive))
@@ -30,7 +30,7 @@ Each clause is (FEATURE BODY...)."
 ;;;###autoload
 (defmacro basename (name)
   `(if (string-match "/\\([^/]+\\)/?$" ,name)
-      (match-string 1 ,name)
-    ,name))
+       (match-string 1 ,name)
+     ,name))
 
 (provide 'sam-common)

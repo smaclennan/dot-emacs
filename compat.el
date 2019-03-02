@@ -1,6 +1,16 @@
-;; This is for Emacs pre 25.1
+;; Back before GNU Emacs went insane about common lisp
+(require 'cl)
 
-;;;###autoload
+(defalias 'cl-remove-if 'remove-if)
+(defalias 'cl-loop 'loop)
+(defalias 'cl-block 'block)
+(defalias 'cl-return 'return)
+(defalias 'cl-caddr 'caddr)
+(defalias 'cl-cdadr 'cdadr)
+(defalias 'cl-cadadr 'cadadr)
+
+;; xref compatibility functions
+
 (defun xref-find-definitions (identifier)
   "Find tag (in current tags table) whose name contains IDENTIFIER.
 
@@ -15,17 +25,14 @@ definition."
 	     word))))
   (find-tag identifier))
 
-;;;###autoload
 (defun find-tag-next ()
   (interactive)
   (find-tag last-tag t))
 
-;;;###autoload
 (defun xref-find-references (indentifier)
   (interactive)
   (error "Not supported"))
 
-;;;###autoload
 (defun xref-push-marker-stack ()
   (interactive)
   (ring-insert find-tag-marker-ring (point-marker)))

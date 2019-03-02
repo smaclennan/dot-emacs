@@ -8,8 +8,6 @@ A brief rundown:
 
 * Other lisp code is in misc.
 
-* Code for older Emacs (currently < 25.1) is in compat.
-
 * I use Didier Verna's el-rcfiles package. The rc files are in the rc
   directory. https://github.com/didierverna/el-rcfiles
 

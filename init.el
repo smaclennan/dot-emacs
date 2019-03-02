@@ -10,9 +10,9 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
-;; This split is fairly, but not completely, arbitrary
+;; This is when Emacs went insane about common lisp
 (when (< emacs-major-version 25)
-  (load (concat user-emacs-directory "compat/compat")))
+  (load (concat user-emacs-directory "compat")))
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
