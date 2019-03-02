@@ -4,6 +4,9 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
+(if (< emacs-major-version 25)
+    (load (concat user-emacs-directory "compat")))
+
 (eval-when-compile (require 'autoload))
 
 (defun update-loadfile ()
@@ -15,6 +18,3 @@
 (defun would-like (pkg)
   "Helper for building rc files. Some modes do not have a provide."
   (condition-case nil (require pkg) (error nil)))
-
-(if (< emacs-major-version 25)
-    (load (concat user-emacs-directory "compat/compat")))
