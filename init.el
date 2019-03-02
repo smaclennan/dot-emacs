@@ -33,18 +33,8 @@
       inhibit-startup-message t
       initial-scratch-message ";; This buffer is for goofing around in.\n\n"
       visible-bell t
-      extended-command-suggest-shorter nil)
-
-;; This has got to be the hardest variable to set. It seems you *must*
-;; hardcode the name and it can't be in a compiled file. Yes, the
-;; docs say it can, but the eval form does not work.
-(cond
- ((equal (user-login-name) "sam")
-  (setq inhibit-startup-echo-area-message "sam"))
- ((equal (user-login-name) "smaclennan")
-  (setq inhibit-startup-echo-area-message "smaclennan"))
- ((equal (user-login-name) "seanm")
-  (setq inhibit-startup-echo-area-message "seanm")))
+      extended-command-suggest-shorter nil
+      inhibit-startup-echo-area-message (user-login-name))
 
 (put 'narrow-to-region 'disabled nil) ;; Why? Just why?
 (fset 'yes-or-no-p 'y-or-n-p)
