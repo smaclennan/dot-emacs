@@ -44,7 +44,7 @@
   (unless ogrok-url (setq ogrok-url (read-string "url: ")))
   (unless ogrok-project (setq ogrok-project (read-string "project: ")))
   (unless ogrok-base (setq ogrok-base (read-string "local base: ")))
-  (push-tag-mark)
+  (xref-push-marker-stack)
   (ogrok-get-page
    (concat ogrok-url "/search?q=&defs=" defs "&refs=" refs
 	   "&path=" ogrok-path

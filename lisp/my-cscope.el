@@ -120,7 +120,7 @@ The cscope command run is:
 
       (my-compilation-parse "cscope"))
 
-    (push-tag-mark)
+    (xref-push-marker-stack)
     (display-buffer "*cscope*" '(nil (window-height . 16)))
     (when (eq count 1) (first-error))))
 

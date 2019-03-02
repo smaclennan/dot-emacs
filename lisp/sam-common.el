@@ -8,9 +8,6 @@
       (and (eq emacs-major-version ,major)
 	   (>= emacs-minor-version ,minor))))
 
-;; Earlier Emacs must require cl
-(unless (emacs>= 25 1) (require 'cl))
-
 ;;;###autoload
 (defmacro my-feature-cond (&rest clauses)
   "Test CLAUSES for feature, function, or variable at compile time.
@@ -29,9 +26,6 @@ Each clause is (FEATURE BODY...)."
 
 ;;;###autoload
 (defmacro event-point (event) `(cl-cadadr event))
-
-;;;###autoload
-(defalias 'push-tag-mark 'xref-push-marker-stack)
 
 ;;;###autoload
 (defmacro basename (name)
