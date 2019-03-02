@@ -7,5 +7,20 @@
 (defalias 'cl-remove-if 'remove-if)
 (defalias 'cl-caddr 'caddr)
 (defalias 'cl-cdadr 'cdadr)
+(defalias 'cl-loop 'loop)
 
 (provide 'cl-extra)
+
+;; With an old Emacs you probably have an old kernel
+(when (eq system-type 'gnu/linux)
+  (eval-after-load "cpuinfo"
+    `(defun sys-nproc ()
+       (let ((procs 0))
+	 (with-temp-buffer
+	   ;; insert-file-contents does not work on /proc
+	   (call-process "cat" nil t nil "/proc/cpuinfo")
+	   (goto-char (point-min))
+	   (while (re-search-forward "^processor" nil t)
+	     (setq procs (1+ procs))))
+	 procs))))
+ 
