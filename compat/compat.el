@@ -5,11 +5,10 @@
 (require 'cl)
 
 (defalias 'cl-remove-if 'remove-if)
+(defalias 'cl-loop 'loop)
 (defalias 'cl-caddr 'caddr)
 (defalias 'cl-cdadr 'cdadr)
-(defalias 'cl-loop 'loop)
-
-(provide 'cl-extra)
+(defalias 'cl-cadadr 'cadadr)
 
 ;; With an old Emacs you probably have an old kernel
 (when (eq system-type 'gnu/linux)

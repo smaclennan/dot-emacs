@@ -1,7 +1,6 @@
 ;; Because this spans multiple packages... it makes sense to put it in
 ;; it's own file.
 
-(require 'cl-extra)
 (require 'cc-mode)
 (require 'my-tags)
 (require 'git-diff)
@@ -46,8 +45,11 @@
 
     ;; verbose and C
     (when (and verbose (boundp 'my-compile-dir-list))
-      (princ "\nmy-compile-dir-list:")
+      (princ "\nmy-compile-dir-list:\n")
       (princ (with-temp-buffer
-	       (cl-prettyprint my-compile-dir-list)
+	       (insert (format "%S\n" my-compile-dir-list))
+	       (goto-char (point-min)) (forward-char 2)
+	       (while (search-forward "(" nil t)
+		 (replace-match "\n ("))
 	       (buffer-string))))
     ))
