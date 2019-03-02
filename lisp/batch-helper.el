@@ -15,3 +15,6 @@
 (defun would-like (pkg)
   "Helper for building rc files. Some modes do not have a provide."
   (condition-case nil (require pkg) (error nil)))
+
+(if (< emacs-major-version 25)
+    (load (concat user-emacs-directory "compat/compat")))

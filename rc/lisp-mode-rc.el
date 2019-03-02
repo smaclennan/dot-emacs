@@ -48,10 +48,11 @@ allows lisp code to be compiled while doing another compile."
 ;; However, the keywords are a defconst, so we must work around that by
 ;; making a copy.
 
-(let ((mine (copy-tree lisp-el-font-lock-keywords-2)) str)
-  (dolist (face mine)
-    (setq str (car face))
-    (and (stringp str)
-	 (string-match "\\berror\\b" str)
-	 (setf (cl-cdadr face) (list 'font-lock-keyword-face))))
-  (setq lisp-el-font-lock-keywords-2 mine))
+(when (boundp 'lisp-el-font-lock-keywords-2)
+  (let ((mine (copy-tree lisp-el-font-lock-keywords-2)) str)
+    (dolist (face mine)
+      (setq str (car face))
+      (and (stringp str)
+	   (string-match "\\berror\\b" str)
+	   (setf (cl-cdadr face) (list 'font-lock-keyword-face))))
+    (setq lisp-el-font-lock-keywords-2 mine)))

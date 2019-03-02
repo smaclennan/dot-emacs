@@ -12,8 +12,7 @@
 
 ;; This split is fairly, but not completely, arbitrary
 (when (< emacs-major-version 25)
-  (add-to-list 'load-path (concat user-emacs-directory "compat"))
-  (load "compat-loaddefs" t))
+  (load (concat user-emacs-directory "compat/compat")))
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
