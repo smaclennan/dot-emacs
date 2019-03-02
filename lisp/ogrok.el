@@ -35,7 +35,6 @@
 
 (provide 'ogrok)
 
-(require 'sam-common)
 (require 'compile)
 (require 'etags)
 (require 'my-cscope)
