@@ -6,6 +6,8 @@
 
 (defalias 'cl-remove-if 'remove-if)
 (defalias 'cl-loop 'loop)
+(defalias 'cl-block 'block)
+(defalias 'cl-return 'return)
 (defalias 'cl-caddr 'caddr)
 (defalias 'cl-cdadr 'cdadr)
 (defalias 'cl-cadadr 'cadadr)
