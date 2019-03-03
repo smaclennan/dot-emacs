@@ -110,20 +110,20 @@
 ;;; --- GNU Emacs really really needs a signal-error-on-buffer-boundary
 
 ;; Using defadvice for these functions breaks minibuffer history
-(defun my-previous-line (&optional arg try-vscroll)
+(defun my-previous-line (arg)
   "`previous-line' with no signal on end-of-buffer."
   (interactive "p")
   (condition-case nil
       (with-no-warnings ;; Yes, I want the interactive version
-	(previous-line arg try-vscroll))
+	(previous-line arg))
     (beginning-of-buffer)))
 
-(defun my-next-line (&optional arg try-vscroll)
+(defun my-next-line (arg)
   "`previous-line' with no signal on end-of-buffer."
   (interactive "p")
   (condition-case nil
       (with-no-warnings ;; Yes, I want the interactive version
-	(next-line arg try-vscroll))
+	(next-line arg))
     (end-of-buffer)))
 
 (global-set-key (kbd "<up>") 'my-previous-line)

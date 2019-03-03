@@ -63,7 +63,7 @@ will do it for you.")
 	(if (eq window-system 'x)
 	    (eq 1 (with-temp-buffer
 		    (call-process "xrandr" nil t nil "-q")
-		    (count-matches "^[^ ]+ connected" 0 (point-max))))
+		    (count-matches "^[^ ]+ connected" (point-min))))
 	  nil)))
 
 (defun laptop-mode-toggle (&optional on)
