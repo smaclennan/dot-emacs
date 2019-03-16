@@ -33,4 +33,11 @@ Each clause is (FEATURE BODY...)."
        (match-string 1 ,name)
      ,name))
 
+;; This is almost 4x faster than shell-command-to-string
+;;;###autoload
+(defun uname (arg)
+  (with-temp-buffer
+    (call-process "uname" nil t nil arg)
+    (buffer-substring (point-min) (1- (point-max)))))
+
 (provide 'sam-common)

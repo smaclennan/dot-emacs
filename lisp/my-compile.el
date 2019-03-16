@@ -33,13 +33,13 @@
 ;
 ; The help for `my-compile-dir-list' describes the elements of the list.
 
+(require 'sam-common)
 (eval-when-compile (require 'cc-vars))
 
-;; The 'car split-string' is a portable way to remove the trailing NL
-(defvar my-kernel-vers (car (split-string (shell-command-to-string "uname -r")))
+(defvar my-kernel-vers (uname "-r")
   "* Current kernel version.")
 
-(defvar my-arch (car (split-string (shell-command-to-string "uname -m")))
+(defvar my-arch (uname "-m")
   "* Current architecture.")
 
 (defvar my-kernel-dir (file-chase-links (concat "/lib/modules/" my-kernel-vers "/build"))
