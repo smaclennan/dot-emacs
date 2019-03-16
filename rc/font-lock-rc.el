@@ -1,10 +1,5 @@
 ;; See font-lock.el for a description of why it is called font lock.
 
-;; Maximum colour but minimum chatter
-(setq-default font-lock-maximum-decoration t
-	      font-lock-verbose nil
-	      font-lock-maximum-size nil)
-
 ;; Change some default  faces
 (make-face-bold 'font-lock-function-name-face)
 
