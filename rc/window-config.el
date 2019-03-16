@@ -20,49 +20,29 @@
 (global-set-key [(control insert)] 'clipboard-kill-ring-save)
 (global-set-key [(shift insert)] 'clipboard-yank)
 
-;; -------------------------------------------------------
-;; The standard blows away emacs just a little to easily
 (defadvice save-buffers-kill-emacs (before ask-first activate)
   (y-or-n-p "Do you have to go? "))
-
-;; -------------------------------------------------------
-;; intellimouse i.e. scroll wheel
-
-(defvar intellimouse-scroll-lines 4 "*Number of lines to scroll")
-
-(defun intellimouse-scroll-down (event)
-  "Mouse wheel scroll down."
-  (interactive "@e")
-  (scroll-down intellimouse-scroll-lines))
-
-(defun intellimouse-scroll-up (event)
-  "Mouse wheel scroll up."
-  (interactive "@e")
-  (scroll-up intellimouse-scroll-lines))
-
-(global-set-key [(mouse-4)] 'intellimouse-scroll-down)
-(global-set-key [(mouse-5)] 'intellimouse-scroll-up)
 
 ;; --------------------------------------------
 ;; laptop mode
 
 (defvar laptop-mode nil
-  "*Set laptop mode (larger font).
-Setting laptop mode to 'auto tries to guess setting.")
+  "When non-nil set laptop mode (`laptop-mode-font-size').
+With X, setting laptop mode to 'auto turns on laptop mode if
+you have only one monitor.")
 
 (defvar laptop-mode-font-size 120
-  "*The font size to use for laptop mode in pixels.
+  "The font size to use for laptop mode in pixels.
 When a list, it is the sizes for normal and laptop
 mode. Generally you don't need to setup the list, laptop-mode
 will do it for you.")
 
 (when (eq laptop-mode 'auto)
   (setq laptop-mode
-	(if (eq window-system 'x)
-	    (eq 1 (with-temp-buffer
-		    (call-process "xrandr" nil t nil "-q")
-		    (count-matches "^[^ ]+ connected" (point-min))))
-	  nil)))
+	(and (eq window-system 'x)
+	     (eq 1 (with-temp-buffer
+		     (call-process "xrandr" nil t nil "-q")
+		     (count-matches "^[^ ]+ connected" (point-min)))))))
 
 (defun laptop-mode-toggle (&optional on)
   "Toggle laptop-mode."
