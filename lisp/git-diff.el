@@ -18,21 +18,18 @@
       (setq dir (file-name-directory (directory-file-name dir))))
     (error "No git base.")))
 
-(defun git-cat-doit (&optional rev buf)
+(defun git-cat-doit (&optional rev)
   "Perform a git cat on the current buffer into a temporary buffer.
-If `rev' is not set, default is HEAD."
-  (let ((full-path (buffer-file-name)) catname)
-    (unless full-path (error "Buffer %s does not have a path" (buffer-name)))
-    ;; git-fname must be relative to git base
-    (setq catname (concat rev ":" (substring full-path (length (git-dir)))))
-    (unless buf
-      (let ((bufname (concat "*" (file-name-nondirectory full-path) "*")))
-	(setq buf (get-buffer-create bufname))))
-    (with-current-buffer buf
+Returns the name of the buffer. If REV is not set, default is HEAD."
+  ;; git-fname must be relative to git base
+  (let* ((path (substring (buffer-file-name) (length (git-dir))))
+	 (catname (concat rev ":" path))
+	 (bufname (concat "*git-" (file-name-nondirectory path) "*")))
+    (with-current-buffer (get-buffer-create bufname)
       (erase-buffer)
-      (call-process "git" nil buf nil "show" catname)
+      (call-process "git" nil t nil "show" catname)
       (set-buffer-modified-p nil))
-    buf))
+    bufname))
 
 ;;;###autoload
 (defun git-cat (rev)
@@ -42,7 +39,7 @@ The name of the temporary buffer will be displayed."
   (interactive "P")
   (and rev (listp rev) ;; prefix arg
        (setq rev (read-from-minibuffer "Revision: ")))
-  (message "git cat to buffer %s" (buffer-name (git-cat-doit rev))))
+  (message "git cat to buffer %s" (git-cat-doit rev)))
 
 ;;;###autoload
 (defun git-ediff (rev)
@@ -105,13 +102,13 @@ A prefix arg allows you to edit the grep command"
       (grep cmd))))
 
 ;;;###autoload
-(defun git-grep-at-point (arg)
+(defun git-grep-at-point (arg start end)
   "Perform a `git-grep' with the word the point is on. If a region
 exists, that is used rather than the current word. ARG has the same
 meaning as in `git-grep'."
-  (interactive "P")
-  (let ((word (if (region-exists-p)
-		  (buffer-substring (region-beginning) (region-end))
+  (interactive "P\nr")
+  (let ((word (if mark-active
+		  (buffer-substring start end)
 		(current-word))))
     (git-grep arg word)))
 
