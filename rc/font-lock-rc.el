@@ -1,4 +1,10 @@
-;; See font-lock.el for a description of why it is called font lock.
+;; From the XEmacs font-lock.el:
+;; It's called font-lock-mode here because on the Lispms it was called
+;; "Electric Font Lock Mode."  It was called that because there was an older
+;; mode called "Electric Caps Lock Mode" which had the function of causing all
+;; of your source code to be in upper case except for strings and comments,
+;; without you having to blip the caps lock key by hand all the time (thus the
+;; "electric", as in `electric-c-brace'.)
 
 ;; Change some default  faces
 (make-face-bold 'font-lock-function-name-face)
