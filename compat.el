@@ -36,3 +36,6 @@ definition."
 (defun xref-push-marker-stack ()
   (interactive)
   (ring-insert find-tag-marker-ring (point-marker)))
+
+
+(defvar lisp-el-font-lock-keywords-2 nil)

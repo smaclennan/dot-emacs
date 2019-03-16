@@ -32,12 +32,6 @@
 ;; Just allow compile commands
 (put 'compile-command 'safe-local-variable #'stringp)
 
-;;; -------------------------------------------------------------------------
 ;; Bold SAM comments
-
-(comment-warn
- 'c-mode
- "\\(/\\*\\|//\\) ?\\<SAM\\>.*")
-(comment-warn
- 'c++-mode
- "\\(/\\*\\|//\\) ?\\<SAM\\>.*")
+(mapc (lambda (mode) (comment-warn mode "\\(/\\*\\|//\\) ?\\<SAM\\>.*"))
+      '(c-mode c++-mode))
