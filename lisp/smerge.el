@@ -1,6 +1,6 @@
 ;;; smerge.el --- SAM's Merge layer on top of ediff
 
-;; Copyright (C) 2002-2009 Sean MacLennan
+;; Copyright (C) 2002-2019 Sean MacLennan
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -39,36 +39,8 @@
 ;; In the left and right columns, you can copy the file to the other
 ;; directory. In the middle column, mouse 1 and mouse 2 call ediff on the
 ;; two files.
-;;
-;; Warning for windows users: You must have:
-;;     (setq directory-sep-char ?/)
-;; somewhere before running smerge.
 
 (require 'ediff)
-
-(defun smerge-dirlist (directory &optional full match nosort files-only)
-  (if (eq files-only nil)
-      (directory-files directory full match nosort)
-    (let ((rawlist (directory-files-and-attributes
-		    directory full match nosort))
-	  dirlist)
-      (setq files-only (if (eq files-only t) nil t))
-      (dolist (entry rawlist)
-	(when (eq (nth 1 entry) files-only)
-	  (setq dirlist (cons (car entry) dirlist))))
-      dirlist)))
-
-(defun temp-directory ()
-  (let ((tmp (getenv "TMPDIR")))
-    (if tmp tmp "/tmp")))
-
-(unless (fboundp 'read-directory-name)
-  (defun read-directory-name (prompt &optional dir default mustmatch)
-    (let* ((dir (read-file-name prompt dir default mustmatch))
-	   (attr (file-attributes dir)))
-      (unless (eq (car attr) t) (error "Must be a directory"))
-      dir))
-  )
 
 (defvar smerge-diff-program ediff-diff-program
   "*Program to use to diff the directories. Must support --brief option.")
@@ -94,54 +66,47 @@ regular expressions.")
   "*List of regular expressions to exclude from the only-in lists.")
 
 (defvar smerge-preserve-modes t
-  "*When copying files, preserver the mode of the destination file.")
+  "*When copying files, preserve the mode of the destination file.")
 
-(defvar smerge-exclude-file (concat (temp-directory) "/smerge-excludes")
+(defvar smerge-exclude-file "/tmp/smerge-excludes"
   "*Temporary file to hold the `smerge-excludes'.")
 
-(defgroup smerge-highlighting nil
+(defgroup smerge nil
   "Faces for highlighting in smerge."
   :prefix "smerge-"
-  :group 'smerge)
+  :group 'tools)
 
 (defface smerge-only1-face
   '((((class color))  (:foreground "purple"))
     (t (:underline t)))
-  "Face for files/directories only in directory 1."
-  :group 'smerge-highlighting)
+  "Face for files/directories only in directory 1.")
 
 (defface smerge-only2-face
   '((((class color))  (:foreground "blue"))
     (t (:underline t)))
-  "Face for files/directories only in directory 2."
-  :group 'smerge-highlighting)
+  "Face for files/directories only in directory 2.")
 
 (defface smerge-diff-face
   '((((class color))  (:foreground "red"))
     (t (:bold t)))
-  "Face for files that are different."
-  :group 'smerge-highlighting)
+  "Face for files that are different.")
 
 (defface smerge-merged-face
-  '((((class color))  (:foreground "black"))
-    (t (:bold t)))
-  "Face for files that are merged."
-  :group 'smerge-highlighting)
-
+  '((((class color))  (:foreground "black")))
+  "Face for files that are merged.")
 
 (defvar smerge-buffer "*smerge-output*" "*Name of smerge output buffer.")
 
-(defvar smerge-keymap nil "*Keymap used by smerge.")
-
-;; Minor mode
-(defvar smerge-mode-hook nil)
-(defvar smerge-mode-on-hook nil)
-(defvar smerge-mode-off-hook nil)
-
 (define-minor-mode smerge-mode
   "Minor mode for smerge buffer."
-  nil nil smerge-keymap)
-;; Minor mode
+  nil nil
+  '(([mouse-1]	. smerge-ediff-or-copy)
+    ([mouse-2]	. smerge-ediff-or-copy)
+    ("\C-m"	. smerge-ediff-or-copy)
+    ("g"	. smerge-reload)
+    ("r"	. smerge-reload)
+    ("n"	. smerge-next)
+    ("p"	. smerge-prev)))
 
 ;; For debugging
 (defvar smerge-raw-diff-output nil
@@ -154,27 +119,12 @@ regular expressions.")
 (defvar smerge-file nil)
 (defvar smerge-extent nil)
 
-
-(defun overlay-at (pos) (car (overlays-at pos)))
-
-(defun smerge-init ()
-  "This creates the keymap."
-  (unless smerge-keymap
-    (setq smerge-keymap (make-sparse-keymap "smerge"))
-    (define-key smerge-keymap [mouse-1] 'smerge-mousable)
-    (define-key smerge-keymap [mouse-2] 'smerge-mousable)
-    (define-key smerge-keymap "\C-m" 'smerge-ediff-or-copy)
-    (define-key smerge-keymap "g"    'smerge-reload)
-    (define-key smerge-keymap "r"    'smerge-reload)
-    (define-key smerge-keymap "n"    'smerge-next)
-    (define-key smerge-keymap "p"    'smerge-prev)
-    ))
+(defmacro overlay-at (pos) `(car (overlays-at ,pos)))
 
 ;;;###autoload
 (defun smerge (flags &optional dir1 dir2)
   "Merge two directories recursively."
   (interactive "p")
-  (smerge-init)
   (unless dir1
     (setq dir1 (read-directory-name "Directory 1: " nil nil t)))
   (unless dir2
@@ -345,11 +295,6 @@ Top level directories end in /, subdirs do not."
 	))
     extent))
 
-(defun smerge-mousable (event)
-  "This is called on a left or middle mouse click in the display window."
-  (interactive "e")
-  (smerge-ediff (smerge-nearest-extent (cl-cadadr event))))
-
 (defun smerge-ediff-or-copy ()
   "Ediff or copy the file."
   (interactive)
@@ -358,7 +303,8 @@ Top level directories end in /, subdirs do not."
     (unless extent (error "No extent at point"))
     (cond ((or (eq type 1) (eq type 2))
 	   (setq smerge-file (smerge-file extent))
-	   (smerge-copy 1 t))
+	   (setq smerge-extent extent)
+	   (smerge-copy type))
 	  ((eq type 3) (smerge-ediff extent))
 	  (t (beep)))))
 
@@ -377,23 +323,15 @@ Top level directories end in /, subdirs do not."
       (ediff-files
        (concat smerge-dir1 file) (concat smerge-dir2 file)))))
 
-(defun smerge-allow-dir (dir)
-  "Are we allowed to copy to this directory."
-  (let ((type (overlay-get smerge-extent 'type)))
-    (if type
-	(> (logand (overlay-get smerge-extent 'type) dir) 0)
-      (message "WARNING: No type for extent!")
-      0)))
-
-;; Copy file preserving the destination modes if necessary
-(defun smerge-copy-file (src dst &optional ok-if-already-exists keep-time)
+(defun smerge-copy-file (src dst)
+  "Copy file preserving the destination modes."
   (let ((modes (file-modes dst)))
-    (copy-file src dst ok-if-already-exists keep-time)
+    (copy-file src dst t t)
     (and smerge-preserve-modes
 	 modes
 	 (set-file-modes dst modes))))
 
-(defun smerge-copy (dir &optional ask)
+(defun smerge-copy (dir)
   "Do the copy to the directory specified."
   (let ((file1 (concat smerge-dir1 smerge-file))
 	(file2 (concat smerge-dir2 smerge-file))
@@ -401,25 +339,20 @@ Top level directories end in /, subdirs do not."
     (cond ((eq dir 1) (setq src file2 dst file1))
 	  ((eq dir 2) (setq src file1 dst file2))
 	  (t (error "Huh?")))
-    (when (or (not ask)
-	      (yes-or-no-p (format "Copy to %s? " dst)))
-      (smerge-copy-file src dst t t)
+    (when (yes-or-no-p (format "Copy to %s? " dst))
+      (smerge-copy-file src dst)
       ;; Mark as merged
       (overlay-put smerge-extent 'face 'smerge-merged-face)
       ;; If this is an "only" mark as copied
       (when (< (overlay-get smerge-extent 'type) 3)
 	(overlay-put smerge-extent 'type 0))
-      (setq smerge-extent nil)
-      )))
+      (setq smerge-extent nil))))
 
 (defun smerge-make-extent (start end face)
-  (let (extent)
-    (setq end (1+ end)) ;; include the NL
-    (setq extent (make-overlay start end))
+  (let ((extent (make-overlay start (1+ end)))) ;; include the NL
     (overlay-put extent 'face face)
     (overlay-put extent 'mouse-face 'highlight)
-    (overlay-put extent 'keymap smerge-keymap)
-    extent
-    ))
+    (overlay-put extent 'keymap smerge-mode-map)
+    extent))
 
 (provide 'smerge)
