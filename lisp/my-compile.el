@@ -33,14 +33,11 @@
 ;
 ; The help for `my-compile-dir-list' describes the elements of the list.
 
-(require 'sam-common)
+(require 'sam-common) ;; uname()
 (eval-when-compile (require 'cc-vars))
 
 (defvar my-kernel-vers (uname "-r")
   "* Current kernel version.")
-
-(defvar my-arch (uname "-m")
-  "* Current architecture.")
 
 (defvar my-kernel-dir (file-chase-links (concat "/lib/modules/" my-kernel-vers "/build"))
   "* Current kernel directory.")
@@ -91,10 +88,9 @@ Only the first match is used so order is important.")
   "Set the compile command for the current file.
 Go through the 'my-compile-dir-list' looking for a match."
   (interactive)
-  (let (match dir arg func-or-style matched)
+  (let (dir arg func-or-style matched)
     (cl-loop for list in my-compile-dir-list until dir do
-      (setq match (car list))
-      (when (string-match match default-directory)
+      (when (string-match (car list) default-directory)
 	(setq dir (match-string 0 default-directory))
 	(setq matched list)))
 
