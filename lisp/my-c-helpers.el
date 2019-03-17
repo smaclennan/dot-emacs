@@ -69,7 +69,7 @@
 (defvar local-compile-cc "gcc -O2 -Wall")
 (defvar local-compile-c++ "g++ -O2 -Wall")
 (defvar local-compile-go "gccgo")
-(defvar local-compile-offset 4)
+(defvar local-compile-offset "4")
 
 ;; We need to obfuscate this string or Emacs gets confused
 (defvar local-vars-str (concat "Local Variables" ":"))
@@ -114,10 +114,9 @@ Will not overwrite current variables if they exist."
      (concat "\n/*\n * " local-vars-str "\n"
 	     " * compile-command: \"" cmd "\"\n"
 	     (when arg
-	       (format (concat " * indent-tabs-mode: t\n"
-			       " * c-basic-offset: %d\n"
-			       " * tab-width: %d\n")
-		       local-compile-offset local-compile-offset))
+	       (concat " * indent-tabs-mode: t\n"
+		       " * c-basic-offset: " local-compile-offset "\n"
+		       " * tab-width: " local-compile-offset "\n"))
 	     " * End:\n */\n"))
     (set (make-local-variable 'compile-command) cmd)))
 
@@ -146,32 +145,19 @@ actually update the associated `compile-command' variable."
   (unless (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode))
     (error "Unsupported mode %S" major-mode))
   (setq offset (number-to-string offset))
-  (add-local-vars
-   (format (concat "\n"
-		   "/*\n"
-		   " * " local-vars-str "\n"
-		   " * indent-tabs-mode: t\n"
-		   " * c-basic-offset: 8\n"
-		   " * tab-width: 8\n"
-		   " * End:\n"
-		   " */\n") offset offset)))
+  (add-local-vars (concat "\n/*\n"
+			  " * " local-vars-str "\n"
+			  " * indent-tabs-mode: t\n"
+			  " * c-basic-offset: " offset "\n"
+			  " * tab-width: " offset "\n"
+			  " * End:\n"
+			  " */\n")))
 
 ;;;###autoload
 (defun add-local-kernel-vars ()
   "Add local variables to set Linux kernel coding standard."
   (interactive)
-  ;; Currently only for C mode
-  (or (eq major-mode 'c-mode) (error "Unsupported mode %S" major-mode))
-  (add-local-vars
-   (concat "\n"
-	   "/*\n"
-	   " * " local-vars-str "\n"
-	   " * indent-tabs-mode: t\n"
-	   " * c-basic-offset: 8\n"
-	   " * tab-width: 8\n"
-	   " * End:\n"
-	   " */\n")))
-
+  (add-local-c-vars 8))
 
 ;;; -------------------------------------------------------------------------
 
