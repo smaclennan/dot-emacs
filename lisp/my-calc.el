@@ -3,8 +3,6 @@
 ;; Copyright (C) 1997-2016 Sean MacLennan
 ;; Revision:   1.8
 
-;;{{{ License agrement
-
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
@@ -20,30 +18,13 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;;}}}
-
-;;{{{ Commentary
-
 ;; This package implements a simple calculator. It understands most of
-;; the 'C' operators and the order of operation. It also does hex to/from
-;; decimal conversions.
+;; the 'C' operators and the order of operation. It also does hex,
+;; octal, and decimal conversions.
 
 ;; The calculator is based on the operator-precedence parsing algorithm
 ;; from "Compilers Principles, Techniques, and Tools"
 ;; by Alfred V. Aho, Ravi Sethi, and Jeffery D. Ullman.
-
-;;}}}
-
-;;{{{ Installation
-
-;; Up until 1.7 (Feb 2010), this provided calc. I renamed it to
-;; my-calc so I could use the standard calc package.
-
-;; (require 'my-calc)
-
-;;}}}
-
-;;{{{ Code
 
 (require 'stack)
 (provide 'my-calc)
@@ -183,6 +164,9 @@ Numbers can also have a suffix:
 	g or G	for gigabyte (1024 * 1024 * 1024)
 	p or P  for page     (4096)
 
+If you put =suffix at the end of the command, it outputs the
+result in the given unit.
+
 Output goes to the *calc* buffer and the echo line."
   (interactive "sCalc: ")
   (save-current-buffer
@@ -233,35 +217,25 @@ Output goes to the *calc* buffer and the echo line."
 
 	(forward-char) ;; skip over =
 	(setq result (stack-pop calc-nums))
-	(cond ((integerp result)
-	       ;; SAM should we round up?
-	       (cond
-		((looking-at "[kK]")
-		 (setq result (rash result 10))
-		 (setq format (format "%dK (%xK)" result result)))
-		((looking-at "[mM]")
-		 (setq result (rash result 20))
-		 (setq format (format "%dM (%xM)" result result)))
-		((looking-at "[gG]")
-		 (setq result (rash result 30))
-		 (setq format (format "%dG (%xG)" result result)))
-		((looking-at "[pP]")
-		 (setq result (rash result 12))
-		 (setq format (format "%dP (%xP)" result result)))
-		(t
-		 (setq str (format "%s = %d (%x %o)\n" command result result result))
-		 (message "%s (%x %o)"  (my-calc-comma result) result result)))
-	       (when format
-		 (setq str (format "%s = %s\n" command format))
-		 (message "%s" format)))
-	      ((floatp result)
-	       (setq str (format "%s = %f\n" command result))
-	       (message "%s" (my-calc-float-comma result)))
-	      (t	;; Huh? Should be integer or float...
-	       (setq str (format "%s = ?%S?\n" command result))
-	       (message "?%S?" result)))
+	(cond
+	 ((integerp result)
+	  (setq format
+		(cond
+		 ((looking-at "[kK]") (format " %.3fK" (/ result 1024.0)))
+		 ((looking-at "[pP]") (format " %.3fP" (/ result 4096.0)))
+		 ((looking-at "[mM]") (format " %.3fM" (/ result 1048576.0)))
+		 ((looking-at "[gG]") (format " %.3fG" (/ result 1073741824.0)))
+		 (t "")))
+	  (setq str (format "%s = %d (%x %o)%s\n" command result result result format))
+	  (message "%s (%x %o)%s"  (my-calc-comma result) result result format))
+	 ((floatp result)
+	  (setq str (format "%s = %f\n" command result))
+	  (message "%s" (my-calc-float-comma result)))
+	 (t	;; Huh? Should be integer or float...
+	  (setq str (format "%s = ?%S?\n" command result))
+	  (message "?%S?" result)))
 
-	;; Done! Put the result in both the *calc* buffer
+	;; Done! Put the result in the *calc* buffer
 	(delete-region (point-min) (point-max))
 	(insert str)))))
 

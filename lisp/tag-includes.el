@@ -28,9 +28,7 @@ tag file if it doesn't exist."
 	   (read-string (concat "Define [" word "]: ") nil nil word))))
   (unless (file-exists-p tag-includes-file) (tag-includes-update))
   (let ((tags-file-name tag-includes-file)
-	(tags-completion-table nil)
-	;; Yes, it is going to be large
-	(large-file-warning-threshold 100000000))
+	(tags-completion-table nil))
     (visit-tags-table-buffer tag-includes-file)
     (xref-find-definitions define)))
 

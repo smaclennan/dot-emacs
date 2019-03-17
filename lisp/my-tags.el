@@ -110,8 +110,7 @@ This variable is buffer local.")
 
 (defun my-tags-remove-old-tags (tagfile fname)
   "Remove the tags from TAGFILE for FNAME."
-  (let* ((large-file-warning-threshold 20000000) ;; yes, it is large
-	 (buf (find-file-noselect tagfile t))
+  (let ((buf (find-file-noselect tagfile t))
 	(regexp (concat "^" fname ",\\([0-9]+\\)$"))
 	nchars)
     (with-current-buffer buf
