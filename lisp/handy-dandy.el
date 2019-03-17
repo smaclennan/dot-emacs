@@ -32,7 +32,8 @@
    ((string-match (concat "^#"
 			  "\\([0-9a-fA-F][0-9a-fA-F]\\)"
 			  "\\([0-9a-fA-F][0-9a-fA-F]\\)"
-			  "\\([0-9a-fA-F][0-9a-fA-F]\\)$") number)
+			  "\\([0-9a-fA-F][0-9a-fA-F]\\)$")
+		  number)
     (message "%d %d %d"
 	     (string-to-number (match-string 1 number) 16)
 	     (string-to-number (match-string 2 number) 16)
@@ -136,13 +137,6 @@ returns all .el files."
       (goto-char (point-max))
       (setq lines (count-lines (point-min) (point-max))))
     (message "files %d lines %d count %d" (length files) lines count)))
-
-;;;###autoload
-(defmacro measure-time (&rest body)
-  "Measure the time it takes to evaluate BODY."
-  `(let ((time (current-time)))
-     ,@body
-     (message "%.06f" (float-time (time-since time)))))
 
 ;;;###autoload
 (defun my-kernel-version (&optional kvers)

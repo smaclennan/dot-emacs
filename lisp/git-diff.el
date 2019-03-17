@@ -102,13 +102,13 @@ A prefix arg allows you to edit the grep command"
       (grep cmd))))
 
 ;;;###autoload
-(defun git-grep-at-point (arg start end)
+(defun git-grep-at-point (arg)
   "Perform a `git-grep' with the word the point is on. If a region
 exists, that is used rather than the current word. ARG has the same
 meaning as in `git-grep'."
-  (interactive "P\nr")
+  (interactive "P")
   (let ((word (if mark-active
-		  (buffer-substring start end)
+		  (buffer-substring (region-beginning) (region-end))
 		(current-word))))
     (git-grep arg word)))
 

@@ -285,8 +285,8 @@ Top level directories end in /, subdirs do not."
     (string-match "\t*\\(.*\\)" file)
     (match-string 1 file)))
 
-;; Find the extent nearest pos. Can return nil.
 (defun smerge-nearest-extent (pos)
+  "Find the extent nearest pos. Can return nil."
   (let ((extent (overlay-at pos)))
     (unless extent
       (setq extent (overlay-at (next-overlay-change pos)))

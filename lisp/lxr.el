@@ -99,7 +99,6 @@ You should never need to set this....")
 (defvar lxr-defined-alist nil
   "Local variable with alist of files and line numbers.")
 
-;; SAM This forces lxr to be single threaded
 (defvar lxr-local-base nil "Local variable")
 
 ;; Minor mode
@@ -177,7 +176,7 @@ You should never need to set this....")
 		     (if lxr-arch (concat "a=" lxr-arch ";"))
 		     "i=" ident)))
     (http-get url "*lxr*" callback))
-  (setq lxr-local-base lxr-base) ;; lxr-base is buffer local
+  (setq lxr-local-base (file-name-as-directory lxr-base))
   (when (eq callback 'lxr-get-callback)
     (pop-to-buffer "*lxr*")))
 
@@ -204,10 +203,6 @@ You should never need to set this....")
     (error "http request failed: %s"
 	   (buffer-substring (point-min) (progn (end-of-line) (point)))))
 
-  ;; SAM fixme file-name-as-directory?
-  (unless (string-match "/$" lxr-local-base)
-    (setq lxr-local-base (concat lxr-local-base "/")))
-
   ;; stip the server header
   (search-forward-regexp "^[ \t\r]*\n" nil t)
 
@@ -232,11 +227,6 @@ You should never need to set this....")
     ;; http error
     (error "http request failed: %s"
 	   (buffer-substring (point-min) (progn (end-of-line) (point)))))
-
-  ;; SAM fixme file-name-as-directory?
-  (unless (string-match "/$" lxr-local-base)
-    (setq lxr-local-base (concat lxr-local-base "/")))
-
 
   (let ((buffer (cadr cbargs)) start)
     ;; Isolate the "Defined as" list.

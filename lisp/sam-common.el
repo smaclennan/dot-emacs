@@ -33,6 +33,13 @@ Each clause is (FEATURE BODY...)."
        (match-string 1 ,name)
      ,name))
 
+;;;###autoload
+(defmacro measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
+
 ;; This is almost 4x faster than shell-command-to-string
 ;;;###autoload
 (defun uname (arg)

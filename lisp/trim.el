@@ -20,21 +20,17 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-(eval-when-compile
-  (unless (fboundp 'region-exists-p)
-    (defsubst region-exists-p () mark-active)))
-
 ;; This function does the actual triming.
 ;; All the others are calls to this with predefined regexps
 ;;;###autoload
 (defun trim (regexp &optional replace)
-  "Searches for `regexp' and deletes any matches.
-If optional arg `replace' is set, it replaces the match.
+  "Searches for REGEXP and deletes any matches.
+If REPLACE is non-nil, it replaces the match.
 If the region is active, only trims the lines in the region."
   (interactive "*sRegexp: ")
   (save-excursion
     (save-restriction
-      (if (region-exists-p)
+      (if mark-active
 	  (narrow-to-region (region-beginning) (region-end)))
       (goto-char (point-min))
       (if (not replace) (setq replace ""))
@@ -66,7 +62,7 @@ in the region."
   (interactive "P")
   (save-excursion
     (save-restriction
-      (when (region-exists-p)
+      (when mark-active
 	(narrow-to-region (region-beginning) (region-end)))
       (goto-char (point-min))
       (while (re-search-forward "\\(^\\s-*$\\)\n" nil t)
@@ -123,7 +119,7 @@ If the region is active, only untrims the lines in the region."
   (interactive)
   (save-excursion
     (save-restriction
-      (if (region-exists-p)
+      (if mark-active
 	  (narrow-to-region (region-beginning) (region-end)))
       (goto-char (point-min))
       (while (not (eobp))
