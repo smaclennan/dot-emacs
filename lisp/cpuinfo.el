@@ -1,5 +1,5 @@
 ;;; cpuinfo.el --- simple interface to /proc/cpuinfo
-;; Copyright (C) 2010-2015 Sean MacLennan
+;; Copyright (C) 2010-2019 Sean MacLennan
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -19,6 +19,16 @@
 (defvar cpuinfo-bufname "*cpu-info*"
   "* Buffer name for cpuinfo-get.")
 
+;;;###autoload
+(defun cpuinfo-num-processors (&optional show)
+  "Return number of processors.
+This is the most generic of the cpuinfo-* functions. Should work
+on Linux, BSD, QNX, and Windows."
+  (interactive "p")
+  (let ((procs (if (fboundp 'sys-nproc) (sys-nproc) 1)))
+    (when show (message "Procs: %d" procs))
+    procs))
+
 (defun cpuinfo-get ()
   "Read /proc/cpuinfo into `cpuinfo-bufname' buffer.
 If the buffer already exists, do nothing."
@@ -35,16 +45,6 @@ If the buffer already exists, do nothing."
   (goto-char (point-min))
   (re-search-forward (concat "^" field "[ \t]+: \\(.*\\)$"))
   (match-string 1))
-
-;;;###autoload
-(defun cpuinfo-num-processors (&optional show)
-  "Return number of processors.
-This is the most generic of the cpuinfo- functions. Should work
-on Linux, BSD, and Windows."
-  (interactive "p")
-  (let ((procs (if (fboundp 'sys-nproc) (sys-nproc) 1)))
-    (when show (message "Procs: %d" procs))
-    procs))
 
 ;;;###autoload
 (defun cpuinfo-num-cores (&optional show)

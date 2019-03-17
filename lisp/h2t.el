@@ -22,7 +22,6 @@
 ;; NOTES:
 ;; This program attempts to convert html to some form of readable text.
 ;; It is *heavily* oriented towards the output from the lxr program.
-;; Also used for doxygen, slashdot, and my playlist.cgi script.
 ;; The h2t routines assume case-fold-search is t since html tags are
 ;; case insensitive.
 
@@ -225,7 +224,6 @@ in the extent as an `anchor' property."
       (when (string-match "href=\"\\([^\"]+\\)\"" anchor)
 	(h2t-make-extent start end (match-string 1 anchor) keymap)))))
 
-;; Remove nbsps for doxygen
 (defun h2t-strip-special ()
   (goto-char (point-min))
   (while (re-search-forward "&[a-z]+;" nil t)
