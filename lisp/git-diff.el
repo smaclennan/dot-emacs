@@ -1,9 +1,6 @@
 (provide 'git-diff)
 
-(eval-when-compile
-  (require 'ediff)
-  (unless (fboundp 'region-exists-p)
-    (defsubst region-exists-p () mark-active)))
+(eval-when-compile (require 'ediff))
 
 (defun git-dir (&optional dir)
   "Find the base git directory. If DIR is nil, `default-directory' is used."
@@ -97,7 +94,7 @@ A prefix arg allows you to edit the grep command"
 
     (if git-grep-top-of-tree
 	(let ((default-directory (git-dir))
-	      (grep-use-null-device nil)) ;; Emacs
+	      (grep-use-null-device nil))
 	  (grep cmd))
       (grep cmd))))
 
