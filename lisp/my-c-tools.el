@@ -54,43 +54,8 @@ The MAJOR and MINOR version numbers are required, but the PATCH is optional."
   "Run sparse against the current buffer. Output goes to the
 compilation buffer so that `next-error' will work."
   (interactive)
-  (let ((cmd (concat my-sparse-prog " "
-		     my-sparse-args " "
-		     user-args " "
-		     (buffer-file-name))))
-    (my-do-compile cmd)))
-
-;;;; The rest is kernel specific
-
-(defvar my-sparse-linux-arch "x86"
-  "*Arch to use for `my-sparse-linux'.")
-
-(defvar my-sparse-linux-arch-flags-list
-  '(("x86" "-D__i386__")
-    ;; Hardcoded for now. See arch/x86/Makefile for how to calculate these.
-    ("x86" "-DCONFIG_AS_CFI=1 -DCONFIG_AS_CFI_SIGNAL_FRAME=1")
-    )
-  "*List of list of arches and arch specific flags. There can be
-multiple entries for an arch.")
-
-(defvar my-sparse-linux-flags
-  (concat "-D__linux__ -Dlinux -Dunix -D__unix__ "
-	  "-D__STDC__ "
-	  "-D__KERNEL__ "
-	  "-nostdinc "
-	  "-O2 "
-
-	  "-Wbitwise -Wno-return-void -Wundef "
-	  "-Wdeclaration-after-statement "
-
-	  "-D\"KBUILD_STR(s)=#s\" "
-	  "-D\"KBUILD_BASENAME=KBUILD_STR(setup)\" "
-	  "-D\"KBUILD_MODNAME=KBUILD_STR(setup)\" ")
-  "*Flags required for sparse under Linux. These should be generic.")
-
-(defvar my-sparse-linux-isystem nil
-  "*The compiler specific includes. It should be set
-automagically. Set to nil if you change the arch and/or compiler.")
+  (my-do-compile (concat my-sparse-prog " " my-sparse-args " "
+			 user-args " " (buffer-file-name))))
 
 ;;;###autoload
 (defun my-sparse-linux (&optional user-args)
@@ -201,10 +166,12 @@ rather than the current buffer."
       (display-buffer "*gcov*"))))
 
 (defun set-c-vars (tabs width)
-  "Set C tab mode and tab width"
+  "Set C tab mode. With a prefix-arg set tab width."
   (interactive (list
 		(yes-or-no-p "Tabs? ")
-		(read-number "Width: " c-basic-offset)))
+		(if current-prefix-arg
+		    (read-number "Width: " c-basic-offset)
+		  4)))
   (setq indent-tabs-mode tabs
 	c-basic-offset width
 	tab-width width))
