@@ -1,2 +1,15 @@
+(defvar page-size nil "Page size filled in by `sys-mem'.")
+
+(defun sysctl (arg)
+  "Return sysctl ARG as a number"
+  (string-to-number (shell-command-to-string (concat "sysctl -n " arg))))
+
 (defun sys-nproc ()
-  (string-to-number (shell-command-to-string "sysctl -n hw.ncpu")))
+  "Return number of cpus."
+  (sysctl "hw.ncpu"))
+
+(defun sys-mem ()
+  "Return total and free memory."
+  (unless page-size (setq page-size (sysctl "hw.pagesize")))
+  (list (sysctl "hw.realmem")
+	(* (sysctl "vm.stats.vm.v_free_count") page-size)))
