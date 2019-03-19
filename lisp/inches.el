@@ -6,7 +6,7 @@
 	(frac (nth 2 list)) (denom (nth 3 list))
 	str)
     (if (> feet 0)
-	(setq str (format "%d' %d" feet inches))
+	(setq str (format "%d' %d\"" feet inches))
       (setq str (format "%d" inches)))
     (when (> frac 0)
       (setq str (concat str (format " %d/%d" frac denom))))
