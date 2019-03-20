@@ -349,7 +349,7 @@ Top level directories end in /, subdirs do not."
       (setq smerge-extent nil))))
 
 (defun smerge-make-extent (start end face)
-  (let ((extent (make-overlay start (1+ end)))) ;; include the NL
+  (let ((extent (make-overlay start end)))
     (overlay-put extent 'face face)
     (overlay-put extent 'mouse-face 'highlight)
     (overlay-put extent 'keymap smerge-mode-map)
