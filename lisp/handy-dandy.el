@@ -162,3 +162,24 @@ EXTRA; which is a possibly empty string."
 				      (match-string 2 extra))))
       (setq vers (append vers (list 0 extra))))
     vers))
+
+;; Based on https://gist.github.com/ffevotte/9345586
+;;;###autoload
+(defun source (filename)
+  "Update environment variables from a shell script."
+  (interactive "fSource: ")
+  (message "Sourcing %s..." filename)
+  (with-temp-buffer
+    (shell-command
+     (concat "diff -u <(true; export) <(source " filename "; export)") t)
+
+    (while (search-forward-regexp "^\\([-+]\\)\\([A-Z].*\\)" nil t)
+      (let ((cmd (match-string 1))
+	    (env (split-string (match-string 2) "=")))
+	(if (string= cmd "-")
+	    (progn
+	      (message "Remove %S" env)
+              (setenv (car env)))
+	  (message "Update %S" env)
+	  (setenv (car env) (cadr env))))))
+  (message "Sourcing %s... done." filename))
