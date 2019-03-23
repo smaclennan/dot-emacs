@@ -163,23 +163,32 @@ EXTRA; which is a possibly empty string."
       (setq vers (append vers (list 0 extra))))
     vers))
 
-;; Based on https://gist.github.com/ffevotte/9345586
+;; Based on idea from https://gist.github.com/ffevotte/9345586
 ;;;###autoload
 (defun source (filename)
   "Update environment variables from a shell script."
   (interactive "fSource: ")
   (message "Sourcing %s..." filename)
-  (with-temp-buffer
-    (shell-command
-     (concat "diff -u <(true; export) <(source " filename "; export)") t)
-
-    (while (search-forward-regexp "^\\([-+]\\)\\([A-Z].*\\)" nil t)
-      (let ((cmd (match-string 1))
-	    (env (split-string (match-string 2) "=")))
-	(if (string= cmd "-")
-	    (progn
-	      (message "Remove %S" env)
-              (setenv (car env)))
-	  (message "Update %S" env)
-	  (setenv (car env) (cadr env))))))
-  (message "Sourcing %s... done." filename))
+  (let ((tmpfile1 (make-temp-file "source1"))
+	(tmpfile2 (make-temp-file "source2")))
+    ;; It is safe to comment the (erase-buffer) lines out for debugging
+    (with-temp-buffer
+      (shell-command "env" t)
+      (write-region nil nil tmpfile1)
+      (erase-buffer)
+      (shell-command (concat "source " filename ";env") t)
+      (write-region nil nil tmpfile2)
+      (erase-buffer)
+      (shell-command (concat "diff -u " tmpfile1 " " tmpfile2) t)
+      (while (search-forward-regexp "^\\([-+]\\)\\([A-Z].*\\)" nil t)
+	(let ((cmd (match-string 1))
+	      (env (split-string (match-string 2) "=")))
+	  (if (string= cmd "-")
+	      (progn
+		(setenv (car env))
+		(message "Remove %S" env))
+	    (setenv (car env) (cadr env))
+	    (message "Update %S" env)))))
+    (delete-file tmpfile1)
+    (delete-file tmpfile2))
+  (message "Sourcing %s...done." filename))
