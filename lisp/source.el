@@ -71,7 +71,7 @@
 	      (progn
 		(unless (or (string= (cadr env) val) (string= var "_"))
 		  (source-setenv "Update" var val))
-		(setq env (delq env envs)))
+		(setq envs (delq env envs)))
 	    (source-setenv "New" var val)))))
     (dolist (rm envs)
       (source-rmenv "Remove" (car rm) (cadr rm))))
