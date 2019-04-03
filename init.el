@@ -29,8 +29,11 @@
       inhibit-startup-message t
       initial-scratch-message ";; This buffer is for goofing around in.\n\n"
       visible-bell t
-      extended-command-suggest-shorter nil
       inhibit-startup-echo-area-message (user-login-name))
+
+(if (boundp 'extended-command-suggest-shorter) ;; 26.1
+    (setq extended-command-suggest-shorter nil)
+  (setq suggest-key-bindings nil))
 
 (put 'narrow-to-region 'disabled nil) ;; Why? Just why?
 (fset 'yes-or-no-p 'y-or-n-p)
