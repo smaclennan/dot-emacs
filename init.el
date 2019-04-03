@@ -131,7 +131,7 @@
 ;;; ----
 
 (defun xref-find-definitions-prompt ()
-  "Same as `xref-find-defintions' except it always prompts for
+  "Same as `xref-find-definitions' except it always prompts for
 the identifier."
   (interactive)
   (let ((current-prefix-arg t))
