@@ -196,7 +196,8 @@ the identifier."
 ;;; Optional Init files
 
 ;; Load a file called sys/`system-type' if it exists.
-(load (concat user-emacs-directory "sys/" (symbol-name system-type)) t)
+(let ((sys (replace-regexp-in-string "/" "-" (symbol-name system-type))))
+  (load (concat user-emacs-directory "sys/" sys) t))
 
 (load (concat user-emacs-directory "work") t)
 
