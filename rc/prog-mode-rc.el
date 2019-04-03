@@ -4,4 +4,4 @@
 
 (add-hook 'prog-mode-hook #'hide-copyleft-region)
 
-(show-paren-mode)
+(show-paren-mode t)
