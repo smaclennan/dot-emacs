@@ -2,15 +2,14 @@
   "Return number of cpu devices."
   (if (file-exists-p "/sys/bus/cpu/devices")
       (length (directory-files "/sys/bus/cpu/devices" nil "cpu[0-9]*"))
-    (with-temp-buffer
-      (call-process "cat" nil t nil "/proc/cpuinfo")
+    (with-current-buffer (find-file-noselect "/proc/cpuinfo")
       (count-matches "^processor" (point-min)))))
 
 (defun sys-mem ()
   "Report total and free memory."
   (let (total free)
     (with-temp-buffer
-      (call-process "cat" nil t nil "/proc/meminfo")
+      (insert-file-contents "/proc/meminfo")
       (goto-char (point-min))
       (re-search-forward "^Memtotal: *\\([0-9]+\\) kB$")
       (setq total (* (string-to-number (match-string 1)) 1024))

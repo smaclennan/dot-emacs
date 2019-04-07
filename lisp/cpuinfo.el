@@ -16,9 +16,6 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-(defvar cpuinfo-bufname "*cpu-info*"
-  "* Buffer name for cpuinfo-get.")
-
 ;;;###autoload
 (defun cpuinfo-num-processors (&optional show)
   "Return number of processors.
@@ -30,15 +27,10 @@ on Linux, BSD, QNX, and Windows."
     procs))
 
 (defun cpuinfo-get ()
-  "Read /proc/cpuinfo into `cpuinfo-bufname' buffer.
+  "Read /proc/cpuinfo into a buffer.
 If the buffer already exists, do nothing."
-  (unless (get-buffer cpuinfo-bufname)
-    (unless (eq system-type 'gnu/linux) (error "Not supported."))
-    (let ((buffer (get-buffer-create cpuinfo-bufname)))
-      ;; insert-file-contents does not work on /proc
-      (call-process "cat" nil buffer nil "/proc/cpuinfo")
-      ))
-  cpuinfo-bufname)
+  (unless (eq system-type 'gnu/linux) (error "Not supported."))
+  (find-file-noselect "/proc/cpuinfo"))
 
 (defun cpuinfo-find (field)
   "Find a field in cpuinfo output."
@@ -52,8 +44,7 @@ If the buffer already exists, do nothing."
 the number of cores, the number of processors, and a hyperthreaded
 flag."
   (interactive "p")
-  (save-current-buffer
-    (set-buffer (cpuinfo-get))
+  (with-current-buffer (cpuinfo-get)
     (let (phy cores (procs 0) hyper total)
       ;; Count the physical processors
       (goto-char (point-min))
@@ -95,8 +86,7 @@ centric. The list returned is '(vendor family model step). The
   (let* ((info
 	  (if (fboundp 'sys-cpuinfo)
 	      (sys-cpuinfo)
-	    (save-current-buffer
-	      (set-buffer (cpuinfo-get))
+	    (with-current-buffer (cpuinfo-get)
 	      (list (cpuinfo-find "vendor_id")
 		    (string-to-number (cpuinfo-find "cpu family"))
 		    (string-to-number (cpuinfo-find "model"))
@@ -118,9 +108,8 @@ centric. The list returned is '(vendor family model step). The
   "Returns the model name."
   (interactive "p")
   (let (name)
-    (save-current-buffer
-      (set-buffer (cpuinfo-get))
-      (setq name   (cpuinfo-find "model name")))
+    (with-current-buffer (cpuinfo-get)
+      (setq name (cpuinfo-find "model name")))
     (when show (message "%s" name))
     name))
 
@@ -129,19 +118,18 @@ centric. The list returned is '(vendor family model step). The
   "Returns the cpu flags as a sorted list. Sorting the list makes it easier to find individual flags."
   (interactive "p")
   (let (flags)
-    (save-current-buffer
-      (set-buffer (cpuinfo-get))
+    (with-current-buffer (cpuinfo-get)
       (setq flags (sort (split-string (cpuinfo-find "flags")) 'string<)))
     (when show (message "%S" flags))
     flags))
 
 (defun cpuinfo-has-flag (flag)
-  "Does the cpu have `flag' defined."
+  "Does the cpu have FLAG defined."
   (car (member flag (cpuinfo-flags))))
 
 ;;;###autoload
 (defun cpuinfo-show-flag (flag)
-  "Does the cpu have `flag' defined."
+  "Does the cpu have FLAG defined."
   (interactive "sFlag: ")
   (message "%S" (cpuinfo-has-flag flag)))
 
