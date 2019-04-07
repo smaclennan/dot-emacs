@@ -1,3 +1,5 @@
+* batch-helper.el Help build lisp files in batch mode.
+
 * cpuinfo.el	Some CPU info. Some functions work with Linux and
 		Windows, some info is Linux only.
 
@@ -26,20 +28,13 @@
 
 * handy-dandy.el Catchall for miscellaneous functions.
 
-* hmac.el	Hash based Message Authentication Code.
-
 * inches.el	Various inch and conversion functions.
-
-* intellimouse.el Support for a wheel mouse.
 
 * ip.el		Some IPv4 routines.
 
 * kloc.el	Interface to Klockworks kwcheck.
 
 * lxr.el	An an lxr interface for emacs.
-
-* mpg.el	Given distance in kms and gas in litres, calculate mpg,
-		US mpg, and l/100km.
 
 * my-c-helpers.el Helper functions for C.
 
@@ -62,8 +57,6 @@
 * my-tools-config.el In it's own file since it touches so many other
 		packages.
 
-* ocra.el	OATH Challenge Response Algorithm.
-
 * ogrok.el	Interface to Open GROK.
 
 * sam-common.el Common functions used by a lot of my packages. These are
@@ -73,7 +66,13 @@
 
 * smerge.el	SAM's merge. It is basically a layer on top of `ediff'.
 
+* source.el	Source a shell script to update Emacs environment vars.
+
+* stack.el	Generic stack functions.
+
 * svn.el	Some svn helpers. Mainly svn-diff.
+
+* tag-includes.el Run tags on the /usr/include directory.
 
 * trim.el	This file provides functions which "trim" things (mainly
 		whitespace) from lines.
