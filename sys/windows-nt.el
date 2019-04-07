@@ -1,4 +1,6 @@
-;; I recommend setting cygwin-dir in user-init.el
+(defvar cygwin-dir nil
+  "I recommend setting cygwin-dir in user-init.el.")
+
 (when cygwin-dir
   (add-to-list 'exec-path (concat cygwin-dir "bin")) t)
 
@@ -54,6 +56,26 @@ Top level directories end in /, subdirs do not. Windows version."
 	  (string-to-number (match-string 1 ident))
 	  (string-to-number (match-string 2 ident))
 	  (string-to-number (match-string 3 ident)))))
+
+(defun sys-mb (str)
+  "Helper function to convert number with commas from MB to bytes."
+  (let ((mb (string-to-number (replace-regexp-in-string "," "" str))))
+    (* mb #x100000)))
+
+(defun sys-mem ()
+  "Return the total and free memory reported by systeminfo.
+WARNING: This can take over 10 seconds."
+  (let (total avail)
+    (with-temp-buffer
+      (message "Calling systeminfo... Please wait...")
+      (call-process "systeminfo" nil t)
+      (message "Calling systeminfo... done.")
+      (goto-char (point-min))
+      (re-search-forward "^Total Physical Memory: *\\([0-9,]+\\) MB")
+      (setq total (sys-mb (match-string 1)))
+      (re-search-forward "^Available Physical Memory: *\\([0-9,]+\\) MB")
+      (setq avail (sys-mb (match-string 1))))
+    (list total avail)))
 
 (defun build-all-loaddefs ()
   (interactive)
