@@ -1,8 +1,8 @@
-(defun whitespace-long-lines (on)
-  "Disable displaying long lines in whitespace mode.
-With a prefix arg, enable it."
+(defun whitespace-long-lines (off)
+  "Enable displaying long lines in whitespace mode.
+With a prefix arg, disable it."
   (interactive "P")
-  (if on
+  (if (not off)
       (add-to-list 'whitespace-style 'lines-tail)
     (setq whitespace-style (delete 'lines whitespace-style))
     (setq whitespace-style (delete 'lines-tail whitespace-style)))
@@ -11,4 +11,4 @@ With a prefix arg, enable it."
     (whitespace-mode 0)
     (whitespace-mode 1)))
 
-(whitespace-long-lines nil)
+(whitespace-long-lines t)
