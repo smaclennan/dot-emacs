@@ -6,17 +6,7 @@
 ;; without you having to blip the caps lock key by hand all the time (thus the
 ;; "electric", as in `electric-c-brace'.)
 
-;; Change some default  faces
 (make-face-bold 'font-lock-function-name-face)
-
-(if window-system
-    (set-face-foreground 'font-lock-comment-face "FireBrick")
-  ;; Consoles have less colors to play with
-  (set-face-foreground 'font-lock-comment-face "red")
-  (set-face-foreground 'font-lock-string-face "green")
-  (set-face-foreground 'font-lock-keyword-face "blue")
-  (set-face-foreground 'font-lock-variable-name-face "purple")
-  )
 
 ;; -------------------------------------------------------------------------
 ;; font-lock-comment-warn
