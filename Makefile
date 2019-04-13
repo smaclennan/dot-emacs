@@ -8,3 +8,4 @@ clean:
 	$(MAKE) -C lisp $(MFLAGS) clean
 	$(MAKE) -C misc $(MFLAGS) clean
 	$(MAKE) -C rc   $(MFLAGS) clean
+	$(MAKE) -c src  $(MFLAGS) clean

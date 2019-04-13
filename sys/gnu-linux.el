@@ -5,6 +5,23 @@
     (with-current-buffer (find-file-noselect "/proc/cpuinfo")
       (count-matches "^processor" (point-min)))))
 
+(defun cpuinfo-find (field)
+  "Find a field in cpuinfo output."
+  (goto-char (point-min))
+  (re-search-forward (concat "^" field "[ \t]+: \\(.*\\)$"))
+  (match-string 1))
+
+(defun sys-cpuinfo ()
+  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+    (list (cpuinfo-find "vendor_id")
+	  (string-to-number (cpuinfo-find "cpu family"))
+	  (string-to-number (cpuinfo-find "model"))
+	  (string-to-number (cpuinfo-find "stepping")))))
+
+(defun sys-model-name ()
+  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+    (cpuinfo-find "model name")))
+
 (defun sys-mem ()
   "Report total and free memory."
   (let (total free)

@@ -26,6 +26,51 @@ on Linux, BSD, QNX, and Windows."
     (when show (message "Procs: %d" procs))
     procs))
 
+;;;###autoload
+(defun cpuinfo (&optional show)
+  "Returns a list describing the type of CPU(s) installed, X86
+centric. The list returned is '(vendor family model step). The
+`vendor' is a string, all others are numbers."
+  (interactive "p")
+  (let* ((info
+	  (if (fboundp 'sys-cpuinfo)
+	      (sys-cpuinfo)
+	    (cdr (cpuinfo-cpuid))))
+	 (vendor (car info)))
+
+    ;; Pretty print common vendor ids
+    (cond
+     ((string= "GenuineIntel" vendor) (setcar info "Intel"))
+     ((string-match "Authentic ?AMD" vendor) (setcar info "AMD"))
+     ((string= "CentaurHauls" vendor) (setcar info "VIA")))
+
+    (when show (message "Vendor %s Family %d Model %d Step %d"
+			(nth 0 info) (nth 1 info) (nth 2 info) (nth 3 info)))
+    info))
+
+;;;###autoload
+(defun cpuinfo-name (&optional show)
+  "Returns the model name."
+  (interactive "p")
+  (let ((name
+	 (if (fboundp 'sys-model-name)
+	     (sys-model-name)
+	   (car (cpuinfo-cpuid)))))
+    (when show (message "%s" name))
+    name))
+
+(defun cpuinfo-cpuid ()
+  (let ((exe (executable-find "cpuid")))
+    (unless exe (error "Not supported"))
+    (with-temp-buffer
+      (shell-command exe t)
+      (list
+       (cpuinfo-find "Model Name")
+       (cpuinfo-find "Vendor")
+       (string-to-number (cpuinfo-find "Family"))
+       (string-to-number (cpuinfo-find "Model"))
+       (string-to-number (cpuinfo-find "Stepping"))))))
+
 (defun cpuinfo-get ()
   "Read /proc/cpuinfo into a buffer.
 If the buffer already exists, do nothing."
@@ -77,41 +122,6 @@ flag."
 			  (if hyper (* cores phy 2) (* cores phy))))
       (list cores phy hyper))))
 
-;;;###autoload
-(defun cpuinfo (&optional show)
-  "Returns a list describing the type of CPU(s) installed, X86
-centric. The list returned is '(vendor family model step). The
-`vendor' is a string, all others are numbers."
-  (interactive "p")
-  (let* ((info
-	  (if (fboundp 'sys-cpuinfo)
-	      (sys-cpuinfo)
-	    (with-current-buffer (cpuinfo-get)
-	      (list (cpuinfo-find "vendor_id")
-		    (string-to-number (cpuinfo-find "cpu family"))
-		    (string-to-number (cpuinfo-find "model"))
-		    (string-to-number (cpuinfo-find "stepping"))))))
-	 (vendor (car info)))
-
-    ;; Pretty print common vendor ids
-    (cond
-     ((string= "GenuineIntel" vendor) (setcar info "Intel"))
-     ((string-match "Authentic ?AMD" vendor) (setcar info "AMD"))
-     ((string= "CentaurHauls" vendor) (setcar info "VIA")))
-
-    (when show (message "Vendor %s Family %d Model %d Step %d"
-			(nth 0 info) (nth 1 info) (nth 2 info) (nth 3 info)))
-    info))
-
-;;;###autoload
-(defun cpuinfo-name (&optional show)
-  "Returns the model name."
-  (interactive "p")
-  (let (name)
-    (with-current-buffer (cpuinfo-get)
-      (setq name (cpuinfo-find "model name")))
-    (when show (message "%s" name))
-    name))
 
 ;;;###autoload
 (defun cpuinfo-flags (&optional show)
