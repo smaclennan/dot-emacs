@@ -61,7 +61,11 @@ centric. The list returned is '(vendor family model step). The
 
 (defun cpuinfo-cpuid ()
   (let ((exe (executable-find "cpuid")))
-    (unless exe (error "Not supported"))
+    (unless exe
+      (if (string-match "x86" (uname "-m"))
+	  (error (concat "Not supported. Maybe install "
+			 user-emacs-directory "src/cpuid."))
+	(error "Not supported")))
     (with-temp-buffer
       (shell-command exe t)
       (list
