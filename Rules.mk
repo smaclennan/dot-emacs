@@ -12,7 +12,7 @@ LISP ?= $(filter-out $(LOADFILE),$(wildcard *.el))
 ELCS ?= $(LISP:.el=.elc)
 
 .el.elc:
-	@echo Compile $(PDIR)$<
+	@echo Compile $(SUBDIR)/$<
 	@$(EMACS) -batch -Q $(HELPER) -f batch-byte-compile $<
 
 # To override this rule, put a rule: before including Rules.mk
