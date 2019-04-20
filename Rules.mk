@@ -3,7 +3,7 @@
 
 DIR := $(shell pwd)
 SUBDIR := $(shell basename $(DIR))
-HELPER := -l ~/.emacs.d/lisp/batch-helper
+HELPER := -l $(DIR)/../lisp/batch-helper
 LOADFILE := $(SUBDIR)-loaddefs.el
 
 EMACS ?= emacs
