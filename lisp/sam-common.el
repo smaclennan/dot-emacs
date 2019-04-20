@@ -42,9 +42,9 @@ Each clause is (FEATURE BODY...)."
 
 ;; This is almost 4x faster than shell-command-to-string
 ;;;###autoload
-(defun uname (arg)
-  (with-temp-buffer
-    (call-process "uname" nil t nil arg)
+(defmacro uname (arg)
+  `(with-temp-buffer
+    (call-process "uname" nil t nil ,arg)
     (buffer-substring (point-min) (1- (point-max)))))
 
 (provide 'sam-common)
