@@ -34,7 +34,7 @@ Only works for X11.")
 	  (with-current-buffer (get-buffer-create "*weather*")
 	    (erase-buffer)
 	    (insert-image (create-image giffile))
-	    (insert " " conditions " " tempc "\u2103 " tempf "\u2109\n"))
+	    (insert " " conditions " " tempc "\u00b0C " tempf "\u00b0F\n"))
 
 	  (display-buffer-at-bottom (get-buffer "*weather*") '((window-height . 6))))
 	(message "%s  %sC  %sF" conditions tempc tempf))))
