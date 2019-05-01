@@ -3,21 +3,6 @@
 ;; ediff-files. Just set it back to no-conversion.
 (setq ediff-coding-system-for-write 'no-conversion)
 
-(unless window-system
-  (defmacro my-set-face (face fg bg weight)
-    `(set-face-attribute ,face nil :foreground ,fg :background ,bg :weight ,weight))
-  (my-set-face 'ediff-current-diff-A "black" "yellow" 'normal)
-  (my-set-face 'ediff-current-diff-B "black" "yellow" 'normal)
-  (my-set-face 'ediff-current-diff-C "black" "yellow" 'normal)
-  (my-set-face 'ediff-fine-diff-A    "red"   "yellow" 'normal)
-  (my-set-face 'ediff-fine-diff-B    "red"   "yellow" 'normal)
-  (my-set-face 'ediff-fine-diff-C    "red"   "yellow" 'normal)
-  (my-set-face 'ediff-odd-diff-A     "black" "white" 'bold)
-  (my-set-face 'ediff-odd-diff-B     "black" "white" 'bold)
-  (my-set-face 'ediff-even-diff-A    "black" "white" 'bold)
-  (my-set-face 'ediff-even-diff-B    "black" "white" 'bold)
-  )
-
 (defun my-ediff-quit ()
   "Ediff seems to always leave the bottom buffer selected but I
 want the top buffer."
