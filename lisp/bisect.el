@@ -11,6 +11,7 @@
   "File to save bisect state in.
 Warning: This file is deleted on a `bisect-end'.")
 
+;;;###autoload
 (defun bisect-start (good bad)
   (interactive "nGood: \nnBad: ")
   (and bisect-good bisect-bad
@@ -22,6 +23,7 @@ Warning: This file is deleted on a `bisect-end'.")
   (bisect-save)
   (message "Next %d" bisect-cur))
 
+;;;###autoload
 (defun bisect-end ()
   (interactive)
   (message "Current %d" bisect-cur)
@@ -33,6 +35,7 @@ Warning: This file is deleted on a `bisect-end'.")
   (when (> good bad) (cl-rotatef good bad))
   (+ (/ (- bad good) 2) good))
 
+;;;###autoload
 (defun bisect-good ()
   (interactive)
   (setq bisect-good bisect-cur)
@@ -40,6 +43,7 @@ Warning: This file is deleted on a `bisect-end'.")
   (bisect-save)
   (message "Next %d" bisect-cur))
 
+;;;###autoload
 (defun bisect-bad ()
   (interactive)
   (setq bisect-bad bisect-cur)
@@ -54,11 +58,12 @@ Warning: This file is deleted on a `bisect-end'.")
 	     bisect-good bisect-cur bisect-bad)
      nil bisect-save-file)))
 
+;;;###autoload
 (defun bisect-restore ()
   (interactive)
   (with-temp-buffer
     (insert-file-contents bisect-save-file)
-    (re-search-forward "^G \\([0-9]+\\) C \\[0-9]+\\) B \\([0-9]+\\)$")
+    (re-search-forward "^G \\([0-9]+\\) C \\([0-9]+\\) B \\([0-9]+\\)$")
     (setq bisect-good (string-to-number (match-string 1))
 	  bisect-cur  (string-to-number (match-string 2))
 	  bisect-bad  (string-to-number (match-string 3)))))
