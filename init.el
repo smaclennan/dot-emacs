@@ -7,7 +7,7 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
-(load (format "%ssys/compat-%d" user-emacs-directory emacs-major-version) nil)
+(load (format "%ssys/compat-%d" user-emacs-directory emacs-major-version) t)
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
