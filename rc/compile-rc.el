@@ -1,7 +1,7 @@
 (setq compilation-read-command   nil
       compilation-ask-about-save nil
       compilation-window-height  16
-      compilation-error-regexp-systems-list '(gnu)
+      ;; SAM compilation-error-regexp-systems-list '(gnu)
       compile-command "make ")
 
 ;; Let's see how we like this. Unfortunately it also stops at the
