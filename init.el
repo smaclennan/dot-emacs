@@ -7,8 +7,7 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
-;; This is when Emacs went insane about common lisp
-(if (< emacs-major-version 25) (load (concat user-emacs-directory "compat")))
+(load (format "%s/sys/compat-%d" user-emacs-directory emacs-major-version) nil)
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
@@ -29,11 +28,8 @@
       inhibit-startup-message t
       initial-scratch-message ";; This buffer is for goofing around in.\n\n"
       visible-bell t
-      inhibit-startup-echo-area-message (user-login-name))
-
-(if (boundp 'extended-command-suggest-shorter) ;; 26.1
-    (setq extended-command-suggest-shorter nil)
-  (setq suggest-key-bindings nil))
+      inhibit-startup-echo-area-message (user-login-name)
+      extended-command-suggest-shorter nil)
 
 (put 'narrow-to-region 'disabled nil) ;; Why? Just why?
 (fset 'yes-or-no-p 'y-or-n-p)
