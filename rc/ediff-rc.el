@@ -1,8 +1,3 @@
-;; Ediff 1.76 bug - coding system was set to 'emacs-internal which
-;; doesn't seem to exist. You see it with ediff-buffers but not
-;; ediff-files. Just set it back to no-conversion.
-(setq ediff-coding-system-for-write 'no-conversion)
-
 (defun my-ediff-quit ()
   "Ediff seems to always leave the bottom buffer selected but I
 want the top buffer."
