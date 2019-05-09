@@ -59,7 +59,7 @@
 (global-set-key [(shift f7)]    'my-make-clean)
 (global-set-key [(control f7)]	'my-set-compile)
 (global-set-key [f8] 'my-grep)
-(global-set-key [(shift f8)] 'my-grep-find)
+(global-set-key [(shift f8)]	'my-grep-find)
 (global-set-key [(control f8)]	'my-checkpatch)
 (global-set-key [f9]		'my-isearch-word-forward)
 (global-set-key [(shift f9)]    'my-toggle-case-search)
@@ -67,23 +67,20 @@
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [(control f10)] 'xref-find-references)
 (global-set-key [f11] nil) ;; I keep f11 free for temporary bindings
-(global-set-key [(shift f11)] 'my-show-messages)
+(global-set-key [(shift f11)]	'my-show-messages)
 (global-set-key [f12]		'revert-buffer)
 (global-set-key [(shift f12)]	'lxr-next-defined)
 (global-set-key [(control f12)] 'lxr-defined-at-point)
 
 (global-set-key "\M-."		'xref-find-definitions-prompt)
-(global-set-key [(meta right)] 'forward-sexp)
-(global-set-key [(meta left)]  'backward-sexp)
+(global-set-key [(meta right)]	'forward-sexp)
+(global-set-key [(meta left)]	'backward-sexp)
 
 (global-set-key "\C-cd" 'dup-line)
 (global-set-key "\C-ce" 'errno-string)
 (global-set-key "\C-cg" 'git-diff)
 (global-set-key "\C-ci" 'tag-includes)
 (global-set-key "\C-co" 'ogrok)
-
-(global-set-key "\C-c8" '80-scan)
-(global-set-key "\C-c9" '80-cleanup) ;; shift-8 and ctrl-8 did not work
 
 ;; For some reason this doesn't have a key binding
 (global-set-key "\C-hz" 'apropos-variable)
@@ -95,16 +92,14 @@
   "`previous-line' with no signal on end-of-buffer."
   (interactive "p")
   (condition-case nil
-      (with-no-warnings ;; Yes, I want the interactive version
-	(previous-line arg))
+      (call-interactively 'previous-line)
     (beginning-of-buffer)))
 
 (defun my-next-line (arg)
-  "`previous-line' with no signal on end-of-buffer."
+  "`next-line' with no signal on end-of-buffer."
   (interactive "p")
   (condition-case nil
-      (with-no-warnings ;; Yes, I want the interactive version
-	(next-line arg))
+      (call-interactively 'next-line)
     (end-of-buffer)))
 
 (global-set-key (kbd "<up>") 'my-previous-line)
