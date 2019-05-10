@@ -1,6 +1,6 @@
 ;; This is meant to be used to compile lisp files in batch mode.
 
-(dolist (dir '("lisp" "misc"))
+(dolist (dir '("lisp" "misc" "sys"))
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
