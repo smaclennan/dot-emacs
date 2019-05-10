@@ -43,8 +43,10 @@ Top level directories end in /, subdirs do not. Windows version."
 		   (regexp-quote smerge-dir1)
 		   (regexp-quote smerge-dir2)))))
 
+;;;###autoload
 (defun sys-nproc () (string-to-number (getenv "NUMBER_OF_PROCESSORS")))
 
+;;;###autoload
 (defun sys-cpuinfo ()
   (let ((ident (getenv "PROCESSOR_IDENTIFIER")))
     (unless (string-match (concat "^[^ ]+ Family \\([0-9]+\\) "
@@ -62,6 +64,7 @@ Top level directories end in /, subdirs do not. Windows version."
   (let ((mb (string-to-number (replace-regexp-in-string "," "" str))))
     (* mb #x100000)))
 
+;;;###autoload
 (defun sys-mem ()
   "Return the total and free memory reported by systeminfo.
 WARNING: This can take over 10 seconds."

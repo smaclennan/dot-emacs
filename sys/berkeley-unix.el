@@ -4,10 +4,12 @@
   "Return sysctl ARG as a number"
   (string-to-number (shell-command-to-string (concat "sysctl -n " arg))))
 
+;;;###autoload
 (defun sys-nproc ()
   "Return number of cpus."
   (sysctl "hw.ncpu"))
 
+;;;###autoload
 (defun sys-mem ()
   "Return total and free memory."
   (unless page-size (setq page-size (sysctl "hw.pagesize")))

@@ -14,6 +14,11 @@
 	 (expand-file-name (car command-line-args-left))))
     (update-directory-autoloads default-directory)))
 
+(defun update-sys ()
+  (let ((sys (replace-regexp-in-string "/" "-" (symbol-name system-type))))
+    (update-file-autoloads (concat sys ".el") t
+			   (expand-file-name "sys-loaddefs.el"))))
+
 (defun would-like (pkg)
   "Helper for building rc files. Some modes do not have a provide."
   (condition-case nil (require pkg) (error nil)))
