@@ -162,3 +162,21 @@ EXTRA; which is a possibly empty string."
 				      (match-string 2 extra))))
       (setq vers (append vers (list 0 extra))))
     vers))
+
+(defun mem-human-readable (mem)
+  (cond
+   ((> mem 1073741824)
+    (format "%.1fG" (/ mem 1073741824.0)))
+   ((> mem 1048576)
+    (format "%.1fM" (/ mem 1048576.0)))
+   ((> mem 1024)
+    (format "%.1fK" (/ mem 1024.0)))
+   (t (format "%d" mem))))
+
+;;;###autoload
+(defun memory ()
+  (interactive)
+  (let ((mem (sys-mem)))
+    (message "total %s  free %s"
+	     (mem-human-readable (car mem))
+	     (mem-human-readable (cadr mem)))))

@@ -34,6 +34,6 @@
       (goto-char (point-min))
       (re-search-forward "^Memtotal: *\\([0-9]+\\) kB$")
       (setq total (* (string-to-number (match-string 1)) 1024))
-      (re-search-forward "^Memfree: *\\([0-9]+\\) kB$")
+      (re-search-forward "^Memavailable: *\\([0-9]+\\) kB$")
       (setq free (* (string-to-number (match-string 1)) 1024)))
     (list total free)))
