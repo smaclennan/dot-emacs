@@ -180,3 +180,21 @@ EXTRA; which is a possibly empty string."
     (message "total %s  free %s"
 	     (mem-human-readable (car mem))
 	     (mem-human-readable (cadr mem)))))
+
+;;;###autoload
+(defun swap-in-word ()
+  "Take the current word and swap it around the point.
+
+e.g. create_thread => thread_create if the point is on the
+underscore."
+  (interactive)
+  (let* ((ch (char-after))
+	 (cur (point))
+	 (start (progn (backward-word) (point)))
+	 (end   (progn (forward-word)  (point)))
+	 (one (buffer-substring start cur))
+	 (two (buffer-substring (1+ cur) end)))
+    (kill-region start end)
+    (if (string-match "[a-zA-Z0-9]" (string ch))
+	(insert ch two one)
+      (insert two ch one))))

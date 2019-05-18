@@ -82,6 +82,8 @@
 (global-set-key "\C-ci" 'tag-includes)
 (global-set-key "\C-co" 'ogrok)
 
+(global-set-key "\C-c\C-t" 'swap-in-word)
+
 ;; For some reason this doesn't have a key binding
 (global-set-key "\C-hz" 'apropos-variable)
 
