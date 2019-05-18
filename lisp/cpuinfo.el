@@ -94,52 +94,6 @@ If the buffer already exists, do nothing."
   (match-string 1))
 
 ;;;###autoload
-(defun cpuinfo-num-cores (&optional show)
-  "Count physical processor cores. Returns a list with three elements:
-the number of cores, the number of processors, and a hyperthreaded
-flag."
-  (interactive "p")
-  (with-current-buffer (cpuinfo-get)
-    (let (phy cores (procs 0) hyper total)
-      ;; Count the physical processors
-      (goto-char (point-min))
-      (while (re-search-forward "^physical id[ \t]+: \\([0-9]+\\)" nil t)
-	(add-to-list 'phy (string-to-number (match-string 1))))
-      (if phy
-	  (setq phy (length phy))
-	(setq phy 1))
-
-      ;; Because Linux only allows SMP, we can just use the first
-      ;; cpu cores entry.
-      (goto-char (point-min))
-      (if (re-search-forward "^cpu cores[ \t]+: \\([0-9]+\\)" nil t)
-	  (setq cores (string-to-number (match-string 1)))
-	(setq cores 1))
-
-      ;; Count the possibly virtual processors
-      (goto-char (point-min))
-      (while (re-search-forward "^processor" nil t)
-	(setq procs (1+ procs)))
-
-      (setq total (* cores phy))
-      (when (not (eq procs total))
-	(if (eq procs (* total 2))
-	    (setq hyper t)
-	  (error "Bad number procs %d phy %d cores %d" procs phy cores)))
-
-      (when show (message "Cores: %d Procs: %d%s = %d" cores phy
-			  (if hyper " hyperthreaded" "")
-			  (if hyper (* cores phy 2) (* cores phy))))
-      (list cores phy hyper))))
-
-(defun cpuinfo-cpuid-flags ()
-  "Early versions of cpuid did not have flags"
-  (let ((exe (cpuinfo-cpuid-exe)))
-    (with-temp-buffer
-      (shell-command exe t)
-      (cpuinfo-find "Flags"))))
-
-;;;###autoload
 (defun cpuinfo-flags (&optional show)
   "Returns the cpu flags as a sorted list. Sorting the list makes it easier to find individual flags."
   (interactive "p")
