@@ -61,13 +61,17 @@ centric. The list returned is '(vendor family model step). The
     (when show (message "%s" name))
     name))
 
-(defun cpuinfo-cpuid ()
+(defun cpuinfo-cpuid-exe ()
   (let ((exe (executable-find "cpuid")))
     (unless exe
       (if (string-match "x86" (uname "-m"))
 	  (error (concat "Not supported. Maybe install "
 			 user-emacs-directory "src/cpuid."))
 	(error "Not supported")))
+    exe))
+
+(defun cpuinfo-cpuid ()
+  (let ((exe (cpuinfo-cpuid-exe)))
     (with-temp-buffer
       (shell-command exe t)
       (list
@@ -128,14 +132,23 @@ flag."
 			  (if hyper (* cores phy 2) (* cores phy))))
       (list cores phy hyper))))
 
+(defun cpuinfo-cpuid-flags ()
+  "Early versions of cpuid did not have flags"
+  (let ((exe (cpuinfo-cpuid-exe)))
+    (with-temp-buffer
+      (shell-command exe t)
+      (cpuinfo-find "Flags"))))
 
 ;;;###autoload
 (defun cpuinfo-flags (&optional show)
   "Returns the cpu flags as a sorted list. Sorting the list makes it easier to find individual flags."
   (interactive "p")
   (let (flags)
-    (with-current-buffer (cpuinfo-get)
-      (setq flags (sort (split-string (cpuinfo-find "flags")) 'string<)))
+    (if (eq system-type 'gnu/linux)
+	(with-current-buffer (cpuinfo-get)
+	  (setq flags (cpuinfo-find "flags")))
+      (setq flags (cpuinfo-cpuid-flags)))
+    (setq flags (sort (split-string flags) 'string<))
     (when show (message "%S" flags))
     flags))
 
@@ -148,5 +161,18 @@ flag."
   "Does the cpu have FLAG defined."
   (interactive "sFlag: ")
   (message "%S" (cpuinfo-has-flag flag)))
+
+(defun cpuinfo-diff-flags ()
+  "Only makes sense on Linux"
+  (interactive)
+  (let (flags-full flags missing)
+    (with-current-buffer (cpuinfo-get)
+      (setq flags-full (split-string (cpuinfo-find "flags"))))
+    (setq flags (split-string (cpuinfo-cpuid-flags)))
+    (dolist (flag flags-full)
+      (unless (member flag flags)
+	(add-to-list 'missing flag)))
+    (message "Missing %d: %S" (length missing) missing)
+    ))
 
 (provide 'cpuinfo)
