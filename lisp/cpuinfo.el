@@ -81,6 +81,13 @@ centric. The list returned is '(vendor family model step). The
        (string-to-number (cpuinfo-find "Model"))
        (string-to-number (cpuinfo-find "Stepping"))))))
 
+(defun cpuinfo-cpuid-flags ()
+  "This is a subset of the flags on Linux."
+  (let ((exe (cpuinfo-cpuid-exe)))
+    (with-temp-buffer
+      (shell-command exe t)
+      (cpuinfo-find "Flags"))))
+
 (defun cpuinfo-get ()
   "Read /proc/cpuinfo into a buffer.
 If the buffer already exists, do nothing."
@@ -117,7 +124,7 @@ If the buffer already exists, do nothing."
   (message "%S" (cpuinfo-has-flag flag)))
 
 (defun cpuinfo-diff-flags ()
-  "Only makes sense on Linux"
+  "For debugging, only makes sense on Linux."
   (interactive)
   (let (flags-full flags missing)
     (with-current-buffer (cpuinfo-get)
