@@ -157,6 +157,15 @@ the identifier."
 ;;; ------------------------------------------------------------
 ;;; Packages
 
+;; When was the last time you wanted to edit a .elc file?
+(defun my-find-file-predicate (file)
+  (not (string= (file-name-extension file) "elc")))
+
+(defun find-file-read-args (prompt mustmatch)
+  (list (read-file-name prompt nil default-directory mustmatch nil
+			'my-find-file-predicate)
+	t))
+
 (defvar commit-names '("COMMIT_EDITMSG" "svn-commit.tmp" "README")
   "* List of commit buffer names.")
 
