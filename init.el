@@ -7,7 +7,7 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
-(load (format "%ssys/compat-%d" user-emacs-directory emacs-major-version) t)
+(load (format "compat-%d" emacs-major-version) t)
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
@@ -198,9 +198,7 @@ the identifier."
 ;;; Optional Init files
 
 ;; Load a file called sys/`system-type' if it exists.
-(let ((sys (replace-regexp-in-string "/" "-" (symbol-name system-type))))
-  (load (concat user-emacs-directory "sys/" sys) t))
-
+(load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t)
 (load (concat user-emacs-directory "work") t)
 
 ;;; ------------------------------------------------------------

@@ -4,7 +4,8 @@
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
-(load (format "%ssys/compat-%d" user-emacs-directory emacs-major-version) t)
+(load (format "compat-%d" emacs-major-version) t t)
+(load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t t)
 
 (eval-when-compile (require 'autoload))
 
