@@ -198,7 +198,7 @@ the identifier."
 ;;; Optional Init files
 
 ;; Load a file called sys/`system-type' if it exists.
-(load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t)
+(load (replace-regexp-in-string "gnu/" "" (symbol-name system-type)) t)
 (load (concat user-emacs-directory "work") t)
 
 ;;; ------------------------------------------------------------
