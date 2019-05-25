@@ -5,7 +5,7 @@
   (load (concat dir "-loaddefs") t t))
 
 (load (format "compat-%d" emacs-major-version) t t)
-(load (replace-regexp-in-string "/" "-" (symbol-name system-type)) t t)
+(load (replace-regexp-in-string "gnu/" "" (symbol-name system-type)) t t)
 
 (eval-when-compile (require 'autoload))
 
@@ -16,7 +16,7 @@
     (update-directory-autoloads default-directory)))
 
 (defun update-sys ()
-  (let ((sys (replace-regexp-in-string "/" "-" (symbol-name system-type))))
+  (let ((sys (replace-regexp-in-string "gnu/" "" (symbol-name system-type))))
     (update-file-autoloads (concat sys ".el") t
 			   (expand-file-name "sys-loaddefs.el"))))
 
