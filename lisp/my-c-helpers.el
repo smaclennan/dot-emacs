@@ -202,3 +202,33 @@ Default FLAGS value is read only."
     (goto-char mark)
     (delete-char -1)
     ))
+
+(defun tabs-vs-spaces (&optional verbose)
+  "Does the current buffer use mostly tabs or spaces.
+
+With a prefix-arg displays more verbose output (actual counts),
+else just a simple tabs or spaces with a mixed hint.
+
+Non-interactively returns t if using more tabs then
+spaces. Biased towards tabs."
+  (interactive "P")
+  (let ((spaces 0) (tabs 0) (total 0))
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+	(setq total (1+ total))
+	(if (eq (char-after) ?\s)
+	    ;; Don't count block comments
+	    (when (not (eq (char-after (1+ (point))) ?*))
+	      (setq spaces (1+ spaces)))
+	  (if (eq (char-after) ?\t)
+	      (setq tabs (1+ tabs))))
+	(forward-line)))
+    (when (my-interactive-p)
+      (if verbose
+	  (message "total %d spaces %d tabs %d = %.0f%% tabs"
+		   total spaces tabs (/ (* tabs 100.0) (+ spaces tabs)))
+	(message (concat
+		  (if (>= tabs spaces) "tabs" "spaces")
+		  (if (and (> spaces 0) (> tabs 0)) " (mixed)")))))
+    (>= tabs spaces)))
