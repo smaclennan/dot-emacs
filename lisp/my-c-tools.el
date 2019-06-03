@@ -165,6 +165,7 @@ rather than the current buffer."
 	(message "You da man!")
       (display-buffer "*gcov*"))))
 
+;;;###autoload
 (defun set-c-vars (tabs width)
   "Set C tab mode. With a prefix-arg set tab width."
   (interactive (list

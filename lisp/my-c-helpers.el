@@ -203,6 +203,7 @@ Default FLAGS value is read only."
     (delete-char -1)
     ))
 
+;;;###autoload
 (defun tabs-vs-spaces (&optional verbose)
   "Does the current buffer use mostly tabs or spaces.
 
