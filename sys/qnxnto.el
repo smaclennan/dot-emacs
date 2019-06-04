@@ -15,10 +15,8 @@
     ;; First time we need to call pidin to get total mem
     (with-temp-buffer
       (call-process "pidin" nil t nil "info")
-      (goto-char (point-min))
-      (re-search-forward "Freemem:[0-9]+MB/\\([0-9]+\\)MB")
-      (setq sys-total-mem
-	    (* (string-to-number (match-string 1)) #x100000))))
+      (re-search-backward "Freemem:[0-9]+MB/\\([0-9]+\\)MB")
+      (setq sys-total-mem (* (string-to-number (match-string 1)) #x100000))))
   (list sys-total-mem
 	;; Yes ls -ld /proc = free memory
 	(nth 7 (file-attributes "/proc"))))
