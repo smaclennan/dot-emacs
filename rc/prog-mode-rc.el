@@ -5,3 +5,7 @@
 (add-hook 'prog-mode-hook #'hide-copyleft-region)
 
 (show-paren-mode t)
+
+;; Bold SAM comments
+(comment-warn 'python-mode)
+(comment-warn 'sh-mode)
