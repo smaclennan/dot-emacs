@@ -6,6 +6,6 @@
 
 (show-paren-mode t)
 
-;; Bold SAM comments
-(comment-warn 'python-mode)
-(comment-warn 'sh-mode)
+;; Bold SAM comments for simple modes (i.e. use #)
+(dolist (mode '(m4-mode makefile-mode makefile-gmake-mode python-mode sh-mode))
+  (comment-warn mode))
