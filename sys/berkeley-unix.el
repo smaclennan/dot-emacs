@@ -13,11 +13,12 @@
 ;;;###autoload
 (defun sys-nproc ()
   "Return number of cpus."
-  (sysctl "hw.ncpu"))
+  (setq sys-nproc (sysctl "hw.ncpu")))
 
 ;;;###autoload
 (defun sys-mem ()
   "Return total and free memory."
   (unless page-size (setq page-size (sysctl "hw.pagesize")))
-  (list (sysctl "hw.realmem")
+  (unless sys-mem (setq sys-mem (sysctl "hw.realmem")))
+  (list sys-mem
 	(* (sysctl "vm.stats.vm.v_free_count") page-size)))

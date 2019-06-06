@@ -3,6 +3,12 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
+(defvar sys-mem nil
+  "Total system memory. You must call `sys-mem' to initialize this.")
+
+(defvar sys-nproc nil
+  "Total number of processors. You must call `sys-nproc' to initialize this.")
+
 (dolist (dir '("lisp" "misc" "sys"))
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))

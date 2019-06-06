@@ -44,7 +44,8 @@ Top level directories end in /, subdirs do not. Windows version."
 		   (regexp-quote smerge-dir2)))))
 
 ;;;###autoload
-(defun sys-nproc () (string-to-number (getenv "NUMBER_OF_PROCESSORS")))
+(defun sys-nproc ()
+  (setq sys-nproc (string-to-number (getenv "NUMBER_OF_PROCESSORS"))))
 
 ;;;###autoload
 (defun sys-cpuinfo ()
@@ -68,17 +69,17 @@ Top level directories end in /, subdirs do not. Windows version."
 (defun sys-mem ()
   "Return the total and free memory reported by systeminfo.
 WARNING: This can take over 10 seconds."
-  (let (total avail)
+  (let (avail)
     (with-temp-buffer
       (message "Calling systeminfo... Please wait...")
       (call-process "systeminfo" nil t)
       (message "Calling systeminfo... done.")
       (goto-char (point-min))
       (re-search-forward "^Total Physical Memory: *\\([0-9,]+\\) MB")
-      (setq total (sys-mb (match-string 1)))
+      (setq sys-mem (sys-mb (match-string 1)))
       (re-search-forward "^Available Physical Memory: *\\([0-9,]+\\) MB")
       (setq avail (sys-mb (match-string 1))))
-    (list total avail)))
+    (list sys-mem avail)))
 
 (defun build-all-loaddefs ()
   (interactive)
