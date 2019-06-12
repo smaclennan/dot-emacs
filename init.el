@@ -43,8 +43,8 @@
 ;; Let's try making _ part of a "word". C & C++ done in cc-mode-rc.el
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 
-;; There are going to be large files. e.g. tags files
-(setq large-file-warning-threshold #x3000000) ;; 48M
+;; There are going to be large tag files
+(setq large-file-warning-threshold #x4000000) ;; 64M
 
 ;;; ------------------------------------------------------------
 ;;; Keys
