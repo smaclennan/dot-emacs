@@ -13,6 +13,9 @@ path or relative.
 If `kloc-dir' is not set, `kloc-project-dir' will search this
 list to try to find the kloc directory.")
 
+;; Defined in rc/compile.el
+(defvar make-clean-command nil)
+
 (require 'compile)
 (require 'git-diff)
 
@@ -95,6 +98,27 @@ results in a compilation buffer."
 	(error "No project directory found")))
     (display-buffer "*kloc*")
     (message "kloc done.")))
+
+(defun kloc-run (cmd)
+  "Trivial helper function."
+  (message "%s" cmd)
+  (shell-command cmd))
+
+;;;###autoload
+(defun kloc-add-local ()
+  "Add the current buffers file to a kloc project locally.
+
+Assumes that `compile-command' and `make-clean-command' are set
+properly for the current buffer.
+
+WARNING: This tends to mess up the project."
+  (interactive)
+  (let ((kdir (kloc-project-dir buffer-file-name)))
+    (unless kdir (error "No klocwork project found"))
+    (kloc-run make-clean-command)
+    (kloc-run (concat "kwinject -o buildspec.out " compile-command))
+    (kloc-run (concat"kwcheck run -b buildspec.out -pd=" kdir))
+    (message "done")))
 
 ;;;###autoload
 (defun kloc-git ()
