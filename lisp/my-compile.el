@@ -45,6 +45,12 @@
 (defvar make-j "-j8"
   "* -Jn value to pass to makes.")
 
+(defun gdb-func (matched-dir target)
+  (setq compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))
+  (c-set-style "gnu")
+  (setq c-basic-offset 2)
+  (setq tab-width 8))
+
 (defvar my-compile-dir-list
   (list
    (list (concat "^" my-kernel-dir "/") make-j "linux")
@@ -54,6 +60,8 @@
    (list ".*/s?x?emacs[^/]*/" make-j "gnu")
    ;; Busybox
    (list ".*/busybox/" make-j)
+   ;; gdb
+   (list "^.*/gdb-[0-9.]+/" nil 'gdb-func)
    )
   "*A list of directory matches used by `my-compile-command' to set
 the compile command.
