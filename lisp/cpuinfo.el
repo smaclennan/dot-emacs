@@ -19,16 +19,6 @@
 ;; Boston, MA 02111-1307, USA.
 
 ;;;###autoload
-(defun cpuinfo-num-processors (&optional show)
-  "Return number of processors.
-This is the most generic of the cpuinfo-* functions. Should work
-on Linux, BSD, QNX, and Windows."
-  (interactive "p")
-  (let ((procs (if (fboundp 'sys-nproc) (sys-nproc) 1)))
-    (when show (message "Procs: %d" procs))
-    procs))
-
-;;;###autoload
 (defun cpuinfo (&optional show)
   "Returns a list describing the type of CPU(s) installed, X86
 centric. The list returned is '(name vendor family model step). The
