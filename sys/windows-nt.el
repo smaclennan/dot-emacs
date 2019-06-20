@@ -50,15 +50,16 @@ Top level directories end in /, subdirs do not. Windows version."
 ;;;###autoload
 (defun sys-cpuinfo ()
   (let ((ident (getenv "PROCESSOR_IDENTIFIER")))
-    (unless (string-match (concat "^[^ ]+ Family \\([0-9]+\\) "
+    (unless (string-match (concat "^\\([^ ]+\\) Family \\([0-9]+\\) "
 				  "Model \\([0-9]+\\) "
 				  "Stepping \\([0-9]+\\), "
 				  "\\(.*\\)$") ident)
       (error "Vendor not found in %s" ident))
-    (list (match-string 4 ident)
-	  (string-to-number (match-string 1 ident))
+    (list (match-string 1 ident) ;; not really model name
+	  (match-string 5 ident)
 	  (string-to-number (match-string 2 ident))
-	  (string-to-number (match-string 3 ident)))))
+	  (string-to-number (match-string 3 ident))
+	  (string-to-number (match-string 4 ident)))))
 
 (defun sys-mb (str)
   "Helper function to convert number with commas from MB to bytes."

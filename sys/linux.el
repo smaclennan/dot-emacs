@@ -7,25 +7,6 @@
 	  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
 	    (count-matches "^processor" (point-min))))))
 
-(defun cpuinfo-find (field)
-  "Find a field in cpuinfo output."
-  (goto-char (point-min))
-  (re-search-forward (concat "^" field "[ \t]+: \\(.*\\)$"))
-  (match-string 1))
-
-;;;###autoload
-(defun sys-cpuinfo ()
-  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
-    (list (cpuinfo-find "vendor_id")
-	  (string-to-number (cpuinfo-find "cpu family"))
-	  (string-to-number (cpuinfo-find "model"))
-	  (string-to-number (cpuinfo-find "stepping")))))
-
-;;;###autoload
-(defun sys-model-name ()
-  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
-    (cpuinfo-find "model name")))
-
 ;;;###autoload
 (defun sys-mem ()
   "Report total and free memory."
@@ -38,3 +19,24 @@
       (re-search-forward "^Memavailable: *\\([0-9]+\\) kB$")
       (setq free (* (string-to-number (match-string 1)) 1024)))
     (list sys-mem free)))
+
+(defvar sys-cpuinfo nil
+  "Filled in by `sys-cpuinfo'.")
+
+(defun cpuinfo-find (field)
+  "Find a field in cpuinfo output."
+  (goto-char (point-min))
+  (re-search-forward (concat "^" field "[ \t]+: \\(.*\\)$"))
+  (match-string 1))
+
+;;;###autoload
+(defun sys-cpuinfo ()
+  (unless sys-cpuinfo
+    (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+      (setq sys-cpuinfo
+	    (list (cpuinfo-find "model name")
+		  (cpuinfo-find "vendor_id")
+		  (string-to-number (cpuinfo-find "cpu family"))
+		  (string-to-number (cpuinfo-find "model"))
+		  (string-to-number (cpuinfo-find "stepping"))))))
+  sys-cpuinfo)

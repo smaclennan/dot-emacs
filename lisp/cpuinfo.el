@@ -31,35 +31,25 @@ on Linux, BSD, QNX, and Windows."
 ;;;###autoload
 (defun cpuinfo (&optional show)
   "Returns a list describing the type of CPU(s) installed, X86
-centric. The list returned is '(vendor family model step). The
-`vendor' is a string, all others are numbers."
+centric. The list returned is '(name vendor family model step). The
+`name' and `vendor' are strings, all others are numbers."
   (interactive "p")
   (let* ((info
 	  (if (fboundp 'sys-cpuinfo)
 	      (sys-cpuinfo)
-	    (cdr (cpuinfo-cpuid))))
-	 (vendor (car info)))
+	    (cpuinfo-cpuid)))
+	 (vendor (cadr info)))
 
     ;; Pretty print common vendor ids
     (cond
-     ((string= "GenuineIntel" vendor) (setcar info "Intel"))
-     ((string-match "Authentic ?AMD" vendor) (setcar info "AMD"))
-     ((string= "CentaurHauls" vendor) (setcar info "VIA")))
+     ((string= "GenuineIntel" vendor) (setq vendor "Intel"))
+     ((string-match "Authentic ?AMD" vendor) (setq vendor "AMD"))
+     ((string= "CentaurHauls" vendor) (setq vendor "VIA")))
 
-    (when show (message "Vendor %s Family %d Model %d Step %d"
-			(nth 0 info) (nth 1 info) (nth 2 info) (nth 3 info)))
+    (when show (message "%s Vendor %s Family %d Model %d Step %d Procs %d"
+			(nth 0 info) vendor (nth 2 info) (nth 3 info)
+			(nth 4 info) (sys-nproc)))
     info))
-
-;;;###autoload
-(defun cpuinfo-name (&optional show)
-  "Returns the model name."
-  (interactive "p")
-  (let ((name
-	 (if (fboundp 'sys-model-name)
-	     (sys-model-name)
-	   (car (cpuinfo-cpuid)))))
-    (when show (message "%s" name))
-    name))
 
 (defun cpuinfo-cpuid-exe ()
   (let ((exe (executable-find "cpuid")))
