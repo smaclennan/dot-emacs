@@ -20,9 +20,6 @@
       (setq free (* (string-to-number (match-string 1)) 1024)))
     (list sys-mem free)))
 
-(defvar sys-cpuinfo nil
-  "Filled in by `sys-cpuinfo'.")
-
 (defun cpuinfo-find (field)
   "Find a field in cpuinfo output."
   (goto-char (point-min))
@@ -31,15 +28,12 @@
 
 ;;;###autoload
 (defun sys-cpuinfo ()
-  (unless sys-cpuinfo
-    (with-current-buffer (find-file-noselect "/proc/cpuinfo")
-      (setq sys-cpuinfo
-	    (list (cpuinfo-find "model name")
-		  (cpuinfo-find "vendor_id")
-		  (string-to-number (cpuinfo-find "cpu family"))
-		  (string-to-number (cpuinfo-find "model"))
-		  (string-to-number (cpuinfo-find "stepping"))))))
-  sys-cpuinfo)
+  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+    (list (cpuinfo-find "model name")
+	  (cpuinfo-find "vendor_id")
+	  (string-to-number (cpuinfo-find "cpu family"))
+	  (string-to-number (cpuinfo-find "model"))
+	  (string-to-number (cpuinfo-find "stepping")))))
 
 ;;;###autoload
 (defun sys-cpu-flags ()
