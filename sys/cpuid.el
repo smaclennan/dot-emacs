@@ -7,6 +7,12 @@
 	(error "Not supported")))
     exe))
 
+(defun cpuinfo-find (field)
+  "Find a field in cpuinfo output."
+  (goto-char (point-min))
+  (re-search-forward (concat "^" field "[ \t]+: \\(.*\\)$"))
+  (match-string 1))
+
 (defun cpuid-cpuinfo ()
   (let ((exe (cpuid-cpuinfo-exe)))
     (with-temp-buffer
@@ -23,6 +29,4 @@
   (let ((exe (cpuid-cpuinfo-exe)))
     (with-temp-buffer
       (shell-command exe t)
-      (goto-char (point-min))
-      (re-search-forward (concat "^Flags[ \t]+: \\(.*\\)$"))
-      (match-string 1))))
+      (cpuinfo-find "Flags"))))

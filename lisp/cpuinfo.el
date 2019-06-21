@@ -53,7 +53,7 @@ centric. The list returned is '(name vendor family model step). The
   (interactive "sFlag: \np")
   (let ((has-flag (member flag (cpuinfo-flags))))
     (when show
-      (message "%S" has-flag))
+      (message "%s %s" flag (if has-flag "yes" "no")))
     has-flag))
 
 ;; Not really cpuinfo... but makes sense here
