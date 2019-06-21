@@ -105,22 +105,14 @@ An ARG comments out the old line."
       (insert line "\n"))))
 
 (defun mine (&optional all)
-  "Return a list of all my .el files. If `all' is non-nil,
-returns all .el files."
-  (let* ((base (file-name-directory user-init-file))
-	 (files (directory-files-recursive base ".*\.el$")))
+  "Return a list of all my .el files.
+If ALL is non-nil, returns all .el files."
+  (let ((files (directory-files-recursive user-emacs-directory ".*\\.el$")))
     (unless all
-      ;; misc not mine
+      ;; misc and loaddefs not mine
       (dolist (file files)
-	(when (string-match ".*/misc/.*" file)
-	  (setq files (delete file files))))
-
-      (dolist (file '(;; generated files
-		      "lisp/lisp-loaddefs.el" "misc/misc-loaddefs.el"
-		      ;; ignore this to make comparisons
-		      "user-init.el"
-		      ))
-	(setq files (delete (concat base file) files))))
+	(when (string-match "/misc/\\|-loaddefs" file)
+	  (setq files (delete file files)))))
     files))
 
 ;;;###autoload
