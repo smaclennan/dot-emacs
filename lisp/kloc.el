@@ -94,9 +94,9 @@ results in a compilation buffer."
   (let ((file buffer-file-name))
     (with-current-buffer (get-buffer-create "*kloc*")
       (erase-buffer)
+      (display-buffer "*kloc*")
       (unless (kloc-do-one file)
 	(error "No project directory found")))
-    (display-buffer "*kloc*")
     (message "kloc done.")))
 
 (defun kloc-run (cmd)
