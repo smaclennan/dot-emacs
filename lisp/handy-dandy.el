@@ -1,8 +1,6 @@
 ;; Handy Dandy(tm) Functions
 
-(require 'sam-common)
 (require 'dirfiles)
-(require 'my-compile)
 
 ;;;###autoload
 (defun unixtime (seconds)
@@ -46,18 +44,6 @@
 	 (cursize (- (nth 3 edges) (nth 1 edges) -1)))
     (unless (= size cursize)
       (enlarge-window (- size cursize)))))
-
-;;;###autoload
-(defun load-path-roots ()
-  "Show only the root dirs in the `load-path'."
-  (interactive)
-  (let (dirs)
-    (dolist (dir load-path)
-      (when (string-match "/lisp/.*" dir)
-	(setq dir (replace-match "" nil nil dir)))
-      (add-to-list 'dirs dir))
-    (if (my-interactive-p) (message "%S" dirs))
-    dirs))
 
 (defvar signed-off-by-sig nil
   "* Signature used by `signed-off-by' function.
