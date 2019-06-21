@@ -40,3 +40,8 @@
 		  (string-to-number (cpuinfo-find "model"))
 		  (string-to-number (cpuinfo-find "stepping"))))))
   sys-cpuinfo)
+
+;;;###autoload
+(defun sys-cpu-flags ()
+  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+    (cpuinfo-find "flags")))

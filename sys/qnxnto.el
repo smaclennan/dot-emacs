@@ -17,3 +17,11 @@
   (list sys-mem
 	;; Yes ls -ld /proc = free memory
 	(nth 7 (file-attributes "/proc"))))
+
+(load "cpuid")
+
+;;;###autoload
+(defun sys-cpuinfo () (cpuid-cpuinfo))
+
+;;;###autoload
+(defun sys-cpu-flags () (cpuid-cpu-flags))

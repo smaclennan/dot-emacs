@@ -1,4 +1,4 @@
-;;; cpuinfo.el --- simple interface to /proc/cpuinfo
+;;; cpuinfo.el --- CPU info... and memory too
 ;; Copyright (C) 2010-2019 Sean MacLennan
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -24,10 +24,7 @@
 centric. The list returned is '(name vendor family model step). The
 `name' and `vendor' are strings, all others are numbers."
   (interactive "p")
-  (let* ((info
-	  (if (fboundp 'sys-cpuinfo)
-	      (sys-cpuinfo)
-	    (cpuinfo-cpuid)))
+  (let* ((info (sys-cpuinfo))
 	 (vendor (cadr info)))
 
     ;; Pretty print common vendor ids
@@ -41,79 +38,42 @@ centric. The list returned is '(name vendor family model step). The
 			(nth 4 info) (sys-nproc)))
     info))
 
-(defun cpuinfo-cpuid-exe ()
-  (let ((exe (executable-find "cpuid")))
-    (unless exe
-      (if (string-match "x86" (uname "-m"))
-	  (error (concat "Not supported. Maybe install "
-			 user-emacs-directory "src/cpuid."))
-	(error "Not supported")))
-    exe))
-
-(defun cpuinfo-cpuid ()
-  (let ((exe (cpuinfo-cpuid-exe)))
-    (with-temp-buffer
-      (shell-command exe t)
-      (list
-       (cpuinfo-find "Model Name")
-       (cpuinfo-find "Vendor")
-       (string-to-number (cpuinfo-find "Family"))
-       (string-to-number (cpuinfo-find "Model"))
-       (string-to-number (cpuinfo-find "Stepping"))))))
-
-(defun cpuinfo-cpuid-flags ()
-  "This is a subset of the flags on Linux."
-  (let ((exe (cpuinfo-cpuid-exe)))
-    (with-temp-buffer
-      (shell-command exe t)
-      (cpuinfo-find "Flags"))))
-
-(defun cpuinfo-get ()
-  "Read /proc/cpuinfo into a buffer.
-If the buffer already exists, do nothing."
-  (unless (eq system-type 'gnu/linux) (error "Not supported."))
-  (find-file-noselect "/proc/cpuinfo"))
-
-(defun cpuinfo-find (field)
-  "Find a field in cpuinfo output."
-  (goto-char (point-min))
-  (re-search-forward (concat "^" field "[ \t]+: \\(.*\\)$"))
-  (match-string 1))
-
 ;;;###autoload
 (defun cpuinfo-flags (&optional show)
   "Returns the cpu flags as a sorted list. Sorting the list makes it easier to find individual flags."
   (interactive "p")
-  (let (flags)
-    (if (eq system-type 'gnu/linux)
-	(with-current-buffer (cpuinfo-get)
-	  (setq flags (cpuinfo-find "flags")))
-      (setq flags (cpuinfo-cpuid-flags)))
+  (let ((flags (sys-cpu-flags)))
     (setq flags (sort (split-string flags) 'string<))
     (when show (message "%S" flags))
     flags))
 
-(defun cpuinfo-has-flag (flag)
+;;;###autoload
+(defun cpuinfo-has-flag (flag &optional show)
   "Does the cpu have FLAG defined."
-  (car (member flag (cpuinfo-flags))))
+  (interactive "sFlag: \np")
+  (let ((has-flag (member flag (cpuinfo-flags))))
+    (when show
+      (message "%S" has-flag))
+    has-flag))
+
+;; Not really cpuinfo... but makes sense here
+(defun mem-human-readable (mem)
+  (cond
+   ((> mem 1073741824)
+    (format "%.1fG" (/ mem 1073741824.0)))
+   ((> mem 1048576)
+    (format "%.1fM" (/ mem 1048576.0)))
+   ((> mem 1024)
+    (format "%.1fK" (/ mem 1024.0)))
+   (t (format "%d" mem))))
 
 ;;;###autoload
-(defun cpuinfo-show-flag (flag)
-  "Does the cpu have FLAG defined."
-  (interactive "sFlag: ")
-  (message "%S" (cpuinfo-has-flag flag)))
-
-(defun cpuinfo-diff-flags ()
-  "For debugging, only makes sense on Linux."
+(defun memory ()
+  "Display total and free memory."
   (interactive)
-  (let (flags-full flags missing)
-    (with-current-buffer (cpuinfo-get)
-      (setq flags-full (split-string (cpuinfo-find "flags"))))
-    (setq flags (split-string (cpuinfo-cpuid-flags)))
-    (dolist (flag flags-full)
-      (unless (member flag flags)
-	(add-to-list 'missing flag)))
-    (message "Missing %d: %S" (length missing) missing)
-    ))
+  (let ((mem (sys-mem)))
+    (message "total %s  free %s"
+	     (mem-human-readable (car mem))
+	     (mem-human-readable (cadr mem)))))
 
 (provide 'cpuinfo)

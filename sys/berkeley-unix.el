@@ -22,3 +22,11 @@
   (unless sys-mem (setq sys-mem (sysctl "hw.realmem")))
   (list sys-mem
 	(* (sysctl "vm.stats.vm.v_free_count") page-size)))
+
+(load "cpuid")
+
+;;;###autoload
+(defun sys-cpuinfo () (cpuid-cpuinfo))
+
+;;;###autoload
+(defun sys-cpu-flags () (cpuid-cpu-flags))
