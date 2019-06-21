@@ -19,33 +19,20 @@
 ;; Boston, MA 02111-1307, USA.
 
 ;;;###autoload
-(defun cpuinfo (&optional show)
-  "Returns a list describing the type of CPU(s) installed, X86
-centric. The list returned is '(name vendor family model step). The
-`name' and `vendor' are strings, all others are numbers."
-  (interactive "p")
+(defun cpuinfo ()
+  "Describes the current cpus."
+  (interactive)
   (let* ((info (sys-cpuinfo))
 	 (vendor (cadr info)))
-
     ;; Pretty print common vendor ids
     (cond
      ((string= "GenuineIntel" vendor) (setq vendor "Intel"))
      ((string-match "Authentic ?AMD" vendor) (setq vendor "AMD"))
      ((string= "CentaurHauls" vendor) (setq vendor "VIA")))
 
-    (when show (message "%s Vendor %s Family %d Model %d Step %d Procs %d"
-			(nth 0 info) vendor (nth 2 info) (nth 3 info)
-			(nth 4 info) (sys-nproc)))
-    info))
-
-;;;###autoload
-(defun cpuinfo-flags (&optional show)
-  "Returns the cpu flags as a sorted list. Sorting the list makes it easier to find individual flags."
-  (interactive "p")
-  (let ((flags (sys-cpu-flags)))
-    (setq flags (sort (split-string flags) 'string<))
-    (when show (message "%S" flags))
-    flags))
+    (message "%s Vendor %s Family %d Model %d Step %d Procs %d"
+	     (nth 0 info) vendor (nth 2 info) (nth 3 info)
+	     (nth 4 info) (sys-nproc))))
 
 ;;;###autoload
 (defun cpuinfo-has-flag (flag &optional show)
