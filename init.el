@@ -9,6 +9,8 @@
 (defvar sys-nproc nil
   "Total number of processors. You must call `sys-nproc' to initialize this.")
 
+(if (featurep 'xemacs) (load "~/.xemacs/sys/xemacs"))
+
 (dolist (dir '("lisp" "misc" "sys"))
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
