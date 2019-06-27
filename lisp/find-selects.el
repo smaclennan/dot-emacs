@@ -3,6 +3,9 @@
 (defvar kfs-bufname "*find-selects*"
   "*Name of buffer to use for `kernel-find-selects' and friends.")
 
+(defvar kfs-kernel-dir my-kernel-dir
+  "Kernel directory to use for `kernel-find-selects'.")
+
 (defun kfs-find-in-file(select file)
   "Returns t if `SELECT' is found as a select in `FILE' (which should
 be a Kconfig)."
@@ -37,11 +40,13 @@ be a Kconfig)."
 ;;;###autoload
 (defun kernel-find-selects(select &optional kdir)
   "Search all the Kconfig files in `KDIR' for select and config lines
-that match `SELECT'. If `KDIR' is nil, the current kernel directory is
-used. Outputs the file list to the *find-selects* buffer."
+that match `SELECT'.
+
+If `KDIR' is nil, `kfs-kernel-dir' is used. Outputs the file list
+to the *find-selects* buffer."
   (interactive "sConfig: ")
   (unless kdir
-    (setq kdir my-kernel-dir))
+    (setq kdir kfs-kernel-dir))
 
   (setq select (concat "\\<" select "\\>"))
 
