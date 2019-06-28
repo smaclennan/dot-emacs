@@ -44,10 +44,12 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
 	;; This removes the last directory
 	(setq dir (file-name-directory (directory-file-name dir)))))))
 
-(defun kloc-do-one (file &optional no-parse-compile)
+(defun kloc-do-one (file &optional no-parse-compile raw)
   "Run kloc on FILE into the current buffer at the point.
 If NO-PARSE-COMPILE is nil, also do a
 `compilation--parse-region' on the entire buffer.
+
+If RAW is non-nil, leave the raw output in the buffer.
 
 Returns the kloc project directory or nil."
   (let ((kdir (kloc-project-dir file))
@@ -56,21 +58,22 @@ Returns the kloc project directory or nil."
       (save-excursion
 	(call-process-shell-command (format kloc-cmd kdir file) nil '(t t) t))
 
-      ;; Delete the header
-      (when (or (re-search-forward "Linking stage completed" nil t)
-		(re-search-forward "up to date" nil t))
-	(end-of-line) (forward-char))
-      (kill-region start (point))
+      (unless raw
+	;; Delete the header
+	(when (or (re-search-forward "Linking stage completed" nil t)
+		  (re-search-forward "up to date" nil t))
+	  (end-of-line) (forward-char))
+	(kill-region start (point))
 
-      ;; Fixup the lines for compilation
-      (while (re-search-forward "^[^:]+:\\([0-9]+\\)" nil t)
-	(replace-match (concat file ":" (match-string 1) ":1"))))
-    ;; For the kloc-do-many list we want to parse even if no kdir.
-    ;; Doesn't hurt in any case.
-    (unless no-parse-compile
-      (compilation-mode "kloc")
-      (setq buffer-read-only nil)
-      (compilation--parse-region (point-min) (point-max)))
+	;; Fixup the lines for compilation
+	(while (re-search-forward "^[^:]+:\\([0-9]+\\)" nil t)
+	  (replace-match (concat file ":" (match-string 1) ":1"))))
+      ;; For the kloc-do-many list we want to parse even if no kdir.
+      ;; Doesn't hurt in any case.
+      (unless no-parse-compile
+	(compilation-mode "kloc")
+	(setq buffer-read-only nil)
+	(compilation--parse-region (point-min) (point-max))))
     kdir))
 
 (defun kloc-do-list (flist)
@@ -86,16 +89,19 @@ Returns the kloc project directory or nil."
 	(setq flist (cdr flist)))))
 
 ;;;###autoload
-(defun kloc ()
+(defun kloc (raw)
   "Check the current buffer with klocwork.
 Uses `kloc-project-dir' to find the project directory. Puts the
-results in a compilation buffer."
-  (interactive)
+results in a compilation buffer.
+
+A universal argument triggers raw output.
+"
+  (interactive "P")
   (let ((file buffer-file-name))
     (with-current-buffer (get-buffer-create "*kloc*")
       (erase-buffer)
       (display-buffer "*kloc*")
-      (unless (kloc-do-one file)
+      (unless (kloc-do-one file nil raw)
 	(error "No project directory found")))
     (message "kloc done.")))
 
