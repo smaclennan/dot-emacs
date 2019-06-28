@@ -2,24 +2,33 @@ This directory tree contains my config files and packages for Emacs.
 
 A brief rundown:
 
-* The config files are in the top level.
+/
+  * init.el
+    Should need no introduction.
 
-* My lisp code is in lisp.
+  * user-init.el (optional)
+    This is used to tweak per machine settings such as email address
+    and laptop-mode.
 
-* Other lisp code is in misc.
+  * work.el (optional)
+    Work related configs very specific to my job.
 
-* I use Didier Verna's el-rcfiles package. The rc files are in the rc
-  directory. https://github.com/didierverna/el-rcfiles
+lisp/
+  * my lisp code
 
-Optional config files called from init.el:
+misc/
+  * other's lisp code
 
-* user-init.el: If user-init.el exists, it is run at the start of
-  init.el. This is used to tweak per machine settings such as email
-  address and laptop-mode.
+rc/
+  * I use Didier Verna's el-rcfiles package
+    https://github.com/didierverna/el-rcfiles
 
-* work.el: This provides work related configs. This is very specific
-  to my job so you probably want to override it.
+src/
+  * non-lisp files associated with emacs in some way
 
-* sys/`system-type'.el: For system specific config.
+sys/
+  * compat-<emacs major version>.el
+  * <system-type>.el
+  * xemacs.el
 
-You can find contact information at http://seanm.ca/.
+You can contact me at seanm . seanm.ca.
