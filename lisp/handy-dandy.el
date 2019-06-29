@@ -1,7 +1,5 @@
 ;; Handy Dandy(tm) Functions
 
-(require 'dirfiles)
-
 ;;;###autoload
 (defun unixtime (seconds)
   (interactive "sTime: ")
@@ -93,7 +91,7 @@ An ARG comments out the old line."
 (defun mine (&optional all)
   "Return a list of all my .el files.
 If ALL is non-nil, returns all .el files."
-  (let ((files (directory-files-recursive user-emacs-directory "/.*\\.el$")))
+  (let ((files (directory-files-recursively user-emacs-directory ".*\\.el$")))
     (unless all
       ;; misc and loaddefs not mine
       (dolist (file files)

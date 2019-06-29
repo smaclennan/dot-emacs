@@ -129,3 +129,20 @@ will do it for you.")
   ;; We need a frame redraw after changing the fonts or we get
   ;; artifacts at the bottom of the display
   (redraw-frame nil t))
+
+;; SAM Not complete
+;;;###autoload
+(defun directory-files-recursively (dir &optional match)
+  "Return a list of files in DIR recursively descending all
+subdirectories that do not start in a dot (.).
+
+If MATCH is non-nil, match all files against the regular
+expression.  If you want to match only against the file portion
+/<match>$ is recommended."
+  (let (files)
+    (dolist (d (directory-files-and-attributes dir t "^[^.].*"))
+      (if (eq (cadr d) t)
+	  (setq files (append files (directory-files-recursive (car d) match)))
+	(when (or (not match) (string-match match (car d)))
+	  (setq files (append files (list (car d)))))))
+    files))

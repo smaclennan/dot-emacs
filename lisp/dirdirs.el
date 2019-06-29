@@ -1,20 +1,4 @@
 ;;;###autoload
-(defun directory-files-recursive (dir &optional match)
-  "Return a list of files in DIR recursively descending all
-subdirectories that do not start in a dot (.).
-
-If MATCH is non-nil, match all files against the regular
-expression.  If you want to match only against the file portion
-/<match>$ is recommended."
-  (let (files)
-    (dolist (d (directory-files-and-attributes dir t "^[^.].*"))
-      (if (eq (cadr d) t)
-	  (setq files (append files (directory-files-recursive (car d) match)))
-	(when (or (not match) (string-match match (car d)))
-	  (setq files (append files (list (car d)))))))
-    files))
-
-;;;###autoload
 (defun directory-dirs-recursive (dir)
   "Return a list of directories in DIR recursively descending all
 subdirectories that do not start in a dot (.)."
