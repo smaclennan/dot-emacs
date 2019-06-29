@@ -19,4 +19,4 @@ are ignored. If NOSORT is non-nil then the list is not sorted."
 	(setq dirlist (append dirlist (list (car subdir))))))
     dirlist))
 
-(provide 'dirfiles)
+(provide 'dirdirs)
