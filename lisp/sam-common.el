@@ -34,10 +34,10 @@ Each clause is (FEATURE BODY...)."
      ,name))
 
 ;;;###autoload
-(defmacro measure-time (&rest body)
-  "Measure the time it takes to evaluate BODY."
+(defmacro measure-time (loops &rest body)
+  "Measure the time it takes to evaluate BODY LOOPS times."
   `(let ((time (current-time)))
-     ,@body
+     (cl-loop repeat ,loops do ,@body)
      (message "%.06f" (float-time (time-since time)))))
 
 ;; This is almost 4x faster than shell-command-to-string
