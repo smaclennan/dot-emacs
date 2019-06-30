@@ -3,6 +3,8 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
+(defvar emacs-start-time (current-time))
+
 (defvar sys-mem nil
   "Total system memory. You must call `sys-mem' to initialize this.")
 
@@ -46,7 +48,7 @@
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 
 ;; There are going to be large tag files
-(setq large-file-warning-threshold #x4000000) ;; 64M
+(setq large-file-warning-threshold #x4800000) ;; 72M
 
 ;;; ------------------------------------------------------------
 ;;; Keys
