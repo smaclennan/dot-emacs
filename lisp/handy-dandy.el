@@ -8,24 +8,23 @@
 ;;;###autoload
 (defun my-x-colour (number)
   (interactive "sColour: ")
-  (cond
-   ;; Convert 'd d d' to `#xxxxxx'
-   ((string-match "^\\([0-9]+\\)\\([ \t]+[0-9]+\\)\\([ \t]+[0-9]+\\)$" number)
-    (message "#%02x%02x%02x"
-	     (string-to-number (match-string 1 number))
-	     (string-to-number (match-string 2 number))
-	     (string-to-number (match-string 3 number))))
-   ;; Convert `#xxxxxx' to `d d d'
-   ((string-match (concat "^#"
-			  "\\([0-9a-fA-F][0-9a-fA-F]\\)"
-			  "\\([0-9a-fA-F][0-9a-fA-F]\\)"
-			  "\\([0-9a-fA-F][0-9a-fA-F]\\)$")
-		  number)
-    (message "%d %d %d"
-	     (string-to-number (match-string 1 number) 16)
-	     (string-to-number (match-string 2 number) 16)
-	     (string-to-number (match-string 3 number) 16)))
-   (t (error "Invalid"))))
+  (let ((case-fold-search t))
+    (cond
+     ;; Convert 'd d d' to `#xxxxxx'
+     ((string-match "^\\([0-9]+\\)\\([ \t]+[0-9]+\\)\\([ \t]+[0-9]+\\)$" number)
+      (message "#%02x%02x%02x"
+	       (string-to-number (match-string 1 number))
+	       (string-to-number (match-string 2 number))
+	       (string-to-number (match-string 3 number))))
+     ;; Convert `#xxxxxx' to `d d d'
+     ((string-match
+       "^#\\([0-9a-f]\\{2\\}\\)\\([0-9a-f]\\{2\\}\\)\\([0-9a-f]\\{2\\}\\)$"
+       number)
+      (message "%d %d %d"
+	       (string-to-number (match-string 1 number) 16)
+	       (string-to-number (match-string 2 number) 16)
+	       (string-to-number (match-string 3 number) 16)))
+     (t (error "Invalid")))))
 
 ;;;###autoload
 (defun size-window (size)
@@ -148,8 +147,8 @@ underscore."
       (message "%s %s" flag (if has-flag "yes" "no")))
     has-flag))
 
-;; Not really cpuinfo... but makes sense here
 (defun mem-human-readable (mem)
+  "Convert MEM in bytes to human readable form."
   (cond
    ((> mem 1073741824)
     (format "%.1fG" (/ mem 1073741824.0)))
