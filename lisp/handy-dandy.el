@@ -48,7 +48,7 @@ If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
       (insert (concat "Signed-off-by: " signed-by "\n---\n")))))
 
 ;; For when you need a good excuse...
-;; From BOHF
+;; From BOFH
 (defvar excuse-phrase-file (concat user-emacs-directory "lisp/excuses.lines")
   "*File containing excuses")
 
