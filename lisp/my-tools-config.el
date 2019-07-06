@@ -5,6 +5,12 @@
 (require 'my-tags)
 (require 'git-diff)
 (require 'kloc)
+(require 'cl-extra)
+
+(defun my-tools-fname (str fname)
+  "Print a file, or directory, name."
+  (when fname
+    (princ (format "%-13s %s\n" str (abbreviate-file-name fname)))))
 
 ;;;###autoload
 (defun my-tools-config (verbose)
@@ -12,44 +18,27 @@
   (interactive "P")
   (with-output-to-temp-buffer "*my-config*"
     ;; Common
-    (princ (format "File name:    %S\n" (buffer-file-name)))
-    (let ((git-dir (condition-case nil (git-dir) (error nil))))
-      (princ (format "Git dir:      %S\n" git-dir)))
-    (princ (format "Compile:      %S\n" compile-command))
+    (my-tools-fname "File name:" (buffer-file-name))
+    (my-tools-fname "Git dir:" (git-dir nil t))
+    (princ (format "Compile:      %s\n" compile-command))
 
     ;; C-ish files
-    (when (and (boundp 'c-buffer-is-cc-mode) c-buffer-is-cc-mode)
-      (princ (format "C Style:      %S" c-indentation-style))
-      (princ (if indent-tabs-mode " tabs " " spaces "))
-      (if (eq c-basic-offset tab-width) ;; 99.99% case
-	  (princ (format "%d\n" c-basic-offset))
-	(princ (format "%d/%d\n" c-basic-offset tab-width))))
+    (when c-buffer-is-cc-mode
+      (princ (format "C Style:      %s %s %d/%d\n" c-indentation-style
+		     (if indent-tabs-mode "tabs" "spaces")
+		     c-basic-offset tab-width)))
 
     ;; optional files
-    (if tags-file-name
-	(princ (format "Tag file:     %S %s\n"
-		       tags-file-name
-		       (if (file-exists-p tags-file-name) "OK" "missing")))
-      (if (file-exists-p "TAGS")
-	  (princ (format "Tag file:     \"TAGS\"\n"))))
-    (condition-case nil
-	(when (or my-tags-dir my-tags-file)
-	  (princ (format "My tag dir:   %S\n" my-tags-dir))
-	  (princ (format "My tag file:  %S\n" my-tags-file)))
-      (error nil))
-    (let ((kdir (kloc-project-dir buffer-file-name)))
-      (when kdir
-	(and kloc-dir (not (local-variable-p 'kloc-dir))
-	     (setq kdir (concat kdir " (G)")))
-	(princ (format "Kloc:         %S\n" kdir))))
+    (unless (my-tools-fname "Tag file:" tags-file-name)
+      (when (file-exists-p "TAGS")
+	(my-tools-fname "Tag file:" "TAGS")))
+    (my-tools-fname "My tag dir:" my-tags-dir)
+    (my-tools-fname "My tag file:" my-tags-file)
+    (my-tools-fname "Kloc:" (kloc-project-dir buffer-file-name))
 
     ;; verbose and C
     (when (and verbose (boundp 'my-compile-dir-list))
       (princ "\nmy-compile-dir-list:\n")
-      (princ (with-temp-buffer
-	       (insert (format "%S\n" my-compile-dir-list))
-	       (goto-char (point-min)) (forward-char 2)
-	       (while (search-forward "(" nil t)
-		 (replace-match "\n ("))
-	       (buffer-string))))
+      (with-current-buffer "*my-config*"
+	(cl-prettyprint my-compile-dir-list)))
     ))

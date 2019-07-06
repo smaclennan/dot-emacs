@@ -2,7 +2,7 @@
 
 (eval-when-compile (require 'ediff))
 
-(defun git-dir (&optional dir)
+(defun git-dir (&optional dir no-error)
   "Find the base git directory. If DIR is nil, `default-directory' is used."
   (unless dir (setq dir default-directory))
   ;; Sanitize the directory
@@ -13,7 +13,9 @@
 	(throw 'found dir))
       ;; This removes the last directory
       (setq dir (file-name-directory (directory-file-name dir))))
-    (error "No git base.")))
+    (if no-error
+	nil
+      (error "No git base."))))
 
 (defun git-cat-doit (&optional rev)
   "Perform a git cat on the current buffer into a temporary buffer.
