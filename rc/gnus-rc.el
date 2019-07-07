@@ -2,6 +2,10 @@
 
 ;; This file is called before .gnus
 
+;; .authinfo or .authinfo.gpg
+;; machine imap.gmail.com login <USER> password <APP-PASSWORD> port imaps
+;; machine smtp.gmail.com login <USER> password <APP-PASSWORD> port 587
+
 ;; Should probably be in ~/.gnus
 (if nil
     (setq gnus-select-method '(nnimap "imap.gmail.com"))
@@ -12,6 +16,15 @@
 		 (nnimap-stream ssl)
 		 ))
   )
+
+;; SAM should this be in mail?
+;;(setq send-mail-function 'smtpmail-send-it)
+
+;;(setq smtpmail-smtp-server "smtp.gmail.com"
+;;      smtpmail-smtp-service 587)
+
+;; SAM what is this for?
+(setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 
 ;; The .newsrc-dribble file doesn't seem to be useful for mail.
 (setq gnus-use-dribble-file nil)
