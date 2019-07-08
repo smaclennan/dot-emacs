@@ -7,24 +7,20 @@
 ;; machine smtp.gmail.com login <USER> password <APP-PASSWORD> port 587
 
 ;; Should probably be in ~/.gnus
-(if nil
-    (setq gnus-select-method '(nnimap "imap.gmail.com"))
-  (setq gnus-select-method
-	'(nnimap "gmail"
-		 (nnimap-address "imap.gmail.com")
-		 (nnimap-server-port "imaps")
-		 (nnimap-stream ssl)
-		 ))
-  )
+(setq gnus-select-method
+      '(nnimap "gmail"
+	       (nnimap-address "imap.gmail.com")
+	       (nnimap-server-port "imaps")
+	       (nnimap-stream ssl)
+	       ))
 
 ;; SAM should this be in mail?
 ;;(setq send-mail-function 'smtpmail-send-it)
-
 ;;(setq smtpmail-smtp-server "smtp.gmail.com"
 ;;      smtpmail-smtp-service 587)
 
 ;; SAM what is this for?
-(setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+;;(setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 
 ;; The .newsrc-dribble file doesn't seem to be useful for mail.
 (setq gnus-use-dribble-file nil)
@@ -33,8 +29,11 @@
   (cond
    ((eq major-mode 'gnus-summary-mode)
     (gnus-summary-insert-new-articles))
-   ((eq major-mode 'gnus-article-mode)
-    (dolist (buff (buffer-list))
+   ((eq major-mode 'gnus-group-mode)
+    (gnus-group-get-new-news))
+   (t
+    ;; Check to see if a gnus-summary-mode window exists
+    (dolist (buff (mapcar (lambda (w) (window-buffer w)) (window-list)))
       (when (eq (buffer-local-value 'major-mode buff) 'gnus-summary-mode)
 	(with-current-buffer buff
 	  (gnus-summary-insert-new-articles)))))))
@@ -50,4 +49,5 @@
   (gnus-summary-limit-to-marks (list gnus-canceled-mark) 'reverse)
   )
 
+;; SAM this isn't getting set
 (define-key gnus-summary-mode-map [delete] 'my-gnus-imap-delete)
