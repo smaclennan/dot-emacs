@@ -18,7 +18,7 @@
 	;; Yes ls -ld /proc = free memory
 	(nth 7 (file-attributes "/proc"))))
 
-(load "cpuid")
+(load "cpuid" nil noninteractive)
 
 ;;;###autoload
 (defun sys-cpuinfo () (cpuid-cpuinfo))
