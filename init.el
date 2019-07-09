@@ -13,6 +13,10 @@
 
 (if (featurep 'xemacs) (load "~/.xemacs/sys/xemacs"))
 
+;; Added by Package.el. This must come before configurations of
+;; installed packages.
+(package-initialize)
+
 (dolist (dir '("lisp" "misc" "sys"))
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
@@ -212,6 +216,9 @@ the identifier."
 ;; Load a file called sys/`system-type' if it exists.
 (load (replace-regexp-in-string "gnu/" "" (symbol-name system-type)) t)
 (load (concat user-emacs-directory "work") t)
+
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(load custom-file t)
 
 ;;; ------------------------------------------------------------
 ;;; Final results

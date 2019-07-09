@@ -3,51 +3,52 @@
 ;; This file is called before .gnus
 
 ;; .authinfo or .authinfo.gpg
-;; machine imap.gmail.com login <USER> password <APP-PASSWORD> port imaps
+;; machine imap.gmail.com login <USER> password <APP-PASSWORD> port 993
 ;; machine smtp.gmail.com login <USER> password <APP-PASSWORD> port 587
 
-;; Should probably be in ~/.gnus
-(setq gnus-select-method
-      '(nnimap "gmail"
-	       (nnimap-address "imap.gmail.com")
-	       (nnimap-server-port "imaps")
-	       (nnimap-stream ssl)
-	       ))
+;; .gnus.el
+;; (setq gnus-select-method '(nnimap "gmail"
+;; 				  (nnimap-address "imap.gmail.com")
+;; 				  (nnimap-server-port "993")
+;; 				  (nnimap-stream ssl)))
 
-;; SAM should this be in mail?
-;;(setq send-mail-function 'smtpmail-send-it)
-;;(setq smtpmail-smtp-server "smtp.gmail.com"
-;;      smtpmail-smtp-service 587)
+;; .gnus.el or sendmail-rc.el
+;; (setq send-mail-function 'smtpmail-send-it)
+;; (setq smtpmail-smtp-server "smtp.gmail.com"
+;;       smtpmail-smtp-service 587)
 
-;; SAM what is this for?
-;;(setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+(bbdb-initialize 'gnus 'message)
 
 ;; The .newsrc-dribble file doesn't seem to be useful for mail.
 (setq gnus-use-dribble-file nil)
 
 (defun my-update-gnus-summary ()
-  (cond
-   ((eq major-mode 'gnus-summary-mode)
-    (gnus-summary-insert-new-articles))
-   ((eq major-mode 'gnus-group-mode)
-    (gnus-group-get-new-news))
-   (t
-    ;; Check to see if a gnus-summary-mode window exists
-    (dolist (buff (mapcar (lambda (w) (window-buffer w)) (window-list)))
-      (when (eq (buffer-local-value 'major-mode buff) 'gnus-summary-mode)
-	(with-current-buffer buff
-	  (gnus-summary-insert-new-articles)))))))
+  "Check to see if a gnus group or summary window exists"
+  (dolist (buff (mapcar (lambda (w) (window-buffer w)) (window-list)))
+    (let ((mode (buffer-local-value 'major-mode buff)))
+      (cond ((eq mode 'gnus-summary-mode)
+	     (with-current-buffer buff
+	       (gnus-summary-insert-new-articles)))
+	    ((eq mode 'gnus-group-mode)
+	     (with-current-buffer buff
+	       (gnus-group-get-new-news)))))))
 
 (defvar my-gnus-timer (run-at-time t 60 'my-update-gnus-summary))
 
-;; Should probably be in ~/.gnus? Or at least make the trash a variable
+(defvar my-gnus-trash-folder "[Gmail]/Trash"
+  "The Trash folder.")
+
 (defun my-gnus-imap-delete ()
   "Delete the current message by moving it to the Trash."
   (interactive)
-  (gnus-summary-move-article nil "[Gmail]/Trash")
+  (gnus-summary-move-article nil my-gnus-trash-folder)
   ;; The move is considered a "cancel"
   (gnus-summary-limit-to-marks (list gnus-canceled-mark) 'reverse)
   )
 
-;; SAM this isn't getting set
-(define-key gnus-summary-mode-map [delete] 'my-gnus-imap-delete)
+;; Seems this is too early to set keys, so do it in a hook.
+(add-hook
+ 'gnus-summary-mode-hook
+ (lambda ()
+   (define-key gnus-summary-mode-map [delete] 'my-gnus-imap-delete)
+   (define-key gnus-summary-mode-map [deletechar] 'my-gnus-imap-delete)))
