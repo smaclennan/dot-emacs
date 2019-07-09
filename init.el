@@ -31,9 +31,8 @@
 
 (rcfiles-register-rc-files)
 
-(if window-system
-    (load (concat rcfiles-directory "/window-config"))
-  (menu-bar-mode -1)) ;; Yes, Emacs has a menu bar in console mode
+(load (concat rcfiles-directory
+	      (if window-system "/window" "/console") "-config"))
 
 (setq track-eol t
       kill-whole-line t
