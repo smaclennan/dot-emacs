@@ -11,13 +11,17 @@
 ;; 				  (nnimap-address "imap.gmail.com")
 ;; 				  (nnimap-server-port "993")
 ;; 				  (nnimap-stream ssl)))
+;;
+;; (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
+;;       gnus-message-archive-group "[Gmail]/Sent")
 
 ;; .gnus.el or sendmail-rc.el
 ;; (setq send-mail-function 'smtpmail-send-it)
 ;; (setq smtpmail-smtp-server "smtp.gmail.com"
 ;;       smtpmail-smtp-service 587)
 
-(bbdb-initialize 'gnus 'message)
+(when (package-installed-p 'bbdb)
+  (bbdb-initialize 'gnus 'message))
 
 ;; The .newsrc-dribble file doesn't seem to be useful for mail.
 (setq gnus-use-dribble-file nil)
