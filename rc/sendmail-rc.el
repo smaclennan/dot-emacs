@@ -8,3 +8,10 @@
     (beginning-of-line)
     (insert (format-time-string "Date: %a, %d %b %Y %T %z\n"))))
 (add-hook 'mail-setup-hook 'mail-add-date)
+
+(when (package-installed-p 'bbdb)
+  (bbdb-initialize 'mail))
+
+;; M-tab taken by flyspell
+(define-key mail-mode-map [(meta insert)] 'bbdb-complete-mail)
+(define-key message-mode-map [(meta insert)] 'bbdb-complete-mail)
