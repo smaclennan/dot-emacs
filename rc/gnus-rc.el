@@ -21,7 +21,7 @@
 ;;       smtpmail-smtp-service 587)
 
 (when (package-installed-p 'bbdb)
-  (bbdb-initialize 'gnus 'message))
+  (bbdb-initialize 'gnus))
 
 ;; The .newsrc-dribble file doesn't seem to be useful for mail.
 (setq gnus-use-dribble-file nil)
