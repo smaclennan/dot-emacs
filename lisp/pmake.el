@@ -33,18 +33,22 @@ commands must start with a unique string.
 
 If a command fails, the failing command will be the car of the list.")
 
-(defvar pmake-output-dir "/tmp/pmake/"
-  "Where to put the output files.")
+(defvar pmake-done-hook nil
+  "Hook(s) to run when pmake done.
 
-(defvar pmake-debug nil
-  "Non-nil for debugging `pmake-run'. Will create *make dbg* buffer.")
+It will be passed three args: TYPE, DESC, PROC.
+TYPE will be one of 'stage, 'pmake, 'done.
+PROC will only be set in 'pmake.")
+
+(defvar pmake-debug t
+  "Non-nil for debugging `pmake-run'. Will create *pmake dbg* buffer.")
 
 (defvar pmake-times nil
   "Non-nil to print individual pmake times.")
 
 ;;;
 
-(defvar pmake-start nil "Time that `pmake-run' started.")
+(defvar pmake-run-start nil "Time that `pmake-run' started.")
 (defvar pmake-stage-start nil "Time that this stage started.")
 
 ;;;###autoload
@@ -52,14 +56,16 @@ If a command fails, the failing command will be the car of the list.")
   "Run all the commands in `pmake-stages'."
   (when pmake-debug (pmake-dump-stages))
 
+  (setq pmake-run-start (current-time))
+  (setq pmake-stage-start nil) ;; don't time first nil stage
+
   ;; Start by pretending to successfully finish a stage
   (setq pmake-stages (cons "ignored" pmake-stages))
-  (add-hook 'compilation-finish-functions 'pmake-finish)
-  (setq pmake-stage-start nil) ;; don't time first nil stage
-  (pmake-finish nil "finished\n"))
+  (add-hook 'compilation-finish-functions 'pmake-stage-finish)
+  (pmake-stage-finish nil "finished\n"))
 
 (defun pmake-dump-stages ()
-  (with-current-buffer (get-buffer-create "*make dbg*")
+  (with-current-buffer (get-buffer-create "*pmake dbg*")
     (erase-buffer)
     (insert (format "%S\n" pmake-stages))
     (goto-char (point-min)) (forward-char)
@@ -70,9 +76,15 @@ If a command fails, the failing command will be the car of the list.")
   "Helper to standardize the printed time format."
   (format-time-string "%M:%S.%3N" (time-since time)))
 
-(defun pmake-finish (buffer desc)
+(defun pmake-stage-cleanup (desc)
+  "Helper function to cleanup when done."
+  (remove-hook 'compilation-finish-functions 'pmake-stage-finish)
+  (run-hook-with-args 'pmake-done-hook 'done desc nil))
+
+(defun pmake-stage-finish (buffer desc)
+  (run-hook-with-args 'pmake-done-hook 'stage desc nil)
   (unless (equal desc "finished\n")
-    (remove-hook 'compilation-finish-functions 'pmake-finish)
+    (pmake-stage-cleanup desc)
     (error "Stage: %s" (substring desc 0 -1)))
   (when pmake-stage-start
     (message "Stage done %s" (pmake-time-since pmake-stage-start)))
@@ -87,13 +99,12 @@ If a command fails, the failing command will be the car of the list.")
 	    (compile compile-command)
 	    (message "stage %s..." compile-command))))
     ;; Done!
-    (remove-hook 'compilation-finish-functions 'pmake-finish)
-    (message "Success! %s" (pmake-time-since pmake-start))
-    (setq pmake-start nil)))
+    (pmake-stage-cleanup desc)
+    (message "Success! %s" (pmake-time-since pmake-run-start))))
 
 (defvar pmake-count 0)
 (defvar pmake-rc 0)
-(defvar pmake-start nil)
+(defvar pmake-pmake-start nil)
 
 (defun pmake-start (list)
   (message "stage %s..." (car list))
@@ -102,23 +113,23 @@ If a command fails, the failing command will be the car of the list.")
   (setq pmake-count (length list))
   (setq pmake-rc 0)
 
-  (setq pmake-start (current-time))
+  (setq pmake-pmake-start (current-time))
   (dolist (cmd list)
     (set-process-sentinel
      (start-process-shell-command (car cmd) nil (cadr cmd))
      'pmake-done)))
 
 (defun pmake-done (proc desc)
-  (if (equal desc "finished\n")
-      (delete-file (concat pmake-output-dir (process-name proc)))
+  (run-hook-with-args 'pmake-done-hook 'pmake desc proc)
+  (unless (equal desc "finished\n")
     (message "Process %S: %s" proc (substring desc 0 -1))
     (setq pmake-rc 1))
   (setq pmake-count (1- pmake-count))
   (when pmake-times
     (message "  %18s %s"
-	     (process-name proc) (pmake-time-since pmake-start)))
+	     (process-name proc) (pmake-time-since pmake-pmake-start)))
   (when (<= pmake-count 0)
     ;; finish this stage
-    (pmake-finish nil (if (eq pmake-rc 0) "finished\n" "failed\n"))))
+    (pmake-stage-finish nil (if (eq pmake-rc 0) "finished\n" "failed\n"))))
 
 (provide 'pmake)
