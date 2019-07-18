@@ -37,31 +37,40 @@ If a command fails, the failing command will be the car of the list.")
   "Hook(s) to run when pmake done.
 
 It will be passed three args: TYPE, DESC, PROC.
-TYPE will be one of 'stage, 'pmake, 'done.
+TYPE will be one of 'start, 'stage, 'pmake, 'done.
 PROC will only be set in 'pmake.")
 
 (defvar pmake-debug t
   "Non-nil for debugging `pmake-run'. Will create *pmake dbg* buffer.")
 
 (defvar pmake-times nil
-  "Non-nil to print individual pmake times.")
+  "Non-nil to print individual pmake times.
+Only used by `pmake-verbose-hook'.")
 
 ;;;
 
 (defvar pmake-run-start nil "Time that `pmake-run' started.")
 (defvar pmake-stage-start nil "Time that this stage started.")
+(defvar pmake-run-rc nil "Return code for this run.")
+(defvar pmake-errors-are-fatal nil)
 
 ;;;###autoload
-(defun pmake-run ()
-  "Run all the commands in `pmake-stages'."
+(defun pmake-run (&optional errors-are-fatal)
+  "Run all the commands in `pmake-stages'.
+
+If ERRORS-ARE-FATAL is non-nil, then fail on the first non-zero
+exit code.
+
+At exit, `pmake-run-rc' will be t if the run was successful."
   (when pmake-debug (pmake-dump-stages))
 
-  (setq pmake-run-start (current-time))
-  (setq pmake-stage-start nil) ;; don't time first nil stage
+  (setq pmake-run-start (current-time)
+	pmake-run-rc t
+	pmake-errors-are-fatal errors-are-fatal
+	pmake-stage-start nil) ;; don't time first nil stage
 
   ;; Start by pretending to successfully finish a stage
   (setq pmake-stages (cons "ignored" pmake-stages))
-  (add-hook 'compilation-finish-functions 'pmake-stage-finish)
   (pmake-stage-finish nil "finished\n"))
 
 (defun pmake-dump-stages ()
@@ -76,18 +85,11 @@ PROC will only be set in 'pmake.")
   "Helper to standardize the printed time format."
   (format-time-string "%M:%S.%3N" (time-since time)))
 
-(defun pmake-stage-cleanup (desc)
-  "Helper function to cleanup when done."
-  (remove-hook 'compilation-finish-functions 'pmake-stage-finish)
-  (run-hook-with-args 'pmake-done-hook 'done desc nil))
-
 (defun pmake-stage-finish (buffer desc)
   (run-hook-with-args 'pmake-done-hook 'stage desc nil)
   (unless (equal desc "finished\n")
-    (pmake-stage-cleanup desc)
-    (error "Stage: %s" (substring desc 0 -1)))
-  (when pmake-stage-start
-    (message "Stage done %s" (pmake-time-since pmake-stage-start)))
+    (setq pmake-run-rc nil)
+    (when pmake-errors-are-fatal (error "FAILED")))
   (setq pmake-stages (cdr pmake-stages)) ;; next
   (if pmake-stages
       (let ((next (car pmake-stages)))
@@ -97,21 +99,21 @@ PROC will only be set in 'pmake.")
 	  ;; The let binding is here to stop `compile' from setting the global var
 	  (let ((compile-command next))
 	    (compile compile-command)
-	    (message "stage %s..." compile-command))))
+	    (run-hook-with-args 'pmake-done-hook 'start compile-command nil))))
     ;; Done!
-    (pmake-stage-cleanup desc)
-    (message "Success! %s" (pmake-time-since pmake-run-start))))
+    (run-hook-with-args 'pmake-done-hook 'done desc nil)
+    (setq pmake-done-hook nil)))
 
 (defvar pmake-count 0)
-(defvar pmake-rc 0)
+(defvar pmake-rc nil)
 (defvar pmake-pmake-start nil)
 
 (defun pmake-start (list)
-  (message "stage %s..." (car list))
+  (run-hook-with-args 'pmake-done-hook 'start (car list) nil)
   (setq list (cdr list))
 
   (setq pmake-count (length list))
-  (setq pmake-rc 0)
+  (setq pmake-rc t)
 
   (setq pmake-pmake-start (current-time))
   (dolist (cmd list)
@@ -121,15 +123,32 @@ PROC will only be set in 'pmake.")
 
 (defun pmake-done (proc desc)
   (run-hook-with-args 'pmake-done-hook 'pmake desc proc)
-  (unless (equal desc "finished\n")
-    (message "Process %S: %s" proc (substring desc 0 -1))
-    (setq pmake-rc 1))
+  (unless (equal desc "finished\n") (setq pmake-rc nil))
   (setq pmake-count (1- pmake-count))
-  (when pmake-times
-    (message "  %18s %s"
-	     (process-name proc) (pmake-time-since pmake-pmake-start)))
   (when (<= pmake-count 0)
     ;; finish this stage
-    (pmake-stage-finish nil (if (eq pmake-rc 0) "finished\n" "failed\n"))))
+    (pmake-stage-finish nil (if pmake-rc "finished\n" "failed\n"))))
+
+;;;###autoload
+(defun pmake-verbose-hook (type desc proc)
+  "This is a sample `pmake-done-hook' that is very verbose."
+  (cond
+   ((eq type 'pmake)
+    (if (equal desc "finished\n")
+	(when pmake-times
+	  (message "  %18s %s"
+		   (process-name proc) (pmake-time-since pmake-pmake-start)))
+      (message "Process %S: %s" proc (substring desc 0 -1))))
+   ((eq type 'start)
+    (message "stage %s..." desc))
+   ((eq type 'stage)
+    (if (equal desc "finished\n")
+	(when pmake-stage-start
+	  (message "Stage done %s" (pmake-time-since pmake-stage-start)))
+      (message "Stage: %s" (substring desc 0 -1))))
+   ((eq type 'done)
+    (if pmake-run-rc
+	(message "Success! %s" (pmake-time-since pmake-run-start))
+      (message "FAILED.")))))
 
 (provide 'pmake)
