@@ -34,7 +34,7 @@ commands must start with a unique string.
 If a command fails, the failing command will be the car of the list.")
 
 (defvar pmake-done-hook nil
-  "Hook(s) to run when pmake done.
+  "Hook(s) to run when pmakes done.
 
 It will be passed three args: TYPE, DESC, PROC.
 TYPE will be one of 'start, 'stage, 'pmake, 'done.
@@ -62,7 +62,11 @@ If ERRORS-ARE-FATAL is non-nil, then fail on the first non-zero
 exit code.
 
 At exit, `pmake-run-rc' will be t if the run was successful."
-  (when pmake-debug (pmake-dump-stages))
+  (when pmake-debug
+    (eval-and-compile (require 'cl-extra))
+    (with-current-buffer (get-buffer-create "*pmake dbg*")
+      (erase-buffer)
+      (cl-prettyprint pmake-stages)))
 
   (setq pmake-run-start (current-time)
 	pmake-run-rc t
@@ -73,19 +77,8 @@ At exit, `pmake-run-rc' will be t if the run was successful."
   (setq pmake-stages (cons "ignored" pmake-stages))
   (pmake-stage-finish nil "finished\n"))
 
-(defun pmake-dump-stages ()
-  (with-current-buffer (get-buffer-create "*pmake dbg*")
-    (erase-buffer)
-    (insert (format "%S\n" pmake-stages))
-    (goto-char (point-min)) (forward-char)
-    (while (search-forward "(" nil t) (replace-match "\n("))
-    (trim-lines)))
-
-(defun pmake-time-since (time)
-  "Helper to standardize the printed time format."
-  (format-time-string "%M:%S.%3N" (time-since time)))
-
 (defun pmake-stage-finish (buffer desc)
+  "Stage finished sentinel function."
   (run-hook-with-args 'pmake-done-hook 'stage desc nil)
   (unless (equal desc "finished\n")
     (setq pmake-run-rc nil)
@@ -128,6 +121,10 @@ At exit, `pmake-run-rc' will be t if the run was successful."
   (when (<= pmake-count 0)
     ;; finish this stage
     (pmake-stage-finish nil (if pmake-rc "finished\n" "failed\n"))))
+
+(defun pmake-time-since (time)
+  "Helper to standardize the printed time format."
+  (format-time-string "%M:%S.%3N" (time-since time)))
 
 ;;;###autoload
 (defun pmake-verbose-hook (type desc proc)
