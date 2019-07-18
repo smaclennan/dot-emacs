@@ -24,11 +24,23 @@
 (defvar pmake-stages nil
   "List of make commands to perform by `pmake-run'.
 
-If a command is a simple string, run it via compile. If the
-command is a list, run all the commands in the list in
-parallel. The list of commands must start with a unique string.
+If a command is a simple string, run it via compile with output
+to the compile buffer.
 
-If a command fails, the failing command will be the car of the list.")
+If the command is a list, run all the commands in the list in
+parallel. The output is thrown away unless you redirect it to a
+file. The list of commands must start with a unique string.
+
+If a command fails, the failing command will be the car of the list.
+
+Example: Run a make clean then make subdirs lisp and misc in parallel.
+
+(setq pmake-stages
+      '(\"make clean\"
+	(\"subdirs\" (\"make -C lisp\") (\"make -C misc\"))))
+(add-hook 'pmake-done-hook 'pmake-verbose-hook)
+(pmake-run)")
+
 
 (defvar pmake-done-hook nil
   "Hook(s) to run when pmakes done.
@@ -37,7 +49,7 @@ It will be passed three args: TYPE, DESC, PROC.
 TYPE will be one of 'start, 'stage, 'pmake, 'done.
 PROC will only be set in 'pmake.")
 
-(defvar pmake-debug t
+(defvar pmake-debug nil
   "Non-nil for debugging `pmake-run'. Will create *pmake dbg* buffer.")
 
 (defvar pmake-times nil
