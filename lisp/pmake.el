@@ -89,10 +89,10 @@ At exit, `pmake-run-rc' will be t if the run was successful."
 	(setq pmake-stage-start (current-time))
 	(if (listp next)
 	    (pmake-start next)
-	  ;; The let binding is here to stop `compile' from setting the global var
-	  (let ((compile-command next))
-	    (compile compile-command)
-	    (run-hook-with-args 'pmake-done-hook 'start compile-command nil))))
+	  (set-process-sentinel
+	   (start-process-shell-command "simple" nil next)
+	   'pmake-stage-finish)
+	  (run-hook-with-args 'pmake-done-hook 'start next nil)))
     ;; Done!
     (run-hook-with-args 'pmake-done-hook 'done desc nil)
     (setq pmake-done-hook nil)))
