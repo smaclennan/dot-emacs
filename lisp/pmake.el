@@ -17,19 +17,16 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;; This is called pmake because I initially used it to run parallel
-;; makes... but they can actually be any command you want. And they
-;; don't need to be in parallel, it can be a bunch of sequential
-;; commands. So really, pmake is a very misleading name.
+;; Run all the commands in `pmake-stages'.
 
 ;;; globals
 
 (defvar pmake-stages nil
   "List of make commands to perform by `pmake-run'.
 
-If a command is a simple string, run it. If the command is a
-list, run all the commands in the list in parallel. The list of
-commands must start with a unique string.
+If a command is a simple string, run it via compile. If the
+command is a list, run all the commands in the list in
+parallel. The list of commands must start with a unique string.
 
 If a command fails, the failing command will be the car of the list.")
 
@@ -73,6 +70,8 @@ At exit, `pmake-run-rc' will be t if the run was successful."
 	pmake-errors-are-fatal errors-are-fatal
 	pmake-stage-start nil) ;; don't time first nil stage
 
+  (add-hook 'compilation-finish-functions 'pmake-stage-finish)
+
   ;; Start by pretending to successfully finish a stage
   (setq pmake-stages (cons "ignored" pmake-stages))
   (pmake-stage-finish nil "finished\n"))
@@ -89,11 +88,11 @@ At exit, `pmake-run-rc' will be t if the run was successful."
 	(setq pmake-stage-start (current-time))
 	(if (listp next)
 	    (pmake-start next)
-	  (set-process-sentinel
-	   (start-process-shell-command "simple" nil next)
-	   'pmake-stage-finish)
+	  ;; The let binding is here to stop `compile' from setting the global var
+	  (let ((compile-command next)) (compile compile-command))
 	  (run-hook-with-args 'pmake-done-hook 'start next nil)))
     ;; Done!
+    (remove-hook 'compilation-finish-functions 'pmake-stage-finish)
     (run-hook-with-args 'pmake-done-hook 'done desc nil)
     (setq pmake-done-hook nil)))
 
@@ -141,8 +140,8 @@ At exit, `pmake-run-rc' will be t if the run was successful."
    ((eq type 'stage)
     (if (equal desc "finished\n")
 	(when pmake-stage-start
-	  (message "Stage done %s" (pmake-time-since pmake-stage-start)))
-      (message "Stage: %s" (substring desc 0 -1))))
+	  (message "stage done %s" (pmake-time-since pmake-stage-start)))
+      (message "stage: %s" (substring desc 0 -1))))
    ((eq type 'done)
     (if pmake-run-rc
 	(message "Success! %s" (pmake-time-since pmake-run-start))
