@@ -137,13 +137,6 @@
 
 ;;; ----
 
-(defun xref-find-definitions-prompt ()
-  "Same as `xref-find-definitions' except it always prompts for
-the identifier."
-  (interactive)
-  (let ((current-prefix-arg t))
-    (call-interactively 'xref-find-definitions)))
-
 (defun my-show-messages ()
   "Show messages in other window."
   (interactive)
@@ -234,8 +227,7 @@ the identifier."
 ;; Not sure why Emacs wipes the message in console mode.
 (unless noninteractive
   ;; Every time you turn around Emacs is displaying yet another
-  ;; stupid^h^h^h^h^h "useful" message that overwrites my nice friendly
-  ;; one. So use a timer to get past them.
+  ;; stupid^h^h^h^h^h message that overwrites my nice friendly one.
   (run-at-time .25 nil 'friendly-message))
 
 ;; end of .emacs "May the `(' be with `)'"
