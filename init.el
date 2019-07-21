@@ -11,8 +11,6 @@
 (defvar sys-nproc nil
   "Total number of processors. You must call `sys-nproc' to initialize this.")
 
-(if (featurep 'xemacs) (load "~/.xemacs/sys/xemacs"))
-
 ;; Added by Package.el. This must come before configurations of
 ;; installed packages.
 (package-initialize)
