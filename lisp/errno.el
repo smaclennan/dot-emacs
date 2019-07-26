@@ -10,7 +10,7 @@
     "ENOEXEC"
     "EBADF"
     "ECHILD"
-    "EAGAIN/EWOULDBLOCK"
+    "EAGAIN"
     "ENOMEM"
     "EACCES"
     "EFAULT"
@@ -149,8 +149,9 @@ should be a string."
     (if (numberp errno)
 	(setq str (nth errno errno-strings)
 	      pos errno)
-      (setq str (upcase errno)
-	    pos (cl-position (upcase errno) errno-strings :test 'equal)))
+      (setq str (upcase errno))
+      (when (equal str "EWOULDBLOCK") (setq str "EAGAIN"))
+      (setq pos (cl-position str errno-strings :test 'equal)))
     (if (and str pos)
 	(message "%s %d" str pos)
       (error "Not found"))))
