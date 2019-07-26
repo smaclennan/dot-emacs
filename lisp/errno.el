@@ -138,10 +138,21 @@
 
 ;;;###autoload
 (defun errno-string (errno)
-  (interactive "Nerrno: ")
-  (let ((str (nth errno errno-strings)))
-    (if str
-	(message "%s" str)
+  "Lookup ERRNO in `errno-strings'.
+By default ERRNO should be a number. With a prefix arg ERRNO
+should be a string."
+  (interactive
+   (list (if current-prefix-arg
+	     (read-string "error: ")
+	   (read-number "errno: "))))
+  (let (str pos)
+    (if (numberp errno)
+	(setq str (nth errno errno-strings)
+	      pos errno)
+      (setq str (upcase errno)
+	    pos (cl-position (upcase errno) errno-strings :test 'equal)))
+    (if (and str pos)
+	(message "%s %d" str pos)
       (error "Not found"))))
 
 (provide 'errno)
