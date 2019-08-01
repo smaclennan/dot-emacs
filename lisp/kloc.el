@@ -44,19 +44,24 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
 	;; This removes the last directory
 	(setq dir (file-name-directory (directory-file-name dir)))))))
 
-(defun kloc-do-one (file &optional no-parse-compile raw)
+(defun kloc-do-one (file &optional no-parse-compile raw edit)
   "Run kloc on FILE into the current buffer at the point.
 If NO-PARSE-COMPILE is nil, also do a
 `compilation--parse-region' on the entire buffer.
 
 If RAW is non-nil, leave the raw output in the buffer.
 
+If EDIT is non-nil, allow the command to be edited.
+
 Returns the kloc project directory or nil."
   (let ((kdir (kloc-project-dir file))
 	(start (point)))
     (when kdir
-      (save-excursion
-	(call-process-shell-command (format kloc-cmd kdir file) nil '(t t) t))
+      (let ((cmd (format kloc-cmd kdir file)))
+	(when edit
+	  (setq cmd (read-string "Cmd: " cmd)))
+	(save-excursion
+	  (call-process-shell-command cmd nil '(t t) t)))
 
       (unless raw
 	;; Delete the header
@@ -89,21 +94,30 @@ Returns the kloc project directory or nil."
 	(setq flist (cdr flist)))))
 
 ;;;###autoload
-(defun kloc (raw)
+(defun kloc (edit &optional raw)
   "Check the current buffer with klocwork.
 Uses `kloc-project-dir' to find the project directory. Puts the
 results in a compilation buffer.
 
-A universal argument triggers raw output.
-"
+A universal argument allows you to edit the command."
   (interactive "P")
   (let ((file buffer-file-name))
     (with-current-buffer (get-buffer-create "*kloc*")
       (erase-buffer)
       (display-buffer "*kloc*")
-      (unless (kloc-do-one file nil raw)
+      (unless (kloc-do-one file nil raw edit)
 	(error "No project directory found")))
     (message "kloc done.")))
+
+;;;###autoload
+(defun kloc-raw (edit)
+  "Check the current buffer with klocwork and raw output.
+Uses `kloc-project-dir' to find the project directory. Puts the
+results in a compilation buffer.
+
+A universal argument allows you to edit the command."
+  (interactive "P")
+  (kloc edit t))
 
 (defun kloc-run (cmd)
   "Trivial helper function."
