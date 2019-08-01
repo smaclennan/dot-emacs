@@ -2,7 +2,7 @@
 
 CFLAGS += -Wall -O2
 
-all: cpuid diary-cleanup
+all: cpuid ipaddr diary-cleanup
 
 clean:
-	rm -f cpuid diary-cleanup
+	rm -f cpuid ipaddr diary-cleanup
