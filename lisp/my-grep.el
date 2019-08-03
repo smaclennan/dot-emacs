@@ -50,7 +50,7 @@ Ok, with a prefix arg you can edit the grep command before the
 grep is run."
   (interactive)
   (my-grep-doit
-   (concat my-grep-prog " \"" (current-word) "\" " (my-grep-exts))))
+   (concat my-grep-prog " \"\\b" (current-word) "\\b\" " (my-grep-exts))))
 
 ;;;###autoload
 (defun my-grep-find (regex files)

@@ -108,7 +108,7 @@ meaning as in `git-grep'."
   (interactive "P")
   (let ((word (if mark-active
 		  (buffer-substring (region-beginning) (region-end))
-		(current-word))))
+		(concat "\\b" (current-word) "\\b"))))
     (git-grep arg word)))
 
 ;;;###autoload
