@@ -24,4 +24,4 @@ $(LOADFILE): $(ELCS)
 	@$(EMACS) -batch -Q $(HELPER) -f update-loadfile $(LOADFILE)
 
 clean:
-	rm -f *.elc TAGS *~ $(LOADFILE)
+	rm -f *.elc TAGS *~ $(LOADFILE) $(CLEAN)
