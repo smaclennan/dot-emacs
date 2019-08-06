@@ -85,7 +85,7 @@
 
 
 ;; This does fix the "reads one email"
-((defun my-gnus-summary-rescan-group (&optional all)
+(defun my-gnus-summary-rescan-group (&optional all)
   "Exit the newsgroup, ask for new articles, and select the newsgroup."
   (interactive "P")
   (let ((config gnus-current-window-configuration))
