@@ -2,12 +2,12 @@
 
 [ -n "$1" ] || { echo "2emacs what?"; exit 1; }
 
+FILE=`echo $1 | cut -d: -f1`
 N=`echo $1 | awk -F: '{print $2}'`
-if [ -n "$N" ]; then
-    FILE=`echo $1 | cut -d: -f1`
+
+if [ "$N" -eq "$N" ] 2>/dev/null; then
     ARG="+$N"
 else
-    FILE=$1
     unset ARG
 fi
 
