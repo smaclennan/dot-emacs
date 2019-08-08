@@ -29,7 +29,6 @@ src/
 sys/
   * compat-<emacs major version>.el
   * <system-type>.el
-  * xemacs.el
 
 If you are not me, and you probably are not, you might want the lisp
 code but not all of the configuration. So I have a compromise. If you
@@ -49,4 +48,4 @@ or run:
 (sam-lisp-init t)
 
 
-You can contact me at seanm . seanm.ca.
+You can contact me at seanm at seanm.ca.
