@@ -205,8 +205,6 @@ the identifier."
 (setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
 (setq backup-directory-alist '((".*" . "~/.backup")))
 
-(unless noninteractive (server-start))
-
 ;;; ------------------------------------------------------------
 ;;; Optional Init files
 
@@ -220,6 +218,8 @@ the identifier."
 ;;; ------------------------------------------------------------
 ;;; Final results
 
+(require 'server)
+
 (defun friendly-message ()
   (interactive)
   (let ((hour (nth 2 (decode-time))))
@@ -227,7 +227,10 @@ the identifier."
 	     (cond ((< hour 12) "morning")
 		   ((< hour 18) "afternoon")
 		   (t           "evening"))
-	     (user-full-name))))
+	     (concat (user-full-name)
+		     (if (server-running-p)
+			 " with no service."
+		       (server-start) nil)))))
 
 ;; Not sure why Emacs wipes the message in console mode.
 (unless noninteractive
