@@ -1,8 +1,10 @@
 (setq compilation-read-command   nil
       compilation-ask-about-save nil
-      compilation-window-height  16
-      ;; SAM compilation-error-regexp-systems-list '(gnu)
-      compile-command "make ")
+      compilation-window-height  16)
+
+;; If you opened a file from the command line, any make command was
+;; overwritten so use setq-default.
+(setq-default compile-command "make ")
 
 ;; Let's see how we like this. Unfortunately it also stops at the
 ;; first warning. Which may be irritating.
