@@ -2,7 +2,7 @@
       compilation-ask-about-save nil
       compilation-window-height  16)
 
-;; If you opened a file from the command line, any make command was
+;; If a file was opened from the command line, any make command was
 ;; overwritten so use setq-default.
 (setq-default compile-command "make ")
 
