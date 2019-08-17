@@ -45,7 +45,9 @@
 
 (defun electric-brace ()
   (interactive)
-  (if (eolp)
+  (if (and (eolp)
+	   ;; make sure we are not in string or comment
+	   (not (nth 8 (syntax-ppss))))
       (progn
 	(insert-according-to-mode "{" "\n" "\n}")
 	(end-of-line 0))
