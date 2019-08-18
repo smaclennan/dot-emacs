@@ -37,7 +37,14 @@
 
 (require 'compile)
 (require 'etags)
-(require 'my-cscope)
+
+
+(defun ogrok-compilation-parse (mode)
+  ;; I tried to use compilation but it only worked 90% of the time.
+  (setq buffer-read-only nil)
+  (compilation--parse-region (point-min) (point-max))
+  (setq buffer-read-only t)
+  (goto-char (point-min)))
 
 (defun ogrok-common (defs refs)
   (unless ogrok-url (setq ogrok-url (read-string "url: ")))
@@ -125,7 +132,7 @@
       (when more (insert "\nMore...\n"))
       (compilation-mode "ogrok")
       (setq default-directory ogrok-base)
-      (my-compilation-parse "ogrok"))
+      (ogrok-compilation-parse "ogrok"))
     ogrok-list))
 
 (defun ogrok-strip-tags (line)
