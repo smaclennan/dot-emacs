@@ -47,7 +47,9 @@ Example: Run a make clean then make subdirs lisp and misc in parallel.
 
 It will be passed three args: TYPE, DESC, PROC.
 TYPE will be one of 'start, 'stage, 'pmake, 'done.
-PROC will only be set in 'pmake.")
+PROC will only be set in 'pmake.
+
+An usable example `pmake-verbose-hook' is provided.")
 
 (defvar pmake-debug nil
   "Non-nil for debugging `pmake-run'. Will create *pmake dbg* buffer.")
