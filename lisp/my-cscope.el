@@ -74,13 +74,6 @@ SYM into current buffer."
     (call-process-shell-command cmd nil t)))
 
 ;;----------------------------------------------------------------
-(defun my-compilation-parse (mode)
-  ;; I tried to use compilation but it only worked 90% of the time.
-  (setq buffer-read-only nil)
-  (compilation--parse-region (point-min) (point-max))
-  (setq buffer-read-only t)
-  (goto-char (point-min)))
-
 ;;;###autoload
 (defun my-cscope (type &optional sym)
   "Call cscope on SYM of type TYPE. Set a prefix arg for TYPE. TYPE
@@ -107,7 +100,6 @@ The cscope command run is:
     (with-current-buffer (get-buffer-create "*cscope*")
       (setq default-directory (mcs-dir)) ;; must be setq
       (setq tagname (concat default-directory "cscope.tags"))
-      (setq buffer-read-only nil)
       (erase-buffer)
 
       (my-cscope-to-buffer sym type)
@@ -117,7 +109,12 @@ The cscope command run is:
 	(setq count (1+ count))
 	(replace-match (concat (match-string 1) ":" (match-string 3) ":1 " (match-string 2))))
 
-      (my-compilation-parse "cscope"))
+      ;; I tried to use compilation but it only worked 90% of the time.
+      (compilation-mode "cscope")
+      (setq buffer-read-only nil)
+      (compilation--parse-region (point-min) (point-max))
+
+      (goto-char (point-min)))
 
     (xref-push-marker-stack)
     (display-buffer "*cscope*" '(nil (window-height . 16)))
