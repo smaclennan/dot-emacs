@@ -294,9 +294,7 @@ static int maskcnt(unsigned mask)
 	return count;
 }
 
-/* Returns 0 on success. The args addr and/or mask and/or gw can be NULL. */
-static int ip_addr(const char *ifname,
-				   struct in_addr *addr, struct in_addr *mask, struct in_addr *gw)
+static int ip_addr(const char *ifname, struct in_addr *addr, struct in_addr *mask)
 {
 	int s = socket(AF_INET, SOCK_DGRAM, 0);
 	if (s < 0)
@@ -305,24 +303,17 @@ static int ip_addr(const char *ifname,
 	struct ifreq ifr;
 	strlcpy(ifr.ifr_name, ifname, IFNAMSIZ);
 
-	if (addr) {
-		if (ioctl(s, SIOCGIFADDR, &ifr) < 0)
-			goto failed;
-		*addr = ((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr;
-	}
+	if (ioctl(s, SIOCGIFADDR, &ifr) < 0)
+		goto failed;
+	*addr = ((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr;
 
-	if (mask) {
-		// We need this zero for QNX
-		((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr.s_addr = 0;
-		if (ioctl(s, SIOCGIFNETMASK, &ifr) < 0)
-			goto failed;
-		*mask = ((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr;
-	}
+	// We need this zero for QNX
+	((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr.s_addr = 0;
+	if (ioctl(s, SIOCGIFNETMASK, &ifr) < 0)
+		goto failed;
+	*mask = ((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr;
 
 	close(s);
-
-	if (gw)
-		return get_gateway(ifname, gw);
 
 	return 0;
 
@@ -402,14 +393,14 @@ static char *ip_flags(const char *ifname)
 static int check_one(const char *ifname, int state, unsigned what)
 {
 	int n = 0;
-	struct in_addr addr, mask, gw, *gw_ptr = NULL;
+	struct in_addr addr = { 0 }, mask = { 0 }, gw;
 	char mac_str[ETHER_ADDR_LEN * 3];
 
-	if (what & W_GATEWAY)
-		/* gateway is more expensive */
-		gw_ptr = &gw;
+	int rc = ip_addr(ifname, &addr, &mask);
 
-	int rc = ip_addr(ifname, &addr, &mask, gw_ptr);
+	if (rc == 0 && (what & W_GATEWAY))
+		rc |= get_gateway(ifname, &gw);
+
 	if (what & W_QUIET)
 		return !!rc;
 
