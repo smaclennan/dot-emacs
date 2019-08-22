@@ -28,7 +28,7 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netinet/ether.h>
+#include <netinet/if_ether.h>
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <net/route.h>
@@ -127,6 +127,7 @@ static int get_hw_addr(const char *ifname, unsigned char *hwaddr)
 }
 #else
 #include <net/route.h>
+#include <net/if_dl.h>
 #include <sys/poll.h>
 #include <sys/sysctl.h>
 
