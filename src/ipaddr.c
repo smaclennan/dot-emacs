@@ -460,23 +460,21 @@ static int check_one(const char *ifname, int state, unsigned what)
 			putchar(' ');
 		printf("%s", inet_ntoa(mask));
 	}
-
-	if (what & W_GATEWAY) {
+	if (what & W_MAC) {
 		if (n++)
 			putchar(' ');
-		printf("%s", inet_ntoa(gw));
+		fputs(mac_str, stdout);
 	}
-
 	if (what & W_FLAGS) {
 		if (n++)
 			putchar(' ');
 		printf("<%s>", ip_flags(ifname));
 	}
 
-	if (what & W_MAC) {
+	if (what & W_GATEWAY) {
 		if (n++)
 			putchar(' ');
-		fputs(mac_str, stdout);
+		printf("%s", inet_ntoa(gw));
 	}
 
 	if (n) {
@@ -492,12 +490,13 @@ static void usage(int rc)
 {
 	fputs("usage: ipaddr [-abgimsqM] [interface]\n"
 		  "       ipaddr -S <interface> <ip> <mask> [gateway]\n"
-		  "where: -i displays IP address (default)\n"
+		  "where: -e displays everything (-ibMf)\n"
+		  "		  -i displays IP address (default)\n"
 		  "		  -f display up and running flags\n"
 		  "       -g displays gateway\n"
 		  "       -m displays network mask\n"
 		  "       -s displays subnet\n"
-		  "       -b add bits as /bits to -a and/or -s\n"
+		  "       -b add bits as /bits to -i and/or -s\n"
 		  "       -a displays all interfaces (even down)\n"
 		  "       -q quiet, return error code only\n"
 		  "       -M display hardware address (mac)\n"
@@ -514,8 +513,11 @@ int main(int argc, char *argv[])
 	int c, rc = 0;
 	unsigned what = 0;
 
-	while ((c = getopt(argc, argv, "abfgmishqSM")) != EOF)
+	while ((c = getopt(argc, argv, "abefgmishqSM")) != EOF)
 		switch (c) {
+		case 'e':
+			what |= W_ADDRESS | W_BITS | W_FLAGS | W_MAC;
+			break;
 		case 'i':
 			what |= W_ADDRESS;
 			break;
