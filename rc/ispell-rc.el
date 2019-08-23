@@ -3,3 +3,6 @@
 (unless ispell-really-hunspell
   ;; hunspell doesn't have this option
   (setq ispell-extra-args '("-W" "3")))
+
+(when (assoc "canadian" ispell-dictionary-alist)
+  (setq ispell-dictionary "canadian"))
