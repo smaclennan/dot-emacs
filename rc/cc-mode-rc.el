@@ -35,23 +35,3 @@
 ;; Bold SAM comments
 (mapc (lambda (mode) (comment-warn mode "\\(/\\*\\|//\\) ?\\<SAM\\>.*"))
       '(c-mode c++-mode))
-
-;; electric brace pairing
-
-(defun insert-according-to-mode (&rest strs)
-  (dolist (str strs)
-    (insert str)
-    (indent-according-to-mode)))
-
-(defun electric-brace ()
-  (interactive)
-  (if (and (eolp)
-	   ;; make sure we are not in string or comment
-	   (not (nth 8 (syntax-ppss))))
-      (progn
-	(insert-according-to-mode "{" "\n" "\n}")
-	(end-of-line 0))
-    (self-insert-command 1)))
-
-(define-key c-mode-map   "{" 'electric-brace)
-(define-key c++-mode-map "{" 'electric-brace)
