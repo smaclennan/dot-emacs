@@ -77,12 +77,12 @@ static int get_gateway(const char *ifname, struct in_addr *gateway)
 	uint32_t dest, gw, flags;
 	while (fgets(line, sizeof(line), fp))
 		if (sscanf(line, "%s %x %x %x", iface, &dest, &gw, &flags) == 4 &&
-			strcmp(iface, ifname) == 0 && dest == 0 && (flags & 2)) {
-			fclose(fp);
-			if (gateway)
+			dest == 0 && (flags & 2))
+			if (!ifname || strcmp(iface, ifname) == 0) {
+				fclose(fp);
 				gateway->s_addr = gw;
-			return 0;
-		}
+				return 0;
+			}
 
 	fclose(fp);
 	return 1;
@@ -222,13 +222,8 @@ static int get_gateway(const char *ifname, struct in_addr *gateway)
 	}
 
 	int n = rtmsg_recv(s, gateway);
-	if (n) {
-		close(s);
-		return n;
-	}
-
 	close(s);
-	return 0;
+	return n;
 }
 
 static int set_gateway(const char *gw)
@@ -399,7 +394,7 @@ static int check_one(const char *ifname, int state, unsigned what)
 	int rc = ip_addr(ifname, &addr, &mask);
 
 	if (rc == 0 && (what & W_GATEWAY))
-		rc |= get_gateway(ifname, &gw);
+		rc = get_gateway(ifname, &gw);
 
 	if (what & W_QUIET)
 		return !!rc;
@@ -479,11 +474,12 @@ static int check_one(const char *ifname, int state, unsigned what)
 
 static void usage(int rc)
 {
-	fputs("usage: ipaddr [-abgimsqM] [interface]\n"
+	fputs("usage: ipaddr [-abefgimsqM] [interface]\n"
 		  "       ipaddr -S <interface> <ip> <mask> [gateway]\n"
+		  "       ipaddr -S <interface> <ip>/<bits> [gateway]\n"
 		  "where: -e displays everything (-ibMf)\n"
-		  "		  -i displays IP address (default)\n"
-		  "		  -f display up and running flags\n"
+		  "       -i displays IP address (default)\n"
+		  "       -f display up and running flags\n"
 		  "       -g displays gateway\n"
 		  "       -m displays network mask\n"
 		  "       -s displays subnet\n"
@@ -491,9 +487,9 @@ static void usage(int rc)
 		  "       -a displays all interfaces (even down)\n"
 		  "       -q quiet, return error code only\n"
 		  "       -M display hardware address (mac)\n"
-		  "Interface defaults to eth0.\n\n"
-		  "-q returns 0 if the interface (or gw) is up and has an IP address.\n\n"
-		  "Designed to be easily used in scripts. All error output to stderr.\n",
+		  "\nInterface defaults to all interfaces.\n"
+		  "\n-q returns 0 if the interface (or gw) is up and has an IP address.\n"
+		  "\nDesigned to be easily used in scripts. All error output to stderr.\n",
 		  stderr);
 
 	exit(rc);
@@ -572,6 +568,18 @@ int main(int argc, char *argv[])
 		}
 		return 0;
 	}
+
+#ifndef __linux__
+	if (what == W_GATEWAY) {
+		struct in_addr gw;
+		if (get_gateway(NULL, &gw)) {
+			perror("gateway");
+			exit(1);
+		}
+		printf("%s\n", inet_ntoa(gw));
+		return 0;
+	}
+#endif
 
 	if ((what & ~(W_BITS | W_ALL | W_QUIET)) == 0)
 		what |= W_ADDRESS;
