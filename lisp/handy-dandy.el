@@ -85,7 +85,7 @@ If ALL is non-nil, returns all .el files."
     (unless all
       ;; misc and loaddefs not mine
       (dolist (file files)
-	(when (string-match "/misc/\\|-loaddefs" file)
+	(when (string-match "/elpa/\\|/misc/\\|-loaddefs" file)
 	  (setq files (delete file files)))))
     files))
 
