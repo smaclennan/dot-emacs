@@ -1,7 +1,8 @@
 (defun qnx-load-qnx ()
   (interactive)
-  (let ((base (getenv "QNX_BASE_DIR")))
-    (and base (getenv "QNX_SANDBOX")
-	 (load (concat (file-name-as-directory base) "emacs/qnx") t))))
+  (when (getenv "QNX_SANDBOX")
+    (let ((base (getenv "QNX_BASE_DIR")))
+      (unless base (setq base "~/work"))
+      (load (concat (file-name-as-directory base) "emacs/qnx")))))
 
 (qnx-load-qnx)
