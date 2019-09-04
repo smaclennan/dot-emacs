@@ -11,15 +11,16 @@
 (defvar sys-nproc nil
   "Total number of processors. You must call `sys-nproc' to initialize this.")
 
-;; Added by Package.el. This must come before configurations of
-;; installed packages.
-(package-initialize)
-
 (dolist (dir '("lisp" "misc" "sys"))
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
 (load (format "compat-%d" emacs-major-version) t)
+
+;; Added by Package.el. This must come before configurations of
+;; installed packages.
+(when (file-exists-p (concat user-emacs-directory "elpa"))
+  (package-initialize))
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like

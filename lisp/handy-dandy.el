@@ -166,3 +166,24 @@ underscore."
     (message "total %s  free %s"
 	     (mem-human-readable (car mem))
 	     (mem-human-readable (cadr mem)))))
+
+;;;###autoload
+(defun lookup-bbdb (name)
+  "Lookup NAME in the bbdb.
+This is a very simple version for when you don't have the bbdb
+package installed."
+  (interactive "sName: ")
+  (let (emails full)
+    (with-current-buffer (find-file-noselect "~/.bbdb")
+      (goto-char (point-min))
+      (while (re-search-forward
+	      "^\\[\\(nil\\|\"\\([^\"]*\\)\"\\) \"\\([^\"]*\\)\"" nil t)
+	(if (equal (match-string 1) "nil")
+	    (setq full (match-string 3))
+	  (setq full (concat (match-string 2) " " (match-string 3))))
+	(when (string-match name full)
+	  (re-search-forward " (\"\\([^\"]+\\)\") ") ;; error if not found
+	  (set-text-properties 0 (length full) nil full)
+	  (setq emails (append emails
+			       (list full (match-string-no-properties 1)))))))
+    (message "%S" emails)))
