@@ -60,6 +60,14 @@ decimal in thousandths."
     (message "%dcm" cm)))
 
 ;;;###autoload
+(defun m2ft (meters)
+  "Convert METERS to feet. Handy for heights like 1.68m."
+  (interactive "nMeters: ")
+  (let* ((feet (* meters 3.281))
+	 (inches (* 12 (mod feet 1))))
+    (message "%d' %d\"" feet inches)))
+
+;;;###autoload
 (defun m2inches (denom m)
   "Print meters as feet/inches. See `inches-decimal-to-fraction'."
   (interactive "P\nnm: ")
