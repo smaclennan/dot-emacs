@@ -1,14 +1,16 @@
+(defvar cpuid-exe nil "The location of cpuid.")
+
 (defun cpuid-cpuinfo-exe ()
-  (let ((exe (executable-find "cpuid")))
-    (unless exe
+  (unless cpuid-exe
+    (setq cpuid-exe (executable-find "cpuid"))
+    (unless cpuid-exe
       (if (string-match "x86" (uname "-m"))
 	  (error (concat "Not supported. Maybe install "
 			 user-emacs-directory "src/cpuid."))
-	(error "Not supported")))
-    exe))
+	(error "Not supported"))))
+  cpuid-exe)
 
-(defun cpuinfo-find (field)
-  "Find a field in cpuinfo output."
+(defun cpuid-find (field)
   (goto-char (point-min))
   (re-search-forward (concat "^" field "[ \t]+: \\(.*\\)$"))
   (match-string 1))
@@ -16,17 +18,17 @@
 (defun cpuid-cpuinfo ()
   (let ((exe (cpuid-cpuinfo-exe)))
     (with-temp-buffer
-      (shell-command exe t)
+      (call-process exe nil t nil)
       (list
-       (cpuinfo-find "Model Name")
-       (cpuinfo-find "Vendor")
-       (string-to-number (cpuinfo-find "Family"))
-       (string-to-number (cpuinfo-find "Model"))
-       (string-to-number (cpuinfo-find "Stepping"))))))
+       (cpuid-find "Model Name")
+       (cpuid-find "Vendor")
+       (string-to-number (cpuid-find "Family"))
+       (string-to-number (cpuid-find "Model"))
+       (string-to-number (cpuid-find "Stepping"))))))
 
 (defun cpuid-cpu-flags ()
   "This is a subset of the flags on Linux."
   (let ((exe (cpuid-cpuinfo-exe)))
     (with-temp-buffer
-      (shell-command exe t)
-      (cpuinfo-find "Flags"))))
+      (call-process exe nil t nil)
+      (cpuid-find "Flags"))))
