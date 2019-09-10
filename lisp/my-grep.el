@@ -7,6 +7,25 @@
 (defvar my-grep-files-history nil
   "The minibuffer history list for `my-grep' and `my-grep-find's FILES argument.")
 
+;; If we have 'char *fred;' and put the point on the * (sparse does
+;; this), then current word will return char since it skips backwards
+;; over the *. So move the point forward to get fred.
+(defun my-grep-current-word ()
+  (if (and (eq (char-after) ?*) (eq major-mode 'c-mode))
+      (save-excursion
+	(skip-syntax-forward "^w_")
+	(current-word))
+    (current-word)))
+
+(defun my-grep-current-word2 ()
+  (if (and (eq (char-after) ?*) (eq major-mode 'c-mode))
+      (let ((saved (point-marker)) word) ;; this cannot be save-excursion
+	(skip-syntax-forward "^w_")
+	(setq word (current-word))
+	(goto-char saved)
+	word)
+    (current-word)))
+
 (defun my-grep-exts ()
   (let ((ext (if buffer-file-name (file-name-extension buffer-file-name))))
     (if ext
@@ -17,7 +36,7 @@
       "*")))
 
 (defun my-grep-interactive ()
-  (let* ((word (current-word))
+  (let* ((word (my-grep-current-word))
 	 (exts (my-grep-exts))
 	 (rprompt (concat "Regex [" word "]: "))
 	 (fprompt (concat "Files [" exts "]: ")))
@@ -50,7 +69,7 @@ Ok, with a prefix arg you can edit the grep command before the
 grep is run."
   (interactive)
   (my-grep-doit
-   (concat my-grep-prog " \"\\b" (current-word) "\\b\" " (my-grep-exts))))
+   (concat my-grep-prog " \"\\b" (my-grep-current-word) "\\b\" " (my-grep-exts))))
 
 ;;;###autoload
 (defun my-grep-find (regex files)
@@ -67,3 +86,5 @@ Very Bad Idea to remove any of the existing flags."
   (my-grep-doit (concat "find -name '" files "' -print0|"
 			"xargs -0 " my-grep-prog " '"
 			regex "'")))
+
+(provide 'my-grep)

@@ -1,5 +1,5 @@
 (provide 'git-diff)
-
+(require 'my-grep)
 (eval-when-compile (require 'ediff))
 
 (defun git-dir (&optional dir no-error)
@@ -108,7 +108,7 @@ meaning as in `git-grep'."
   (interactive "P")
   (let ((word (if mark-active
 		  (buffer-substring (region-beginning) (region-end))
-		(concat "\\b" (current-word) "\\b"))))
+		(concat "\\b" (my-grep-current-word) "\\b"))))
     (git-grep arg word)))
 
 ;;;###autoload
