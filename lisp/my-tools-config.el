@@ -24,9 +24,8 @@
 
     ;; C-ish files
     (when c-buffer-is-cc-mode
-      (princ (format "C Style:      %s %s %d/%d\n" c-indentation-style
-		     (if indent-tabs-mode "tabs" "spaces")
-		     c-basic-offset tab-width)))
+      (princ (format "C Style:      %s %s %d\n" c-indentation-style
+		     (if indent-tabs-mode "tabs" "spaces") tab-width)))
 
     ;; optional files
     (unless (my-tools-fname "Tag file:" tags-file-name)
