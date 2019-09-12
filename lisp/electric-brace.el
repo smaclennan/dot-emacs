@@ -1,6 +1,7 @@
 ;; electric brace pairing
 
 (require 'cc-mode)
+(provide 'electric-brace)
 
 (defvar electric-brace-regexp "[ \t\r\n]*}[ \t\r\n]*else")
 
@@ -9,6 +10,7 @@
     (insert str)
     (indent-according-to-mode)))
 
+;;;###autoload
 (defun electric-brace ()
   (interactive)
   (self-insert-command 1)
