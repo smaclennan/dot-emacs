@@ -19,8 +19,9 @@
 
 ;; Added by Package.el. This must come before configurations of
 ;; installed packages.
-(when (file-exists-p (concat user-emacs-directory "elpa"))
-  (package-initialize))
+(if (file-exists-p (concat user-emacs-directory "elpa"))
+    (package-initialize)
+  (defun package-installed-p (pkg) nil))
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
