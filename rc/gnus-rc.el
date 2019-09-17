@@ -21,6 +21,8 @@
 ;; (setq smtpmail-smtp-server "smtp.gmail.com"
 ;;       smtpmail-smtp-service 587)
 
+(require 'gnus-sum)
+
 (when (package-installed-p 'bbdb)
   (bbdb-initialize 'gnus))
 
@@ -49,7 +51,7 @@
 ;; SAM (gnus-demon-add-handler 'my-update-gnus-summary 1 nil)
 
 ;;(gnus-demon-remove-handler 'my-update-gnus-summary)
-)
+) ;; SAM
 
 (defvar my-gnus-trash-folder "[Gmail]/Trash"
   "The Trash folder.")
