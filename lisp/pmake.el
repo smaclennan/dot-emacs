@@ -96,7 +96,10 @@ At exit, `pmake-run-rc' will be t if the run was successful."
   (run-hook-with-args 'pmake-done-hook 'stage desc nil)
   (unless (equal desc "finished\n")
     (setq pmake-run-rc nil)
-    (when pmake-errors-are-fatal (error "FAILED")))
+    (when pmake-errors-are-fatal
+      (setq pmake-stages nil)
+      (remove-hook 'compilation-finish-functions 'pmake-stage-finish)
+      (error "FAILED")))
   (setq pmake-stages (cdr pmake-stages)) ;; next
   (if pmake-stages
       (let ((next (car pmake-stages)))
