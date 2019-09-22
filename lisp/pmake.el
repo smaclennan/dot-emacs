@@ -37,7 +37,7 @@ Example: Run a make clean then make subdirs lisp and misc in parallel.
 
 (setq pmake-stages
       '(\"make clean\"
-	(\"subdirs\" (\"make -C lisp\") (\"make -C misc\"))))
+	(\"subdirs\" (\"lisp\" \"make -C lisp\") (\"misc\" \"make -C misc\"))))
 (add-hook 'pmake-done-hook 'pmake-verbose-hook)
 (pmake-run)")
 
