@@ -47,7 +47,7 @@ Example: Run a make clean then make subdirs lisp and misc in parallel.
 
 It will be passed three args: TYPE, DESC, PROC.
 TYPE will be one of 'start, 'stage, 'pmake, 'done.
-DESC will be set for all but 'done.
+DESC will be always be set.
 PROC will only be set for 'pmake.
 
 A usable example `pmake-verbose-hook' is provided.")
@@ -111,6 +111,7 @@ At exit, `pmake-run-rc' will be t if the run was successful."
 	  (run-hook-with-args 'pmake-done-hook 'start next nil)))
     ;; Done!
     (remove-hook 'compilation-finish-functions 'pmake-stage-finish)
+    (unless pmake-run-rc (setq desc "failed\n"))
     (run-hook-with-args 'pmake-done-hook 'done desc nil)
     (setq pmake-done-hook nil)))
 
