@@ -117,4 +117,14 @@ Go through the 'my-compile-dir-list' looking for a match."
        ((fboundp func-or-style)
 	(funcall func-or-style dir arg))))))
 
+;;;###autoload
+(defun my-compile-delete (regexp)
+  "Helper function to delete an entry from the `my-compile-dir-list'.
+Asks for the directory regular expression."
+  (interactive "sRegexp: ")
+  (let ((entry (assoc regexp my-compile-dir-list)))
+    (if entry
+	(setq my-compile-dir-list (delq entry my-compile-dir-list))
+      (error "%s not found" regexp))))
+
 (provide 'my-compile)
