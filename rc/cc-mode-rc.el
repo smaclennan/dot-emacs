@@ -20,8 +20,7 @@
   (let ((tags (expand-file-name "TAGS")))
     (if (file-exists-p tags) (visit-tags-table tags t)))
 
-  (my-compile-command)
-  )
+  (my-compile-command))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 (require 'my-compile)
@@ -33,5 +32,5 @@
 (put 'compile-command 'safe-local-variable #'stringp)
 
 ;; Bold SAM comments
-(mapc (lambda (mode) (comment-warn mode "\\(/\\*\\|//\\) ?\\<SAM\\>.*"))
-      '(c-mode c++-mode))
+(dolist (mode '(c-mode c++-mode))
+  (comment-warn mode "\\(/\\*\\|//\\) ?\\<SAM\\>.*"))
