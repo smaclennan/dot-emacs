@@ -17,15 +17,6 @@
 	(current-word))
     (current-word)))
 
-(defun my-grep-current-word2 ()
-  (if (and (eq (char-after) ?*) (eq major-mode 'c-mode))
-      (let ((saved (point-marker)) word) ;; this cannot be save-excursion
-	(skip-syntax-forward "^w_")
-	(setq word (current-word))
-	(goto-char saved)
-	word)
-    (current-word)))
-
 (defun my-grep-exts ()
   (let ((ext (if buffer-file-name (file-name-extension buffer-file-name))))
     (if ext
