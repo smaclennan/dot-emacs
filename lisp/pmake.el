@@ -85,7 +85,11 @@ At exit, `pmake-run-rc' will be t if the run was successful."
 	pmake-errors-are-fatal errors-are-fatal
 	pmake-stage-start nil) ;; don't time first nil stage
 
-  (add-hook 'compilation-finish-functions 'pmake-stage-finish)
+  ;; Don't add the compilation hook unless we need it.
+  ;; This allows us to perform compiles whilst running pmake.
+  (dolist (stage pmake-stages)
+    (unless (listp stage)
+      (add-hook 'compilation-finish-functions 'pmake-stage-finish)))
 
   ;; Start by pretending to successfully finish a stage
   (setq pmake-stages (cons "ignored" pmake-stages))
