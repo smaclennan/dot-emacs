@@ -98,3 +98,11 @@ decimal in thousandths."
     (setq kg (/ result 2.20462))
     (message "%.2f kg" kg)
     kg))
+
+;;;###autoload
+(defun l2ci (liters)
+  "Convert LITERS to cubic inches."
+  (interactive "nL: ")
+  (let ((ci (round (* liters 61.024))))
+    (message "%SL = %Sci" liters ci)
+    ci))
