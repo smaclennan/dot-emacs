@@ -71,7 +71,7 @@ Returns the kloc project directory or nil."
 	(kill-region start (point))
 
 	;; Fixup the lines for compilation
-	(while (re-search-forward "^[^:]+:\\([0-9]+\\)" nil t)
+	(while (re-search-forward "^[^:\n]+:\\([0-9]+\\)" nil t)
 	  (replace-match (concat file ":" (match-string 1) ":1"))))
       ;; For the kloc-do-many list we want to parse even if no kdir.
       ;; Doesn't hurt in any case.
@@ -99,7 +99,9 @@ Returns the kloc project directory or nil."
 Uses `kloc-project-dir' to find the project directory. Puts the
 results in a compilation buffer.
 
-A universal argument allows you to edit the command."
+A universal argument allows you to edit the command.
+
+If RAW is non-nil, gives raw output. Next error will not work."
   (interactive "P")
   (let ((file buffer-file-name))
     (with-current-buffer (get-buffer-create "*kloc*")
@@ -108,16 +110,6 @@ A universal argument allows you to edit the command."
       (unless (kloc-do-one file nil raw edit)
 	(error "No project directory found")))
     (message "kloc done.")))
-
-;;;###autoload
-(defun kloc-raw (edit)
-  "Check the current buffer with klocwork and raw output.
-Uses `kloc-project-dir' to find the project directory. Puts the
-results in a compilation buffer.
-
-A universal argument allows you to edit the command."
-  (interactive "P")
-  (kloc edit t))
 
 (defun kloc-run (cmd)
   "Trivial helper function."
@@ -137,7 +129,7 @@ WARNING: This tends to mess up the project."
     (unless kdir (error "No klocwork project found"))
     (kloc-run make-clean-command)
     (kloc-run (concat "kwinject -o buildspec.out " compile-command))
-    (kloc-run (concat"kwcheck run -b buildspec.out -pd=" kdir))
+    (kloc-run (concat "kwcheck run -b buildspec.out -pd=" kdir))
     (message "done")))
 
 ;;;###autoload
