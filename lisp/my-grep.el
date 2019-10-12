@@ -7,6 +7,9 @@
 (defvar my-grep-files-history nil
   "The minibuffer history list for `my-grep' and `my-grep-find's FILES argument.")
 
+(defvar my-grep-base nil
+  "The base directory for `my-grep-find'.")
+
 ;; If we have 'char *fred;' and put the point on the * (sparse does
 ;; this), then current word will return char since it skips backwards
 ;; over the *. So move the point forward to get fred.
@@ -72,10 +75,12 @@ recursively find all files.
 
 With a prefix arg you can edit the grep command before the grep
 is run. This allows extra flags like -i etc. It is generally a
-Very Bad Idea to remove any of the existing flags."
+Very Bad Idea to remove any of the existing flags.
+
+Uses `my-grep-base' as the starting directory. Normally this is
+the current directory."
   (interactive (my-grep-interactive))
-  (my-grep-doit (concat "find -name '" files "' -print0|"
-			"xargs -0 " my-grep-prog " '"
-			regex "'")))
+  (my-grep-doit (concat "find " my-grep-base " -name '" files "' -print0|"
+			"xargs -0 " my-grep-prog " '" regex "'")))
 
 (provide 'my-grep)
