@@ -4,20 +4,26 @@
   "Pretty print the `inches-decimal-to-fraction' output."
   (let ((feet (nth 0 list)) (inches (nth 1 list))
 	(frac (nth 2 list)) (denom (nth 3 list))
-	str)
+	str space)
     (if (> feet 0)
-	(setq str (format "%d' %d\"" feet inches))
-      (setq str (format "%d" inches)))
+	(setq str (format "%d' %d" feet inches)
+	      space " ")
+      (if (> inches 0)
+	  (setq str (format "%d" inches)
+		space " ")))
     (when (> frac 0)
-      (setq str (concat str (format " %d/%d" frac denom))))
+      (setq str (concat str space (format "%d/%d" frac denom))))
     (message "%s\"" str)))
 
 ;;;###autoload
-(defun inches-decimal-to-fraction (denom inches)
-  "When called interactively, asks for inches as a decimal and
-prints as feet/inches/fraction. The default fraction is
-16ths. A prefix arg changes the denominator.  When non-interactive
-returns a list '(feet inches fraction denom)."
+(defun inches-decimal-to-fraction (denom inches &optional fixed)
+  "Convert decimal inches to a fraction.
+
+If DENOM is nil, defaults to 16ths. Interactively a
+universal-prefix sets the DENOM.
+If FIXED is non-nil, does not reduce the fraction.
+
+When non-interactive returns a list '(feet inches fraction denom)."
   (interactive "P\nnInches: ")
   (unless denom (setq denom 16))
   (let ((feet (floor (/ inches 12)))
@@ -26,7 +32,7 @@ returns a list '(feet inches fraction denom)."
     (when (> feet 0)
       (setq inches (- inches (* feet 12))))
     (setq inches (floor inches))
-    (unless current-prefix-arg
+    (unless fixed
       (if (> frac 0)
 	  (while (eq (logand frac 1) 0)
 	    (setq frac (/ frac 2))
@@ -38,14 +44,20 @@ returns a list '(feet inches fraction denom)."
 
 ;;;###autoload
 (defun mm2inches (denom mm)
-  "Print millimeters as inches. See
-`inches-decimal-to-fraction'. If DENOM is 1000, show as inch
-decimal in thousandths."
+  "Print millimeters as inches. See `inches-decimal-to-fraction'.
+
+If DENOM is 1000, show as inch decimal in thousandths."
   (interactive "P\nnmm: ")
   (let ((inch (* mm 0.0393701)))
     (if (eq denom 1000)
 	(message "%.3f" inch)
       (inches-print (inches-decimal-to-fraction denom inch)))))
+
+;;;###autoload
+(defun mm2inches-64ths (denom mm)
+  "Print millimeters as 64ths of an inch."
+  (interactive "P\nnmm: ")
+  (inches-print (inches-decimal-to-fraction 64 (* mm 0.0393701) t)))
 
 ;;;###autoload
 (defun cm2inches (denom cm)
