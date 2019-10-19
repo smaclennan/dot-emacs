@@ -11,4 +11,8 @@ else
     unset ARG
 fi
 
-emacsclient -n $ARG $FILE
+if [ -S /tmp/emacs$UID/server ]; then
+    emacsclient -n $ARG $FILE
+else
+    emacs $ARG $FILE &
+fi
