@@ -11,6 +11,9 @@ else
     unset ARG
 fi
 
+# dash and ksh do not have $UID
+[ -z "$UID" ] && UID=$(id -u)
+
 if [ -S /tmp/emacs$UID/server ]; then
     emacsclient -n $ARG $FILE
 else
