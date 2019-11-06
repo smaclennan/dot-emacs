@@ -38,4 +38,4 @@
 ;;;###autoload
 (defun sys-cpu-flags ()
   (with-current-buffer (find-file-noselect "/proc/cpuinfo")
-    (cpuinfo-find "flags")))
+    (split-string (cpuinfo-find "flags"))))

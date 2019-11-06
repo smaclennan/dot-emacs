@@ -31,4 +31,4 @@
   (let ((exe (cpuid-cpuinfo-exe)))
     (with-temp-buffer
       (call-process exe nil t nil)
-      (cpuid-find "Flags"))))
+      (split-string (cpuid-find "Flags")))))
