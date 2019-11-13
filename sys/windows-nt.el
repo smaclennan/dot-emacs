@@ -61,6 +61,11 @@ Top level directories end in /, subdirs do not. Windows version."
 	  (string-to-number (match-string 3 ident))
 	  (string-to-number (match-string 4 ident)))))
 
+;;;###autoload
+(defun sys-cpu-flags ()
+  (load "cpuid")
+  (cpuid-cpu-flags))
+
 (defun sys-mb (str)
   "Helper function to convert number with commas from MB to bytes."
   (let ((mb (string-to-number (replace-regexp-in-string "," "" str))))
