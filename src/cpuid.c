@@ -744,6 +744,11 @@ int main(int argc, char *argv[])
 	char vendor[13];
 	uint32_t regs[4];
 
+	if (argc > 1 && strcmp(argv[1], "-g") == 0) {
+		cpuid(1, regs);
+		return !(regs[2] & 0x80000000);
+	}
+
 	cpuid(0x80000000, regs);
 	max_reg = regs[0];
 
