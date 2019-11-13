@@ -1,6 +1,8 @@
 ;; Back before GNU Emacs went insane about common lisp
 (require 'cl)
 
+(provide 'cl-extra)
+
 ;; 24.2 needs this... 24.5 does not
 (unless (fboundp 'cl-remove-if)
   (defalias 'cl-remove-if 'remove-if)
