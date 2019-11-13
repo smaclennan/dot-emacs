@@ -1,0 +1,17 @@
+This directory is an attempt to put system and Emacs version specific
+code in one place.
+
+Currently we support: Linux, BSD, QNX, and Windows.
+
+* sys-nproc
+  * fills in sys-nproc variable
+
+* sys-mem
+  * fills in sys-mem variable
+
+* sys-cpuinfo
+  * BSD, QNX require cpuid installed
+
+* sys-cpuflags
+* sys-is-guest
+  * BSD, QNX, Windows require cpuid installed

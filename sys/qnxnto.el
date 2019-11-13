@@ -25,3 +25,6 @@
 
 ;;;###autoload
 (defun sys-cpu-flags () (cpuid-cpu-flags))
+
+;;;###autoload
+(defun sys-is-guest () (cpuid-is-guest))

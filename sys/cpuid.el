@@ -32,3 +32,6 @@
     (with-temp-buffer
       (call-process exe nil t nil)
       (split-string (cpuid-find "Flags")))))
+
+(defun cpuid-is-guest ()
+  (eq (call-process (cpuid-cpuinfo-exe) nil nil nil "-g") 0))

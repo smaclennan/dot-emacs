@@ -39,3 +39,8 @@
 (defun sys-cpu-flags ()
   (with-current-buffer (find-file-noselect "/proc/cpuinfo")
     (split-string (cpuinfo-find "flags"))))
+
+;;;###autoload
+(defun sys-is-guest ()
+  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+    (string-match "\\bhypervisor\\b" (cpuinfo-find "flags"))))
