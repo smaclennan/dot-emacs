@@ -676,6 +676,7 @@ static void add_flags(void)
 {
 	uint32_t caps[NCAPINTS];
 	uint32_t regs[4];
+	int i, bit;
 
 	memset(caps, 0, sizeof(caps));
 
@@ -729,8 +730,8 @@ static void add_flags(void)
 
 	printf("Flags      :");
 
-	for (int i = 0; i < NCAPINTS; ++i)
-		for (int bit = 0; bit < 32; ++bit)
+	for (i = 0; i < NCAPINTS; ++i)
+		for (bit = 0; bit < 32; ++bit)
 			if (caps[i] & (1 << bit))
 				if (x86_cap_flags[bit + (i * 32)])
 					printf(" %s", x86_cap_flags[bit + (i * 32)]);
