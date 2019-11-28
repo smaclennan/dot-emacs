@@ -20,3 +20,5 @@
 	(when (string= buff name)
 	  (text-mode))))))
 (add-hook 'find-file-hooks 'check-for-commit t)
+
+(add-to-list 'auto-mode-alist '("\\.md\\'" . text-mode) t)
