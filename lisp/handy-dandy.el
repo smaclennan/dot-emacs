@@ -2,7 +2,8 @@
 
 ;;;###autoload
 (defun unixtime (seconds)
-  (interactive "dTime: ")
+  "Convert SECONDS in Unix time to human readable date."
+  (interactive "nTime: ")
   (message (format-time-string "%a %b %d %T %Z %Y" (seconds-to-time seconds))))
 
 ;;;###autoload
