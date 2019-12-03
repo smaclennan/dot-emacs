@@ -140,6 +140,8 @@ false match."
 	  (throw 'done nil))
       (throw 'done t))))
 
+(defvar gcov-prog "gcov" "The gcov executable")
+
 ;;;###autoload
 (defun gcov-func (func &optional file)
   "Given a FUNC, run gcov on the current buffer and find the
@@ -152,7 +154,7 @@ rather than the current buffer."
     (with-current-buffer (get-buffer-create "*gcov*")
       (setq default-directory dir)
       (erase-buffer)
-      (call-process "gcov" nil t nil "-fb" file)
+      (call-process gcov-prog nil t nil "-fb" file)
       (goto-char (point-min))
       (re-search-forward (concat "^Function '" func "'$"))
       (delete-region (point-min) (match-beginning 0))
