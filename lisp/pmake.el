@@ -73,7 +73,9 @@ Only used by `pmake-verbose-hook'.")
 If ERRORS-ARE-FATAL is non-nil, then fail on the first non-zero
 exit code.
 
-At exit, `pmake-run-rc' will be t if the run was successful."
+At exit, `pmake-run-rc' will be t if the run was successful.
+
+You cannot assume that `pmake-done-hook' is clean."
   (when pmake-debug
     (eval-and-compile (require 'cl-extra))
     (with-current-buffer (get-buffer-create "*pmake dbg*")
