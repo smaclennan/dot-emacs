@@ -3,7 +3,7 @@
   "Return number of cpu devices."
   (setq sys-nproc
 	(condition-case nil
-	    (length (directory-files "/sys/bus/cpu/devices" nil "cpu[0-9]*"))
+	    (length (directory-files "/sys/bus/cpu/devices" nil "cpu[0-9]*" t))
 	  (error
 	   (with-temp-buffer
 	     (insert-file-contents "/proc/cpuinfo")
