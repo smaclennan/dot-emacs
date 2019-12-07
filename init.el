@@ -5,29 +5,32 @@
 
 (defvar emacs-start-time (current-time))
 
-(defvar sys-mem nil
-  "Total system memory. You must call `sys-mem' to initialize this.")
-
-(defvar sys-nproc nil
-  "Total number of processors. You must call `sys-nproc' to initialize this.")
-
 (dolist (dir '("lisp" "misc" "sys"))
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
 
 (load (format "compat-%d" emacs-major-version) t)
 
-;; Added by Package.el. This must come before configurations of
-;; installed packages.
-(if (file-exists-p (concat user-emacs-directory "elpa"))
-    (package-initialize)
-  (defun package-installed-p (pkg) nil))
-
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
 ;; `laptop-mode' to work. Use `after-init-hook' if you need to clean
 ;; something up at the end.
 (load (concat user-emacs-directory "user-init") t)
+
+;; Load a file called sys/`system-type' if it exists.
+;; Must be after user-init.el but very early for sys-nproc.
+(defvar sys-mem nil
+  "Total system memory. You must call `sys-mem' to initialize this.")
+
+(load (replace-regexp-in-string "gnu/" "" (symbol-name system-type)) t)
+
+(defvar sys-nproc (sys-nproc) "Total number of processors.")
+
+;; Added by Package.el. This must come before configurations of
+;; installed packages.
+(if (file-exists-p (concat user-emacs-directory "elpa"))
+    (package-initialize)
+  (defun package-installed-p (pkg) nil))
 
 (rcfiles-register-rc-files)
 
@@ -191,8 +194,6 @@ the identifier."
 ;;; ------------------------------------------------------------
 ;;; Optional Init files
 
-;; Load a file called sys/`system-type' if it exists.
-(load (replace-regexp-in-string "gnu/" "" (symbol-name system-type)) t)
 (load (concat user-emacs-directory "work") t)
 
 (setq custom-file (concat user-emacs-directory "custom.el"))

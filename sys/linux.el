@@ -1,13 +1,12 @@
 ;;;###autoload
 (defun sys-nproc ()
   "Return number of cpu devices."
-  (setq sys-nproc
-	(condition-case nil
-	    (length (directory-files "/sys/bus/cpu/devices" nil "cpu[0-9]*" t))
-	  (error
-	   (with-temp-buffer
-	     (insert-file-contents "/proc/cpuinfo")
-	     (count-matches "^processor" (point-min) (point-max)))))))
+  (condition-case nil
+      (length (directory-files "/sys/bus/cpu/devices" nil "cpu[0-9]*" t))
+    (error
+     (with-temp-buffer
+       (insert-file-contents "/proc/cpuinfo")
+       (count-matches "^processor" (point-min) (point-max))))))
 
 ;;;###autoload
 (defun sys-mem ()

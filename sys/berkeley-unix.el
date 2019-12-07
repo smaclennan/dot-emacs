@@ -13,7 +13,7 @@
 ;;;###autoload
 (defun sys-nproc ()
   "Return number of cpus."
-  (setq sys-nproc (sysctl "hw.ncpu")))
+  (sysctl "hw.ncpu"))
 
 ;;;###autoload
 (defun sys-mem ()
