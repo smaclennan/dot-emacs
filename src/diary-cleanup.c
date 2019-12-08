@@ -4,16 +4,22 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <ctype.h>
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/file.h>
 
 /* This deletes old entries... where old is last week or older.
  *
- * We read the file into memory, edit it in memory, then write it back
- * out if necessary. This is done so we can keep a flock() lock on the
- * file and protect ourselves from claws-mail.
+ * We keep a flock() lock on the file to protect ourselves from
+ * claws-mail.
  */
+
+static char *outbuf;
+static int outbuf_len;
+
+static int modified; // did we delete at least one entry
+
 
 static void logit(const char *fmt, ...)
 {
@@ -47,29 +53,39 @@ static int weekno(int year, int month, int day)
 	return week;
 }
 
-static int delete_entry(char * const base, char *start, int *len)
+static void add_line(const char *line, int *deleting)
 {
-	char *end = strchr(start, '\n');
-	if (!end) return 0;
-	++end;
+	static int saw_empty;
 
-	while (*end == '\t') {
-		char *p = strchr(end, '\n');
-		if (!p) return 0;
-		end = p + 1;
+	if (*deleting) {
+		if (*line == '\t')
+			return; // continuation line, delete
+		*deleting = 0;
 	}
 
-	if (*end == '\n') ++end;
+	// We try to collapse empty lines into one line
+	const char *p = line;
+	while (isspace(*p)) ++p;
+	if (*p == 0) {
+		// empty line
+		if (saw_empty)
+			return; // delete
+		saw_empty = 1;
+	} else
+		saw_empty = 0;
 
-	memmove(start, end, base + *len - end + 1);
-	*len -= (end - start);
-
-	return 1;
+	int len = strlen(line);
+	outbuf = realloc(outbuf, outbuf_len + len);
+	if (!outbuf) {
+		logit("Out of memory!");
+		exit(1);
+	}
+	memcpy(outbuf + outbuf_len, line, len);
+	outbuf_len += len;
 }
 
-static int process_buffer(char * const buf, int len)
+static void process_buffer(FILE *fp)
 {
-	int rc_len = len;
 	int month, day, year;
 
 	time_t now = time(NULL);
@@ -78,22 +94,21 @@ static int process_buffer(char * const buf, int len)
 	tm->tm_mon++; // we want 1 based
 
 	int this_week = weekno(tm->tm_year, tm->tm_mon, tm->tm_mday);
+	int deleting = 0;
 
-	char *p = buf;
-	while (p) {
-		while (*p == '\n' || *p == '\r') ++p;
-		if (sscanf(p, "%d/%d/%d", &month, &day, &year) == 3) {
+	char line[1024];
+	while (fgets(line, sizeof(line), fp)) {
+		if (!deleting && sscanf(line, "%d/%d/%d", &month, &day, &year) == 3) {
 			int week = weekno(year, month, day);
 
 			if ((tm->tm_year == year && this_week > week) || tm->tm_year > year) {
-				if (delete_entry(buf, p, &rc_len))
-					continue; // we have updated p indirectly
+				deleting = 1;
+				modified = 1;
+				continue; // delete this line
 			}
 		}
-		p = strchr(p, '\n');
+		add_line(line, &deleting);
 	}
-
-	return rc_len;
 }
 
 int main(int argc, char *argv[])
@@ -106,48 +121,37 @@ int main(int argc, char *argv[])
 	}
 
 	char *diary = argv[1];
-	int fd = open(diary, O_RDWR);
-	if (fd < 0) {
+	FILE *fp = fopen(diary, "r+");
+	if (!fp) {
 		file_error(diary, "open");
 		exit(1);
 	}
+	int fd = fileno(fp);
 
 	if (flock(fd, LOCK_EX)) {
 		file_error(diary, "flock");
 		goto done;
 	}
 
-	struct stat sbuf;
-	if (fstat(fd, &sbuf)) {
-		file_error(diary, "fstat");
+	process_buffer(fp);
+
+	if (ferror(fp)) {
+		file_error(diary, "file error");
 		goto done;
 	}
 
-	char *buf = malloc(sbuf.st_size + 1);
-	if (!buf) {
-		logit("Out of memory!\n");
-		goto done;
-	}
-
-	if (read(fd, buf, sbuf.st_size) != sbuf.st_size) {
-		file_error(diary, "read");
-		goto done;
-	}
-	buf[sbuf.st_size] = 0;
-
-	int len = process_buffer(buf, sbuf.st_size);
-	if (len != sbuf.st_size) {
+	if (modified) {
 		if (lseek(fd, 0, SEEK_SET)) {
 			file_error(diary, "lseek");
 			goto done;
 		}
 
-		if (write(fd, buf, len) != len) {
+		if (write(fd, outbuf, outbuf_len) != outbuf_len) {
 			file_error(diary, "write");
 			goto done;
 		}
 
-		if (ftruncate(fd, len)) {
+		if (ftruncate(fd, outbuf_len)) {
 			file_error(diary, "ftruncate");
 			goto done;
 		}
@@ -156,7 +160,7 @@ int main(int argc, char *argv[])
 	rc = 0;
 
 done:
-	close(fd);
+	fclose(fp);
 	return rc;
 }
 
