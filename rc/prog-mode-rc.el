@@ -2,7 +2,7 @@
 
 (add-hook 'prog-mode-hook #'flyspell-prog-mode)
 
-(add-hook 'prog-mode-hook #'hide-copyleft-region)
+(add-hook 'prog-mode-hook 'elide-head)
 
 (show-paren-mode t)
 
