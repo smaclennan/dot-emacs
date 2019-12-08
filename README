@@ -10,6 +10,9 @@ A brief rundown:
     This is used to tweak per machine settings such as email address
     and laptop-mode.
 
+  * custom.el (optional)
+    Used by Emacs customize.
+
 lisp/
   * my lisp code
 
