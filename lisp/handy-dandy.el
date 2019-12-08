@@ -84,9 +84,8 @@ An ARG comments out the old line."
 If ALL is non-nil, returns all .el files."
   (let ((files (directory-files-recursively user-emacs-directory ".*\\.el$")))
     (unless all
-      ;; misc and loaddefs not mine
       (dolist (file files)
-	(when (string-match "/elpa/\\|/misc/\\|-loaddefs" file)
+	(when (string-match "/elpa/\\|/ws-butler.el\\|rcfiles.el\\|-loaddefs" file)
 	  (setq files (delete file files)))))
     files))
 

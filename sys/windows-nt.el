@@ -94,8 +94,7 @@ WARNING: This can take over 10 seconds."
 
 (defun build-all-loaddefs ()
   (interactive)
-  (dolist (one '("lisp" "misc"))
-    (let* ((dir (concat user-emacs-directory one))
-	   (generated-autoload-file
-	    (concat dir "/" one "-loaddefs.el")))
-      (update-directory-autoloads dir))))
+  (let* ((dir (concat user-emacs-directory "lisp"))
+	 (generated-autoload-file
+	  (concat dir "/" "lisp" "-loaddefs.el")))
+    (update-directory-autoloads dir)))

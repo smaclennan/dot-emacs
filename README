@@ -14,10 +14,7 @@ A brief rundown:
     Used by Emacs customize.
 
 lisp/
-  * my lisp code
-
-misc/
-  * other's lisp code
+  * lisp code
 
 rc/
   * I use Didier Verna's el-rcfiles package

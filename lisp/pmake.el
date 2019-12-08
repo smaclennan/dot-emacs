@@ -33,11 +33,11 @@ file. The list of commands must start with a unique string.
 
 If a command fails, the failing command will be the car of the list.
 
-Example: Run a make clean then make subdirs lisp and misc in parallel.
+Example: Run a make clean then make subdirs lisp and src in parallel.
 
 (setq pmake-stages
       '(\"make clean\"
-	(\"subdirs\" (\"lisp\" \"make -C lisp\") (\"misc\" \"make -C misc\"))))
+	(\"subdirs\" (\"lisp\" \"make -C lisp\") (\"src\" \"make -C src\"))))
 (add-hook 'pmake-done-hook 'pmake-verbose-hook)
 (pmake-run)")
 
