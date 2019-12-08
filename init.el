@@ -191,11 +191,6 @@ the identifier."
 (setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
 (setq backup-directory-alist '((".*" . "~/.backup")))
 
-;;; ------------------------------------------------------------
-;;; Optional Init files
-
-(load (concat user-emacs-directory "work") t)
-
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file t)
 

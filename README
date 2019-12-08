@@ -10,9 +10,6 @@ A brief rundown:
     This is used to tweak per machine settings such as email address
     and laptop-mode.
 
-  * work.el (optional)
-    Work related configs very specific to my job.
-
 lisp/
   * my lisp code
 
