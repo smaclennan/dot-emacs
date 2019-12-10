@@ -53,9 +53,16 @@ static int weekno(int year, int month, int day)
 	return week;
 }
 
-static void add_line(const char *line, int *deleting)
+static void add_line(char *line, int *deleting)
 {
 	static int saw_empty;
+
+	if (line == NULL) {
+		if (saw_empty)
+			// We guarantee an empty line is 1 byte
+			--outbuf_len;
+		return;
+	}
 
 	if (*deleting) {
 		if (*line == '\t')
@@ -71,6 +78,7 @@ static void add_line(const char *line, int *deleting)
 		if (saw_empty)
 			return; // delete
 		saw_empty = 1;
+		strcpy(line, "\n");
 	} else
 		saw_empty = 0;
 
@@ -109,6 +117,8 @@ static void process_buffer(FILE *fp)
 		}
 		add_line(line, &deleting);
 	}
+
+	add_line(NULL, NULL);
 }
 
 int main(int argc, char *argv[])
