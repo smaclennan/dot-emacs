@@ -5,6 +5,12 @@
 
 (defvar emacs-start-time (current-time))
 
+(defvar sys-mem nil
+  "Total system memory. Call `sys-mem' to initialize this.")
+
+(defvar sys-nproc nil
+  "Total number of processors. Call `sys-nproc' to initialize this.")
+
 (dolist (dir '("lisp" "sys"))
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
@@ -18,13 +24,8 @@
 (load (concat user-emacs-directory "user-init") t)
 
 ;; Load a file called sys/`system-type' if it exists.
-;; Must be after user-init.el but very early for sys-nproc.
-(defvar sys-mem nil
-  "Total system memory. You must call `sys-mem' to initialize this.")
-
+;; Must be after user-init.el but very early
 (load (replace-regexp-in-string "gnu/" "" (symbol-name system-type)) t)
-
-(defvar sys-nproc (sys-nproc) "Total number of processors.")
 
 ;; Added by Package.el. This must come before configurations of
 ;; installed packages.
