@@ -1,3 +1,7 @@
+(defvar sys-nproc nil "Total number of processors.")
+
+(defvar sys-mem nil "Total system memory.")
+
 ;;;###autoload
 (defun sys-nproc ()
   "Return number of cpu devices."

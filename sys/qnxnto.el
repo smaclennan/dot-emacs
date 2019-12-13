@@ -1,9 +1,13 @@
+(defvar sys-nproc nil "Total number of processors.")
+
+(defvar sys-mem nil "Total system memory.")
+
 (defun do-pidin-info ()
   (with-temp-buffer
     (call-process "pidin" nil t nil "info")
     (re-search-backward "Freemem:[0-9]+MB/\\([0-9]+\\)MB")
     (setq sys-mem (* (string-to-number (match-string 1)) #x100000))
-    (count-matches "^Processor")))
+    (setq sys-nproc (count-matches "^Processor"))))
 
 ;;;###autoload
 (defun sys-nproc ()

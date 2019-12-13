@@ -43,6 +43,10 @@ Top level directories end in /, subdirs do not. Windows version."
 		   (regexp-quote smerge-dir1)
 		   (regexp-quote smerge-dir2)))))
 
+(defvar sys-nproc nil "Total number of processors.")
+
+(defvar sys-mem nil "Total system memory.")
+
 ;;;###autoload
 (defun sys-nproc ()
   (string-to-number (getenv "NUMBER_OF_PROCESSORS")))
