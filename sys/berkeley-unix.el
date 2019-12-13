@@ -6,6 +6,10 @@
 
 (defvar page-size nil "Page size filled in by `sys-mem'.")
 
+(defvar sys-mem nil "Total system memory.")
+
+(defvar sys-nproc nil "Total number of processors.")
+
 (defun sysctl (arg)
   "Return sysctl ARG as a number"
   (string-to-number (shell-command-to-string (concat "sysctl -n " arg))))
@@ -13,7 +17,9 @@
 ;;;###autoload
 (defun sys-nproc ()
   "Return number of cpus."
-  (sysctl "hw.ncpu"))
+  (if sys-nproc
+      sys-nproc
+    (setq sys-nproc (sysctl "hw.ncpu"))))
 
 ;;;###autoload
 (defun sys-mem ()

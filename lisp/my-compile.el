@@ -42,7 +42,7 @@
 (defvar my-kernel-dir (file-chase-links (concat "/lib/modules/" my-kernel-vers "/build"))
   "* Current kernel directory.")
 
-(defvar make-j "-j8" "* -Jn value to pass to makes.")
+(defvar make-j (format "-j%d" (sys-nproc)) "* -Jn value to pass to makes.")
 
 (defun gdb-func (matched-dir target)
   (setq compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))

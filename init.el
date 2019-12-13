@@ -5,12 +5,6 @@
 
 (defvar emacs-start-time (current-time))
 
-(defvar sys-mem nil
-  "Total system memory. Call `sys-mem' to initialize this.")
-
-(defvar sys-nproc nil
-  "Total number of processors. Call `sys-nproc' to initialize this.")
-
 (dolist (dir '("lisp" "sys"))
   (add-to-list 'load-path (concat user-emacs-directory dir))
   (load (concat dir "-loaddefs") t t))
