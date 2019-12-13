@@ -5,10 +5,10 @@
 
 (defvar emacs-start-time (current-time))
 
-(dolist (dir '("lisp" "sys"))
-  (add-to-list 'load-path (concat user-emacs-directory dir))
-  (load (concat dir "-loaddefs") t t))
-
+(add-to-list 'load-path (concat user-emacs-directory "lisp"))
+(load "lisp-loaddefs" t t)
+(add-to-list 'load-path (concat user-emacs-directory "sys"))
+(load "sys-loaddefs" t t)
 (load (format "compat-%d" emacs-major-version) t)
 
 ;; The user-init file allows for user/machine specific
