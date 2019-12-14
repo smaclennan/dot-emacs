@@ -17,9 +17,9 @@ ELCS ?= $(LISP:.el=.elc)
 	@$(EMACS) -batch -Q $(HELPER) -f batch-byte-compile $<
 
 # To override this rule, put a rule: before including Rules.mk
-all:	$(LOADFILE)
+all:	$(LOADFILE) $(ELCS)
 
-$(LOADFILE): $(ELCS)
+$(LOADFILE): $(LISP)
 	@echo "Update  $(LOADFILE)"
 	@$(EMACS) -batch -Q $(HELPER) -f update-loadfile $(LOADFILE)
 
