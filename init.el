@@ -99,22 +99,16 @@
 ;; For some reason this doesn't have a key binding
 (global-set-key "\C-hz" 'apropos-variable)
 
-;;; ---- GNU Emacs really really needs a signal-error-on-buffer-boundary
-
 ;; Using defadvice for these functions breaks minibuffer history
 (defun my-previous-line (arg)
-  "`previous-line' with no signal on end-of-buffer."
+  "`previous-line' with no signal on beginning-of-buffer."
   (interactive "p")
-  (condition-case nil
-      (call-interactively 'previous-line)
-    (beginning-of-buffer)))
+  (line-move (- arg) t))
 
 (defun my-next-line (arg)
   "`next-line' with no signal on end-of-buffer."
   (interactive "p")
-  (condition-case nil
-      (call-interactively 'next-line)
-    (end-of-buffer)))
+  (line-move arg t))
 
 (global-set-key (kbd "<up>") 'my-previous-line)
 (global-set-key (kbd "<down>") 'my-next-line)
@@ -125,13 +119,13 @@
   "`scroll-down' with no signal on end-of-buffer."
   (condition-case nil
       ad-do-it
-    (beginning-of-buffer)))
+    (error (goto-char (point-min)))))
 
 (defadvice scroll-up (around my-scroll-up activate)
   "`scroll-up' with no signal on end-of-buffer."
   (condition-case nil
       ad-do-it
-    (end-of-buffer)))
+    (error (goto-char (point-max)))))
 
 ;;; ----
 
