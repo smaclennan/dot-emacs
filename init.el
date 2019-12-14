@@ -1,9 +1,9 @@
 ;; Emacs initialization. Should work with Emacs >= 24.
 
+;;https://www.gnu.org/software/emacs/manual/html_node/elisp/Startup-Summary.html
+
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
-
-(defvar emacs-start-time (current-time))
 
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (load "lisp-loaddefs" t t)
@@ -21,8 +21,7 @@
 ;; Must be after user-init.el but very early
 (load (replace-regexp-in-string "gnu/" "" (symbol-name system-type)) t)
 
-;; Added by Package.el. This must come before configurations of
-;; installed packages.
+;; This must come before configurations of installed packages.
 (if (file-exists-p (concat user-emacs-directory "elpa"))
     (package-initialize)
   (defun package-installed-p (pkg) nil))
