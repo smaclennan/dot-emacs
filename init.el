@@ -33,9 +33,8 @@
 
 (setq track-eol t
       kill-whole-line t
-      next-line-add-newlines nil
       inhibit-default-init t
-      inhibit-startup-message t
+      inhibit-startup-screen t
       initial-scratch-message ";; This buffer is for goofing around in.\n\n"
       visible-bell t
       extended-command-suggest-shorter nil)
@@ -146,17 +145,9 @@ the identifier."
   (setq case-fold-search (not case-fold-search))
   (message "Case sensitive search %s." (if case-fold-search "off" "on")))
 
-;; Tilt wheel on Logitech M500 + others
-;;(global-set-key [button6] ')
-;;(global-set-key [button7] ')
-
-;; Side buttons on Logitech M500 + others
-(global-set-key [button8] 'yank)
-(global-set-key [button9] 'kill-region)
-
 (global-set-key "\C-x\C-l"	'list-buffers)
 (global-set-key "\C-x\C-k"	'kill-buffer)
-(global-set-key "\C-xw"	'what-line)
+(global-set-key "\C-xw"		'what-line)
 (global-set-key "\M-#"		'my-calc)
 (global-set-key [(iso-left-tab)] 'tab-to-tab-stop)
 
