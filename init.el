@@ -38,7 +38,6 @@
       inhibit-startup-message t
       initial-scratch-message ";; This buffer is for goofing around in.\n\n"
       visible-bell t
-      inhibit-startup-echo-area-message (user-login-name)
       extended-command-suggest-shorter nil)
 
 (put 'narrow-to-region 'disabled nil) ;; Why? Just why?
@@ -192,7 +191,8 @@ the identifier."
 
 (require 'server)
 
-(defun friendly-message ()
+;; Override the Emacs default function
+(defun display-startup-echo-area-message ()
   (interactive)
   (let ((hour (nth 2 (decode-time))))
     (message "Good %s %s"
@@ -203,11 +203,5 @@ the identifier."
 		     (if (server-running-p)
 			 " with no service."
 		       (server-start) nil)))))
-
-;; Not sure why Emacs wipes the message in console mode.
-(unless noninteractive
-  ;; Every time you turn around Emacs is displaying yet another
-  ;; stupid^h^h^h^h^h message that overwrites my nice friendly one.
-  (run-at-time .25 nil 'friendly-message))
 
 ;; end of .emacs "May the `(' be with `)'"
