@@ -1,6 +1,6 @@
 all:
-	@$(MAKE) -C lisp -s $(MFLAGS) all
 	@$(MAKE) -C sys  -s $(MFLAGS) all
+	@$(MAKE) -C lisp -s $(MFLAGS) all
 #	@$(MAKE) -C rc   -s $(MFLAGS) all
 
 clean:
