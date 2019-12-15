@@ -5,12 +5,12 @@
 (define-key isearch-mode-map [(shift f3)]	'isearch-repeat-backward)
 (define-key isearch-mode-map "\C-t"		'isearch-toggle-case-fold)
 
-(defun my-isearch-word-forward (&optional regexp-p)
+(defun my-isearch-word-forward ()
   "Search for current word."
-  (interactive "P")
+  (interactive)
   ;; Push the C-w and call 'isearch-forward'
   (setq unread-command-events (listify-key-sequence "\C-w"))
-  (isearch-mode t (not (null regexp-p)) nil (not (my-interactive-p))))
+  (isearch-forward))
 
 (defun my-isearch-yank-word ()
   "I don't like how `isearch-yank-word' defines a word, so I rolled my own."
