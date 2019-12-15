@@ -4,5 +4,6 @@
   ;; hunspell doesn't have this option
   (setq ispell-extra-args '("-W" "3")))
 
-(when (assoc "canadian" ispell-dictionary-alist)
-  (setq ispell-dictionary "canadian"))
+;; This is too early to use ispell-dictionary-alist
+;; Assume canadian exists...
+(setq ispell-dictionary "canadian")
