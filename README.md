@@ -1,8 +1,10 @@
+# .emacs.d
+
 This directory tree contains my config files and packages for Emacs.
 
 A brief rundown:
 
-/
+## /
   * init.el
     Should need no introduction.
 
@@ -13,19 +15,21 @@ A brief rundown:
   * custom.el (optional)
     Used by Emacs customize.
 
-lisp/
+## lisp/
   * lisp code
 
-rc/
+## rc/
   * I use Didier Verna's el-rcfiles package
     https://github.com/didierverna/el-rcfiles
 
-src/
+## src/
   * non-lisp files associated with emacs in some way
 
-sys/
+## sys/
   * compat-<emacs major version>.el
   * <system-type>.el
+
+# Just the code
 
 If you are not me, and you probably are not, you might want the lisp
 code but not all of the configuration. So I have a compromise. If you
