@@ -41,13 +41,16 @@
   "Return true if the `my-kernel-vers' is >= to the given MAJOR, MINOR,
    and PATCH numbers.
 The MAJOR and MINOR version numbers are required, but the PATCH is optional."
-  (let ((vers (split-string my-kernel-vers "\\.")))
-    (cond ((> (nth 0 vers)  major))
-	  ((< (nth 0 vers) major) nil)
-	  ((> (nth 1 vers) minor))
-	  ((< (nth 1 vers) minor) nil)
+  (let* ((vers (split-string my-kernel-vers "\\."))
+	 (my-major (string-to-number (nth 0 vers)))
+	 (my-minor (string-to-number (nth 1 vers)))
+	 (my-patch (string-to-number (nth 2 vers))))
+    (cond ((> my-major  major))
+	  ((< my-major major) nil)
+	  ((> my-minor minor))
+	  ((< my-minor minor) nil)
 	  ((null patch))
-	  ((>= (nth 2 vers) patch)))))
+	  ((>= my-patch patch)))))
 
 ;;;###autoload
 (defun my-sparse (&optional user-args)
@@ -69,11 +72,10 @@ work."
 ;;;; ---- Checkpatch
 
 (defvar my-checkpatch-prog (concat my-kernel-dir "/scripts/checkpatch.pl")
-  "* The checkpatch program.")
+  "The checkpatch program.")
 
-(defvar my-checkpatch-args "--emacs --file --no-tree"
-  "* Args to pass to checkpatch. Note that --no-color is added if
-  needed")
+(defvar my-checkpatch-args "--emacs --file --no-tree --ignore SPDX_LICENSE_TAG,UNSPECIFIED_INT,LINE_SPACING"
+  "Args to pass to checkpatch. Note that --no-color is added if needed.")
 
 ;;;###autoload
 (defun my-checkpatch ()
