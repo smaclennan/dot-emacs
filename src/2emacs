@@ -6,8 +6,15 @@
 
 [ -n "$1" ] || { echo "2emacs what?"; exit 1; }
 
-FILE=`echo $1 | cut -d: -f1`
-N=`echo $1 | awk -F: '{print $2}'`
+FILE=$1
+if [ "$1" = "-name" ]; then
+    [ -n "$2" ] || { echo "2emacs -name what?"; exit 1; }
+    FILE=`find -name $2 | head -n1`
+    [ -n "$FILE" ] || { echo "no file found"; exit 1; }
+fi
+
+FILE=`echo $FILE | cut -d: -f1`
+N=`echo $FILE | awk -F: '{print $2}'`
 
 if [ "$N" -eq "$N" ] 2>/dev/null; then
     ARG="+$N"
