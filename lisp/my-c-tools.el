@@ -74,8 +74,13 @@ work."
 (defvar my-checkpatch-prog (concat my-kernel-dir "/scripts/checkpatch.pl")
   "The checkpatch program.")
 
-(defvar my-checkpatch-args "--emacs --file --no-tree --ignore SPDX_LICENSE_TAG,UNSPECIFIED_INT,LINE_SPACING"
+(defvar my-checkpatch-args "--emacs --file --no-tree --show-types"
   "Args to pass to checkpatch. Note that --no-color is added if needed.")
+
+(defvar my-checkpatch-ignores "SPDX_LICENSE_TAG,LINE_SPACING"
+  "--ignore arg to pass to checkpatch (can be nil). Separating
+this from `my-checkpatch-args' allows easier buffer local values.")
+(put 'my-checkpatch-ignores 'safe-local-variable #'stringp)
 
 ;;;###autoload
 (defun my-checkpatch ()
@@ -92,6 +97,8 @@ compilation buffer so that `next-error' will work."
     ;; If the kernel is >= 4.2 we must add --no-color
     (when (my-kernel>= 4 2)
       (setq args (concat args " --no-color")))
+    (when my-checkpatch-ignores
+      (setq args (concat args " --ignore " my-checkpatch-ignores)))
     (setq cmd (format "%s %s %s" my-checkpatch-prog args (buffer-file-name)))
     (my-do-compile cmd)))
 

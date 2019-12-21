@@ -57,6 +57,9 @@
    ;; emacs needs gnu
    (list ".*/s?x?emacs[^/]*/src/" make-j "gnu")
    (list ".*/s?x?emacs[^/]*/" make-j "gnu")
+   ;; zedit
+   (list ".*/zedit/buff/" "-j" "linux")
+   (list ".*/zedit/" "-j" "linux")
    ;; Busybox
    (list ".*/busybox/" make-j)
    ;; gdb
