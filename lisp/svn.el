@@ -100,3 +100,37 @@ Output will be nil if this directory not in svn."
       (message "Done.")
       (compilation-set-window-height (display-buffer buff)))
     ))
+
+;;;###autoload
+(defun svn-revision ()
+  (interactive)
+  (let (rev)
+    (with-temp-buffer
+      (when (eq (call-process "svn" nil t nil "info") 0)
+	(re-search-backward "^Revision: \\([0-9]+\\)$")
+	(setq rev (string-to-number (match-string 1)))
+	(when (called-interactively-p 'interactive)
+	  (message "rev %d" rev))))
+    rev))
+
+;;;###autoload
+(defun svn-git-massage (svn-revision)
+  "Try to convert a git diff to an svn diff.
+
+This is geared towards reviewboard, so it needs an SVN-REVISION.
+
+Currently assumes the two paths are the same.
+Untested with additions or deletions."
+  (interactive (list (read-number "SVN revision: " (svn-revision))))
+  (goto-char (point-min))
+  (while (re-search-forward "^diff --git a/\\([^ ]+\\)" nil t)
+    (let ((start (match-beginning 0))
+	  (path (match-string 1)))
+      (forward-line 3)
+      (unless (looking-at (concat "^+++ b/" path)) (error "PROBS"))
+      (forward-line 1)
+      (kill-region start (point))
+      (insert "Index: " path "\n"
+	      (make-string 67 ?=) "\n"
+	      "--- " path "\t(revision " svn-revision ")\n"
+	      "+++ " path "\t(working copy)\n"))))
