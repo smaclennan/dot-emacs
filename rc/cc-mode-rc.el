@@ -34,3 +34,6 @@
 ;; Bold SAM comments
 (dolist (mode '(c-mode c++-mode))
   (comment-warn mode "\\(/\\*\\|//\\) ?\\<SAM\\>.*"))
+
+;; Make checkpatch-ignores a safe local variable.
+(put 'my-checkpatch-ignores 'safe-local-variable #'stringp)

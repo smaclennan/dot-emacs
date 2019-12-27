@@ -80,7 +80,6 @@ work."
 (defvar my-checkpatch-ignores "SPDX_LICENSE_TAG,LINE_SPACING"
   "--ignore arg to pass to checkpatch (can be nil). Separating
 this from `my-checkpatch-args' allows easier buffer local values.")
-(put 'my-checkpatch-ignores 'safe-local-variable #'stringp)
 
 ;;;###autoload
 (defun my-checkpatch ()

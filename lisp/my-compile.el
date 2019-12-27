@@ -35,6 +35,7 @@
 
 (require 'sam-common) ;; uname()
 (eval-when-compile (require 'cc-vars))
+(require 'cc-defs) ;; for c-buffer-is-cc-mode
 
 (defvar my-kernel-vers (uname "-r")
   "* Current kernel version.")
