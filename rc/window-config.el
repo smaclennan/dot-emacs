@@ -44,7 +44,8 @@ will do it for you.")
 	(and (eq window-system 'x)
 	     (eq 1 (with-temp-buffer
 		     (call-process "xrandr" nil t nil "-q")
-		     (count-matches "^[^ ]+ connected" (point-min)))))))
+		     (count-matches "^[^ ]+ connected"
+				    (point-min) (point-max)))))))
 
 (defun laptop-mode-toggle (&optional on)
   "Toggle laptop-mode."
