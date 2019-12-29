@@ -34,20 +34,6 @@
     (unless (= size cursize)
       (enlarge-window (- size cursize)))))
 
-(defvar signed-off-by-sig nil
-  "* Signature used by `signed-off-by' function.
-If nil, defaults to \"`user-full-name' <`user-mail-address'>\".")
-
-;;;###autoload
-(defun signed-off-by ()
-  (interactive)
-  (let ((signed-by (if signed-off-by-sig
-		       signed-off-by-sig
-		     (concat user-full-name " <" user-mail-address ">"))))
-    (save-excursion
-      (beginning-of-line)
-      (insert (concat "Signed-off-by: " signed-by "\n---\n")))))
-
 ;; For when you need a good excuse...
 ;; From BOFH
 (defvar excuse-phrase-file (concat user-emacs-directory "lisp/excuses.lines")
