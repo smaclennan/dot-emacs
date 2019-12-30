@@ -159,7 +159,7 @@ the identifier."
 
 (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
-;; The auto-save.el and backup.el packages collect files in one place
+;; Collect the auto-save and backup files in one place.
 ;; I added the following to my crontab:
 ;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
 
@@ -176,8 +176,8 @@ the identifier."
 
 (require 'server)
 
-;; Override the Emacs default function
 (defun display-startup-echo-area-message ()
+  "Override the Emacs default function with our friendly one."
   (interactive)
   (let ((hour (nth 2 (decode-time))))
     (message "Good %s %s"
