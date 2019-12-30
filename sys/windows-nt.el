@@ -1,20 +1,14 @@
-(defvar cygwin-dir nil
-  "I recommend setting cygwin-dir in user-init.el.")
+;; If you have cygwin installed, add something like the following to
+;; user-init.el
+;; (add-to-list 'exec-path "<cygwin-dir>/bin" t)
 
-(when cygwin-dir
-  (add-to-list 'exec-path (concat cygwin-dir "bin")) t)
+;; If you have aspell or ispell installed, add that to user-init.el
+;; and comment out the line here.
+(setq ispell-program-name (concat user-emacs-directory "src/ispell.bat"))
 
 ;; NT uses findstr
 (set-variable 'grep-command "findstr -n ")
 (setq my-grep-prog "findstr -n ")
-
-;; -------------------------------------------------------------
-;; flyspell - you may need to hardcode the path
-;; Falls back to a batch file which claims every word is correct
-(setq ispell-program-name
-      (or (executable-find "ispell")
-	  (executable-find "aspell")
-	  (concat user-emacs-directory "src/ispell.bat")))
 
 ;; Different excludes for windows
 (setq smerge-diff-excludes

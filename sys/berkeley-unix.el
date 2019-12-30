@@ -4,7 +4,7 @@
 (setq local-compile-cc "cc -O2 -Wall")
 (setq local-compile-c++ "c++ -O2 -Wall")
 
-(defvar page-size nil "Page size filled in by `sys-mem'.")
+(defvar sys-page-size nil "Page size filled in by `sys-mem'.")
 
 (defvar sys-mem nil "Total system memory.")
 
@@ -24,10 +24,10 @@
 ;;;###autoload
 (defun sys-mem ()
   "Return total and free memory."
-  (unless page-size (setq page-size (sysctl "hw.pagesize")))
+  (unless sys-page-size (setq sys-page-size (sysctl "hw.pagesize")))
   (unless sys-mem (setq sys-mem (sysctl "hw.realmem")))
   (list sys-mem
-	(* (sysctl "vm.stats.vm.v_free_count") page-size)))
+	(* (sysctl "vm.stats.vm.v_free_count") sys-page-size)))
 
 (load "cpuid")
 

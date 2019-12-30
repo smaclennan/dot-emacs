@@ -71,7 +71,7 @@ If ALL is non-nil, returns all .el files."
   (let ((files (directory-files-recursively user-emacs-directory ".*\\.el$")))
     (unless all
       (dolist (file files)
-	(when (string-match "/elpa/\\|/ws-butler.el\\|rcfiles.el\\|-loaddefs" file)
+	(when (string-match "/elpa/\\|/ws-butler.el\\|rcfiles.el\\|custom.el\\|-loaddefs" file)
 	  (setq files (delete file files)))))
     files))
 
@@ -140,18 +140,19 @@ underscore."
     (format "%.1fG" (/ mem 1073741824.0)))
    ((> mem 1048576)
     (format "%.1fM" (/ mem 1048576.0)))
-   ((> mem 1024)
-    (format "%.1fK" (/ mem 1024.0)))
-   (t (format "%d" mem))))
+   (t
+    (format "%.1fK" (/ mem 1024.0)))))
 
 ;;;###autoload
 (defun memory ()
   "Display total and free memory."
   (interactive)
   (let ((mem (sys-mem)))
-    (message "total %s  free %s"
-	     (mem-human-readable (car mem))
-	     (mem-human-readable (cadr mem)))))
+    (message "%s"
+	     (concat "total " (mem-human-readable (car mem))
+		     "  free " (mem-human-readable (cadr mem))
+		     (when (nth 2 mem)
+		       (concat "  avail " (mem-human-readable (nth 2 mem))))))))
 
 ;;;###autoload
 (defun lookup-bbdb (name)
