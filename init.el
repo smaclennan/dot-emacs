@@ -109,8 +109,8 @@
   (interactive "p")
   (line-move arg t))
 
-(global-set-key (kbd "<up>") 'my-previous-line)
-(global-set-key (kbd "<down>") 'my-next-line)
+(global-set-key [up]   'my-previous-line)
+(global-set-key [down] 'my-next-line)
 (global-set-key "\C-p" 'my-previous-line)
 (global-set-key "\C-n" 'my-next-line)
 
