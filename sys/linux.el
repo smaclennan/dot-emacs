@@ -2,6 +2,24 @@
 
 (defvar sys-mem nil "Total system memory.")
 
+(defvar sys-os nil "Filled in by `sys-os'.")
+
+;;;###autoload
+(defun sys-os ()
+  (if sys-os
+      sys-os
+    (if (file-exists-p "/etc/os-release")
+	(with-temp-buffer
+	  (insert-file-contents "/etc/os-release")
+	  (re-search-forward "^NAME=\"?\\([^\"]+\\)\"?$")
+	  (let ((distro (match-string 1)))
+	    (if (string-match "^Red Hat" distro)
+		(setq distro "Red Hat")
+	      (setq distro (car (split-string distro))))
+	    (re-search-forward "^VERSION=\"\\([^\"]+\\)\"$")
+	    (setq sys-os (list distro (match-string 1)))))
+      '("Linux" "unknown"))))
+
 ;;;###autoload
 (defun sys-nproc ()
   "Return number of cpu devices."

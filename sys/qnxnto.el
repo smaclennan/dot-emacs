@@ -10,6 +10,10 @@
     (setq sys-nproc (count-matches "^Processor"))))
 
 ;;;###autoload
+(defun sys-os ()
+  (list "QNX" (uname "-r")))
+
+;;;###autoload
 (defun sys-nproc ()
   "Return the number of processors reported by pidin."
   (if sys-nproc sys-nproc (do-pidin-info)))

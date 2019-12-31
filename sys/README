@@ -3,6 +3,9 @@ code in one place.
 
 Currently we support: Linux, BSD, QNX, and Windows.
 
+* sys-os
+  * os (distro for Linux) and release
+
 * sys-nproc
   * fills in sys-nproc variable
 

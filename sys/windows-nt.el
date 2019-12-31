@@ -42,6 +42,12 @@ Top level directories end in /, subdirs do not. Windows version."
 (defvar sys-mem nil "Total system memory.")
 
 ;;;###autoload
+(defun sys-os ()
+  ;; I'm sure there is a way to get the version, but a quick search
+  ;; only found the About Box.
+  '("Windows" "unknown"))
+
+;;;###autoload
 (defun sys-nproc ()
   (string-to-number (getenv "NUMBER_OF_PROCESSORS")))
 

@@ -15,6 +15,10 @@
   (string-to-number (shell-command-to-string (concat "sysctl -n " arg))))
 
 ;;;###autoload
+(defun sys-os ()
+  (list (uname "-s") (uname "-r")))
+
+;;;###autoload
 (defun sys-nproc ()
   "Return number of cpus."
   (if sys-nproc
