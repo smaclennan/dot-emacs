@@ -174,3 +174,18 @@ package installed."
 	  (setq emails (append emails
 			       (list full (match-string-no-properties 1)))))))
     (message "%S" emails)))
+
+;;;###autoload
+(defun sys-info ()
+  "System info in human readable form."
+  (interactive)
+  (with-output-to-temp-buffer "*sys-info*"
+    (let ((os (sys-os)) (mem (sys-mem)))
+      (princ (concat
+	      (car os) " " (cadr os) (if (sys-is-guest) " (guest)") "\n"
+	      (car (sys-cpuinfo)) " (" (number-to-string (sys-nproc)) ")\n"
+	      "Memory: " (mem-human-readable (car mem))
+	      "  free " (mem-human-readable (cadr mem))
+	      (when (nth 2 mem)
+		(concat "  avail " (mem-human-readable (nth 2 mem))))
+	      "\n")))))
