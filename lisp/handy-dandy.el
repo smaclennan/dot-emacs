@@ -182,7 +182,7 @@ package installed."
   (with-output-to-temp-buffer "*sys-info*"
     (let ((os (sys-os)) (mem (sys-mem)))
       (princ (concat
-	      (car os) " " (cadr os) (if (sys-is-guest) " (guest)") "\n"
+	      (if (sys-is-guest) "Guest ") (car os) " " (cadr os) "\n"
 	      (car (sys-cpuinfo)) " (" (number-to-string (sys-nproc)) ")\n"
 	      "Memory: " (mem-human-readable (car mem))
 	      "  free " (mem-human-readable (cadr mem))
