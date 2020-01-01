@@ -50,6 +50,19 @@
 ;; There are going to be large tag files
 (setq large-file-warning-threshold #x4800000) ;; 72M
 
+(iswitchb-mode 1)
+(global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
+
+(delete-selection-mode)
+
+;; Collect the auto-save and backup files in one place.
+;; I added the following to my crontab:
+;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
+(make-directory "~/.autosave" t)
+(setq auto-save-list-file-prefix nil) ;; don't create auto-save-list directory
+(setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
+(setq backup-directory-alist '((".*" . "~/.autosave")))
+
 ;;; ------------------------------------------------------------
 ;;; Keys
 
@@ -139,22 +152,6 @@
   "Show messages in other window."
   (interactive)
   (switch-to-buffer-other-window "*Messages*"))
-
-;;; ------------------------------------------------------------
-;;; Packages
-
-(iswitchb-mode 1)
-(delete-selection-mode)
-
-(global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
-
-;; Collect the auto-save and backup files in one place.
-;; I added the following to my crontab:
-;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
-(make-directory "~/.autosave" t)
-(setq auto-save-list-file-prefix nil) ;; don't create auto-save-list directory
-(setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
-(setq backup-directory-alist '((".*" . "~/.autosave")))
 
 ;;; ------------------------------------------------------------
 ;;; Final results
