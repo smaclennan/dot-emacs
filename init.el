@@ -87,6 +87,13 @@
 (global-set-key [(meta right)]	'forward-sexp)
 (global-set-key [(meta left)]	'backward-sexp)
 
+
+(global-set-key "\C-x\C-l"	'list-buffers)
+(global-set-key "\C-x\C-k"	'kill-buffer)
+(global-set-key "\C-xw"		'what-line)
+(global-set-key "\M-#"		'my-calc)
+(global-set-key [(iso-left-tab)] 'tab-to-tab-stop)
+
 (global-set-key "\C-cd" 'dup-line)
 (global-set-key "\C-ce" 'errno-string)
 (global-set-key "\C-cg" 'git-diff)
@@ -126,30 +133,10 @@
       ad-do-it
     (error (goto-char (point-max)))))
 
-;;; ----
-
-(defun xref-find-definitions-prompt ()
-  "Same as `xref-find-definitions' except it always prompts for
-the identifier."
-  (interactive)
-  (let ((current-prefix-arg t))
-    (call-interactively 'xref-find-definitions)))
-
 (defun my-show-messages ()
   "Show messages in other window."
   (interactive)
   (switch-to-buffer-other-window "*Messages*"))
-
-(defun my-toggle-case-search ()
-  (interactive)
-  (setq case-fold-search (not case-fold-search))
-  (message "Case sensitive search %s." (if case-fold-search "off" "on")))
-
-(global-set-key "\C-x\C-l"	'list-buffers)
-(global-set-key "\C-x\C-k"	'kill-buffer)
-(global-set-key "\C-xw"		'what-line)
-(global-set-key "\M-#"		'my-calc)
-(global-set-key [(iso-left-tab)] 'tab-to-tab-stop)
 
 ;;; ------------------------------------------------------------
 ;;; Packages
@@ -162,7 +149,6 @@ the identifier."
 ;; Collect the auto-save and backup files in one place.
 ;; I added the following to my crontab:
 ;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
-
 (make-directory "~/.autosave" t)
 (setq auto-save-list-file-prefix nil) ;; don't create auto-save-list directory
 (setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))

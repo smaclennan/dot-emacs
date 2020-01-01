@@ -189,3 +189,9 @@ package installed."
 	      (when (nth 2 mem)
 		(concat "  avail " (mem-human-readable (nth 2 mem))))
 	      "\n")))))
+
+;;;###autoload
+(defun my-toggle-case-search ()
+  (interactive)
+  (setq case-fold-search (not case-fold-search))
+  (message "Case sensitive search %s." (if case-fold-search "off" "on")))
