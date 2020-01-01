@@ -35,9 +35,6 @@
 
 (setq track-eol t
       kill-whole-line t
-      inhibit-default-init t
-      inhibit-startup-screen t
-      initial-scratch-message ";; This buffer is for goofing around in.\n\n"
       visible-bell t
       extended-command-suggest-shorter nil)
 
@@ -152,23 +149,5 @@
   "Show messages in other window."
   (interactive)
   (switch-to-buffer-other-window "*Messages*"))
-
-;;; ------------------------------------------------------------
-;;; Final results
-
-(require 'server)
-
-(defun display-startup-echo-area-message ()
-  "Override the Emacs default function with our friendly one."
-  (interactive)
-  (let ((hour (nth 2 (decode-time))))
-    (message "Good %s %s"
-	     (cond ((< hour 12) "morning")
-		   ((< hour 18) "afternoon")
-		   (t           "evening"))
-	     (concat (user-full-name)
-		     (if (server-running-p)
-			 " with no service."
-		       (server-start) nil)))))
 
 ;; end of .emacs "May the `(' be with `)'"
