@@ -10,6 +10,8 @@
 (add-to-list 'load-path (concat user-emacs-directory "sys"))
 (load "sys-loaddefs" t t)
 (load (format "compat-%d" emacs-major-version) t)
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(load custom-file t)
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
@@ -153,9 +155,6 @@
 (setq auto-save-list-file-prefix nil) ;; don't create auto-save-list directory
 (setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
 (setq backup-directory-alist '((".*" . "~/.autosave")))
-
-(setq custom-file (concat user-emacs-directory "custom.el"))
-(load custom-file t)
 
 ;;; ------------------------------------------------------------
 ;;; Final results
