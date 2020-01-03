@@ -16,12 +16,9 @@
   "Font Lock mode face used to highlight warning comments."
   :group 'font-lock-faces)
 
-(defconst sh-comment-warn "# ?\\<SAM\\>.*"
-  "Regular expression for comments used in scripts.")
-
 (defun comment-warn (mode &optional re)
   "Helper for making comments matching RE in MODE bold.
-If RE is nil, `sh-comment-warn' is used."
-  (unless re (setq re sh-comment-warn))
+If RE is nil, it is assumed the comment character is #."
+  (unless re (setq re "# ?\\<SAM\\>.*"))
   (let ((keyword (list (list re 0 (quote `font-lock-comment-warn-face) t))))
     (font-lock-add-keywords mode keyword)))

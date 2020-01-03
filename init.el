@@ -47,7 +47,7 @@
 ;; There are going to be large tag files
 (setq large-file-warning-threshold #x4800000) ;; 72M
 
-(iswitchb-mode 1)
+(iswitchb-mode)
 (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
 (delete-selection-mode)

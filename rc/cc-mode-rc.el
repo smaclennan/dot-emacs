@@ -28,12 +28,10 @@
 ;; Turn off gcc colours
 (setenv "GCC_COLORS" "")
 
-;; Just allow compile commands
+;; Some safe local variables
 (put 'compile-command 'safe-local-variable #'stringp)
+(put 'my-checkpatch-ignores 'safe-local-variable #'stringp)
 
 ;; Bold SAM comments
 (dolist (mode '(c-mode c++-mode))
   (comment-warn mode "\\(/\\*\\|//\\) ?\\<SAM\\>.*"))
-
-;; Make checkpatch-ignores a safe local variable.
-(put 'my-checkpatch-ignores 'safe-local-variable #'stringp)
