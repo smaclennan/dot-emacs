@@ -26,7 +26,7 @@ A brief rundown:
   * non-lisp files associated with emacs in some way
 
 ## sys/
-  * compat-<emacs major version>.el
+  * compat-\<emacs major version\>.el
   * <system-type>.el
 
 # Just the code
