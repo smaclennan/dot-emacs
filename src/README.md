@@ -7,7 +7,7 @@ Send files to Emacs. If Emacs is running, sends the file to the
 running Emacs. If Emacs is not running, starts Emacs in the
 background with the file as an argument.
 
-If the path ends in :<number> then Emacs will go to that line number
+If the path ends in :\<number\> then Emacs will go to that line number
 in the file.
 
 If the path ends in :* then the : and everything after it is stripped
