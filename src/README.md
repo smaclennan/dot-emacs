@@ -14,12 +14,9 @@ If the path ends in :* then the : and everything after it is stripped
 off. This allows you to double click on, for example, fgrep -H output
 and it will "just work".
 
-2emacs can also use find:
+2emacs can also use find. The following are equivalent:
 
     2emacs -name filename
-
-Is equivalent to:
-
     2emacs `find -name filename | head -n1`
 
 Note that it only returns the first match.
