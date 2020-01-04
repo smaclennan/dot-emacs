@@ -24,7 +24,7 @@ and it will "just work".
 Tries to mimic the Linux cpuid command's output. The flags portion of
 the output is not complete compared to Linux. Only works for x86_64.
 
-This command can be used by the sys/<system-type>.el files for BSD,
+This command can be used by the sys/\<system-type\>.el files for BSD,
 QNX, and Windows.
 
 # diary-cleanup.c
