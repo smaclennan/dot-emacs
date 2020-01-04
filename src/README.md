@@ -19,8 +19,6 @@ and it will "just work".
     2emacs -name filename
     2emacs `find -name filename | head -n1`
 
-Note that it only returns the first match.
-
 # cpuid.c
 
 Tries to mimic the Linux cpuid command's output. The flags portion of
