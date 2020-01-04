@@ -1,7 +1,16 @@
 This directory is an attempt to put system and Emacs version specific
 code in one place.
 
-Currently we support: Linux, BSD, QNX, and Windows.
+Currently we support:
+
+OS      | sys file
+--------|---------
+Linux   | linux.el
+BSD     | berkeley-unix.el
+QNX     | qnxnto.el
+Windows | windows-nt.el
+
+## Basic functions
 
 * sys-os
   * os (distro for Linux) and release
