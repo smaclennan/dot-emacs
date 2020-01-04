@@ -27,7 +27,7 @@ A brief rundown:
 
 ## sys/
   * compat-\<emacs major version\>.el
-  * <system-type>.el
+  * \<system-type\>.el
 
 # Just the code
 
