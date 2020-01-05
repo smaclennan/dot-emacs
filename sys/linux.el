@@ -63,7 +63,8 @@
 ;;;###autoload
 (defun sys-cpuinfo ()
   (let ((strs (arch-strings)))
-    (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+    (with-temp-buffer
+      (insert-file-contents "/proc/cpuinfo")
       (list (cpuinfo-find (nth 1 strs))
 	    (cpuinfo-find (nth 2 strs))
 	    (strtol (cpuinfo-find (nth 3 strs)))
@@ -73,7 +74,8 @@
 ;;;###autoload
 (defun sys-cpu-flags ()
   (let ((strs (arch-strings)))
-    (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+    (with-temp-buffer
+      (insert-file-contents "/proc/cpuinfo")
       (split-string (cpuinfo-find (car strs))))))
 
 ;;;###autoload
