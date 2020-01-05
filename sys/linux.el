@@ -78,5 +78,4 @@
 
 ;;;###autoload
 (defun sys-is-guest ()
-  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
-    (string-match "\\bhypervisor\\b" (cpuinfo-find "flags"))))
+  (member "hypervisor" (sys-cpu-flags)))
