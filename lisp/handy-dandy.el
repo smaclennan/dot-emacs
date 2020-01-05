@@ -112,16 +112,9 @@ underscore."
 (defun cpuinfo ()
   "Describes the current cpus."
   (interactive)
-  (let* ((info (sys-cpuinfo))
-	 (vendor (cadr info)))
-    ;; Pretty print common vendor ids
-    (cond
-     ((string= "GenuineIntel" vendor) (setq vendor "Intel"))
-     ((string-match "Authentic ?AMD" vendor) (setq vendor "AMD"))
-     ((string= "CentaurHauls" vendor) (setq vendor "VIA")))
-
+  (let ((info (sys-cpuinfo)))
     (message "%s Vendor %s Family %d Model %d Step %d Procs %d"
-	     (nth 0 info) vendor (nth 2 info) (nth 3 info)
+	     (nth 0 info) (nth 1 info) (nth 2 info) (nth 3 info)
 	     (nth 4 info) (sys-nproc))))
 
 ;;;###autoload

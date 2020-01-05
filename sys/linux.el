@@ -44,6 +44,14 @@
 	  (when (re-search-forward "^Memavailable: *\\([0-9]+\\) kB$" nil t)
 	    (* (string-to-number (match-string 1)) 1024)))))
 
+(defvar sys-arch
+  (let ((arch (uname "-m")))
+    (cond
+     ((string-match "x86" arch) 'x86)
+     ((string-match "arm\\|aarch" arch) 'arm)
+     (t 'unknown)))
+  "Lisp friendly version of arch")
+
 (defun cpuinfo-find (field)
   "Find a field in cpuinfo output."
   (goto-char (point-min))
@@ -51,14 +59,29 @@
   (match-string 1))
 
 (defun arch-strings ()
-  (let ((arch (uname "-m")))
-    (cond
-     ((string-match "x86" arch)
-      '("flags" "model name" "vendor_id" "cpu family" "model" "stepping"))
-     ((string-match "arm\\|aarch" arch)
-      '("Features" "Processor" "CPU Implementer" "CPU architecture" "CPU variant"
-	"CPU part"))
-     (t (error "Arch %s not supported" arch)))))
+  (if (eq sys-arch 'x86)
+      '("flags" "model name" "vendor_id" "cpu family" "model" "stepping")
+    (if (eq sys-arch 'arm)
+	'("Features" "Processor" "CPU Implementer" "CPU architecture"
+	  "CPU variant" "CPU part")
+      (error "Arch %s not supported" arch))))
+
+(defconst arm-implementer
+  '((#x41 "ARM")     (#x42 "Broadcom") (#x43 "Cavium")   (#x44 "DEC")
+    (#x4e "Nvidia")  (#x50 "APM")      (#x51 "Qualcomm") (#x53 "Samsung")
+    (#x56 "Marvell") (#x69 "Intel")))
+
+(defun sys-vendor (str)
+  (if (eq sys-arch 'x86)
+      (cond
+       ((string= "GenuineIntel" str) "Intel")
+       ((string-match "Authentic ?AMD" str) "AMD")
+       ((string= "CentaurHauls" str) "VIA")
+       (t str))
+    (if (eq sys-arch 'arm)
+	(let ((vendor (assoc (strtol str) arm-implementer)))
+	  (if vendor (cadr vendor) str))
+      str)))
 
 ;;;###autoload
 (defun sys-cpuinfo ()
@@ -66,7 +89,7 @@
     (with-temp-buffer
       (insert-file-contents "/proc/cpuinfo")
       (list (cpuinfo-find (nth 1 strs))
-	    (cpuinfo-find (nth 2 strs))
+	    (sys-vendor (cpuinfo-find (nth 2 strs)))
 	    (strtol (cpuinfo-find (nth 3 strs)))
 	    (strtol (cpuinfo-find (nth 4 strs)))
 	    (strtol (cpuinfo-find (nth 5 strs)))))))
