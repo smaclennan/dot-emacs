@@ -43,9 +43,15 @@ Top level directories end in /, subdirs do not. Windows version."
 
 ;;;###autoload
 (defun sys-os ()
-  ;; I'm sure there is a way to get the version, but a quick search
-  ;; only found the About Box.
-  '("Windows" "unknown"))
+  (let (list)
+    (with-temp-buffer
+      (call-process "reg" nil t nil "query"
+		    "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion")
+      (dolist (key '("ProductName" "CSDBuildNumber" "CSDVersion"))
+	(goto-char (point-min))
+	(re-search-forward (concat key " *REG_SZ *\\(.*\\)$"))
+	(setq list (cons (match-string 1) list)))
+      (list (caddr list) (concat "Build " (cadr list) " " (car list))))))
 
 ;;;###autoload
 (defun sys-nproc ()
