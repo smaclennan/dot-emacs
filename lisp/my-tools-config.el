@@ -35,9 +35,8 @@
     (my-tools-fname "My tag file:" my-tags-file)
     (my-tools-fname "Kloc:" (kloc-project-dir buffer-file-name))
 
-    ;; verbose and C
+    ;; verbose
     (when (and verbose (boundp 'my-compile-dir-list))
       (princ "\nmy-compile-dir-list:\n")
-      (with-current-buffer "*my-config*"
-	(cl-prettyprint my-compile-dir-list)))
-    ))
+      (dolist (dir my-compile-dir-list)
+	(princ (format "%S\n" dir))))))

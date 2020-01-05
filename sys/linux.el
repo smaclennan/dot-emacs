@@ -4,6 +4,8 @@
 
 (defvar sys-os nil "Filled in by `sys-os'.")
 
+(require 'sam-common)
+
 ;;;###autoload
 (defun sys-os ()
   (if sys-os

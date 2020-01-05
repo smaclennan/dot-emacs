@@ -3,7 +3,7 @@
 
 (provide 'cl-extra)
 
-;; 24.2 needs this... 24.5 does not
+;; 24.2 needs this... 24.4 does not
 (unless (fboundp 'cl-remove-if)
   (defalias 'cl-remove-if 'remove-if)
   (defalias 'cl-loop 'loop)
@@ -41,6 +41,5 @@ definition."
 (defun xref-push-marker-stack ()
   (interactive)
   (ring-insert find-tag-marker-ring (point-marker)))
-
 
 (defvar lisp-el-font-lock-keywords-2 nil)
