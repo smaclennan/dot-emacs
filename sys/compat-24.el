@@ -57,3 +57,17 @@ output."
 	  (insert ")\n")
 	  )
       (insert (format "%S\n" ent)))))
+
+(defun directory-files-recursively (dir regexp)
+  "Basically a 'find DIR -name REGEXP -print'."
+  (let (files path)
+    (dolist (file (directory-files-and-attributes dir t "^[^.].*"))
+      (setq path (car file))
+      (if (eq (cadr file) t)
+	  ;; directory
+	  (setq files
+		(append files (my-directory-files-recursively path regexp)))
+	;; file
+	(if (string-match regexp path)
+	    (setq files (cons path files)))))
+    files))
