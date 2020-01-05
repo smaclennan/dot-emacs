@@ -6,4 +6,5 @@
 
 ;; This is too early to use ispell-dictionary-alist
 ;; Assume canadian exists...
-(setq ispell-dictionary "canadian")
+(unless (string-match "ispell" ispell-program-name)
+  (setq ispell-dictionary "canadian"))

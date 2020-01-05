@@ -47,22 +47,34 @@
 (defun cpuinfo-find (field)
   "Find a field in cpuinfo output."
   (goto-char (point-min))
-  (re-search-forward (concat "^" field "[ \t]+: \\(.*\\)$"))
+  (re-search-forward (concat "^" field "[ \t]*: \\(.*\\)$"))
   (match-string 1))
+
+(defun arch-strings ()
+  (let ((arch (uname "-m")))
+    (cond
+     ((string-match "x86" arch)
+      '("flags" "model name" "vendor_id" "cpu family" "model" "stepping"))
+     ((string-match "arm\\|aarch" arch)
+      '("Features" "Processor" "CPU Implementer" "CPU architecture" "CPU variant"
+	"CPU part"))
+     (t (error "Arch %s not supported" arch)))))
 
 ;;;###autoload
 (defun sys-cpuinfo ()
-  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
-    (list (cpuinfo-find "model name")
-	  (cpuinfo-find "vendor_id")
-	  (string-to-number (cpuinfo-find "cpu family"))
-	  (string-to-number (cpuinfo-find "model"))
-	  (string-to-number (cpuinfo-find "stepping")))))
+  (let ((strs (arch-strings)))
+    (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+      (list (cpuinfo-find (nth 1 strs))
+	    (cpuinfo-find (nth 2 strs))
+	    (strtol (cpuinfo-find (nth 3 strs)))
+	    (strtol (cpuinfo-find (nth 4 strs)))
+	    (strtol (cpuinfo-find (nth 5 strs)))))))
 
 ;;;###autoload
 (defun sys-cpu-flags ()
-  (with-current-buffer (find-file-noselect "/proc/cpuinfo")
-    (split-string (cpuinfo-find "flags"))))
+  (let ((strs (arch-strings)))
+    (with-current-buffer (find-file-noselect "/proc/cpuinfo")
+      (split-string (cpuinfo-find (car strs))))))
 
 ;;;###autoload
 (defun sys-is-guest ()

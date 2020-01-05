@@ -34,14 +34,17 @@ Windows | windows-nt    | windows-nt.el
 
 * sys-is-guest
   * is the system a guest or virtual machine
+  * does not work for arm Linux
   * BSD, QNX, Windows require cpuid installed
 
 ### sys-cpuinfo
 
-I currently do not run Emacs on any non-x86 machines, so the output is
-very x86-centric.
+The output currently only works for x86 everywhere and arm Linux.
 
 Sample x86_64 output: model_name, vendor, family, model, stepping
 
     ("Intel(R) Core(TM) i7-3630QM CPU @ 2.40GHz" "GenuineIntel" 6 58 9)
 
+Sample arm output: model_name, vendor id, architecture, variant, part
+
+    ("ARMv7 Processor rev 0 (v7l)" "0x41" 7 0 3081)

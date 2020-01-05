@@ -47,4 +47,12 @@ Each clause is (FEATURE BODY...)."
     (call-process "uname" nil t nil ,arg)
     (buffer-substring (point-min) (1- (point-max)))))
 
+;; For some reason this needs to be a function for arm Linux
+;;;###autoload
+(defun strtol (str)
+  "Mimic strtol(str, NULL, 0)... but not exactly"
+  (if (string-match "^0[xX]\\(.*\\)" str)
+      (string-to-number (match-string 1 str) 16)
+    (string-to-number str)))
+
 (provide 'sam-common)
