@@ -65,8 +65,7 @@ output."
       (setq path (car file))
       (if (eq (cadr file) t)
 	  ;; directory
-	  (setq files
-		(append files (my-directory-files-recursively path regexp)))
+	  (setq files (append files (directory-files-recursively path regexp)))
 	;; file
 	(if (string-match regexp path)
 	    (setq files (cons path files)))))
