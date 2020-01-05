@@ -121,7 +121,8 @@ This is geared towards reviewboard, so it needs an SVN-REVISION.
 
 Currently assumes the two paths are the same.
 Untested with additions or deletions."
-  (interactive (list (read-number "SVN revision: " (svn-revision))))
+  (interactive
+   (list (number-to-string (read-number "SVN revision: " (svn-revision)))))
   (goto-char (point-min))
   (while (re-search-forward "^diff --git a/\\([^ ]+\\)" nil t)
     (let ((start (match-beginning 0))
