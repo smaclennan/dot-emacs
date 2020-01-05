@@ -2,12 +2,13 @@
 
 (defun cpuid-cpuinfo-exe ()
   (unless cpuid-exe
-    (setq cpuid-exe (executable-find "cpuid"))
-    (unless cpuid-exe
-      (if (string-match "x86" (uname "-m"))
-	  (error (concat "Not supported. Maybe install "
-			 user-emacs-directory "src/cpuid."))
-	(error "Not supported"))))
+    (setq cpuid-exe (concat user-emacs-directory "src/cpuid"))
+    (unless (file-exists-p cpuid-exe)
+      (setq cpuid-exe (executable-find "cpuid"))
+      (unless cpuid-exe
+	(if (string-match "x86" (uname "-m"))
+	    (error (concat "Maybe build " user-emacs-directory "src/cpuid?"))
+	  (error "Not supported")))))
   cpuid-exe)
 
 (defun cpuid-find (field)
