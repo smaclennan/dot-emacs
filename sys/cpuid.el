@@ -6,7 +6,7 @@
     (unless (file-exists-p cpuid-exe)
       (setq cpuid-exe (executable-find "cpuid"))
       (unless cpuid-exe
-	(if (string-match "x86" (uname "-m"))
+	(if (eq sys-arch 'x86)
 	    (error (concat "Maybe build " user-emacs-directory "src/cpuid?"))
 	  (error "Not supported")))))
   cpuid-exe)
@@ -33,6 +33,3 @@
     (with-temp-buffer
       (call-process exe nil t nil)
       (split-string (cpuid-find "Flags")))))
-
-(defun cpuid-is-guest ()
-  (eq (call-process (cpuid-cpuinfo-exe) nil nil nil "-g") 0))

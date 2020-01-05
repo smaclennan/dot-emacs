@@ -1,26 +1,18 @@
-(defvar sys-nproc nil "Total number of processors.")
-
-(defvar sys-mem nil "Total system memory.")
-
-(defvar sys-os nil "Filled in by `sys-os'.")
-
-(require 'sam-common)
+(load "unix" nil noninteractive)
 
 ;;;###autoload
 (defun sys-os ()
-  (if sys-os
-      sys-os
-    (if (file-exists-p "/etc/os-release")
-	(with-temp-buffer
-	  (insert-file-contents "/etc/os-release")
-	  (re-search-forward "^NAME=\"?\\([^\"]+\\)\"?$")
-	  (let ((distro (match-string 1)))
-	    (if (string-match "^Red Hat" distro)
-		(setq distro "Red Hat")
-	      (setq distro (car (split-string distro))))
-	    (re-search-forward "^VERSION=\"\\([^\"]+\\)\"$")
-	    (setq sys-os (list distro (match-string 1)))))
-      '("Linux" "unknown"))))
+  (if (file-exists-p "/etc/os-release")
+      (with-temp-buffer
+	(insert-file-contents "/etc/os-release")
+	(re-search-forward "^NAME=\"?\\([^\"]+\\)\"?$")
+	(let ((distro (match-string 1)))
+	  (if (string-match "^Red Hat" distro)
+	      (setq distro "Red Hat")
+	    (setq distro (car (split-string distro))))
+	  (re-search-forward "^VERSION=\"\\([^\"]+\\)\"$")
+	  (setq sys-os (list distro (match-string 1)))))
+    '("Linux" "unknown")))
 
 ;;;###autoload
 (defun sys-nproc ()
@@ -46,14 +38,6 @@
 	  (when (re-search-forward "^Memavailable: *\\([0-9]+\\) kB$" nil t)
 	    (* (string-to-number (match-string 1)) 1024)))))
 
-(defvar sys-arch
-  (let ((arch (uname "-m")))
-    (cond
-     ((string-match "x86" arch) 'x86)
-     ((string-match "arm\\|aarch" arch) 'arm)
-     (t 'unknown)))
-  "Lisp friendly version of arch")
-
 (defun cpuinfo-find (field)
   "Find a field in cpuinfo output."
   (goto-char (point-min))
@@ -67,11 +51,6 @@
 	'("Features" "Processor" "CPU Implementer" "CPU architecture"
 	  "CPU variant" "CPU part")
       (error "Arch %s not supported" arch))))
-
-(defconst arm-implementer
-  '((#x41 "ARM")     (#x42 "Broadcom") (#x43 "Cavium")   (#x44 "DEC")
-    (#x4e "Nvidia")  (#x50 "APM")      (#x51 "Qualcomm") (#x53 "Samsung")
-    (#x56 "Marvell") (#x69 "Intel")))
 
 (defun sys-vendor (str)
   (if (eq sys-arch 'x86)
@@ -102,7 +81,3 @@
     (with-temp-buffer
       (insert-file-contents "/proc/cpuinfo")
       (split-string (cpuinfo-find (car strs))))))
-
-;;;###autoload
-(defun sys-is-guest ()
-  (member "hypervisor" (sys-cpu-flags)))

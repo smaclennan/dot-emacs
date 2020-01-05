@@ -41,6 +41,8 @@ Top level directories end in /, subdirs do not. Windows version."
 
 (defvar sys-mem nil "Total system memory.")
 
+(defvar sys-arch 'x86 "Assume x86 for now.")
+
 ;;;###autoload
 (defun sys-os ()
   (let (list)

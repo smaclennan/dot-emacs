@@ -1,6 +1,5 @@
-(defvar sys-nproc nil "Total number of processors.")
-
-(defvar sys-mem nil "Total system memory.")
+(load "cpuid" nil noninteractive)
+(load "unix"  nil noninteractive)
 
 (defun do-pidin-info ()
   (with-temp-buffer
@@ -8,10 +7,6 @@
     (re-search-backward "Freemem:[0-9]+MB/\\([0-9]+\\)MB")
     (setq sys-mem (* (string-to-number (match-string 1)) #x100000))
     (setq sys-nproc (count-matches "^Processor"))))
-
-;;;###autoload
-(defun sys-os ()
-  (list "QNX" (uname "-r")))
 
 ;;;###autoload
 (defun sys-nproc ()
@@ -25,14 +20,3 @@
   (list sys-mem
 	;; Yes ls -ld /proc = free memory
 	(nth 7 (file-attributes "/proc"))))
-
-(load "cpuid" nil noninteractive)
-
-;;;###autoload
-(defun sys-cpuinfo () (cpuid-cpuinfo))
-
-;;;###autoload
-(defun sys-cpu-flags () (cpuid-cpu-flags))
-
-;;;###autoload
-(defun sys-is-guest () (cpuid-is-guest))

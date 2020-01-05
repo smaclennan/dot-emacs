@@ -6,17 +6,8 @@
 
 (defvar sys-page-size nil "Page size filled in by `sys-mem'.")
 
-(defvar sys-mem nil "Total system memory.")
-
-(defvar sys-nproc nil "Total number of processors.")
-
-(defun sysctl (arg)
-  "Return sysctl ARG as a number"
-  (string-to-number (shell-command-to-string (concat "sysctl -n " arg))))
-
-;;;###autoload
-(defun sys-os ()
-  (list (uname "-s") (uname "-r")))
+(load "cpuid" nil noninteractive)
+(load "unix"  nil noninteractive)
 
 ;;;###autoload
 (defun sys-nproc ()
@@ -32,14 +23,3 @@
   (unless sys-mem (setq sys-mem (sysctl "hw.realmem")))
   (list sys-mem
 	(* (sysctl "vm.stats.vm.v_free_count") sys-page-size)))
-
-(load "cpuid")
-
-;;;###autoload
-(defun sys-cpuinfo () (cpuid-cpuinfo))
-
-;;;###autoload
-(defun sys-cpu-flags () (cpuid-cpu-flags))
-
-;;;###autoload
-(defun sys-is-guest () (cpuid-is-guest))

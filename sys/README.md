@@ -10,19 +10,32 @@ BSD     | berkeley-unix | berkeley-unix.el
 QNX     | qnxnto        | qnxnto.el
 Windows | windows-nt    | windows-nt.el
 
+## Basic variables
+
+Variables set by all systems.
+
+* sys-arch
+  * always set
+
+* sys-mem
+  * filled in by sys-mem()
+
+* sys-nproc
+  * filled in by sys-nproc()
+
 ## Basic functions
+
+Functions defined by all systems.
 
 * sys-os
   * os (distro for Linux) and release
 
 * sys-nproc
   * number of cpus (Linux definition of cpu)
-  * fills in sys-nproc variable
 
 * sys-mem
   * total, free, and available memory
   * only Linux provides available memory
-  * fills in sys-mem variable
 
 * sys-cpuinfo
   * see below for output
@@ -36,6 +49,11 @@ Windows | windows-nt    | windows-nt.el
   * is the system a guest or virtual machine
   * does not work for arm Linux
   * BSD, QNX, Windows require cpuid installed
+
+Functions defined by all but Windows:
+
+* sysctl
+  * return sysctl arg as a number
 
 ### sys-cpuinfo
 
