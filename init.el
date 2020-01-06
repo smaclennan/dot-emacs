@@ -1,5 +1,4 @@
 ;; Emacs initialization. Should work with Emacs >= 24.
-
 ;;https://www.gnu.org/software/emacs/manual/html_node/elisp/Startup-Summary.html
 
 ; This is the one key binding I must have... switch ASAP
@@ -82,7 +81,8 @@
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [(control f10)] 'xref-find-references)
 (global-set-key [f11] nil) ;; I keep f11 free for temporary bindings
-(global-set-key [(shift f11)]	'my-show-messages)
+(global-set-key [(shift f11)]	(lambda () (interactive)
+				  (switch-to-buffer-other-window "*Messages*")))
 (global-set-key [f12]		'revert-buffer)
 (global-set-key [(shift f12)]	'lxr-next-defined)
 (global-set-key [(control f12)] 'lxr-defined-at-point)
@@ -136,10 +136,5 @@
   (condition-case nil
       ad-do-it
     (error (goto-char (point-max)))))
-
-(defun my-show-messages ()
-  "Show messages in other window."
-  (interactive)
-  (switch-to-buffer-other-window "*Messages*"))
 
 ;; end of .emacs "May the `(' be with `)'"
