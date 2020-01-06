@@ -52,14 +52,6 @@
 
 (delete-selection-mode)
 
-;; Collect the auto-save and backup files in one place.
-;; I added the following to my crontab:
-;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
-(make-directory "~/.autosave" t)
-(setq auto-save-list-file-prefix nil) ;; don't create auto-save-list directory
-(setq auto-save-file-name-transforms `((".*" "~/.autosave/" t)))
-(setq backup-directory-alist '((".*" . "~/.autosave")))
-
 ;;; ------------------------------------------------------------
 ;;; Keys
 
