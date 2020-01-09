@@ -37,11 +37,20 @@ Top level directories end in /, subdirs do not. Windows version."
 		   (regexp-quote smerge-dir1)
 		   (regexp-quote smerge-dir2)))))
 
+(defun build-all-loaddefs ()
+  (interactive)
+  (let* ((dir (concat user-emacs-directory "lisp"))
+	 (generated-autoload-file
+	  (concat dir "/" "lisp" "-loaddefs.el")))
+    (update-directory-autoloads dir)))
+
 (defvar sys-nproc nil "Total number of processors.")
 
 (defvar sys-mem nil "Total system memory.")
 
 (defvar sys-arch 'x86 "Assume x86 for now.")
+
+(load "cpuid" nil noninteractive)
 
 ;;;###autoload
 (defun sys-os ()
@@ -74,14 +83,10 @@ Top level directories end in /, subdirs do not. Windows version."
 	  (string-to-number (match-string 4 ident)))))
 
 ;;;###autoload
-(defun sys-cpu-flags ()
-  (load "cpuid")
-  (cpuid-cpu-flags))
+(defun sys-cpu-flags () (cpuid-cpu-flags))
 
 ;;;###autoload
-(defun sys-is-guest ()
-  (load "cpuid")
-  (cpuid-is-guest))
+(defun sys-is-guest () (cpuid-is-guest))
 
 (defun sys-mb (str)
   "Helper function to convert number with commas from MB to bytes."
@@ -103,10 +108,3 @@ WARNING: This can take over 10 seconds."
       (re-search-forward "^Available Physical Memory: *\\([0-9,]+\\) MB")
       (setq avail (sys-mb (match-string 1))))
     (list sys-mem avail)))
-
-(defun build-all-loaddefs ()
-  (interactive)
-  (let* ((dir (concat user-emacs-directory "lisp"))
-	 (generated-autoload-file
-	  (concat dir "/" "lisp" "-loaddefs.el")))
-    (update-directory-autoloads dir)))
