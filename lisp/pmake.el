@@ -53,7 +53,8 @@ PROC will only be set for 'pmake.
 A usable example `pmake-verbose-hook' is provided.")
 
 (defvar pmake-debug nil
-  "Non-nil for debugging `pmake-run'. Will create *pmake dbg* buffer.")
+  "Non-nil for debugging `pmake-run'. Will create *pmake-dbg* buffer.
+If set to 'error, will error out after creating the buffer.")
 
 (defvar pmake-times nil
   "Non-nil to print individual pmake times.
@@ -76,12 +77,7 @@ exit code.
 At exit, `pmake-run-rc' will be t if the run was successful.
 
 You cannot assume that `pmake-done-hook' is clean."
-  (when pmake-debug
-    (eval-and-compile (require 'cl-extra))
-    (with-current-buffer (get-buffer-create "*pmake dbg*")
-      (erase-buffer)
-      (cl-prettyprint pmake-stages)))
-
+  (when pmake-debug (pmake-debug (eq pmake-debug 'error)))
   (setq pmake-run-start (current-time)
 	pmake-run-rc t
 	pmake-errors-are-fatal errors-are-fatal
@@ -96,6 +92,15 @@ You cannot assume that `pmake-done-hook' is clean."
   ;; Start by pretending to successfully finish a stage
   (setq pmake-stages (cons "ignored" pmake-stages))
   (pmake-stage-finish nil "finished\n"))
+
+(defun pmake-debug (&optional error-out)
+  "Pretty print `pmake-stages' to the *pmake-dbg* buffer."
+  (eval-and-compile (require 'cl-extra))
+  (with-current-buffer (get-buffer-create "*pmake-dbg*")
+    (erase-buffer)
+    (cl-prettyprint pmake-stages))
+  (when error-out
+    (error "Created *pmake-dbg* buffer")))
 
 (defun pmake-stage-finish (buffer desc)
   "Stage finished sentinel function."
