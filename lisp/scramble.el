@@ -17,20 +17,15 @@
 (defun unscramble (word)
   "Unscramble a scrambled word. May display multiple words."
   (interactive "sWord: ")
-  (let* ((len (1- (length word)))
-	 (wlist (number-sequence 0 len))
-	 (fname (make-temp-file "unscram"))
-	 (buff (find-file-noselect fname))
-	 str)
-    (save-current-buffer
-      (set-buffer buff)
+  (let ((wlist (number-sequence 0 (1- (length word))))
+	(fname (make-temp-file "unscram"))
+	str)
+    (with-temp-buffer
       (buffer-disable-undo)
       (unscramble-level word wlist nil)
-      (save-buffer)
-      ;; We can get duplicate words if the input contains duplicate letters
-      (setq str (shell-command-to-string (concat "hunspell -G " fname " | sort -u"))))
-    (kill-buffer buff)
+      (write-file fname))
+    ;; We can get duplicate words if the input contains duplicate letters
+    (setq str (shell-command-to-string (concat "hunspell -G " fname " | sort -u")))
     (delete-file fname)
     (setq str (replace-regexp-in-string "\n" " " str))
-    (message "%s" (replace-regexp-in-string " $" "" str))
-    ))
+    (message "%s" (replace-regexp-in-string " $" "" str))))
