@@ -3,6 +3,10 @@
 
 (provide 'cl-extra)
 
+
+;; not enabled in 24
+(electric-indent-mode)
+
 ;; 24.2 needs this... 24.4 does not
 (unless (fboundp 'cl-remove-if)
   (defalias 'cl-remove-if 'remove-if)
