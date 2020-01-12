@@ -46,6 +46,12 @@
 ;; There are going to be large tag files
 (setq large-file-warning-threshold #x4800000) ;; 72M
 
+;; This gets rid of the iswitchb deprecated message by moving it out
+;; of the obsolete directory.
+(let ((to (concat user-emacs-directory "lisp/iswitchb.elc")))
+  (unless (file-exists-p to)
+    (make-symbolic-link (locate-library "iswitchb") to t)))
+
 (iswitchb-mode)
 (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
