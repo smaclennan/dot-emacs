@@ -1,5 +1,8 @@
 ;; This is meant to be used to compile lisp files in batch mode.
 
+;; For 28 (27?) we need this
+(require 'cl-macs)
+
 (defvar sys-type (replace-regexp-in-string "gnu/" "" (symbol-name system-type))
   "Simplified version of `system-type'.")
 

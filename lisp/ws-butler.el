@@ -53,8 +53,9 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl))
+;; Problems in 28.0.50
+;; (eval-when-compile
+;;  (require 'cl))
 
 (eval-and-compile
   (unless (fboundp 'setq-local)

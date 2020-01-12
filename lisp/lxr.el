@@ -135,7 +135,7 @@
   (with-temp-buffer
    (insert-file-contents "~/tmp/lxr-output")
    (goto-char (point-min))
-   (lxr-get-callback nil nil "*lxr*")
+   (lxr-get-callback nil "*lxr*")
    ))
 
 (defun lxr-get-callback (status buffer)
