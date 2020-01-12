@@ -4,13 +4,8 @@
 ; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
-(add-to-list 'load-path (concat user-emacs-directory "lisp"))
-(load "lisp-loaddefs" t t)
-(add-to-list 'load-path (concat user-emacs-directory "sys"))
-(load "sys-loaddefs" t t)
-(load (format "compat-%d" emacs-major-version) t)
-(setq custom-file (concat user-emacs-directory "custom.el"))
-(load custom-file t)
+;; Rather than duplicating all the code here... just load batch-helper.el
+(load (concat user-emacs-directory "lisp/batch-helper"))
 
 ;; The user-init file allows for user/machine specific
 ;; initialization. It must be very early for variables like
@@ -18,9 +13,8 @@
 ;; something up at the end.
 (load (concat user-emacs-directory "user-init") t)
 
-;; Load a file called sys/`system-type' if it exists.
-;; Must be after user-init.el but very early
-(load (replace-regexp-in-string "gnu/" "" (symbol-name system-type)) t)
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(load custom-file t)
 
 ;; This must come before configurations of installed packages.
 (if (file-exists-p (concat user-emacs-directory "elpa"))
