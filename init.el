@@ -40,9 +40,6 @@
 (put 'narrow-to-region 'disabled nil) ;; Why? Just why?
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Let's try making _ part of a "word". C & C++ done in cc-mode-rc.el
-(modify-syntax-entry ?_ "w" (standard-syntax-table))
-
 ;; There are going to be large tag files
 (setq large-file-warning-threshold #x4800000) ;; 72M
 

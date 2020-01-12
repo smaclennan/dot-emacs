@@ -32,10 +32,6 @@ allows lisp code to be compiled while doing another compile."
     (concat "*" (downcase mode) "*")))
 (setq compilation-buffer-name-function 'gen-compilation-name)
 
-;; Let's try making - part of a "word".
-(modify-syntax-entry ?- "w" lisp-mode-syntax-table)
-(modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
-
 ;; Bold SAM comments
 (comment-warn 'emacs-lisp-mode ";+ ?\\<SAM\\>.*")
 

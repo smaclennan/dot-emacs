@@ -2,10 +2,6 @@
 ;; CC-MODE
 ;; Customizations for c-mode, c++-mode, java-mode, etc.
 
-;; Let's try making _ part of a "word"
-(modify-syntax-entry ?_ "w" c-mode-syntax-table)
-(modify-syntax-entry ?_ "w" c++-mode-syntax-table)
-
 ;; Same as Linux except 4 char tabs
 (c-add-style "sam" '("linux" (c-basic-offset . 4) (tab-width . 4)))
 
