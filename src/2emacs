@@ -7,7 +7,7 @@
 [ -n "$1" ] || { echo "2emacs what?"; exit 1; }
 
 FILE=$1
-if [ "$1" = "-name" ]; then
+if [ "$1" = "-name" -o "$1" = "-n" ]; then
     [ -n "$2" ] || { echo "2emacs -name what?"; exit 1; }
     FILE=`find -name $2 | head -n1`
     [ -n "$FILE" ] || { echo "no file found"; exit 1; }
