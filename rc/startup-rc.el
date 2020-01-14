@@ -24,6 +24,6 @@
 				  ((< hour 18) "afternoon")
 				  (t           "evening"))
 			    (concat (user-full-name)
-				    (if (server-running-p)
+				    (if server-process
 					" with no service."
 				      (server-start) nil)))))))
