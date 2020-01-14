@@ -9,6 +9,7 @@
 
 (setq use-dialog-box nil)
 (tool-bar-mode 0)
+(menu-bar-mode 0)
 ;; Tooltips can hang emacs over VPN
 ;;(tooltip-mode 0)
 ;;(display-time)
