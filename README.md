@@ -5,21 +5,28 @@ This directory tree contains my config files and packages for Emacs.
 A brief rundown:
 
 ## /
-  * init.el
-    Should need no introduction.
+  * Emacs standard files
+    * init.el
+      Should need no introduction.
+
+    * early-init.el
+      Introduced in 27.1. Speeds up init times.
+
+    * custom.el (optional)
+      Used by Emacs customize.
 
   * user-init.el (optional)
     This is used to tweak per machine settings such as email address
     and laptop-mode.
 
-  * custom.el (optional)
-    Used by Emacs customize.
-
 ## lisp/
-  * lisp code
+  * lisp code. 'Nuff said.
 
 ## rc/
-  * I use Didier Verna's el-rcfiles package
+  * I use Didier Verna's el-rcfiles package.
+    This not only speeds up init times, but groups the config
+    variables nicely.
+    
     https://github.com/didierverna/el-rcfiles
 
 ## src/
