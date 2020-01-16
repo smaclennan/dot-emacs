@@ -22,16 +22,15 @@ else
     unset ARG
 fi
 
-# This changed in 27.1
-if [ -n "$XDG_RUNTIME_DIR" ]; then
-    socket=$XDG_RUNTIME_DIR/emacs/server
-else
-    # dash and ksh do not have $UID
-    [ -z "$UID" ] && UID=$(id -u)
-    socket=/tmp/emacs$UID/server
-fi
+# Test /tmp/emacs$UID first since you might be running an older Emacs but
+# have XDG_RUNTIME_DIR set.
 
-if [ -S $socket ]; then
+# dash and ksh do not have $UID
+[ -z "$UID" ] && UID=$(id -u)
+if [ -S /tmp/emacs$UID/server ]; then
+    emacsclient -n $ARG $FILE
+elif [ -S "$XDG_RUNTIME_DIR/emacs/server" ]; then
+    # Added in 27.1
     emacsclient -n $ARG $FILE
 else
     emacs $ARG $FILE &
