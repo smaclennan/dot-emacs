@@ -48,20 +48,6 @@ definition."
 
 (defvar lisp-el-font-lock-keywords-2 nil)
 
-(defun cl-prettyprint (list)
-  "This currently only pretty prints lists. It is currently
-limited to two levels since it is meant for `pmake-debug'
-output."
-  (dolist (ent list)
-    (if (listp ent)
-	(progn
-	  (insert (format "(%S" (car ent)))
-	  (dolist (ent (cdr ent))
-	    (insert (format "\n  %S" ent)))
-	  (insert ")\n")
-	  )
-      (insert (format "%S\n" ent)))))
-
 (defun directory-files-recursively (dir regexp)
   "Basically a 'find DIR -name REGEXP -print'."
   (let (files path)
