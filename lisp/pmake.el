@@ -95,10 +95,12 @@ You cannot assume that `pmake-done-hook' is clean."
 
 (defun pmake-debug (&optional error-out)
   "Pretty print `pmake-stages' to the *pmake-dbg* buffer."
-  (eval-and-compile (require 'cl-extra))
   (with-current-buffer (get-buffer-create "*pmake-dbg*")
     (erase-buffer)
-    (cl-prettyprint pmake-stages))
+    (insert (format "%S" pmake-stages))
+    (goto-char (point-min))
+    (while (search-forward " (" nil t) (replace-match "\n("))
+    (goto-char (point-min)))
   (when error-out
     (error "Created *pmake-dbg* buffer")))
 
