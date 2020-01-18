@@ -28,7 +28,6 @@
     (call-process "uname" nil t nil ,arg)
     (buffer-substring (point-min) (1- (point-max)))))
 
-;; For some reason this needs to be a function for arm Linux
 ;;;###autoload
 (defmacro strtol (str)
   "Mimic strtol(str, NULL, 0)... but not exactly"
