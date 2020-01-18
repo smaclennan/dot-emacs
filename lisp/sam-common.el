@@ -32,8 +32,7 @@
 ;;;###autoload
 (defmacro strtol (str)
   "Mimic strtol(str, NULL, 0)... but not exactly"
-  `(if (string-match "^0[xX]\\(.*\\)" ,str)
-       ;; match-string does not work on arm Linux
+  `(if (string-match "^0[xX]" ,str)
        (string-to-number (substring ,str 2) 16)
      (string-to-number ,str)))
 
