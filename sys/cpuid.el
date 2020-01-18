@@ -12,24 +12,22 @@
   cpuid-exe)
 
 (defun cpuid-find (field)
-  (goto-char (point-min))
   (re-search-forward (concat "^" field "[ \t]+: \\(.*\\)$"))
   (match-string 1))
 
 (defun cpuid-cpuinfo ()
-  (let ((exe (cpuid-cpuinfo-exe)))
-    (with-temp-buffer
-      (call-process exe nil t nil)
-      (list
-       (cpuid-find "Model Name")
-       (cpuid-find "Vendor")
-       (string-to-number (cpuid-find "Family"))
-       (string-to-number (cpuid-find "Model"))
-       (string-to-number (cpuid-find "Stepping"))))))
+  (with-temp-buffer
+    (call-process (cpuid-cpuinfo-exe) nil t)
+    (goto-char (point-min))
+    (list (cpuid-find "Model Name")
+	  (cpuid-find "Vendor")
+	  (string-to-number (cpuid-find "Family"))
+	  (string-to-number (cpuid-find "Model"))
+	  (string-to-number (cpuid-find "Stepping")))))
 
 (defun cpuid-cpu-flags ()
   "This is a subset of the flags on Linux."
-  (let ((exe (cpuid-cpuinfo-exe)))
-    (with-temp-buffer
-      (call-process exe nil t nil)
-      (split-string (cpuid-find "Flags")))))
+  (with-temp-buffer
+    (call-process (cpuid-cpuinfo-exe) nil t)
+    (goto-char (point-min))
+    (split-string (cpuid-find "Flags"))))
