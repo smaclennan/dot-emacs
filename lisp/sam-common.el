@@ -30,11 +30,12 @@
 
 ;; For some reason this needs to be a function for arm Linux
 ;;;###autoload
-(defun strtol (str)
+(defmacro strtol (str)
   "Mimic strtol(str, NULL, 0)... but not exactly"
-  (if (string-match "^0[xX]\\(.*\\)" str)
-      (string-to-number (match-string 1 str) 16)
-    (string-to-number str)))
+  `(if (string-match "^0[xX]\\(.*\\)" ,str)
+       ;; match-string does not work on arm Linux
+       (string-to-number (substring ,str 2) 16)
+     (string-to-number ,str)))
 
 ;;;###autoload
 (defun find-root-dir (file-or-dir &optional dir)
