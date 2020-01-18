@@ -55,4 +55,18 @@ Each clause is (FEATURE BODY...)."
       (string-to-number (match-string 1 str) 16)
     (string-to-number str)))
 
+;;;###autoload
+(defun find-root-dir (file-or-dir &optional dir)
+  "Find the directory that contains FILE-OR-DIR.
+Starts at DIR (defaults to `default-directory') and goes up the path."
+  (unless dir (setq dir default-directory))
+  ;; Sanitize the directory
+  (setq dir (expand-file-name (file-name-as-directory dir)))
+  (catch 'found
+    (while (not (equal dir "/"))
+      (when (file-exists-p (concat dir file-or-dir))
+	(throw 'found dir))
+      ;; This removes the last directory
+      (setq dir (file-name-directory (directory-file-name dir))))))
+
 (provide 'sam-common)

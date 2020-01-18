@@ -39,16 +39,9 @@
 set, else start looking at `default-directory'."
   (let ((dir (if my-cscope-dir my-cscope-dir default-directory)))
     ;; Sanitize the directory
-    (setq dir (expand-file-name (file-name-as-directory dir)))
-    (catch 'found
-      (while (not (equal dir "/"))
-	(when (file-exists-p (concat dir "cscope.out"))
-	  (throw 'found dir))
-	;; This removes the last directory
-	(setq dir (file-name-directory (directory-file-name dir))))
-      (unless no-error
-	(error "No cscope.out file found."))
-      nil)))
+    (setq dir (find-root-dir "cscope.out" dir))
+    (or dir no-error (error "No cscope.out file found."))
+    dir))
 
 (defconst mcs-prompts
   '("0 Find this C symbol"

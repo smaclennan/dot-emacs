@@ -4,18 +4,9 @@
 
 (defun git-dir (&optional dir no-error)
   "Find the base git directory. If DIR is nil, `default-directory' is used."
-  (unless dir (setq dir default-directory))
-  ;; Sanitize the directory
-  (setq dir (expand-file-name (file-name-as-directory dir)))
-  (catch 'found
-    (while (not (equal dir "/"))
-      (when (file-exists-p (concat dir ".git"))
-	(throw 'found dir))
-      ;; This removes the last directory
-      (setq dir (file-name-directory (directory-file-name dir))))
-    (if no-error
-	nil
-      (error "No git base."))))
+  (setq dir (find-root-dir ".git" dir))
+  (or dir no-error (error "No git base."))
+  dir)
 
 (defun git-cat-doit (&optional rev)
   "Perform a git cat on the current buffer into a temporary buffer.
