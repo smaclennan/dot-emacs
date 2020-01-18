@@ -9,7 +9,7 @@
 (defvar sys-arch
   (let ((arch (uname "-m")))
     (cond
-     ((string-match "x86" arch) 'x86)
+     ((string-match "x86\\|amd64" arch) 'x86)
      ((string-match "arm\\|aarch" arch) 'arm)
      (t 'unknown)))
   "Lisp friendly version of arch.")
