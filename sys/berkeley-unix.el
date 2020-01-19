@@ -19,7 +19,9 @@
 ;;;###autoload
 (defun sys-mem ()
   "Return total and free memory."
-  (unless sys-page-size (setq sys-page-size (sysctl "hw.pagesize")))
-  (unless sys-mem (setq sys-mem (sysctl "hw.realmem")))
-  (list sys-mem
-	(* (sysctl "vm.stats.vm.v_free_count") sys-page-size)))
+  (if (file-exists-p "/proc/meminfo") ;; NetBSD
+      (sys-meminfo)
+    (unless sys-page-size (setq sys-page-size (sysctl "hw.pagesize")))
+    (unless sys-mem (setq sys-mem (sysctl "hw.realmem")))
+    (list sys-mem
+	  (* (sysctl "vm.stats.vm.v_free_count") sys-page-size))))

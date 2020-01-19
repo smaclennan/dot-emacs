@@ -19,6 +19,20 @@
     (#x4e "Nvidia")  (#x50 "APM")      (#x51 "Qualcomm") (#x53 "Samsung")
     (#x56 "Marvell") (#x69 "Intel")))
 
+;; Linux and NetBSD
+(defun sys-meminfo ()
+  "Report total, free, and available memory."
+  (with-temp-buffer
+    (insert-file-contents "/proc/meminfo")
+    (goto-char (point-min))
+    (re-search-forward "^Memtotal: *\\([0-9]+\\) kB$")
+    (setq sys-mem (* (string-to-number (match-string 1)) 1024))
+    (re-search-forward "^Memfree: *\\([0-9]+\\) kB$")
+    (list sys-mem (* (string-to-number (match-string 1)) 1024)
+	  ;; Older kernels do not have Memavailable
+	  (when (re-search-forward "^Memavailable: *\\([0-9]+\\) kB$" nil t)
+	    (* (string-to-number (match-string 1)) 1024)))))
+
 ;;;###autoload
 (defun sysctl (arg)
   "Return sysctl ARG as a number."
