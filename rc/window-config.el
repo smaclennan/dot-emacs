@@ -18,6 +18,8 @@
 (blink-cursor-mode 0)
 (set-cursor-color "red")
 
+(setq visible-bell t)
+
 (global-set-key [(control insert)] 'clipboard-kill-ring-save)
 (global-set-key [(shift insert)] 'clipboard-yank)
 

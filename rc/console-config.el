@@ -1,6 +1,8 @@
 ;; Yes, Emacs has a menu bar in console mode
 (menu-bar-mode -1)
 
+(setq visible-bell t)
+
 (defvar console-white t
   "Set to non-nil for a white console")
 

@@ -26,16 +26,8 @@
 (load (concat rcfiles-directory
 	      (if window-system "/window" "/console") "-config"))
 
-(setq track-eol t
-      kill-whole-line t
-      visible-bell t
-      extended-command-suggest-shorter nil)
-
 (put 'narrow-to-region 'disabled nil) ;; Why? Just why?
 (fset 'yes-or-no-p 'y-or-n-p)
-
-;; There are going to be large tag files
-(setq large-file-warning-threshold #x4800000) ;; 72M
 
 ;; This gets rid of the iswitchb deprecated message by moving it out
 ;; of the obsolete directory.

@@ -1,6 +1,10 @@
 (setq inhibit-default-init t
       inhibit-startup-screen t
-      initial-scratch-message ";; This buffer is for goofing around in.\n\n")
+      initial-scratch-message ";; This buffer is for goofing around in.\n\n"
+      ;; These are actually from simple.el...
+      track-eol t
+      kill-whole-line t
+      extended-command-suggest-shorter nil)
 
 ;; Collect the auto-save and backup files in one place.
 ;; I added the following to my crontab:
