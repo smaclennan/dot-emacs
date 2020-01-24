@@ -26,9 +26,6 @@
 (load (concat rcfiles-directory
 	      (if window-system "/window" "/console") "-config"))
 
-(put 'narrow-to-region 'disabled nil) ;; Why? Just why?
-(fset 'yes-or-no-p 'y-or-n-p)
-
 ;; This gets rid of the iswitchb deprecated message by moving it out
 ;; of the obsolete directory.
 (let ((to (concat user-emacs-directory "lisp/iswitchb.elc")))

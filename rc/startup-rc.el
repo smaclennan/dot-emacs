@@ -6,6 +6,10 @@
       kill-whole-line t
       extended-command-suggest-shorter nil)
 
+;; These just seem to belong here.
+(put 'narrow-to-region 'disabled nil) ;; Why? Just why?
+(fset 'yes-or-no-p 'y-or-n-p)
+
 ;; Collect the auto-save and backup files in one place.
 ;; I added the following to my crontab:
 ;; 17 5 * * * find $HOME/.autosave -mtime +7 -delete
