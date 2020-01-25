@@ -45,6 +45,8 @@
 
 ;;; Code:
 
+(require 'cl-macs) ;; Emacs 27.1 change
+
 (defvar rcfiles-version "1.0"
   "Current version number of el-rcfiles.")
 

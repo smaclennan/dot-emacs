@@ -33,6 +33,7 @@
 (defvar h2t-keymap (make-sparse-keymap "h2t"))
 
 (require 'sam-common)
+(require 'cl-macs)
 
 (define-key h2t-keymap [mouse1] 'h2t-mousable)
 (define-key h2t-keymap [mouse2] 'h2t-mousable)

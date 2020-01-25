@@ -25,6 +25,8 @@ changes are far apart.")
   "File to save bisect state in.
 Warning: This file is deleted on a `bisect-end'.")
 
+(require 'cl-macs)
+
 (defun bisect-cur ()
   (if bisect-list
       (nth bisect-cur bisect-list)

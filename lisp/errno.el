@@ -136,6 +136,8 @@
     "EHWPOISON"
     ))
 
+(eval-and-compile (require 'cl-macs))
+
 ;;;###autoload
 (defun errno-string (errno)
   "Lookup ERRNO in `errno-strings'.

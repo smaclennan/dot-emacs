@@ -1,8 +1,6 @@
 ;; This is used to compile lisp files in batch mode.
 ;; It is also called from init.el to reduce duplication.
 
-(require 'cl-macs) ;; For 28 (27?) this makes things much easier
-
 (defvar sys-type (replace-regexp-in-string "gnu/" "" (symbol-name system-type))
   "Simplified version of `system-type'.")
 

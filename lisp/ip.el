@@ -1,5 +1,7 @@
 ;; Some handy functions for dealing with IPv4
 
+(require 'cl-macs)
+
 (defun ip-to-number (ip)
   "Convert an IP string to a number. Warning: Assumes little endian."
   (unless (string-match
