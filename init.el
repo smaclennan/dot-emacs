@@ -28,10 +28,8 @@
 (let ((to (concat user-emacs-directory "lisp/iswitchb.elc")))
   (unless (file-exists-p to)
     (make-symbolic-link (locate-library "iswitchb") to t)))
-
 (iswitchb-mode)
 (global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
 
 (delete-selection-mode)
-
 ;; end of .emacs "May the `(' be with `)'"
