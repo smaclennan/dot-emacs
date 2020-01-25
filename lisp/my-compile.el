@@ -88,14 +88,16 @@ Go through the `my-compile-dir-list' looking for a match."
       (cond
        ((stringp func-or-style)
 	(when c-buffer-is-cc-mode ;; Make sure c-ish code, not Makefile
-	  (c-set-style func-or-style)))
+	  ;; Reset tab-width set in c-mode-common-hook with (c-set-style "sam")
+          (kill-local-variable 'tab-width)
+	  (c-set-style func-or-style)
+	  ))
        ((fboundp func-or-style)
 	(funcall func-or-style dir arg))))))
 
 (defun gdb-func (matched-dir target)
   (setq-local compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))
-  (c-set-style "gdb"))
-(c-add-style "gdb" '("gnu" (c-basic-offset . 2) (tab-width . 8)))
+  (c-set-style "gnu"))
 
 (defun my-kernel-set-dir (dir)
   "Set `my-kernel-dir' verifying that the directory exists and following all links."
