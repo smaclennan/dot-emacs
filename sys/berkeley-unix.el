@@ -1,4 +1,4 @@
-(setq compile-command "gmake ")
+(setq-default compile-command "gmake ")
 (setq make-clean-command "gmake clean all")
 
 (setq local-compile-cc "cc -O2 -Wall")

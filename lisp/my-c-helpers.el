@@ -120,7 +120,7 @@ Will not overwrite current variables if they exist."
 		       " * c-basic-offset: " local-compile-offset "\n"
 		       " * tab-width: " local-compile-offset "\n"))
 	     " * End:\n */\n"))
-    (set (make-local-variable 'compile-command) cmd)))
+    (setq-local compile-command cmd)))
 
 ;;;###autoload
 (defun update-local-compile-command ()
@@ -130,14 +130,14 @@ actually update the associated `compile-command' variable."
   (save-excursion
     (goto-char (point-max))
     (if (re-search-backward " \* compile-command: \"\\(.*\\)\"" nil t)
-	(set (make-local-variable 'compile-command) (match-string 1))
+	(setq-local compile-command (match-string 1))
       (error "No compile command found."))))
 
 ;;;###autoload
 (defun set-local-compile-command ()
   (interactive)
   (let ((cmd (read-string "Compile: " compile-command)))
-    (set (make-local-variable 'compile-command) cmd)))
+    (setq-local compile-command cmd)))
 
 ;;;###autoload
 (defun add-local-c-vars (offset)

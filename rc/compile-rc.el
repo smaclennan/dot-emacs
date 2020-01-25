@@ -17,7 +17,7 @@
 (defun my-set-compile ()
   (interactive)
   (let ((cmd (read-string "Compile Command: " compile-command)))
-    (set (make-local-variable 'compile-command) cmd)
+    (setq-local compile-command cmd)
     (save-some-buffers (not compilation-ask-about-save) nil)
     (compilation-start cmd)))
 

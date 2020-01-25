@@ -93,7 +93,7 @@ Go through the `my-compile-dir-list' looking for a match."
 	(funcall func-or-style dir arg))))))
 
 (defun gdb-func (matched-dir target)
-  (setq compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))
+  (setq-local compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))
   (c-set-style "gdb"))
 (c-add-style "gdb" '("gnu" (c-basic-offset . 2) (tab-width . 8)))
 
