@@ -23,9 +23,6 @@
 
 (rcfiles-register-rc-files)
 
-(load (concat rcfiles-directory
-	      (if window-system "/window" "/console") "-config"))
-
 ;; This gets rid of the iswitchb deprecated message by moving it out
 ;; of the obsolete directory.
 (let ((to (concat user-emacs-directory "lisp/iswitchb.elc")))

@@ -1,7 +1,5 @@
-;; Windowing system only config.
-;; No real library to toggle off of so it is not a -rc.el
+;; Called for window systems and console mode
 
-;; I believe for Emacs system-name is host name only
 (setq frame-title-format '("Emacs " emacs-version " " system-name ":"
 			   (buffer-file-name
 			    (:eval (abbreviate-file-name buffer-file-name))
@@ -10,21 +8,28 @@
 (setq use-dialog-box nil)
 (tool-bar-mode 0)
 (menu-bar-mode 0)
-;; Tooltips can hang emacs over VPN
-;;(tooltip-mode 0)
-;;(display-time)
 
-;; Set the cursor properly for Emacs
 (blink-cursor-mode 0)
 (set-cursor-color "red")
 
 (setq visible-bell t)
 
-(global-set-key [(control insert)] 'clipboard-kill-ring-save)
-(global-set-key [(shift insert)] 'clipboard-yank)
+(defvar console-white t "Set to non-nil for a white console")
 
-(defadvice save-buffers-kill-emacs (before ask-first activate)
-  (y-or-n-p "Do you have to go? "))
+(if window-system
+    (progn
+      (global-set-key [(control insert)] 'clipboard-kill-ring-save)
+      (global-set-key [(shift insert)] 'clipboard-yank)
+
+      (defadvice save-buffers-kill-emacs (before ask-first activate)
+	(y-or-n-p "Do you have to go? ")))
+  (when console-white
+    ;; for some reason bright-white doesn't always work... even on
+    ;; machines that report they have bright-white
+    (set-background-color "#FFFFFF")
+    (set-face-background 'default "#FFFFFF")
+    (set-foreground-color "black")
+    (set-face-foreground 'default "black")))
 
 ;; --------------------------------------------
 ;; laptop mode
@@ -36,7 +41,9 @@ you have only one monitor.")
 
 (defvar laptop-mode-font-size
   ;; Input Mono seems larger than other fonts
-  (if (string-match "Input Mono" (face-font 'default)) 110 120)
+  (if (and window-system (string-match "Input Mono" (face-font 'default)))
+      110
+    120)
   "The font size to use for laptop mode in pixels.
 When a list, it is the sizes for normal and laptop
 mode. Generally you don't need to setup the list, laptop-mode
