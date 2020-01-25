@@ -1,6 +1,6 @@
-;;; my-compile.el - compile command helper
+;; my-compile.el - compile command helper
 
-;; Copyright (C) 1996-2018 Sean MacLennan
+;; Copyright (C) 1996-2020 Sean MacLennan
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License version
@@ -16,40 +16,30 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-; The `my-compile-command' function was written to handle code bases
-; with sub-directories where you have to build from an upper level, so
-; `M-x compile' just won't work.  By setting up the
-; `my-compile-dir-list', `my-compile-command' allows you to just hit
-; `M-x compile' anywhere in the code base and it just works (tm).
-;
-; It can do much more that that though. Since it can call a function
-; based on the directory you can do almost anything. Setting buffer
-; local variables is an obvious one.
-;
-; The `my-compile-command' function is meant to be called from the
-; `c-mode-common-hook'. It takes the current buffers directory and matches
-; it against the `my-compile-dir-list'. If there is a match, it sets the
-; `compile-command' appropriately.
-;
-; The help for `my-compile-dir-list' describes the elements of the list.
+;; The `my-compile-command' function was written to handle code bases
+;; with sub-directories where you have to build from an upper
+;; level. e.g. Linux. By setting up the `my-compile-dir-list',
+;; `my-compile-command' allows you to just hit `M-x compile' anywhere
+;; in the code base and it just works (tm).
 
-(require 'sam-common) ;; uname()
+;; It can do much more that that though. Since it can call a function
+;; based on the directory you can do almost anything. Setting buffer
+;; local variables is an obvious one.
+;;
+;; The `my-compile-command' function is meant to be called from the
+;; `c-mode-common-hook'.
+
+(require 'sam-common)
 (eval-when-compile (require 'cc-vars))
 (require 'cc-defs) ;; for c-buffer-is-cc-mode
 
 (defvar my-kernel-vers (uname "-r")
-  "* Current kernel version.")
+  "Current kernel version.")
 
 (defvar my-kernel-dir (file-chase-links (concat "/lib/modules/" my-kernel-vers "/build"))
-  "* Current kernel directory.")
+  "Current kernel directory.")
 
 (defvar make-j (format "-j%d" (sys-nproc)) "* -Jn value to pass to makes.")
-
-(defun gdb-func (matched-dir target)
-  (setq compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))
-  (c-set-style "gnu")
-  (setq c-basic-offset 2)
-  (setq tab-width 8))
 
 (defvar my-compile-dir-list
   (list
@@ -66,18 +56,46 @@
    ;; gdb
    (list "^.*/gdb-[0-9.]+/" nil 'gdb-func)
    )
-  "*A list of directory matches used by `my-compile-command' to set
+  "A list of directory matches used by `my-compile-command' to set
 the compile command.
 
 Each match is a list, only the first element is required:
 
   * The first element is a regexp for the directory.
-  * The second element is an arg string to pass to make.
+  * The second element is either an arg string to pass to make or
+    the target to the lisp function.
   * The third element is either a string which defines the style to
     use, or a lisp function to call. The lisp function will be passed
     the directory matched and the target as parameters.
 
 Only the first match is used so order is important.")
+
+(defun my-compile-command ()
+  "Set the compile command for the current file.
+Go through the `my-compile-dir-list' looking for a match."
+  (interactive)
+  (let (dir arg func-or-style matched)
+    (cl-loop for list in my-compile-dir-list until dir do
+      (when (string-match (car list) default-directory)
+	(setq dir (match-string 0 default-directory))
+	(setq matched list)))
+
+    (when dir
+      (setq arg (nth 1 matched)
+	    func-or-style (nth 2 matched))
+      (when (or arg (not (equal dir default-directory)))
+	(setq-local compile-command (concat "make -C " dir " " arg)))
+      (cond
+       ((stringp func-or-style)
+	(when c-buffer-is-cc-mode ;; Make sure c-ish code, not Makefile
+	  (c-set-style func-or-style)))
+       ((fboundp func-or-style)
+	(funcall func-or-style dir arg))))))
+
+(defun gdb-func (matched-dir target)
+  (setq compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))
+  (c-set-style "gdb"))
+(c-add-style "gdb" '("gnu" (c-basic-offset . 2) (tab-width . 8)))
 
 (defun my-kernel-set-dir (dir)
   "Set `my-kernel-dir' verifying that the directory exists and following all links."
@@ -94,31 +112,6 @@ Only the first match is used so order is important.")
   (interactive "sVersion: ")
   (my-kernel-set-dir (concat "/lib/modules/" version "/build"))
   (setq my-kernel-vers version))
-
-(defun my-compile-command ()
-  "Set the compile command for the current file.
-Go through the 'my-compile-dir-list' looking for a match."
-  (interactive)
-  (let (dir arg func-or-style matched)
-    (cl-loop for list in my-compile-dir-list until dir do
-      (when (string-match (car list) default-directory)
-	(setq dir (match-string 0 default-directory))
-	(setq matched list)))
-
-    (when dir
-      (setq arg (nth 1 matched)
-	    func-or-style (nth 2 matched))
-      (when (or arg (not (equal dir default-directory)))
-	(set (make-local-variable 'compile-command)
-	     (concat "make -C " dir " " arg)))
-      (cond
-       ((stringp func-or-style)
-	(when c-buffer-is-cc-mode ;; Make sure c-ish code, not Makefile
-	  ;; I set tab-width in my-c-mode-common-hook. Reset it here.
-	  (kill-local-variable 'tab-width)
-	  (c-set-style func-or-style)))
-       ((fboundp func-or-style)
-	(funcall func-or-style dir arg))))))
 
 ;;;###autoload
 (defun my-compile-delete (regexp)
