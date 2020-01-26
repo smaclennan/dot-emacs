@@ -6,7 +6,6 @@
 			    "%b")))
 
 (setq use-dialog-box nil)
-(tool-bar-mode 0)
 (menu-bar-mode 0)
 
 (blink-cursor-mode 0)
@@ -18,6 +17,8 @@
 
 (if window-system
     (progn
+      (tool-bar-mode 0)
+      
       (global-set-key [(control insert)] 'clipboard-kill-ring-save)
       (global-set-key [(shift insert)] 'clipboard-yank)
 
