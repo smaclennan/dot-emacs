@@ -53,8 +53,8 @@
 
 ;;; Code:
 
-;; Problems in 28.0.50
-;; (eval-when-compile
+;; Problems in 27.1
+;;(eval-when-compile
 ;;  (require 'cl))
 
 (eval-and-compile
