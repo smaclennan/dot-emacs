@@ -62,7 +62,7 @@ Top level directories end in /, subdirs do not. Windows version."
 	(goto-char (point-min))
 	(re-search-forward (concat key " *REG_SZ *\\(.*\\)$"))
 	(setq list (cons (match-string 1) list)))
-      (list (caddr list) (concat "Build " (cadr list) " " (car list))))))
+      (list (cl-caddr list) (concat "Build " (cadr list) " " (car list))))))
 
 ;;;###autoload
 (defun sys-nproc ()
