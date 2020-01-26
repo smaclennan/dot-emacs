@@ -6,3 +6,6 @@
 	  (lambda ()
 	    (define-key iswitchb-mode-map [right] 'iswitchb-next-match)
 	    (define-key iswitchb-mode-map [left]  'iswitchb-prev-match)))
+
+;; Non-standard key sequence
+(global-set-key "\C-x\C-b" 'iswitchb-buffer)

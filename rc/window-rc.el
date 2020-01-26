@@ -7,6 +7,7 @@
 
 (setq use-dialog-box nil)
 (menu-bar-mode 0)
+(delete-selection-mode)
 
 (blink-cursor-mode 0)
 (set-cursor-color "red")
@@ -31,6 +32,16 @@
     (set-face-background 'default "#FFFFFF")
     (set-foreground-color "black")
     (set-face-foreground 'default "black")))
+
+;; --------------------------------------------
+;; iswitchb - yes switch-to-buffer is considered a window function
+
+;; This gets rid of the iswitchb deprecated message by moving it out
+;; of the obsolete directory.
+(let ((to (concat user-emacs-directory "lisp/iswitchb.elc")))
+  (unless (file-exists-p to)
+    (make-symbolic-link (locate-library "iswitchb") to t)))
+(iswitchb-mode)
 
 ;; --------------------------------------------
 ;; laptop mode

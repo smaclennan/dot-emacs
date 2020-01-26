@@ -21,15 +21,7 @@
     (package-initialize)
   (defun package-installed-p (pkg) nil))
 
+;; Everything else is configured through rc files
 (rcfiles-register-rc-files)
 
-;; This gets rid of the iswitchb deprecated message by moving it out
-;; of the obsolete directory.
-(let ((to (concat user-emacs-directory "lisp/iswitchb.elc")))
-  (unless (file-exists-p to)
-    (make-symbolic-link (locate-library "iswitchb") to t)))
-(iswitchb-mode)
-(global-set-key "\C-x\C-b" (global-key-binding "\C-xb"))
-
-(delete-selection-mode)
 ;; end of .emacs "May the `(' be with `)'"
