@@ -17,7 +17,7 @@
 (load custom-file t)
 
 ;; This must come before configurations of installed packages.
-(if (file-exists-p (concat user-emacs-directory "elpa"))
+(if (file-directory-p (concat user-emacs-directory "elpa"))
     (package-initialize)
   (defun package-installed-p (pkg) nil))
 

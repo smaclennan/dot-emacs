@@ -34,14 +34,13 @@
     (set-face-foreground 'default "black")))
 
 ;; --------------------------------------------
-;; iswitchb - yes switch-to-buffer is considered a window function
-
+;; iswitchb - yes `switch-to-buffer' is considered a window function.
 ;; This gets rid of the iswitchb deprecated message by moving it out
 ;; of the obsolete directory.
 (let ((to (concat user-emacs-directory "lisp/iswitchb.elc")))
   (unless (file-exists-p to)
     (make-symbolic-link (locate-library "iswitchb") to t)))
-(iswitchb-mode)
+(with-no-warnings (iswitchb-mode))
 
 ;; --------------------------------------------
 ;; laptop mode
