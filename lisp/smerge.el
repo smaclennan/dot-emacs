@@ -130,7 +130,7 @@ regular expressions.")
   (unless dir2
     (setq dir2 (read-directory-name "Directory 2: " nil nil t)))
   (switch-to-buffer smerge-buffer) ;; Yes I want to be in the output buffer
-  (read-only-mode 0) ;; writable
+  (setq buffer-read-only nil) ;; writable
   (setq smerge-mode t)
   (setq smerge-flags flags)
   (setq smerge-dir1 (file-name-as-directory (expand-file-name dir1)))
@@ -139,7 +139,7 @@ regular expressions.")
   (smerge-recursive-diff)
   (smerge-fixup-filenames)
   (smerge-post-process flags)
-  (read-only-mode 1) ;; read-only
+  (setq buffer-read-only t) ;; read-only
   (message "Done.")
   )
 

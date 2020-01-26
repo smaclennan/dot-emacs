@@ -2,7 +2,7 @@
 (require 'cl)
 
 (provide 'cl-extra)
-
+(provide 'cl-macs)
 
 ;; not enabled in 24
 (electric-indent-mode)
@@ -16,6 +16,8 @@
   (defalias 'cl-caddr 'caddr)
   (defalias 'cl-cdadr 'cdadr)
   (defalias 'cl-cadadr 'cadadr)
+  (defalias 'cl-position 'position)
+  (defalias 'cl-rotatef 'rotatef)
   )
 
 ;; xref compatibility functions
@@ -60,3 +62,7 @@ definition."
 	(if (string-match regexp path)
 	    (setq files (cons path files)))))
     files))
+
+;;;###autoload
+(defmacro setq-local (var val)
+  `(set (make-variable-buffer-local ,var) ,val))
