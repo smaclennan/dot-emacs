@@ -19,7 +19,7 @@
 
 ;; Run all the commands in `pmake-stages'.
 
-;;; globals
+;;; User configurable
 
 (defvar pmake-stages nil
   "List of make commands to perform by `pmake-run'.
@@ -60,12 +60,12 @@ If set to 'error, will error out after creating the buffer.")
   "Non-nil to print individual pmake times.
 Only used by `pmake-verbose-hook'.")
 
-;;;
+;;; EOU (End Of User configurable)
 
 (defvar pmake-run-start nil "Time that `pmake-run' started.")
 (defvar pmake-stage-start nil "Time that this stage started.")
 (defvar pmake-run-rc nil "Return code for this run.")
-(defvar pmake-errors-are-fatal nil)
+(defvar pmake-errors-are-fatal nil "Global copy of `pmake-run' arg.")
 
 ;;;###autoload
 (defun pmake-run (&optional errors-are-fatal)
