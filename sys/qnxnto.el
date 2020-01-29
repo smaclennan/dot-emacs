@@ -13,6 +13,10 @@
   "Return the number of processors reported by pidin."
   (if sys-nproc sys-nproc (do-pidin-info)))
 
+;; my-compile.el needs sys-nproc. Anything that required my-compile
+;; failed at compile time. Calling sys-nproc here seems to solve it.
+(sys-nproc)
+
 ;;;###autoload
 (defun sys-mem ()
   "Return the total and free memory."
