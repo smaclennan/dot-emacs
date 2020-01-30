@@ -19,9 +19,11 @@ Variables set by all systems.
 
 * sys-mem
   * filled in by sys-mem()
+  * filled in by sys-nproc() on QNX
 
 * sys-nproc
   * filled in by sys-nproc()
+  * filled in by sys-mem() on QNX
 
 ## Basic functions
 
