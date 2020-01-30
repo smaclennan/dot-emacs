@@ -13,10 +13,10 @@ if [ "$1" = "-name" -o "$1" = "-n" ]; then
     [ -n "$FILE" ] || { echo "no file found"; exit 1; }
 fi
 
-FILE=`echo $FILE | cut -d: -f1`
+FNAME=`echo $FILE | cut -d: -f1`
 N=`echo $FILE | awk -F: '{print $2}'`
 
-if [ "$N" -eq "$N" ] 2>/dev/null; then
+if [ -n "$N" -a "$N" -eq "$N" ] 2>/dev/null; then
     ARG="+$N"
 else
     unset ARG
@@ -28,10 +28,10 @@ fi
 # dash and ksh do not have $UID
 [ -z "$UID" ] && UID=$(id -u)
 if [ -S /tmp/emacs$UID/server ]; then
-    emacsclient -n $ARG $FILE
+    emacsclient -n $ARG $FNAME
 elif [ -S "$XDG_RUNTIME_DIR/emacs/server" ]; then
     # Added in 27.1
-    emacsclient -n $ARG $FILE
+    emacsclient -n $ARG $FNAME
 else
-    emacs $ARG $FILE &
+    emacs $ARG $FNAME &
 fi
