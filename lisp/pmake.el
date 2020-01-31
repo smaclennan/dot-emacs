@@ -52,7 +52,7 @@ PROC will only be set for 'pmake.
 
 A usable example `pmake-verbose-hook' is provided.")
 
-(defvar pmake-debug nil
+(defvar pmake-debug t
   "Non-nil for debugging `pmake-run'. Will create *pmake-dbg* buffer.
 If set to 'error, will error out after creating the buffer.")
 
