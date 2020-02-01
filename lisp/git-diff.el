@@ -66,6 +66,9 @@ use 'master'. Otherwise defaults to HEAD."
 commands can be specified to, for example, filter the git grep
 output.")
 
+(defvar git-grep-full-regexp t
+  "*Does git grep support full regular expressions? Specifically \\b.")
+
 ;;;###autoload
 (defun git-grep (arg str)
   "Run git grep, with user-specified regular expression, and collect
@@ -99,7 +102,9 @@ meaning as in `git-grep'."
   (interactive "P")
   (let ((word (if mark-active
 		  (buffer-substring (region-beginning) (region-end))
-		(concat "\\b" (my-grep-current-word) "\\b"))))
+		(if git-grep-full-regexp
+		    (concat "\\b" (my-grep-current-word) "\\b")
+		  (my-grep-current-word)))))
     (git-grep arg word)))
 
 ;;;###autoload

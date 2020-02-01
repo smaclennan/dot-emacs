@@ -1,6 +1,9 @@
 (load "cpuid" nil noninteractive)
 (load "unix"  nil noninteractive)
 
+;; Currently the QNX libregex does not support \b
+(setq git-grep-full-regexp nil)
+
 (defun do-pidin-info ()
   (with-temp-buffer
     (call-process "pidin" nil t nil "info")
