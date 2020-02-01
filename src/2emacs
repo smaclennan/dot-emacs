@@ -16,7 +16,8 @@ fi
 FNAME=`echo $FILE | cut -d: -f1`
 N=`echo $FILE | awk -F: '{print $2}'`
 
-if [ -n "$N" -a "$N" -eq "$N" ] 2>/dev/null; then
+# The sed is for ksh
+if [ -n "$N" -a -z "`echo $N | sed 's/[0-9]*//'`" ]; then
     ARG="+$N"
 else
     unset ARG
