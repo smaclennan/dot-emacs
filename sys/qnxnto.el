@@ -4,6 +4,9 @@
 ;; Currently the QNX libregex does not support \b
 (setq git-grep-full-regexp nil)
 
+;; toybox grep does support \b, so use that
+(setq my-grep-prog "toybox grep -nH")
+
 (defun do-pidin-info ()
   (with-temp-buffer
     (call-process "pidin" nil t nil "info")
