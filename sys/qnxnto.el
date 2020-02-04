@@ -2,7 +2,8 @@
 (load "unix"  nil noninteractive)
 
 ;; Currently the QNX libregex does not support \b
-(setq git-grep-full-regexp nil)
+;; The stock git grep is compiled against libregex
+;;(setq git-grep-full-regexp nil)
 
 ;; toybox grep does support \b, so use that
 (setq my-grep-prog "toybox grep -nH")
