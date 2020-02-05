@@ -2,6 +2,8 @@
 
 ;; Copyright (C) 2011-2020 Sean MacLennan
 
+(require 'cl-macs)
+
 ;;;###autoload
 (defmacro my-interactive-p () `(called-interactively-p 'interactive))
 

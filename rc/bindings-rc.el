@@ -28,8 +28,7 @@
 (global-set-key [(shift f11)]	(lambda () (interactive)
 				  (switch-to-buffer-other-window "*Messages*")))
 (global-set-key [f12]		'revert-buffer)
-(global-set-key [(shift f12)]	'lxr-next-defined)
-(global-set-key [(control f12)] 'lxr-defined-at-point)
+(global-set-key [(shift f12)]	'where-am-i)
 
 (global-set-key "\M-."		'xref-find-definitions-prompt)
 (global-set-key [(meta right)]	'forward-sexp)
@@ -80,3 +79,8 @@
   (condition-case nil
       ad-do-it
     (error (goto-char (point-max)))))
+
+(defun where-am-i ()
+  "Interactive version of `buffer-file-name'. Useful on console."
+  (interactive)
+  (message "%s" (abbreviate-file-name buffer-file-name)))
