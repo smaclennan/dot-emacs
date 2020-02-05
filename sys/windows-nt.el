@@ -66,7 +66,10 @@ Top level directories end in /, subdirs do not. Windows version."
 
 ;;;###autoload
 (defun sys-nproc ()
-  (string-to-number (getenv "NUMBER_OF_PROCESSORS")))
+  (if sys-nproc
+      sys-nproc
+    (setq sys-nproc
+	  (string-to-number (getenv "NUMBER_OF_PROCESSORS")))))
 
 ;;;###autoload
 (defun sys-cpuinfo ()

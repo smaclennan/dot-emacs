@@ -46,18 +46,6 @@
 	  "CPU variant" "CPU part")
       (error "Arch %s not supported" arch))))
 
-(defun sys-vendor (str)
-  (if (eq sys-arch 'x86)
-      (cond
-       ((string= "GenuineIntel" str) "Intel")
-       ((string-match "Authentic ?AMD" str) "AMD")
-       ((string= "CentaurHauls" str) "VIA")
-       (t str))
-    (if (eq sys-arch 'arm)
-	(let ((vendor (assoc (strtol str) arm-implementer)))
-	  (if vendor (cadr vendor) str))
-      str)))
-
 ;;;###autoload
 (defun sys-cpuinfo ()
   (let ((strs (arch-strings)))

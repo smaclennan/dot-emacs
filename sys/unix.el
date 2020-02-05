@@ -19,6 +19,18 @@
     (#x4e "Nvidia")  (#x50 "APM")      (#x51 "Qualcomm") (#x53 "Samsung")
     (#x56 "Marvell") (#x69 "Intel")))
 
+(defun sys-vendor (str)
+  (if (eq sys-arch 'x86)
+      (cond
+       ((string= "GenuineIntel" str) "Intel")
+       ((string-match "Authentic ?AMD" str) "AMD")
+       ((string= "CentaurHauls" str) "VIA")
+       (t str))
+    (if (eq sys-arch 'arm)
+	(let ((vendor (assoc (strtol str) arm-implementer)))
+	  (if vendor (cadr vendor) str))
+      str)))
+
 ;; Linux and NetBSD
 (defun sys-meminfo ()
   "Report total, free, and available memory."
@@ -38,6 +50,10 @@
   "Return sysctl ARG as a number."
   (string-to-number (shell-command-to-string (concat "sysctl -n " arg))))
 
+;;;###autoload
+(defun sysctl-str (arg)
+  "Return sysctl ARG as a string."
+  (shell-command-to-string (concat "sysctl -n " arg)))
 
 ;;;###autoload
 (defun sys-is-guest ()
