@@ -10,4 +10,6 @@ clean:
 	$(MAKE) -C lisp $(MFLAGS) clean
 	$(MAKE) -C sys  $(MFLAGS) clean
 	$(MAKE) -C rc   $(MFLAGS) clean
+
+realclean: clean
 	$(MAKE) -C src  $(MFLAGS) clean
