@@ -40,11 +40,11 @@ A brief rundown:
 
 If you are not me, and you probably are not, you might want the lisp
 code but not all of the configuration. So I have a compromise. If you
-checkout dot-emacs to another directory, say ~/sam-emacs, you can use
+checkout dot-emacs to another directory, say ~/dot-emacs, you can use
 sam-lisp-init to initialize the lisp without the configuration. Just
 add something like the following to your init.el:
 
-    (load "~/sam-emacs/lisp/sam-lisp-init")
+    (load "~/dot-emacs/lisp/sam-lisp-init")
     (sam-lisp-init)
 
 It can also byte-compile the lisp code. Just type:
