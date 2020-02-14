@@ -1,3 +1,6 @@
+(defvar source-exclude-list nil
+  "List of environment variables to ignore.")
+
 (defun source-setenv (str var val new)
   "Helper program for nice messages."
   (message "%s %s = %s" str var val)
@@ -17,14 +20,16 @@
       (while (re-search-forward "^\\([^=]+\\)=\\(.*\\)" nil t)
 	(let* ((var (match-string 1)) (val (match-string 2))
 	       (env (assoc var envs)))
-	  (if env
-	      (progn
-		(unless (string= (cadr env) val)
-		  (source-setenv "Update" var val val))
-		(setq envs (delq env envs)))
-	    (source-setenv "New" var val val)))))
+	  (unless (member var source-exclude-list)
+	    (if env
+		(progn
+		  (unless (string= (cadr env) val)
+		    (source-setenv "Update" var val val))
+		  (setq envs (delq env envs)))
+	      (source-setenv "New" var val val))))))
     (dolist (rm envs)
-      (source-setenv "Remove" (car rm) (cadr rm) nil)))
+      (unless (member (car rm) source-exclude-list)
+	(source-setenv "Remove" (car rm) (cadr rm) nil))))
   (message "Sourcing %s...done." filename))
 
 (provide 'source)
