@@ -6,34 +6,6 @@
   (interactive "nTime: ")
   (message (format-time-string "%a %b %d %T %Z %Y" (seconds-to-time seconds))))
 
-;;;###autoload
-(defun my-x-colour (number)
-  (interactive "sColour: ")
-  (let ((case-fold-search t))
-    (cond
-     ;; Convert 'd d d' to `#xxxxxx'
-     ((string-match "^\\([0-9]+\\)\\([ \t]+[0-9]+\\)\\([ \t]+[0-9]+\\)$" number)
-      (message "#%02x%02x%02x"
-	       (string-to-number (match-string 1 number))
-	       (string-to-number (match-string 2 number))
-	       (string-to-number (match-string 3 number))))
-     ;; Convert `#xxxxxx' to `d d d'
-     ((string-match
-       "^#\\([0-9a-f]\\{2\\}\\)\\([0-9a-f]\\{2\\}\\)\\([0-9a-f]\\{2\\}\\)$"
-       number)
-      (message "%d %d %d"
-	       (string-to-number (match-string 1 number) 16)
-	       (string-to-number (match-string 2 number) 16)
-	       (string-to-number (match-string 3 number) 16)))
-     (t (error "Invalid")))))
-
-;;;###autoload
-(defun size-window (size)
-  (let* ((edges (window-edges))
-	 (cursize (- (nth 3 edges) (nth 1 edges) -1)))
-    (unless (= size cursize)
-      (enlarge-window (- size cursize)))))
-
 ;; For when you need a good excuse...
 ;; From BOFH
 (defvar excuse-phrase-file (concat user-emacs-directory "lisp/excuses.lines")
