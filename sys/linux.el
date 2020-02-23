@@ -1,18 +1,18 @@
 (load "unix" nil noninteractive)
 
-;;;###autoload
-(defun sys-os ()
-  (if (file-exists-p "/etc/os-release")
+(defun linux-os (file)
+  (if (file-exists-p file)
       (with-temp-buffer
-	(insert-file-contents "/etc/os-release")
+	(insert-file-contents file)
 	(re-search-forward "^NAME=\"?\\([^\"]+\\)\"?$")
-	(let ((distro (match-string 1)))
-	  (if (string-match "^Red Hat" distro)
-	      (setq distro "Red Hat")
-	    (setq distro (car (split-string distro))))
+	(let ((distro (car (split-string (match-string 1)))))
+	  (if (equal distro "Red") (setq distro "Red Hat"))
 	  (re-search-forward "^VERSION=\"\\([^\"]+\\)\"$")
-	  (setq sys-os (list distro (match-string 1)))))
-    '("Linux" "unknown")))
+	  (list distro (match-string 1))))
+    (list (uname "-s") (uname "-r"))))
+
+;;;###autoload
+(defun sys-os () (linux-os "/etc/os-release"))
 
 ;;;###autoload
 (defun sys-nproc ()
@@ -44,7 +44,7 @@
     (if (eq sys-arch 'arm)
 	'("Features" "Processor" "CPU Implementer" "CPU architecture"
 	  "CPU variant" "CPU part")
-      (error "Arch %s not supported" arch))))
+      (error "Arch %S not supported" sys-arch))))
 
 ;;;###autoload
 (defun sys-cpuinfo ()
