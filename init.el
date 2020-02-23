@@ -10,7 +10,7 @@
 
 ;; Load backward compatibility and system specific files
 (load (format "compat-%d" emacs-major-version) t)
-(load (replace-regexp-in-string "gnu/" "" (symbol-name system-type)))
+(load (if (eq system-type 'gnu/linux) "linux" (symbol-name system-type)))
 
 ;; The user-init file allows for user/machine specific init. It must
 ;; be very early for variables like `laptop-mode' to work. Use
