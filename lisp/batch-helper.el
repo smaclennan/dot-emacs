@@ -3,9 +3,8 @@
 (defvar sys-type (replace-regexp-in-string "gnu/" "" (symbol-name system-type))
   "Simplified version of `system-type'.")
 
-(dolist (dir '("lisp" "sys"))
-  (add-to-list 'load-path (concat user-emacs-directory dir))
-  (load (concat dir "-loaddefs") t t))
+(add-to-list 'load-path (concat user-emacs-directory "lisp"))
+(add-to-list 'load-path (concat user-emacs-directory "sys"))
 
 (load (format "compat-%d" emacs-major-version) t noninteractive)
 (load sys-type nil noninteractive) ;; should always exist
