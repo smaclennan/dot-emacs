@@ -1,5 +1,4 @@
 ;; This is used to compile lisp files in batch mode.
-;; It is also called from init.el to reduce duplication.
 
 (defvar sys-type (replace-regexp-in-string "gnu/" "" (symbol-name system-type))
   "Simplified version of `system-type'.")
