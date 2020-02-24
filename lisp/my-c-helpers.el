@@ -243,3 +243,5 @@ the identifier."
   (interactive)
   (let ((current-prefix-arg t))
     (call-interactively 'xref-find-definitions)))
+
+(provide 'my-c-helpers)
