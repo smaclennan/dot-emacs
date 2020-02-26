@@ -80,8 +80,7 @@ of the git dir. Else it starts at the current directory.
 
 A prefix arg allows you to edit the grep command"
   (interactive "P\nsRegexp: ")
-  (let ((cmd (concat "git grep " git-grep-args " '" str "' | " git-grep-pipe-cmd))
-	(grep-use-null-device nil))
+  (let ((cmd (concat "git grep " git-grep-args " '" str "' | " git-grep-pipe-cmd)))
     (when arg
       (setq cmd (read-string "Cmd: " cmd 'grep-history)))
 
@@ -89,8 +88,7 @@ A prefix arg allows you to edit the grep command"
     (grep-compute-defaults)
 
     (if git-grep-top-of-tree
-	(let ((default-directory (git-dir))
-	      (grep-use-null-device nil))
+	(let ((default-directory (git-dir)))
 	  (grep cmd))
       (grep cmd))))
 
