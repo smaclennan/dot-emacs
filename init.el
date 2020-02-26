@@ -8,6 +8,9 @@
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (add-to-list 'load-path (concat user-emacs-directory "sys"))
 
+(load "lisp-loaddefs" t t)
+(load "sys-loaddefs" t t)
+
 ;; Load backward compatibility and system specific files
 (load (format "compat-%d" emacs-major-version) t)
 (load (if (eq system-type 'gnu/linux) "linux" (symbol-name system-type)))

@@ -4,9 +4,6 @@
 (provide 'cl-extra)
 (provide 'cl-macs)
 
-(load "lisp-loaddefs" t noninteractive)
-(load "sys-loaddefs"  t noninteractive)
-
 ;; not enabled in 24
 (electric-indent-mode)
 
