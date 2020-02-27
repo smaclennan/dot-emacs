@@ -99,7 +99,9 @@ You cannot assume that `pmake-done-hook' is clean."
     (erase-buffer)
     (insert (format "%S" pmake-stages))
     (goto-char (point-min))
-    (while (search-forward " (" nil t) (replace-match "\n("))
+    (while (search-forward ")) (" nil t) (replace-match "))\n("))
+    (goto-char (point-min))
+    (while (search-forward " (" nil t) (replace-match "\n  ("))
     (goto-char (point-min)))
   (when error-out
     (error "Created *pmake-dbg* buffer")))
