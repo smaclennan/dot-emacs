@@ -6,6 +6,7 @@ ELCS = $(LISP:.el=.elc)
 .el.elc:
 	@echo Compile rc/$<
 	@emacs -batch -q -l ~/.emacs.d/init \
+		-l ~/.emacs.d/lisp/batch-helper \
 		-eval "(would-like '`basename $< -rc.el`)" \
 		-f batch-byte-compile $< \
 		2>&1 | grep -v "^Loading" || true
