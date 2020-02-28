@@ -46,15 +46,15 @@
    (list (concat "^" my-kernel-dir "/") make-j "linux")
    (list "^/usr/src/[^/]*linux[^/]*/" make-j "linux")
    ;; emacs needs gnu
-   (list ".*/s?x?emacs[^/]*/src/" make-j "gnu")
-   (list ".*/s?x?emacs[^/]*/" make-j "gnu")
+   '(".*/s?x?emacs[^/]*/src/" "-j" "gnu")
+   '(".*/s?x?emacs[^/]*/" "-j" "gnu")
    ;; zedit
-   (list ".*/zedit/buff/" "-j" "linux")
-   (list ".*/zedit/" "-j" "linux")
+   '(".*/zedit/buff/" "-j" "linux")
+   '(".*/zedit/" "-j" "linux")
    ;; Busybox
-   (list ".*/busybox/" make-j)
+   '(".*/busybox/" "-j")
    ;; gdb
-   (list "^.*/gdb-[0-9.]+/" nil 'gdb-func)
+   '("^.*/gdb-[0-9.]+/" nil 'gdb-func)
    )
   "A list of directory matches used by `my-compile-command' to set
 the compile command.
