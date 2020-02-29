@@ -4,7 +4,6 @@
 (require 'cc-mode)
 (require 'my-tags)
 (require 'git-diff)
-(require 'kloc)
 (require 'cl-extra)
 
 (defun my-tools-fname (str fname)
@@ -33,7 +32,6 @@
 	(my-tools-fname "Tag file:" "TAGS")))
     (my-tools-fname "My tag dir:" my-tags-dir)
     (my-tools-fname "My tag file:" my-tags-file)
-    (my-tools-fname "Kloc:" (kloc-project-dir buffer-file-name))
 
     ;; verbose
     (when (and verbose (boundp 'my-compile-dir-list))
