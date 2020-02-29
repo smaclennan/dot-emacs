@@ -4,12 +4,15 @@
 (require 'cc-mode)
 (require 'my-tags)
 (require 'git-diff)
-(require 'cl-extra)
 
 (defun my-tools-fname (str fname)
   "Print a file, or directory, name."
   (when fname
-    (princ (format "%-13s %s\n" str (abbreviate-file-name fname)))))
+    (princ (format "%-22s %s\n" str (abbreviate-file-name fname)))))
+
+(defvar my-tools-hooks nil
+  "Hooks to call after `my-tools-config'.
+Use princ + friends for output.")
 
 ;;;###autoload
 (defun my-tools-config (verbose)
@@ -19,11 +22,11 @@
     ;; Common
     (my-tools-fname "File name:" (buffer-file-name))
     (my-tools-fname "Git dir:" (git-dir nil t))
-    (princ (format "Compile:      %s\n" compile-command))
+    (princ (format "%-22s %s\n" "Compile:" compile-command))
 
     ;; C-ish files
     (when c-buffer-is-cc-mode
-      (princ (format "C Style:      %s %s %d\n" c-indentation-style
+      (princ (format "%-22s %s %s %d\n" "C Style:" c-indentation-style
 		     (if indent-tabs-mode "tabs" "spaces") tab-width)))
 
     ;; optional files
@@ -32,6 +35,8 @@
 	(my-tools-fname "Tag file:" "TAGS")))
     (my-tools-fname "My tag dir:" my-tags-dir)
     (my-tools-fname "My tag file:" my-tags-file)
+
+    (run-hooks 'my-tools-hooks)
 
     ;; verbose
     (when (and verbose (boundp 'my-compile-dir-list))
