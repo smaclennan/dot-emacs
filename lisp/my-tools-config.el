@@ -4,7 +4,6 @@
 (require 'cc-mode)
 (require 'my-tags)
 (require 'git-diff)
-(require 'cl-extra)
 
 (defun my-tools-fname (str fname)
   "Print a file, or directory, name."
