@@ -4,6 +4,9 @@
 # change Exec=emacs to Exec=2emacs
 # Edit ~/.local/share/applications/mimeapps.list
 
+do_create=0
+[ "$1" = "-c" ] && { do_create=1; shift; }
+
 [ -n "$1" ] || { echo "2emacs what?"; exit 1; }
 
 FILE=$1
@@ -21,6 +24,11 @@ if [ -n "$N" -a -z "`echo $N | sed 's/[0-9]*//'`" ]; then
     ARG="+$N"
 else
     unset ARG
+fi
+
+if [ ! -f $FNAME -a $do_create -eq 0 ]; then
+    echo "$FNAME does not exist and -c not the first arg"
+    exit 1
 fi
 
 # Test /tmp/emacs$UID first since you might be running an older Emacs but
