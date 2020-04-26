@@ -160,3 +160,26 @@ package installed."
   (interactive)
   (setq case-fold-search (not case-fold-search))
   (message "Case sensitive search %s." (if case-fold-search "off" "on")))
+
+;;;###autoload
+(defun time-diff (start &optional end)
+  "Diff two time strings and print the result.
+If END is nil, or an empty string, then the current time is used.
+Hint: The output from the Unix date command works."
+  (interactive "sStart: \nsEnd: ")
+  (when (stringp end)
+    (if (equal end "")
+	(setq end nil)
+    (setq end (date-to-time end))))
+  (let ((diff (time-subtract end (date-to-time start)))
+	hours days weeks)
+    (when (listp diff)
+      (setq diff (+ (lsh (car diff) 16) (cadr diff))))
+    (setq hours (/ diff 3600))
+    (setq days (/ hours 24))
+    (setq weeks (/ days 7))
+    (if (> weeks 1)
+	(message "%d weeks %d days %d hours" weeks (% days 7) (% hours 24))
+      (if (> days 1)
+	  (message "%d days %d hours" days (% hours 24))
+	(message "%d hours" hours)))))
