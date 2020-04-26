@@ -21,7 +21,8 @@
 	  (text-mode))))))
 (add-hook 'find-file-hook 'check-for-commit t)
 
-(add-to-list 'auto-mode-alist '("\\.md\\'" . text-mode) t)
+;; SAM (add-to-list 'auto-mode-alist '("\\.md\\'" . text-mode) t)
+(add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode) t)
 
 ;; There are going to be large tag files
 (setq large-file-warning-threshold #x4800000) ;; 72M
