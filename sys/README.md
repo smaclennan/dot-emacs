@@ -1,14 +1,7 @@
 This directory is an attempt to put system and Emacs version specific
 code in one place.
 
-Currently we support:
-
-OS      | system-type   | sys file
---------|---------------|-----------------
-Linux   | gnu/linux     | linux.el
-BSD     | berkeley-unix | berkeley-unix.el
-QNX     | qnxnto        | qnxnto.el
-Windows | windows-nt    | windows-nt.el
+Currently we support: Linux, QNX, BSD, and Windows.
 
 ## Basic variables
 
@@ -16,11 +9,9 @@ Variables set by all systems.
 
 * sys-arch
   * always set
-
 * sys-mem
   * filled in by sys-mem()
   * filled in by sys-nproc() on QNX
-
 * sys-nproc
   * filled in by sys-nproc()
   * filled in by sys-mem() on QNX
@@ -31,22 +22,17 @@ Functions defined by all systems.
 
 * sys-os
   * os (distro for Linux) and release
-
 * sys-nproc
   * number of cpus (Linux definition of cpu)
-
 * sys-mem
   * total, free, and available memory
   * only Linux provides available memory
-
 * sys-cpuinfo
   * see below for output
   * BSD, QNX require cpuid installed
-
 * sys-cpuflags
   * cpu flags
   * BSD, QNX, Windows require cpuid installed
-
 * sys-is-guest
   * is the system a guest or virtual machine
   * does not work for arm Linux
