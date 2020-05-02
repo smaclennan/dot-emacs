@@ -5,3 +5,4 @@ This directory contains files I wrote... except:
   
 * ws-butler
   * https://github.com/lewang/ws-butler
+  * melpa
