@@ -6,11 +6,14 @@ A brief rundown:
 
 ## /
 
-* init.el Should need no introduction.
-* early-init.el Introduced in 27.1. Speeds up init times.
-* custom.el (optional) Used by Emacs customize.
+* init.el
+  * Should need no introduction.
+* early-init.el
+  * Introduced in 27.1. Speeds up init times.
+* custom.el (optional)
+  * Used by Emacs customize.
 * user-init.el (optional)
-    This is used to tweak per machine settings such as email address
+  * This is used to tweak per machine settings such as email address
     and laptop-mode.
 
 ## lisp/
