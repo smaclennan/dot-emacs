@@ -1,8 +1,12 @@
 ;; Very Linux specific
 ;; Hint to self: Self, you cannot scp /proc/modules.
 
-(defvar module-whitelist nil
-  "*Vetted modules to whitelist.
+(defvar module-whitelist '("usb_storage" "uas" "mmc_block"
+			   "psnap" "p8022" ;; bridge
+			   "psmouse"
+			   "isofs" "qnx6"
+			   )
+  "*Vetted modules to whitelist. If this is the first run, you might want to nil this out.
 NOTE: They must have underscores (_) not dashes (-)!")
 
 (defvar lsmod-file nil
@@ -38,13 +42,25 @@ to /proc/modules.")
 	(unless (eq lines (length llist)) (error "LSMOD MISMATCH: lines %d list %d" lines (length llist)))
 	llist))))
 
+(defun dir-mods (release dir)
+  (setq dir (concat "/lib/modules/" release "/kernel/" dir))
+  (mapcar (lambda (file) (file-name-sans-extension file))
+	  (directory-files dir nil ".*\\.ko")))
+
 ;;;###autoload
 (defun unused-drivers (release)
+  "List all the drivers that are installed, but not used.
+Prompts for the kernel release to test against.
+
+You can set `module-whitelist' for a list of modules you want,
+but may not have been installed. For example dynamic USB
+devices."
   (interactive (list
 		(let ((rel (uname "-r")))
 		  (read-string (format "Release [%s]: " rel) nil nil rel))))
   (let ((used-list (build-lsmod-list))
 	(driver-list (build-drivers-list release))
+	(kdir (concat "/lib/modules/" release "/kernel/"))
 	dcount ucount fcount)
     (setq dcount (length driver-list) ucount (length used-list))
     (dolist (mod used-list)
@@ -57,6 +73,18 @@ to /proc/modules.")
     ;; Remove the whitelisted modules - do this after counts
     (dolist (mod module-whitelist)
       (setq driver-list (delete mod driver-list)))
+
+    (when module-whitelist
+      ;; Remove usb serial drivers
+      (dolist (mod (dir-mods release "drivers/usb/serial"))
+	(setq driver-list (delete mod driver-list)))
+
+      ;; Remove iptables
+      (dolist (mod (dir-mods release "net/netfilter"))
+	(setq driver-list (delete mod driver-list)))
+      (dolist (mod (dir-mods release "net/ipv4/netfilter"))
+	(setq driver-list (delete mod driver-list)))
+      )
 
     (with-current-buffer (get-buffer-create "*driver list*")
       (erase-buffer)
