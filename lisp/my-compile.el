@@ -74,16 +74,18 @@ Only the first match is used so order is important.")
   "Set the compile command for the current file.
 Go through the `my-compile-dir-list' looking for a match."
   (interactive)
-  (let (dir arg func-or-style matched)
+  ;; Every once in a blue moon... Emacs gives us ~/
+  (let ((match-dir (expand-file-name default-directory))
+	dir arg func-or-style matched)
     (cl-loop for list in my-compile-dir-list until dir do
-      (when (string-match (car list) default-directory)
-	(setq dir (match-string 0 default-directory))
+      (when (string-match (car list) match-dir)
+	(setq dir (match-string 0 match-dir))
 	(setq matched list)))
 
     (when dir
       (setq arg (nth 1 matched)
 	    func-or-style (nth 2 matched))
-      (when (or arg (not (equal dir default-directory)))
+      (when (or arg (not (equal dir match-dir)))
 	(setq-local compile-command (concat "make -C " dir " " arg)))
       (cond
        ((stringp func-or-style)
