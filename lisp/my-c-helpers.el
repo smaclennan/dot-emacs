@@ -236,4 +236,23 @@ spaces. Biased towards tabs."
 		  (if (and (> spaces 0) (> tabs 0)) " (mixed)")))))
     (>= tabs spaces)))
 
+(defvar ifdef-markers '("#if 0 // SAM\n" "#endif\n")
+  "List of strings for start and end of ifdef markers.")
+
+;;;###autoload
+(defun ifdef-region (start end)
+  (interactive "r")
+  ;; Convert end offset to marker
+  (setq end (copy-marker end))
+
+  (goto-char start)
+  (beginning-of-line)
+  (insert (car ifdef-markers))
+
+  (goto-char end)
+  (unless (bolp)
+    (end-of-line)
+    (forward-char 1))
+  (insert (cadr ifdef-markers)))
+
 (provide 'my-c-helpers)
