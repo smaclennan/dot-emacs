@@ -48,9 +48,6 @@
    ;; emacs needs gnu
    '(".*/s?x?emacs[^/]*/src/" "-j" "gnu")
    '(".*/s?x?emacs[^/]*/" "-j" "gnu")
-   ;; zedit
-   '(".*/zedit/buff/" "-j" "linux")
-   '(".*/zedit/" "-j" "linux")
    ;; Busybox
    '(".*/busybox/" "-j")
    ;; gdb
