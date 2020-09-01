@@ -28,8 +28,9 @@
 		  (setq envs (delq env envs)))
 	      (source-setenv "New" var val val))))))
     (dolist (rm envs)
-      (unless (member (car rm) source-exclude-list)
-	(source-setenv "Remove" (car rm) (cadr rm) nil))))
+      (let ((var (car rm)))
+	(unless (member var source-exclude-list)
+	  (source-setenv "Remove" var var nil)))))
   (message "Sourcing %s...done." filename))
 
 (provide 'source)
