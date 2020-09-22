@@ -212,10 +212,10 @@ Default FLAGS value is read only."
 With a prefix-arg displays more verbose output (actual counts),
 else just a simple tabs or spaces with a mixed hint.
 
-Non-interactively returns t if using more tabs then
-spaces. Biased towards tabs."
+Non-interactively returns t if using more tabs then spaces. If
+tabs == spaces (including empty files) returns `ident-tabs-mode'."
   (interactive "P")
-  (let ((spaces 0) (tabs 0) (total 0))
+  (let ((spaces 0) (tabs 0) (total 0) use-tabs)
     (save-excursion
       (goto-char (point-min))
       (while (not (eobp))
@@ -227,14 +227,19 @@ spaces. Biased towards tabs."
 	  (if (eq (char-after) ?\t)
 	      (setq tabs (1+ tabs))))
 	(forward-line)))
+    (setq use-tabs (if (> tabs spaces)
+		       t
+		     (if (= tabs spaces)
+			 indent-tabs-mode
+		       nil)))
     (when (my-interactive-p)
       (if verbose
 	  (message "total %d spaces %d tabs %d = %.0f%% tabs"
 		   total spaces tabs (/ (* tabs 100.0) (+ spaces tabs)))
 	(message (concat
-		  (if (>= tabs spaces) "tabs" "spaces")
+		  (if use-tabs "tabs" "spaces")
 		  (if (and (> spaces 0) (> tabs 0)) " (mixed)")))))
-    (>= tabs spaces)))
+    use-tabs))
 
 (defvar ifdef-markers '("#if 0 // SAM\n" "#endif\n")
   "List of strings for start and end of ifdef markers.")
