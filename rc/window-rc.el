@@ -5,8 +5,6 @@
 			    (:eval (abbreviate-file-name buffer-file-name))
 			    "%b")))
 
-(set-scroll-bar-mode 'right)
-
 (setq use-dialog-box nil)
 (menu-bar-mode 0)
 (delete-selection-mode)
@@ -20,6 +18,8 @@
 
 (if window-system
     (progn
+      (set-scroll-bar-mode 'right)
+
       (tool-bar-mode 0)
       
       (global-set-key [(control insert)] 'clipboard-kill-ring-save)
