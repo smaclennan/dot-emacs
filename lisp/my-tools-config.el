@@ -29,12 +29,14 @@ Use princ + friends for output.")
       (princ (format "%-22s %s %s %d\n" "C Style:" c-indentation-style
 		     (if indent-tabs-mode "tabs" "spaces") tab-width)))
 
-    ;; optional files
-    (unless (my-tools-fname "Tag file:" tags-file-name)
-      (when (file-exists-p "TAGS")
-	(my-tools-fname "Tag file:" "TAGS")))
-    (my-tools-fname "My tag dir:" my-tags-dir)
-    (my-tools-fname "My tag file:" my-tags-file)
+    ;; tag files
+    (when tags-table-list
+      (princ (format "%-22s %S\n" "tags-table-list:" tags-table-list)))
+    (my-tools-fname "tags-file-name:" tags-file-name)
+    (when (file-exists-p "TAGS")
+      (my-tools-fname "TAGS:" (expand-file-name "TAGS")))
+    (my-tools-fname "my-tags-dir:" my-tags-dir)
+    (my-tools-fname "my-tags-file:" my-tags-file)
 
     (run-hooks 'my-tools-hooks)
 
