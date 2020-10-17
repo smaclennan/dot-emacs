@@ -39,10 +39,8 @@ Top level directories end in /, subdirs do not. Windows version."
 
 (defun build-all-loaddefs ()
   (interactive)
-  (let* ((dir (concat user-emacs-directory "lisp"))
-	 (generated-autoload-file
-	  (concat dir "/" "lisp" "-loaddefs.el")))
-    (update-directory-autoloads dir)))
+  (let ((dir (concat user-emacs-directory "lisp")))
+    (make-directory-autoloads dir (concat dir "/" "lisp" "-loaddefs.el"))))
 
 (defvar sys-nproc nil "Total number of processors.")
 

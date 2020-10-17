@@ -10,7 +10,7 @@
     ;; lisp dir
     (unless (file-exists-p generated-autoload-file)
       (message "Create %s..." generated-autoload-file)
-      (update-directory-autoloads dir))
+      (make-directory-autoloads dir generated-autoload-file))
 
     (add-to-list 'load-path dir t)
     (load generated-autoload-file t t)

@@ -66,3 +66,7 @@ definition."
 ;;;###autoload
 (defmacro setq-local (var val)
   `(set (make-variable-buffer-local ,var) ,val))
+
+(defun make-directory-autoloads (dir output-file)
+  (let ((generated-autoload-file output-file))
+    (update-directory-autoloads dir)))

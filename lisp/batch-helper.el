@@ -13,9 +13,8 @@
 
 (defun update-loadfile ()
   "This is meant to be called in batch mode. You must specify the loadfile."
-  (let ((generated-autoload-file
-	 (expand-file-name (car command-line-args-left))))
-    (update-directory-autoloads default-directory)))
+  (make-directory-autoloads default-directory
+			    (expand-file-name (car command-line-args-left))))
 
 (defun update-sys ()
   (let ((generated-autoload-file (expand-file-name "sys-loaddefs.el")))
