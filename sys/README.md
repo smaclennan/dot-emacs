@@ -1,11 +1,15 @@
+# System Specific Information
+
 This directory is an attempt to put system and Emacs version specific
 code in one place.
 
 Currently we support: Linux, QNX, BSD, and Windows.
 
-## Basic variables
+We try to support GNU Emacs >= 24. The basic strategy is to keep up to
+date with the latest version and backport changes to previous
+releases. I cannot guarantee that previous releases work fully.
 
-Variables set by all systems.
+## Basic variables
 
 * sys-arch
   * always set
@@ -17,8 +21,6 @@ Variables set by all systems.
   * filled in by sys-mem() on QNX
 
 ## Basic functions
-
-Functions defined by all systems.
 
 * sys-os
   * os (distro for Linux) and release
@@ -37,11 +39,9 @@ Functions defined by all systems.
   * is the system a guest or virtual machine
   * does not work for arm Linux
   * BSD, QNX, Windows require cpuid installed
-
-Functions defined by all but Windows:
-
 * sysctl
   * return sysctl arg as a number
+  * not supported on Windows
 
 ### sys-cpuinfo
 
