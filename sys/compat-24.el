@@ -1,3 +1,5 @@
+;; Uses 24: Ubuntu 16.04
+
 ;; Back before GNU Emacs went insane about common lisp
 (require 'cl)
 
