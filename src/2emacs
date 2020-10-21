@@ -15,8 +15,8 @@ do_create=0
 FNAME=`echo $1 | cut -d: -f1`
 N=`echo $1 | awk -F: '{print $2}'`
 
-if [ ! -f $FNAME -a $do_create -eq 0 ]; then
-    if [ `dirname $FNAME` = "." ]; then
+if [ ! -f "$FNAME" -a $do_create -eq 0 ]; then
+    if [ `dirname "$FNAME"` = "." ]; then
 	FNAME=`find -name $FNAME | head -n1`
 	[ -n "$FNAME" ] || { echo "no file found"; exit 1; }
     else
@@ -38,10 +38,10 @@ fi
 # dash and ksh do not have $UID
 [ -z "$UID" ] && UID=$(id -u)
 if [ -S /tmp/emacs$UID/server ]; then
-    emacsclient -n $ARG $FNAME
+    emacsclient -n $ARG "$FNAME"
 elif [ -S "$XDG_RUNTIME_DIR/emacs/server" ]; then
     # Added in 27.1
-    emacsclient -n $ARG $FNAME
+    emacsclient -n $ARG "$FNAME"
 else
-    emacs $ARG $FNAME &
+    emacs $ARG "$FNAME" &
 fi
