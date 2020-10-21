@@ -27,7 +27,7 @@
 (global-set-key [f11] nil) ;; I keep f11 free for temporary bindings
 (global-set-key [(shift f11)]	(lambda () (interactive)
 				  (switch-to-buffer-other-window "*Messages*")))
-(global-set-key [f12]		'revert-buffer)
+(global-set-key [f12]		'my-revert-buffer)
 (global-set-key [(shift f12)]	'where-am-i)
 
 (global-set-key "\M-."		'xref-find-definitions-prompt)
@@ -51,6 +51,10 @@
 
 ;; For some reason this doesn't have a key binding
 (global-set-key "\C-hz" 'apropos-variable)
+
+(defun my-revert-buffer ()
+  (interactive)
+  (revert-buffer t t))
 
 ;; Using defadvice for these functions breaks minibuffer history
 (defun my-previous-line (arg)
