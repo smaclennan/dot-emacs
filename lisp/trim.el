@@ -96,7 +96,14 @@ If the region is active, only trims the lines in the region."
   "Trim `#define' lines to isolate the `identifier'.
 If the region is active, only trims the lines in the region."
   (interactive "*")
-  (trim "\\(^[ \t]*#define[ \t]+\\)\\([^ \t(]*\\)\\(.*\\)" "\\2"))
+  (trim "^[ \t]*#define[ \t]+\\([^ \t(]*\\).*" "\\1"))
+
+;;;###autoload
+(defun trim-case ()
+  "Trim `case X:' lines to isolate the `identifier'.
+If the region is active, only trims the lines in the region."
+  (interactive "*")
+  (trim "^[ \t]*case[ \t]+\\([a-zA-Z0-9_]+\\).*" "\\1"))
 
 ;;;###autoload
 (defun trim-sh-comments ()
