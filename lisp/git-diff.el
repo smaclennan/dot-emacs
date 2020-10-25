@@ -2,12 +2,6 @@
 (require 'my-grep)
 (eval-when-compile (require 'ediff))
 
-(defun git-dir (&optional dir no-error)
-  "Find the base git directory. If DIR is nil, `default-directory' is used."
-  (setq dir (find-root-dir ".git" dir))
-  (or dir no-error (error "No git base."))
-  dir)
-
 (defun git-cat-doit (&optional rev)
   "Perform a git cat on the current buffer into a temporary buffer.
 Returns the name of the buffer. If REV is not set, default is HEAD."

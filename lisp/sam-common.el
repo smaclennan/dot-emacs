@@ -51,4 +51,7 @@ Starts at DIR (defaults to `default-directory') and goes up the path."
       ;; This removes the last directory
       (setq dir (file-name-directory (directory-file-name dir))))))
 
+;;;###autoload
+(defmacro git-dir () `(find-root-dir ".git"))
+
 (provide 'sam-common)

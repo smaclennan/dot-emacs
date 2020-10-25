@@ -3,8 +3,8 @@
 
 (require 'cc-mode)
 (require 'my-tags)
-(require 'git-diff)
 
+;;;###autoload
 (defun my-tools-fname (str fname)
   "Print a file, or directory, name."
   (when fname
@@ -21,7 +21,7 @@ Use princ + friends for output.")
   (with-output-to-temp-buffer "*my-config*"
     ;; Common
     (my-tools-fname "File name:" (buffer-file-name))
-    (my-tools-fname "Git dir:" (git-dir nil t))
+    (my-tools-fname "Git dir:" (git-dir))
     (princ (format "%-22s %s\n" "Compile:" compile-command))
 
     ;; C-ish files
@@ -45,3 +45,5 @@ Use princ + friends for output.")
       (princ "\nmy-compile-dir-list:\n")
       (dolist (dir my-compile-dir-list)
 	(princ (format "%S\n" dir))))))
+
+(provide 'my-tools-config)
