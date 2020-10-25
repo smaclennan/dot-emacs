@@ -2,7 +2,6 @@
 ;; it's own file.
 
 (require 'cc-mode)
-(require 'my-tags)
 
 ;;;###autoload
 (defun my-tools-fname (str fname)
@@ -35,8 +34,6 @@ Use princ + friends for output.")
     (my-tools-fname "tags-file-name:" tags-file-name)
     (when (file-exists-p "TAGS")
       (my-tools-fname "TAGS:" (expand-file-name "TAGS")))
-    (my-tools-fname "my-tags-dir:" my-tags-dir)
-    (my-tools-fname "my-tags-file:" my-tags-file)
 
     (run-hooks 'my-tools-hooks)
 

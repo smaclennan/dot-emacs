@@ -16,6 +16,7 @@
 ;; Boston, MA 02111-1307, USA.
 
 (require 'etags)
+(require 'my-tools-config)
 (provide 'my-tags)
 
 (defvar my-tags-prog "etags"
@@ -154,6 +155,10 @@ This variable is buffer local.")
       (error "Malformed `my-tags-file'"))
     (my-tags-tree tagdir)))
 
+(defun my-tags-vars ()
+  (my-tools-fname "my-tags-dir:" my-tags-dir)
+  (my-tools-fname "my-tags-file:" my-tags-file))
+
 ;;;###autoload
 (defun my-tags-update-helper (dir)
   "Helper function to setup for `my-tags-update'."
@@ -167,4 +172,5 @@ This variable is buffer local.")
     (message "Creating tags file...")
     (my-tags-tree dir))
 
+  (add-hook 'my-tools-hooks 'my-tags-vars)
   (add-hook 'after-save-hook 'my-tags-update))
