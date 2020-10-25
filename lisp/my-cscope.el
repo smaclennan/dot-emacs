@@ -39,7 +39,7 @@
 set, else start looking at `default-directory'."
   (let ((dir (if my-cscope-dir my-cscope-dir default-directory)))
     ;; Sanitize the directory
-    (setq dir (find-root-dir "cscope.out" dir))
+    (setq dir (locate-dominating-file dir "cscope.out"))
     (or dir no-error (error "No cscope.out file found."))
     dir))
 
