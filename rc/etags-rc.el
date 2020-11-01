@@ -1,2 +1,2 @@
 (setq tags-revert-without-query t)
-(setq tags-add-tables t) ;; Don't ask, just do
+(setq tags-add-tables nil) ;; Don't ask, just do
