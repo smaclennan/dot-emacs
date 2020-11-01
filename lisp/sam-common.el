@@ -40,10 +40,12 @@
 ;;;###autoload
 (defmacro find-root-dir (file-or-dir)
   "Find the directory that contains FILE-OR-DIR."
-  `(expand-file-name (locate-dominating-file default-directory ,file-or-dir)))
+  `(let ((dir (locate-dominating-file default-directory ,file-or-dir)))
+     (when dir (expand-file-name dir))))
 
 ;;;###autoload
 (defmacro git-dir ()
-  `(expand-file-name (locate-dominating-file default-directory ".git")))
+  `(let ((dir (locate-dominating-file default-directory ".git")))
+     (when dir (expand-file-name dir))))
 
 (provide 'sam-common)
