@@ -31,9 +31,9 @@ Use princ + friends for output.")
     ;; tag files
     (when tags-table-list
       (princ (format "%-22s %S\n" "tags-table-list:" tags-table-list)))
-    (my-tools-fname "tags-file-name:" tags-file-name)
-    (when (file-exists-p "TAGS")
-      (my-tools-fname "TAGS:" (expand-file-name "TAGS")))
+    (when tags-file-name
+      (princ (format "%-22s %s" "tags-file-name:" tags-file-name))
+      (princ (if (local-variable-p 'tags-file-name) " (local)\n" "\n")))
 
     (run-hooks 'my-tools-hooks)
 
