@@ -117,7 +117,7 @@ If the region is active, only trims the lines in the region."
   "Convert a DOS file to Unix format."
   (interactive "*")
   (set-buffer-file-coding-system 'raw-text-unix t)
-  (set-buffer-modified-p t))
+  (trim "\r"))
 
 ;;;###autoload
 (defun unix2dos ()
