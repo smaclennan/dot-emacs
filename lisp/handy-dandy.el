@@ -183,3 +183,16 @@ Hint: The output from the Unix date command works."
       (if (> days 1)
 	  (message "%d days %d hours" days (% hours 24))
 	(message "%d hours" hours)))))
+
+;; Actually first day WFH was Tuesday, but this makes the week calcs
+;; easier. And Monday was the day they announced we had to start
+;; working from home starting either Tuesday or Wednesday.
+;;;###autoload
+(defun covid-19 ()
+  (interactive)
+  (let* ((start (date-to-time "Mon Mar 16 09:30:00 EDT 2020"))
+	 (diff (float-time (time-subtract nil start)))
+	 (week (truncate (fceiling (/ diff 604800))))
+	 (day (truncate (fceiling (/ diff 86400)))))
+    (when (my-interactive-p) (message "week %d day %d" week day))
+    day))
