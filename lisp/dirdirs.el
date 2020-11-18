@@ -19,4 +19,13 @@ are ignored. If NOSORT is non-nil then the list is not sorted."
 	(setq dirlist (append dirlist (list (car subdir))))))
     dirlist))
 
+;;;###autoload
+(defun dirfiles (dir &optional match)
+  "Return a list of files, and symlinks, from a directory."
+  (let (list)
+    (dolist (file (directory-files-and-attributes dir nil match))
+      (unless (eq (cadr file) t)
+	(setq list (nconc list (list (car file))))))
+    list))
+
 (provide 'dirdirs)
