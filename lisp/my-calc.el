@@ -151,7 +151,7 @@ Supports the following operations:
 
 Numbers are as follows:
 	0N      is an octal (base 8) number
-	[-]0xN	is a hex (base 16) number
+	0xN	is a hex (base 16) number
 	[-]N.N	is a floating point number
 	[-]N	is an integer
 
