@@ -18,7 +18,8 @@
 
 (defun update-sys ()
   (let ((generated-autoload-file (expand-file-name "sys-loaddefs.el")))
-    (update-file-autoloads (concat sys-type ".el") t)))
+    (update-file-autoloads (concat sys-type ".el") t)
+    (update-file-autoloads "sys-common.el" t)))
 
 (defun would-like (pkg)
   "Helper for building rc files. Some modes do not have a provide."
