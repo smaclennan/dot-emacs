@@ -26,4 +26,4 @@
   (add-to-list 'auto-mode-alist '("\\.md\\'" . text-mode) t))
 
 ;; There are going to be large tag files
-(setq large-file-warning-threshold #x4800000) ;; 72M
+(setq large-file-warning-threshold #x5600000) ;; 86M
