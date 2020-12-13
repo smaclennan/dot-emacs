@@ -2,6 +2,12 @@
 (require 'my-grep)
 (eval-when-compile (require 'ediff))
 
+(defun git-cmd (cmd &rest args)
+  "Apply the git command CMD with ARGS and output to the current buffer.
+Error out if it fails."
+  (unless (eq (apply 'call-process "git" nil t nil cmd args) 0)
+    (error "git %s failed" cmd)))
+
 (defun git-cat-doit (&optional rev)
   "Perform a git cat on the current buffer into a temporary buffer.
 Returns the name of the buffer. If REV is not set, default is HEAD."
@@ -11,7 +17,7 @@ Returns the name of the buffer. If REV is not set, default is HEAD."
 	 (bufname (concat "*git-" (file-name-nondirectory path) "*")))
     (with-current-buffer (get-buffer-create bufname)
       (erase-buffer)
-      (call-process "git" nil t nil "show" catname)
+      (git-cmd "show" catname)
       (set-buffer-modified-p nil))
     bufname))
 
@@ -43,8 +49,9 @@ use 'master'. Otherwise defaults to HEAD."
 ;;;###autoload
 (defun git-status ()
   (interactive)
-  (let ((buf (get-buffer-create "*git status*")))
-    (call-process "git" nil buf nil "status")))
+  (with-current-buffer (get-buffer-create "*git status*")
+    (erase-buffer)
+    (git-cmd "status")))
 
 ;;;------ git grep
 
