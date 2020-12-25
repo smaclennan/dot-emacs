@@ -14,7 +14,7 @@ this to nil will create unique buffers ala `git-ediff'.")
 
 (define-minor-mode smerge-git-mode
   "Minor mode for smerge git buffer."
-  nil nil
+  nil " git-smerge"
   '(([mouse-1]	. smerge-git-diff)
     ([mouse-2]	. smerge-git-diff)
     ("\C-m"	. smerge-git-diff)
@@ -53,7 +53,7 @@ this to nil will create unique buffers ala `git-ediff'.")
       (dolist (path new)
 	(setq start (point))
 	(insert path)
-	(setq extent (smerge-make-extent start (point) 'smerge-only1-face))
+	(setq extent (smerge-git-make-extent start (point) 'smerge-only1-face))
 	(insert "\n")
 	)
 
@@ -62,7 +62,7 @@ this to nil will create unique buffers ala `git-ediff'.")
 	(move-to-column 20 t)
 	(setq start (point))
 	(insert path)
-	(setq extent (smerge-make-extent start (point) 'smerge-diff-face))
+	(setq extent (smerge-git-make-extent start (point) 'smerge-diff-face))
 	(insert "\n")
 	)
 
@@ -72,7 +72,7 @@ this to nil will create unique buffers ala `git-ediff'.")
 	(move-to-column 40 t)
 	(setq start (point))
 	(insert path)
-	(setq extent (smerge-make-extent start (point) 'smerge-only2-face))
+	(setq extent (smerge-git-make-extent start (point) 'smerge-only2-face))
 	(insert "\n")
 	))
     (setq buffer-read-only t) ;; read-only
@@ -98,3 +98,6 @@ this to nil will create unique buffers ala `git-ediff'.")
 (defun smerge-git-reload ()
   (interactive)
   (smerge-git smerge-git-branch))
+
+(defun smerge-git-make-extent (start end face)
+  (smerge-make-extent start end face smerge-git-mode-map))

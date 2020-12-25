@@ -99,7 +99,7 @@ regular expressions.")
 
 (define-minor-mode smerge-mode
   "Minor mode for smerge buffer."
-  nil nil
+  nil " smerge"
   '(([mouse-1]	. smerge-ediff-or-copy)
     ([mouse-2]	. smerge-ediff-or-copy)
     ("\C-m"	. smerge-ediff-or-copy)
@@ -348,11 +348,12 @@ Top level directories end in /, subdirs do not."
 	(overlay-put smerge-extent 'type 0))
       (setq smerge-extent nil))))
 
-(defun smerge-make-extent (start end face)
+(defun smerge-make-extent (start end face &optional keymap)
+  (unless keymap (setq keymap smerge-mode-map))
   (let ((extent (make-overlay start end)))
     (overlay-put extent 'face face)
     (overlay-put extent 'mouse-face 'highlight)
-    (overlay-put extent 'keymap smerge-mode-map)
+    (overlay-put extent 'keymap keymap)
     extent))
 
 (provide 'smerge)
