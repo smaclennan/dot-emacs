@@ -63,7 +63,8 @@
                 )
               (goto-char (point-min))
 
-              (let ((choice (read-from-minibuffer "choose: " nil custom-map t nil)))
+	      ;; SAM added space to scroll comment
+              (let ((choice (read-from-minibuffer "choose (space to scroll): " nil custom-map t nil)))
                 (and (numberp choice)
                      (< choice count)
                      (progn
