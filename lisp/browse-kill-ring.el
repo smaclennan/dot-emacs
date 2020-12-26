@@ -247,9 +247,10 @@ call `browse-kill-ring' again.")
          (pt (cdr data)))
     (browse-kill-ring-do-insert buf pt t)))
 
-(if (fboundp 'fit-window-to-buffer)
-    (defalias 'browse-kill-ring-fit-window 'fit-window-to-buffer)
-  (defun browse-kill-ring-fit-window (window max-height min-height)
+(defun browse-kill-ring-fit-window (window max-height min-height)
+  (if (fboundp 'fit-window-to-buffer)
+      ;; Added 24.3
+      (fit-window-to-buffer window max-height min-height)
     (setq min-height (or min-height window-min-height))
     (setq max-height (or max-height (- (frame-height) (window-height) 1)))
     (let* ((window-min-height min-height)
