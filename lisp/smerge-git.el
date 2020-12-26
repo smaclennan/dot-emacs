@@ -20,8 +20,7 @@ this to nil will create unique buffers ala `git-ediff'.")
     ("\C-m"	. smerge-git-diff)
     ("g"	. smerge-git-reload)
     ("r"	. smerge-git-reload)
-    ("n"	. smerge-next)
-    ("p"	. smerge-prev)))
+    ("n"	. smerge-git-next)))
 
 ;;;###autoload
 (defun smerge-git (branch)
@@ -107,6 +106,11 @@ this to nil will create unique buffers ala `git-ediff'.")
 	(message "New file"))
        ((eq type 2)
 	(message "File deleted"))))))
+
+(defun smerge-git-next ()
+  (interactive)
+  (forward-line 1)
+  (smerge-git-diff))
 
 (defun smerge-git-reload ()
   (interactive)
