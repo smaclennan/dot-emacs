@@ -106,7 +106,7 @@ regular expressions.")
     ("g"	. smerge-reload)
     ("r"	. smerge-reload)
     ("n"	. smerge-next)
-    ("p"	. smerge-prev)))
+    ([f4]	. smerge-next)))
 
 ;; For debugging
 (defvar smerge-raw-diff-output nil
@@ -307,6 +307,12 @@ Top level directories end in /, subdirs do not."
 	   (smerge-copy type))
 	  ((eq type 3) (smerge-ediff extent))
 	  (t (beep)))))
+
+(defun smerge-next ()
+  "Move to next diff line."
+  (interactive)
+  (forward-line 1)
+  (smerge-ediff-or-copy))
 
 (defun smerge-ediff (&optional extent)
   "Ediff the two files."
