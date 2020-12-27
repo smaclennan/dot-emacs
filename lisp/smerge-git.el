@@ -16,11 +16,9 @@ this to nil will create unique buffers ala `git-ediff'.")
   "Minor mode for smerge git buffer."
   nil " git-smerge"
   '(([mouse-1]	. smerge-git-diff)
-    ([mouse-2]	. smerge-git-diff)
     ("\C-m"	. smerge-git-diff)
-    ("g"	. smerge-git-reload)
-    ("r"	. smerge-git-reload)
-    ("n"	. smerge-git-next)))
+    ("n"	. smerge-git-next)
+    ([f4]	. smerge-git-next)))
 
 ;;;###autoload
 (defun smerge-git (branch)
@@ -108,13 +106,10 @@ this to nil will create unique buffers ala `git-ediff'.")
 	(message "File deleted"))))))
 
 (defun smerge-git-next ()
+  "Move to next file or diff."
   (interactive)
   (forward-line 1)
   (smerge-git-diff))
-
-(defun smerge-git-reload ()
-  (interactive)
-  (smerge-git smerge-git-branch))
 
 (defun smerge-git-make-extent (start end face)
   (smerge-make-extent start end face smerge-git-mode-map))
