@@ -15,6 +15,8 @@ A brief rundown:
 * user-init.el (optional)
   * This is used to tweak per machine settings such as email address
     and laptop-mode.
+* ~/work/emacs/init.el (optional)
+  * This is for work related setup.
 
 ## lisp/
 
