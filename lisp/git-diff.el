@@ -2,6 +2,7 @@
 (require 'my-grep)
 (eval-when-compile (require 'ediff))
 
+;;;autoload
 (defun git-cmd (cmd &rest args)
   "Apply the git command CMD with ARGS and output to the current buffer.
 Error out if it fails."
