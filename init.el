@@ -20,6 +20,9 @@
 ;; `after-init-hook' if you need to clean something up at the end.
 (load (concat user-emacs-directory "user-init") t)
 
+;; Sighhh... I have to work
+(load "~/work/emacs/init" t)
+
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file t)
 
