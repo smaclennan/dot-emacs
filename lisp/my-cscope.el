@@ -89,9 +89,10 @@ The cscope command run is:
 	  (prompt (nth type mcs-prompts)))
       (setq sym (read-string (concat prompt " [" word "]: ") nil nil word))))
 
-  (let ((count 0) tagname)
+  (let ((count 0) tagname (args my-cscope-args))
     (with-current-buffer (get-buffer-create "*cscope*")
       (setq default-directory (mcs-dir)) ;; must be setq
+      (setq-local my-cscope-args args)
       (setq tagname (concat default-directory "cscope.tags"))
       (erase-buffer)
 
@@ -100,17 +101,14 @@ The cscope command run is:
       (goto-char (point-min))
       (while (re-search-forward mcs-regexp nil t)
 	(setq count (1+ count))
-	(replace-match (concat (match-string 1) ":" (match-string 3) ":1 " (match-string 2))))
+	(replace-match (concat (match-string 1) ":" (match-string 3) ": " (match-string 2))))
 
       ;; I tried to use compilation but it only worked 90% of the time.
       (compilation-mode "cscope")
       (setq buffer-read-only nil)
-      (compilation--parse-region (point-min) (point-max))
-
       (goto-char (point-min)))
 
     (xref-push-marker-stack)
-    (display-buffer "*cscope*" '(nil (window-height . 16)))
     (when (eq count 1) (first-error))))
 
 ;;;###autoload

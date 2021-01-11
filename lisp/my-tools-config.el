@@ -35,6 +35,11 @@ Use princ + friends for output.")
       (princ (format "%-22s %s" "tags-file-name:" tags-file-name))
       (princ (if (local-variable-p 'tags-file-name) " (local)\n" "\n")))
 
+    ;; cscope
+    (let ((mcs-dir (mcs-dir)))
+      (my-tools-fname "cscope dir:" mcs-dir)
+      (princ (format "%-22s %S\n" "cscope args:" my-cscope-args)))
+
     (run-hooks 'my-tools-hooks)
 
     ;; verbose
