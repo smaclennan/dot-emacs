@@ -57,15 +57,6 @@ set, else start looking at `default-directory'."
   "The prompts for the different cscope commands. This must match
 the order in cscope.")
 
-(defun my-cscope-to-buffer (sym type)
-  "Low level function to call cscope of TYPE (0-9 inclusive) on
-SYM into current buffer."
-  (let ((default-directory (mcs-dir))
-	(cmd (concat my-cscope-prog " " my-cscope-args " -L -"
-		     (number-to-string type) sym)))
-    (insert cmd "\n\n")
-    (call-process-shell-command cmd nil t)))
-
 ;;----------------------------------------------------------------
 ;;;###autoload
 (defun my-cscope (type &optional sym)
@@ -79,7 +70,7 @@ symbol. If there are multiple results, you can select the result
 or use `next-error' to go through the results.
 
 The cscope command run is:
-`my-cscope-prog' `my-cscope-args' -L -<TYPE><SYM>."
+`my-cscope-prog' `my-cscope-args' -L -<TYPE><SYM>"
   (interactive "p")
   (when (or (< type 0) (> type 9))
     (error "invalid type %d: must be 0 to 9 inclusive." type))
@@ -89,27 +80,33 @@ The cscope command run is:
 	  (prompt (nth type mcs-prompts)))
       (setq sym (read-string (concat prompt " [" word "]: ") nil nil word))))
 
-  (let ((count 0) tagname (args my-cscope-args))
+  (let ((count 0)
+	(args my-cscope-args)
+	(cmd (concat my-cscope-prog " " my-cscope-args " -L -"
+		     (number-to-string type) sym)))
     (with-current-buffer (get-buffer-create "*cscope*")
+      (erase-buffer)
       (setq default-directory (mcs-dir)) ;; must be setq
       (setq-local my-cscope-args args)
-      (setq tagname (concat default-directory "cscope.tags"))
-      (erase-buffer)
 
-      (my-cscope-to-buffer sym type)
+      ;; Call cscope
+      (insert cmd "\n\n")
+      (call-process-shell-command cmd nil t)
+
       ;; Fixup the buffer to look how compilation wants it
       (goto-char (point-min))
       (while (re-search-forward mcs-regexp nil t)
 	(setq count (1+ count))
 	(replace-match (concat (match-string 1) ":" (match-string 3) ": " (match-string 2))))
 
-      ;; I tried to use compilation but it only worked 90% of the time.
       (compilation-mode "cscope")
       (setq buffer-read-only nil)
       (goto-char (point-min)))
 
     (xref-push-marker-stack)
-    (when (eq count 1) (first-error))))
+    (if (eq count 1)
+	(first-error)
+      (display-buffer "*cscope*" '(nil (window-height . 16))))))
 
 ;;;###autoload
 (defun my-cscope-at-point (type)
