@@ -2,6 +2,7 @@
 ;; it's own file.
 
 (require 'cc-mode)
+(require 'my-cscope)
 
 ;;;###autoload
 (defun my-tools-fname (str fname)

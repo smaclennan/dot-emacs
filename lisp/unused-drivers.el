@@ -6,7 +6,8 @@
 			   "psmouse"
 			   "isofs" "qnx6"
 			   )
-  "*Vetted modules to whitelist. If this is the first run, you might want to nil this out.
+  "*Vetted modules to whitelist.
+If this is the first run, you might want to nil this out.
 NOTE: They must have underscores (_) not dashes (-)!")
 
 (defvar lsmod-file nil
