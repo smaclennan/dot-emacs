@@ -3,11 +3,11 @@
 This directory is an attempt to put system and Emacs version specific
 code in one place.
 
-Currently we support: Linux, QNX, BSD, and Windows.
+Currently supported: Linux, QNX, BSD, and Windows.
 
 We try to support GNU Emacs >= 24. The basic strategy is to keep up to
 date with the latest version and backport changes to previous
-releases. I cannot guarantee that previous releases work fully.
+releases. We cannot guarantee that previous releases work fully.
 
 ## Basic variables
 
