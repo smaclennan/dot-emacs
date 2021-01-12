@@ -104,9 +104,8 @@ The cscope command run is:
       (goto-char (point-min)))
 
     (xref-push-marker-stack)
-    (if (eq count 1)
-	(first-error)
-      (display-buffer "*cscope*" '(nil (window-height . 16))))))
+    (display-buffer "*cscope*" '(nil (window-height . 16)))
+    (if (eq count 1) (first-error))))
 
 ;;;###autoload
 (defun my-cscope-at-point (type)
