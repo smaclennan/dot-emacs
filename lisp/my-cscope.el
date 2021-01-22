@@ -123,4 +123,11 @@ The cscope command run is:
       (easy-menu-define my-cscope-menu nil "My Cscope Menu" menu)
       (easy-menu-add-item nil '("C") my-cscope-menu ""))))
 
+(defun cscope-tools-hook ()
+  (let ((mcs-dir (mcs-dir t)))
+    (when mcs-dir
+      (my-tools-fname "cscope dir:" mcs-dir)
+      (princ (format "%-22s %S\n" "cscope args:" my-cscope-args)))))
+(add-hook 'my-tools-hooks 'cscope-tools-hook)
+
 (provide 'my-cscope)

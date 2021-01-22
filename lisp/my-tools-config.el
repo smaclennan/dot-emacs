@@ -1,18 +1,14 @@
-;; Because this spans multiple packages... it makes sense to put it in
-;; it's own file.
-
 (require 'cc-mode)
-(require 'my-cscope)
+
+(defvar my-tools-hooks nil
+  "Hooks to call during `my-tools-config'.
+Use princ + friends for output.")
 
 ;;;###autoload
 (defun my-tools-fname (str fname)
   "Print a file, or directory, name."
   (when fname
     (princ (format "%-22s %s\n" str (abbreviate-file-name fname)))))
-
-(defvar my-tools-hooks nil
-  "Hooks to call after `my-tools-config'.
-Use princ + friends for output.")
 
 ;;;###autoload
 (defun my-tools-config (verbose)
@@ -35,11 +31,6 @@ Use princ + friends for output.")
     (when tags-file-name
       (princ (format "%-22s %s" "tags-file-name:" tags-file-name))
       (princ (if (local-variable-p 'tags-file-name) " (local)\n" "\n")))
-
-    ;; cscope
-    (let ((mcs-dir (mcs-dir)))
-      (my-tools-fname "cscope dir:" mcs-dir)
-      (princ (format "%-22s %S\n" "cscope args:" my-cscope-args)))
 
     (run-hooks 'my-tools-hooks)
 
