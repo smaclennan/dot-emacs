@@ -33,6 +33,7 @@
 
 (require 'compile)
 (require 'etags)
+(require 'my-tools-config)
 
 (defun mcs-dir (&optional no-error)
   "Find the cscope.out file directory. Use `my-cscope-dir' if
