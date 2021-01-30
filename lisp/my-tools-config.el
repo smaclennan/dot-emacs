@@ -11,6 +11,11 @@ Use princ + friends for output.")
     (princ (format "%-22s %s\n" str (abbreviate-file-name fname)))))
 
 ;;;###autoload
+(defun my-tools-str (str val)
+  (when val
+    (princ (format "%-22s %S\n" str val))))
+
+;;;###autoload
 (defun my-tools-config (verbose)
   "Dump config information for the current buffer."
   (interactive "P")
@@ -18,7 +23,9 @@ Use princ + friends for output.")
     ;; Common
     (my-tools-fname "File name:" (buffer-file-name))
     (my-tools-fname "Git dir:" (git-dir))
-    (princ (format "%-22s %s\n" "Compile:" compile-command))
+    (unless (string= git-grep-pipe-cmd "cat")
+      (my-tools-str "git-grep-pipe-cmd:" git-grep-pipe-cmd))
+    (my-tools-str "Compile:" compile-command)
 
     ;; C-ish files
     (when c-buffer-is-cc-mode
@@ -26,11 +33,8 @@ Use princ + friends for output.")
 		     (if indent-tabs-mode "tabs" "spaces") tab-width)))
 
     ;; tag files
-    (when tags-table-list
-      (princ (format "%-22s %S\n" "tags-table-list:" tags-table-list)))
-    (when tags-file-name
-      (princ (format "%-22s %s" "tags-file-name:" tags-file-name))
-      (princ (if (local-variable-p 'tags-file-name) " (local)\n" "\n")))
+    (my-tools-str "tags-table-list:" tags-table-list)
+    (my-tools-str "tags-file-name:" tags-file-name)
 
     (run-hooks 'my-tools-hooks)
 
