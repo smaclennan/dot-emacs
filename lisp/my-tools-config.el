@@ -1,5 +1,7 @@
 (require 'cc-mode)
 
+(require 'git-diff)
+
 (defvar my-tools-hooks nil
   "Hooks to call during `my-tools-config'.
 Use princ + friends for output.")
