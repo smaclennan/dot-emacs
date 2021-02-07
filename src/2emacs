@@ -17,8 +17,14 @@ N=`echo $1 | awk -F: '{print $2}'`
 
 if [ ! -f "$FNAME" -a $do_create -eq 0 ]; then
     if [ `dirname "$FNAME"` = "." ]; then
-	FNAME=`find -name $FNAME | head -n1`
-	[ -n "$FNAME" ] || { echo "no file found"; exit 1; }
+	FNAME=`find -name $FNAME`
+	case `echo $FNAME | wc -w` in
+	    0) echo "no file found"; exit 1;;
+	    1) ;;
+	    *)
+		for f in $FNAME; do echo $f; done
+		exit 1;;
+	esac
     else
 	echo "File doesn't exist and -c not set"
 	exit 1
