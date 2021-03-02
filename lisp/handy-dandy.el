@@ -37,13 +37,17 @@ An ARG comments out the old line."
 	(insert comment-start line comment-end "\n")
       (insert line "\n"))))
 
+(defvar mine-not
+  (concat "/elpa/\\|/ws-butler.el\\|rcfiles.el\\|custom.el\\|"
+	  "-loaddefs\\|view-kill.el\\|fill-column-indicator.el"))
+
 (defun mine (&optional all)
   "Return a list of all my .el files.
 If ALL is non-nil, returns all .el files."
   (let ((files (directory-files-recursively user-emacs-directory ".*\\.el$")))
     (unless all
       (dolist (file files)
-	(when (string-match "/elpa/\\|/ws-butler.el\\|rcfiles.el\\|custom.el\\|-loaddefs\\|view-kill.el" file)
+	(when (string-match mine-not file)
 	  (setq files (delete file files)))))
     files))
 
