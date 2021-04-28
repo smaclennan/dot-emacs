@@ -95,3 +95,10 @@ the identifier."
   (interactive)
   (let ((current-prefix-arg t))
     (call-interactively 'xref-find-definitions)))
+
+(defun my-transpose-symbols (arg)
+  "Same as `transpose-words' but with symbols."
+  (interactive "*p")
+  (transpose-subr 'forward-symbol arg))
+
+(global-set-key "\M-t" 'my-transpose-symbols)
