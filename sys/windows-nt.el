@@ -11,7 +11,7 @@
 (setq my-grep-prog "findstr -n ")
 
 ;; Different excludes for windows
-(setq smerge-diff-excludes
+(setq my-smerge-diff-excludes
       '("*.obj" "*.lib" "*.dll" "*.sbr" ".svn" "*.scc"
 	"*.plg" "*.pdb" "*.dep" "*.ncb" "*.opt"
 	"*.log" "*.wrn" "*.err"
@@ -19,8 +19,8 @@
 	"objchk*" "objfre*"
 	"debug" "release" "Debug" "Release"))
 
-(eval-after-load "smerge"
-  `(defun smerge-fixup-filenames ()
+(eval-after-load "my-smerge"
+  `(defun my-smerge-fixup-filenames ()
      "Diff splits the `Only in' files into directory and filename.
 Top level directories end in /, subdirs do not. Windows version."
      (goto-char (point-min))
@@ -28,14 +28,14 @@ Top level directories end in /, subdirs do not. Windows version."
        (if (eq (string-to-char (match-string 1)) ?/)
 	   (replace-match "/") (replace-match "\\1/")))))
 
-(eval-after-load "smerge"
-  `(defun smerge-lists ()
+(eval-after-load "my-smerge"
+  `(defun my-smerge-lists ()
      "Create strings for only-in-1, only-in-2, both. Windows version."
-     (list (format "^Only in %s:? *\\(.*\\)$" (regexp-quote smerge-dir1))
-	   (format "^Only in %s:? *\\(.*\\)$" (regexp-quote smerge-dir2))
+     (list (format "^Only in %s:? *\\(.*\\)$" (regexp-quote my-smerge-dir1))
+	   (format "^Only in %s:? *\\(.*\\)$" (regexp-quote my-smerge-dir2))
 	   (format "^Files %s\\(.+\\) and %s.+ differ$"
-		   (regexp-quote smerge-dir1)
-		   (regexp-quote smerge-dir2)))))
+		   (regexp-quote my-smerge-dir1)
+		   (regexp-quote my-smerge-dir2)))))
 
 (defun build-all-loaddefs ()
   (interactive)

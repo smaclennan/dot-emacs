@@ -1,4 +1,4 @@
-;;; smerge.el --- SAM's Merge layer on top of ediff
+;;; my-smerge.el --- SAM's Merge layer on top of ediff
 
 ;; Copyright (C) 2002-2019 Sean MacLennan
 
@@ -26,12 +26,12 @@
 ;; the place. You spend too much time descending into directories with no
 ;; changes.
 ;;
-;; So I wrote smerge. Smerge handles finding all the changes between two
+;; So I wrote my-smerge. My-Smerge handles finding all the changes between two
 ;; directories. It then uses ediff to do the real work.
 ;;
 ;; 			      How it Works
 ;;
-;; You give smerge two directories to start with. It then calls `diff -r
+;; You give my-smerge two directories to start with. It then calls `diff -r
 ;; --brief' on the two directories. The output is post-processed into three
 ;; columns: only in directory 1, in both but different, only in directory
 ;; 2.
@@ -42,133 +42,133 @@
 
 (require 'ediff)
 
-(defvar smerge-diff-program ediff-diff-program
+(defvar my-smerge-diff-program ediff-diff-program
   "*Program to use to diff the directories. Must support --brief option.")
 
-(defvar smerge-diff-options "-w"
+(defvar my-smerge-diff-options "-w"
   "*Options used to compare directories. See `ediff-diff-options'.")
 
-(defvar smerge-ediff-options nil
+(defvar my-smerge-ediff-options nil
   "*Options used to compare files that differ.  Nil means use
 `ediff-diff-options'. You must call `ediff-set-actual-diff-options'
 after changing this.")
 
-(defvar smerge-diff-excludes '("*.o" "*.a" "*~" ".#*" ".svn"
+(defvar my-smerge-diff-excludes '("*.o" "*.a" "*~" ".#*" ".svn"
 	".git" "*.cmd" "*.lo" "*.ko" ".tmp_versions" "*.Plo"
 	"modules.order" "*.elc" "*.mod.c" "TAGS" "*.builtin")
   "*List of patterns of files and subdirectories to ignore.
-smerge builds a temprorary file (`smerge-exclude-file') based on this list
-and passes it to `smerge-diff-program' with the --exclude-from option.
+my-smerge builds a temprorary file (`my-smerge-exclude-file') based on this list
+and passes it to `my-smerge-diff-program' with the --exclude-from option.
 Note: These excludes are wildcard expressions as used by diff, not lisp
 regular expressions.")
 
-(defvar smerge-only-in-excludes nil
+(defvar my-smerge-only-in-excludes nil
   "*List of regular expressions to exclude from the only-in lists.")
 
-(defvar smerge-preserve-modes t
+(defvar my-smerge-preserve-modes t
   "*When copying files, preserve the mode of the destination file.")
 
-(defvar smerge-exclude-file "/tmp/smerge-excludes"
-  "*Temporary file to hold the `smerge-excludes'.")
+(defvar my-smerge-exclude-file "/tmp/my-smerge-excludes"
+  "*Temporary file to hold the `my-smerge-excludes'.")
 
-(defgroup smerge nil
-  "Faces for highlighting in smerge."
-  :prefix "smerge-"
+(defgroup my-smerge nil
+  "Faces for highlighting in my-smerge."
+  :prefix "my-smerge-"
   :group 'tools)
 
-(defface smerge-only1-face
+(defface my-smerge-only1-face
   '((((class color))  (:foreground "purple"))
     (t (:underline t)))
   "Face for files/directories only in directory 1.")
 
-(defface smerge-only2-face
+(defface my-smerge-only2-face
   '((((class color))  (:foreground "blue"))
     (t (:underline t)))
   "Face for files/directories only in directory 2.")
 
-(defface smerge-diff-face
+(defface my-smerge-diff-face
   '((((class color))  (:foreground "red"))
     (t (:bold t)))
   "Face for files that are different.")
 
-(defface smerge-merged-face
+(defface my-smerge-merged-face
   '((((class color))  (:foreground "black")))
   "Face for files that are merged.")
 
-(defvar smerge-buffer "*smerge-output*" "*Name of smerge output buffer.")
+(defvar my-smerge-buffer "*my-smerge-output*" "*Name of my-smerge output buffer.")
 
-(define-minor-mode smerge-mode
-  "Minor mode for smerge buffer."
-  nil " smerge"
-  '(([mouse-1]	. smerge-ediff-or-copy)
-    ([mouse-2]	. smerge-ediff-or-copy)
-    ("\C-m"	. smerge-ediff-or-copy)
-    ("g"	. smerge-reload)
-    ("r"	. smerge-reload)
-    ("n"	. smerge-next)
-    ([f4]	. smerge-next)))
+(define-minor-mode my-smerge-mode
+  "Minor mode for my-smerge buffer."
+  nil " my-smerge"
+  '(([mouse-1]	. my-smerge-ediff-or-copy)
+    ([mouse-2]	. my-smerge-ediff-or-copy)
+    ("\C-m"	. my-smerge-ediff-or-copy)
+    ("g"	. my-smerge-reload)
+    ("r"	. my-smerge-reload)
+    ("n"	. my-smerge-next)
+    ([f4]	. my-smerge-next)))
 
 ;; For debugging
-(defvar smerge-raw-diff-output nil
+(defvar my-smerge-raw-diff-output nil
   "*If non-nil, filename to write the raw diff output to. (dbg)")
 
 ;; Internals
-(defvar smerge-flags nil)
-(defvar smerge-dir1 nil)
-(defvar smerge-dir2 nil)
-(defvar smerge-file nil)
-(defvar smerge-extent nil)
+(defvar my-smerge-flags nil)
+(defvar my-smerge-dir1 nil)
+(defvar my-smerge-dir2 nil)
+(defvar my-smerge-file nil)
+(defvar my-smerge-extent nil)
 
 (defmacro overlay-at (pos) `(car (overlays-at ,pos)))
 
 ;;;###autoload
-(defun smerge (flags &optional dir1 dir2)
+(defun my-smerge (flags &optional dir1 dir2)
   "Merge two directories recursively."
   (interactive "p")
   (unless dir1
     (setq dir1 (read-directory-name "Directory 1: " nil nil t)))
   (unless dir2
     (setq dir2 (read-directory-name "Directory 2: " nil nil t)))
-  (switch-to-buffer smerge-buffer) ;; Yes I want to be in the output buffer
+  (switch-to-buffer my-smerge-buffer) ;; Yes I want to be in the output buffer
   (setq buffer-read-only nil) ;; writable
-  (setq smerge-mode t)
-  (setq smerge-flags flags)
-  (setq smerge-dir1 (file-name-as-directory (expand-file-name dir1)))
-  (setq smerge-dir2 (file-name-as-directory (expand-file-name dir2)))
+  (setq my-smerge-mode t)
+  (setq my-smerge-flags flags)
+  (setq my-smerge-dir1 (file-name-as-directory (expand-file-name dir1)))
+  (setq my-smerge-dir2 (file-name-as-directory (expand-file-name dir2)))
   (message "Please wait....")
-  (smerge-recursive-diff)
-  (smerge-fixup-filenames)
-  (smerge-post-process flags)
+  (my-smerge-recursive-diff)
+  (my-smerge-fixup-filenames)
+  (my-smerge-post-process flags)
   (setq buffer-read-only t) ;; read-only
   (message "Done.")
   )
 
-(defun smerge-reload ()
+(defun my-smerge-reload ()
   "Rediff two directories recursively."
   (interactive)
-  (smerge smerge-flags smerge-dir1 smerge-dir2))
+  (my-smerge my-smerge-flags my-smerge-dir1 my-smerge-dir2))
 
-(defun smerge-recursive-diff ()
+(defun my-smerge-recursive-diff ()
   (let (rc)
     (erase-buffer)
-    (dolist (exclude smerge-diff-excludes) (insert (concat exclude "\n")))
-    (write-region (point-min) (point-max) smerge-exclude-file nil 'no-message)
+    (dolist (exclude my-smerge-diff-excludes) (insert (concat exclude "\n")))
+    (write-region (point-min) (point-max) my-smerge-exclude-file nil 'no-message)
     (erase-buffer)
-    (let ((diff-options (concat "--exclude-from=" smerge-exclude-file
-			      " -r" " --brief " smerge-diff-options)))
+    (let ((diff-options (concat "--exclude-from=" my-smerge-exclude-file
+			      " -r" " --brief " my-smerge-diff-options)))
       ;; Since we are tightly coupled with ediff, use their program!
       ;; This erases the diff buffer automatically.
-      (ediff-exec-process smerge-diff-program
+      (ediff-exec-process my-smerge-diff-program
 			  (current-buffer)
 			  'synchronize
 			  diff-options
-			  smerge-dir1 smerge-dir2))
-    (delete-file smerge-exclude-file)
-    (when smerge-raw-diff-output
-      (write-region (point-min) (point-max) smerge-raw-diff-output))
+			  my-smerge-dir1 my-smerge-dir2))
+    (delete-file my-smerge-exclude-file)
+    (when my-smerge-raw-diff-output
+      (write-region (point-min) (point-max) my-smerge-raw-diff-output))
     (and (numberp rc) (eq rc 0))))
 
-(defun smerge-fixup-filenames ()
+(defun my-smerge-fixup-filenames ()
   "Diff splits the `Only in' files into directory and filename.
 Top level directories end in /, subdirs do not."
   (goto-char (point-min))
@@ -177,18 +177,18 @@ Top level directories end in /, subdirs do not."
 	(replace-match "\\1/" nil nil)
       (replace-match "\\1\\2/" nil nil))))
 
-(defun smerge-lists ()
+(defun my-smerge-lists ()
   "Create strings for only-in-1, only-in-2, both."
-  (list (format "^Only in %s\\(.*\\)$" smerge-dir1)
-	(format "^Only in %s\\(.*\\)$" smerge-dir2)
+  (list (format "^Only in %s\\(.*\\)$" my-smerge-dir1)
+	(format "^Only in %s\\(.*\\)$" my-smerge-dir2)
 	(format "^Files %s\\(.+\\) and %s.+ differ$"
-		(regexp-quote smerge-dir1)
-		(regexp-quote smerge-dir2))))
+		(regexp-quote my-smerge-dir1)
+		(regexp-quote my-smerge-dir2))))
 
-(defun smerge-post-process (flags)
-  (let ((list-strings (smerge-lists)) extent file start)
+(defun my-smerge-post-process (flags)
+  (let ((list-strings (my-smerge-lists)) extent file start)
     (goto-char (point-min))
-    (insert (format "Diff %s and %s\n\n" smerge-dir1 smerge-dir2))
+    (insert (format "Diff %s and %s\n\n" my-smerge-dir1 my-smerge-dir2))
     (setq start (point))
 
     (cond ((eq flags nil) t)
@@ -206,13 +206,13 @@ Top level directories end in /, subdirs do not."
     (while (re-search-forward (nth 0 list-strings) nil t)
       (setq file (match-string 1))
       (save-match-data
-	(cl-loop for exclude in smerge-only-in-excludes while file do
+	(cl-loop for exclude in my-smerge-only-in-excludes while file do
 	  (when (string-match exclude file)
 	    (setq file nil))))
       (if file
 	  (progn
 	    (setq extent
-		  (smerge-make-extent (match-beginning 0) (match-end 0) 'smerge-only1-face))
+		  (my-smerge-make-extent (match-beginning 0) (match-end 0) 'my-smerge-only1-face))
 	    (overlay-put extent 'type 2)
 	    (replace-match file))
 	(kill-whole-line))
@@ -223,13 +223,13 @@ Top level directories end in /, subdirs do not."
     (while (re-search-forward (nth 1 list-strings) nil t)
       (setq file (match-string 1))
       (save-match-data
-	(cl-loop for exclude in smerge-only-in-excludes while file do
+	(cl-loop for exclude in my-smerge-only-in-excludes while file do
 	  (when (string-match exclude file)
 	    (setq file nil))))
       (if file
 	  (progn
 	    (setq extent
-		  (smerge-make-extent (match-beginning 0) (match-end 0) 'smerge-only2-face))
+		  (my-smerge-make-extent (match-beginning 0) (match-end 0) 'my-smerge-only2-face))
 	    (overlay-put extent 'type 1)
 	    (replace-match (concat "\t\t\t\t" file)))
 	(kill-whole-line))
@@ -240,7 +240,7 @@ Top level directories end in /, subdirs do not."
     (while (re-search-forward (nth 2 list-strings) nil t)
       (setq file (match-string 1))
       (setq extent
-	    (smerge-make-extent (match-beginning 0) (match-end 0) 'smerge-diff-face))
+	    (my-smerge-make-extent (match-beginning 0) (match-end 0) 'my-smerge-diff-face))
       (overlay-put extent 'type 3)
       (replace-match (concat "\t\t" file))
       )
@@ -262,30 +262,30 @@ Top level directories end in /, subdirs do not."
       )
     overlay))
 
-(defadvice ediff-quit (after smerge activate)
-  (when (overlayp smerge-extent)
-    (overlay-put smerge-extent 'face 'smerge-merged-face)
+(defadvice ediff-quit (after my-smerge activate)
+  (when (overlayp my-smerge-extent)
+    (overlay-put my-smerge-extent 'face 'my-smerge-merged-face)
     (delete-other-windows)
-    (switch-to-buffer smerge-buffer)
-    (let ((next (next-overlay smerge-extent))
+    (switch-to-buffer my-smerge-buffer)
+    (let ((next (next-overlay my-smerge-extent))
 	  start)
       (when next
 	(setq start (overlay-start next))
 	(goto-char start)
 	(if (re-search-forward "\\w" nil t) (forward-char -1))
 	))
-    (setq smerge-extent nil) ;; done
+    (setq my-smerge-extent nil) ;; done
     ))
 
-(defun smerge-file (extent)
-  "Given a smerge extent, return the file name."
+(defun my-smerge-file (extent)
+  "Given a my-smerge extent, return the file name."
   (let ((file (buffer-substring
 	       (overlay-start extent)
 	       (overlay-end extent))))
     (string-match "\t*\\(.*\\)" file)
     (match-string 1 file)))
 
-(defun smerge-nearest-extent (pos)
+(defun my-smerge-nearest-extent (pos)
   "Find the extent nearest pos. Can return nil."
   (let ((extent (overlay-at pos)))
     (unless extent
@@ -295,26 +295,26 @@ Top level directories end in /, subdirs do not."
 	))
     extent))
 
-(defun smerge-ediff-or-copy ()
+(defun my-smerge-ediff-or-copy ()
   "Ediff or copy the file."
   (interactive)
-  (let* ((extent (smerge-nearest-extent (point)))
+  (let* ((extent (my-smerge-nearest-extent (point)))
 	 (type (overlay-get extent 'type)))
     (unless extent (error "No extent at point"))
     (cond ((or (eq type 1) (eq type 2))
-	   (setq smerge-file (smerge-file extent))
-	   (setq smerge-extent extent)
-	   (smerge-copy type))
-	  ((eq type 3) (smerge-ediff extent))
+	   (setq my-smerge-file (my-smerge-file extent))
+	   (setq my-smerge-extent extent)
+	   (my-smerge-copy type))
+	  ((eq type 3) (my-smerge-ediff extent))
 	  (t (beep)))))
 
-(defun smerge-next ()
+(defun my-smerge-next ()
   "Move to next diff line."
   (interactive)
   (forward-line 1)
-  (smerge-ediff-or-copy))
+  (my-smerge-ediff-or-copy))
 
-(defun smerge-ediff (&optional extent)
+(defun my-smerge-ediff (&optional extent)
   "Ediff the two files."
   (interactive)
   (let (file)
@@ -322,44 +322,44 @@ Top level directories end in /, subdirs do not."
       (setq extent (overlay-at (point)))
       (unless extent (error "No extent at point")))
     (unless (eq (overlay-get extent 'type) 3)
-      (error "Smerge internal error. Wrong extent type."))
-    (setq smerge-extent extent)
-    (setq file (smerge-file extent))
-    (let ((ediff-diff-options (or smerge-ediff-options ediff-diff-options)))
+      (error "My-Smerge internal error. Wrong extent type."))
+    (setq my-smerge-extent extent)
+    (setq file (my-smerge-file extent))
+    (let ((ediff-diff-options (or my-smerge-ediff-options ediff-diff-options)))
       (ediff-files
-       (concat smerge-dir1 file) (concat smerge-dir2 file)))))
+       (concat my-smerge-dir1 file) (concat my-smerge-dir2 file)))))
 
-(defun smerge-copy-file (src dst)
+(defun my-smerge-copy-file (src dst)
   "Copy file preserving the destination modes."
   (let ((modes (file-modes dst)))
     (copy-file src dst t t)
-    (and smerge-preserve-modes
+    (and my-smerge-preserve-modes
 	 modes
 	 (set-file-modes dst modes))))
 
-(defun smerge-copy (dir)
+(defun my-smerge-copy (dir)
   "Do the copy to the directory specified."
-  (let ((file1 (concat smerge-dir1 smerge-file))
-	(file2 (concat smerge-dir2 smerge-file))
+  (let ((file1 (concat my-smerge-dir1 my-smerge-file))
+	(file2 (concat my-smerge-dir2 my-smerge-file))
 	src dst)
     (cond ((eq dir 1) (setq src file2 dst file1))
 	  ((eq dir 2) (setq src file1 dst file2))
 	  (t (error "Huh?")))
     (when (yes-or-no-p (format "Copy to %s? " dst))
-      (smerge-copy-file src dst)
+      (my-smerge-copy-file src dst)
       ;; Mark as merged
-      (overlay-put smerge-extent 'face 'smerge-merged-face)
+      (overlay-put my-smerge-extent 'face 'my-smerge-merged-face)
       ;; If this is an "only" mark as copied
-      (when (< (overlay-get smerge-extent 'type) 3)
-	(overlay-put smerge-extent 'type 0))
-      (setq smerge-extent nil))))
+      (when (< (overlay-get my-smerge-extent 'type) 3)
+	(overlay-put my-smerge-extent 'type 0))
+      (setq my-smerge-extent nil))))
 
-(defun smerge-make-extent (start end face &optional keymap)
-  (unless keymap (setq keymap smerge-mode-map))
+(defun my-smerge-make-extent (start end face &optional keymap)
+  (unless keymap (setq keymap my-smerge-mode-map))
   (let ((extent (make-overlay start end)))
     (overlay-put extent 'face face)
     (overlay-put extent 'mouse-face 'highlight)
     (overlay-put extent 'keymap keymap)
     extent))
 
-(provide 'smerge)
+(provide 'my-smerge)
