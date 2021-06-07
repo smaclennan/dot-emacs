@@ -59,3 +59,10 @@ or run:
 
 
 You can contact me at seanm at seanm.ca.
+
+# Emacs Hints
+
+    Error: Cannot open load file: No such file or directory, texinfo-loaddefs
+
+    make -C lisp autoloads-force
+    make
