@@ -136,6 +136,17 @@ or M, g or G, and p or P. The p suffix is for 4k pages."
 	(setq s (concat s (match-string 0 in)))))
     s))
 
+(defun my-calc-hex (x)
+  (let ((in (format "%x" x)) out need-space)
+    (message "%s" in) ;; SAM
+    (while (string-match "[0-9a-fA-F]\\{1,4\\}$" in)
+      (if need-space
+	  (setq out (concat (match-string 0 in) " " out))
+	(setq out (concat (match-string 0 in) out)))
+      (setq in (substring in 0 (match-beginning 0)))
+      (setq need-space t))
+    out))
+
 ;;;###autoload
 (defun my-calc (command)
   "Simple calculator.
@@ -227,7 +238,7 @@ Output goes to the *calc* buffer and the echo line."
 		 ((looking-at "[gG]") (format " %.3fG" (/ result 1073741824.0)))
 		 (t "")))
 	  (setq str (format "%s = %d (%x %o)%s\n" command result result result format))
-	  (message "%s (%x %o)%s"  (my-calc-comma result) result result format))
+	  (message "%s (%s  %o)%s"  (my-calc-comma result) (my-calc-hex result) result format))
 	 ((floatp result)
 	  (setq str (format "%s = %f\n" command result))
 	  (message "%s" (my-calc-float-comma result)))
