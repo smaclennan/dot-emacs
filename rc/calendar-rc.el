@@ -29,6 +29,7 @@
 	 (holiday-fixed  8 16	  "Debian 1993")
 	 (holiday-fixed  8 18	  "Jeanine's Birthday")
 	 (holiday-float  9  1  1  "Labour Day (S)")
+	 (holiday-fixed  9  3     "SHOJ 2020")
 	 (holiday-fixed  9 17	  "Linux 0.01 1991")
 	 (holiday-float 10  1  2  "Thanksgiving (S)")
 	 (holiday-fixed 10 31	  "Halloween")
