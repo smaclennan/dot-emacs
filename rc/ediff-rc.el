@@ -9,5 +9,6 @@ want the top buffer."
 ;; -------------------
 ;; Hack to put the ediff control in the right place. If we don't do
 ;; this then the window loses focus under dwm.
-(setf (alist-get 'top ediff-control-frame-parameters) 1)
-(setf (alist-get 'left ediff-control-frame-parameters) 856)
+;; SAM do we still need this?
+;; SAM (setf (alist-get 'top ediff-control-frame-parameters) 1)
+;; SAM (setf (alist-get 'left ediff-control-frame-parameters) 856)
