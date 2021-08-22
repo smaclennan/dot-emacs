@@ -112,7 +112,6 @@ You cannot assume that `pmake-done-hook' is clean."
   (unless (equal desc "finished\n")
     (setq pmake-run-rc nil)
     (when pmake-errors-are-fatal
-      (setq pmake-stages nil)
       (remove-hook 'compilation-finish-functions 'pmake-stage-finish)
       (run-hook-with-args 'pmake-done-hook 'done desc nil)
       (error "FAILED")))
