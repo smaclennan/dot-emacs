@@ -95,7 +95,7 @@ regular expressions.")
   '((((class color))  (:foreground "black")))
   "Face for files that are merged.")
 
-(defvar my-smerge-buffer "*my-smerge-output*" "*Name of my-smerge output buffer.")
+(defvar my-smerge-buffer "*smerge-output*" "*Name of my-smerge output buffer.")
 
 (define-minor-mode my-smerge-mode
   "Minor mode for my-smerge buffer."
