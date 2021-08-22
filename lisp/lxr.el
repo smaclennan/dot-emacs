@@ -95,11 +95,11 @@
 
 (define-minor-mode lxr-mode
   "Minor mode for LXR buffer."
-  nil " LXR"
-  '(([mouse-1] 'lxr-mousable)
-    ([mouse-2] 'lxr-mousable)
-    ("\C-m"    'lxr-keystroke)
-    ("g"       'lxr-keystroke)))
+  :lighter " LXR"
+  :keymap '(([mouse-1] 'lxr-mousable)
+	    ([mouse-2] 'lxr-mousable)
+	    ("\C-m"    'lxr-keystroke)
+	    ("g"       'lxr-keystroke)))
 
 (provide 'lxr)
 

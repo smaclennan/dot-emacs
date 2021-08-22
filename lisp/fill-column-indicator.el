@@ -418,7 +418,8 @@ and `fci-rule-character-color'.  For further options, see the
 Customization menu or the package file.  (See the latter for tips
 on troubleshooting.)"
 
-  nil nil nil
+  ;; SAM cleanup compiler warning nil nil nil
+  :lighter nil
 
   (if fci-mode
       ;; Enabling.

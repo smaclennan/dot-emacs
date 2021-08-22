@@ -14,11 +14,11 @@ this to nil will create unique buffers ala `git-ediff'.")
 
 (define-minor-mode my-smerge-git-mode
   "Minor mode for my-smerge git buffer."
-  nil " git-my-smerge"
-  '(([mouse-1]	. my-smerge-git-diff)
-    ("\C-m"	. my-smerge-git-diff)
-    ("n"	. my-smerge-git-next)
-    ([f4]	. my-smerge-git-next)))
+  :lighter " git-my-smerge"
+  :keymap '(([mouse-1]	. my-smerge-git-diff)
+	    ("\C-m"	. my-smerge-git-diff)
+	    ("n"	. my-smerge-git-next)
+	    ([f4]	. my-smerge-git-next)))
 
 ;;;###autoload
 (defun my-smerge-git (branch)
