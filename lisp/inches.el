@@ -4,16 +4,20 @@
   "Pretty print the `inches-decimal-to-fraction' output."
   (let ((feet (nth 0 list)) (inches (nth 1 list))
 	(frac (nth 2 list)) (denom (nth 3 list))
-	str space)
+	str ftstr space)
     (if (> feet 0)
-	(setq str (format "%d' %d" feet inches)
+	(setq ftstr (format "%d' %d" feet inches)
+	      str (format "%d" (+ (* feet 12) inches))
 	      space " ")
       (if (> inches 0)
 	  (setq str (format "%d" inches)
 		space " ")))
     (when (> frac 0)
-      (setq str (concat str space (format "%d/%d" frac denom))))
-    (message "%s\"" str)))
+      (setq str (concat str space (format "%d/%d" frac denom)))
+      (when ftstr (setq ftstr (format "%s %d/%d" ftstr frac denom))))
+    (if ftstr
+	(message "%s\"  or  %s\"" str ftstr)
+      (message "%s\"" str))))
 
 ;;;###autoload
 (defun inches-decimal-to-fraction (denom inches &optional fixed)
