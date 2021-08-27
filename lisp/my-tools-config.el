@@ -25,8 +25,7 @@ Use princ + friends for output.")
     ;; Common
     (my-tools-fname "File name:" (buffer-file-name))
     (my-tools-fname "Git dir:" (git-dir))
-    (unless (string= git-grep-pipe-cmd "cat")
-      (my-tools-str "git-grep-pipe-cmd:" git-grep-pipe-cmd))
+    (my-tools-str "git-grep-pipe-cmd:" git-grep-pipe-cmd)
     (my-tools-str "Compile:" compile-command)
 
     ;; C-ish files

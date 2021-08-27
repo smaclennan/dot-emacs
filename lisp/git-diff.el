@@ -63,10 +63,15 @@ use 'master'. Otherwise defaults to HEAD."
 (defvar git-grep-args "--no-color -n"
   "*Default args to git grep.")
 
-(defvar git-grep-pipe-cmd "cat"
-  "*Git grep output is usually piped through cat, but other
-commands can be specified to, for example, filter the git grep
-output.")
+(defvar git-grep-filter nil
+  "*Args to put after the search string.
+Useful for specifying path filters. Must contain a leading space.
+
+e.g. (setq git-grep-post-args \" -- :^Documentation\")
+Would ignore the Documentation directory.")
+
+(defvar git-grep-pipe-cmd nil
+  "*Git grep output can be filtered through a pipe.")
 
 (defvar git-grep-full-regexp t
   "*Does git grep support full regular expressions? Specifically \\b.")
@@ -82,7 +87,9 @@ of the git dir. Else it starts at the current directory.
 
 A prefix arg allows you to edit the grep command"
   (interactive "P\nsRegexp: ")
-  (let ((cmd (concat "git grep " git-grep-args " '" str "' | " git-grep-pipe-cmd)))
+  (let ((cmd (concat "git --no-pager grep " git-grep-args " '" str "'" git-grep-filter)))
+    (when git-grep-pipe-cmd
+      (setq cmd (concat cmd " | " git-grep-pipe-cmd)))
     (when arg
       (setq cmd (read-string "Cmd: " cmd 'grep-history)))
 
