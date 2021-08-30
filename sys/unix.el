@@ -48,12 +48,16 @@
 ;;;###autoload
 (defun sysctl (arg)
   "Return sysctl ARG as a number."
-  (string-to-number (shell-command-to-string (concat "sysctl -n " arg))))
+  (with-temp-buffer
+    (call-process "sysctl" nil t nil "-n" arg)
+    (string-to-number (buffer-string))))
 
 ;;;###autoload
 (defun sysctl-str (arg)
   "Return sysctl ARG as a string."
-  (shell-command-to-string (concat "sysctl -n " arg)))
+  (with-temp-buffer
+    (call-process "sysctl" nil t nil "-n" arg)
+    (buffer-substring (point-min) (1- (point-max)))))
 
 ;;;###autoload
 (defun sys-is-guest ()
