@@ -9,3 +9,6 @@
 ;; .if/.else/.endif left justified
 (advice-add 'asm-calculate-indentation :filter-return
 	    (lambda(x) (if (looking-at "\\(\\s_\\)*\\.\\(if\\|else\\|endif\\)") 0 x)))
+
+;; Bold SAM C style comments
+(comment-warn 'asm-mode "/\\* ?\\<SAM\\>.*")
