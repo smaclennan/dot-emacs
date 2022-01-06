@@ -100,13 +100,11 @@ regular expressions.")
 (define-minor-mode my-smerge-mode
   "Minor mode for my-smerge buffer."
   :lighter " my-smerge"
-  :keymap '(([mouse-1]	. my-smerge-ediff-or-copy)
-	    ([mouse-2]	. my-smerge-ediff-or-copy)
-	    ("\C-m"	. my-smerge-ediff-or-copy)
+  :keymap '(("\C-m"	. my-smerge-ediff-or-copy)
 	    ("g"	. my-smerge-reload)
 	    ("r"	. my-smerge-reload)
 	    ("n"	. my-smerge-next)
-	    ([f4]	. my-smerge-next)))
+	    ))
 
 ;; For debugging
 (defvar my-smerge-raw-diff-output nil
