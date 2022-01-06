@@ -141,7 +141,7 @@ Hint: The output from the Unix date command works."
   (let ((day (+ 1 (days-between (format-time-string "%F %r") "2020-03-17 09:30"))))
     (when (my-interactive-p)
       ;; Start on a Monday to make it easier
-      (let* ((start (date-to-time "Mon Mar 15 09:30:00 EDT 2021"))
+      (let* ((start (date-to-time "Mon Mar 16 09:30:00 EDT 2021"))
 	     (diff (float-time (time-subtract nil start)))
 	     (week (truncate (fceiling (/ diff 604800)))))
 	(message "year 1 week %d day %d" week day)))
