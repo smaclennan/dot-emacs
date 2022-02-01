@@ -330,7 +330,9 @@ Top level directories end in /, subdirs do not."
 (defun my-smerge-copy-file (src dst)
   "Copy file preserving the destination modes."
   (let ((modes (file-modes dst)))
-    (copy-file src dst t t)
+    (if (file-directory-p src)
+	(copy-directory src dst t t)
+      (copy-file src dst t t))
     (and my-smerge-preserve-modes
 	 modes
 	 (set-file-modes dst modes))))
