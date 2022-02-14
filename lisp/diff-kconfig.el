@@ -2,15 +2,17 @@
 ;;; Copyright (C) 2016 Sean MacLennan
 
 (defvar dkc-no-arch t
-  "*Remove ARCH entires.")
+  "*Remove ARCH entries.")
 
 (defvar dkc-set-or-not t
   "*Converts all modules to yes.")
 
 (defun dkc-preprocess (config buff)
+  (message "Processing %s..." config)
   (switch-to-buffer buff)
   (insert-file-contents config nil nil nil t)
 
+  (when nil
   ;; Remove comment char from not set lines
   ;; Delete normal comments
   ;; Delete empty lines
@@ -21,6 +23,14 @@
 	  (beginning-of-line)
 	  (delete-char 2))
       (kill-whole-line)))
+  )
+
+  ;; Remove comment lines
+  (goto-char (point-min))
+  (while (re-search-forward "^#.*$" nil t)
+    (replace-match ""))
+
+  (trim-empty-lines)
 
   (when dkc-no-arch
     (goto-char (point-min))
