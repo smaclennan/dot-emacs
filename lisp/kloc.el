@@ -16,6 +16,10 @@ path or relative.
 If `kloc-dir' is not set, `kloc-project-dir' will search this
 list to try to find the kloc directory.")
 
+(defvar kloc-filter-hooks nil
+  "Hooks to call after running `kloc'.
+This runs from the kloc output buffer.")
+
 (defvar kloc-remote "tigger"
   "The remote machine to use")
 
@@ -64,7 +68,9 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
 
       ;; Fixup the lines for compilation
       (while (re-search-forward "^[^:\n]+:\\([0-9]+\\)" nil t)
-	(replace-match (concat file ":" (match-string 1) ":1")))))
+	(replace-match (concat file ":" (match-string 1) ":1")))
+
+      (run-hooks 'kloc-filter-hooks)))
 
   ;; For the kloc-do-many list we want to parse even if no kdir.
   ;; Doesn't hurt in any case.
