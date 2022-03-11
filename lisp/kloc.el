@@ -126,7 +126,7 @@ A universal argument allows you to edit the command.
 
 If RAW is non-nil, gives raw output. Next error will not work."
   (interactive "P")
-  (let ((file buffer-file-name))
+  (let ((file (basename buffer-file-name)))
     (with-current-buffer (get-buffer-create "*kloc*")
       (erase-buffer)
       (display-buffer "*kloc*")
