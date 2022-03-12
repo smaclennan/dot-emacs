@@ -135,6 +135,7 @@ Hint: The output from the Unix date command works."
 	(message "%d hours" hours)))))
 
 ;; First WFH Tues March 17 2020
+;; Covid-19 declared pandemic by WHO March 11
 ;;;###autoload
 (defun covid-19 ()
   (interactive)
