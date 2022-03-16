@@ -1,9 +1,9 @@
-(defvar kloc-args "-F short"
+(defvar kloc-args "-F scriptable"
   "Args passed to kwcheck command. -pd is added automagically.")
 
 (defvar kloc-cmd "kwcheck run %s -pd=%s %s"
   "Klocwork command. Passed in args, project dir, and
-file. Requires -F short.")
+file.")
 
 (defvar kloc-dir nil
   "*Klocwork project directory. See also `kloc-dirs-list'.")
@@ -67,8 +67,9 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
       (kill-region start (point))
 
       ;; Fixup the lines for compilation
-      (while (re-search-forward "^[^:\n]+:\\([0-9]+\\)" nil t)
-	(replace-match (concat file ":" (match-string 1) ":1")))
+      (while (re-search-forward "^[0-9]+;\\([^;]+\\);\\([0-9]+\\);\\([0-9]+\\);" nil t)
+	(replace-match
+	 (concat (match-string 1) ":" (match-string 2) ":" (match-string 3) ": ")))
 
       (run-hooks 'kloc-filter-hooks)))
 
