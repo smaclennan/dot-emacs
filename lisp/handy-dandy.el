@@ -134,18 +134,16 @@ Hint: The output from the Unix date command works."
 	  (message "%d days %d hours" days (% hours 24))
 	(message "%d hours" hours)))))
 
-;; First WFH Tues March 17 2020
+;; First WFH Tue March 17 2020
+;; First WFO Mon April 25 2022
 ;; Covid-19 declared pandemic by WHO March 11
 ;;;###autoload
 (defun covid-19 ()
   (interactive)
   (let ((day (+ 1 (days-between (format-time-string "%F %r") "2020-03-17 09:30"))))
     (when (my-interactive-p)
-      ;; Start on a Monday to make it easier
-      (let* ((start (date-to-time "Mon Mar 16 09:30:00 EDT 2021"))
-	     (diff (float-time (time-subtract nil start)))
-	     (week (truncate (fceiling (/ diff 604800)))))
-	(message "year 1 week %d day %d" week day)))
+      (let ((week (+ 1 (/ day 7))))
+	(message "week %d day %d" week day)))
     day))
 
 ;;;###autoload
