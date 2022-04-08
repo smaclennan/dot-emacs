@@ -92,8 +92,9 @@ If EDIT is non-nil, allow the command to be edited.
 Returns the kloc project directory or nil."
   (let ((kdir (kloc-project-dir file)))
     (when kdir
-      (let* ((args (if (file-exists-p "buildspec.out")
-		       (concat kloc-args " -b buildspec.out")
+      (let* ((buildspec (concat (file-name-directory file) "buildspec.out"))
+	     (args (if (file-exists-p buildspec)
+		       (concat kloc-args " -b " buildspec)
 		     kloc-args))
 	     (cmd (format kloc-cmd args kdir file)))
 	(when edit
@@ -127,7 +128,7 @@ A universal argument allows you to edit the command.
 
 If RAW is non-nil, gives raw output. Next error will not work."
   (interactive "P")
-  (let ((file (basename buffer-file-name)))
+  (let ((file buffer-file-name))
     (with-current-buffer (get-buffer-create "*kloc*")
       (erase-buffer)
       (display-buffer "*kloc*")
