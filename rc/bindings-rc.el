@@ -52,6 +52,11 @@
 ;; For some reason this doesn't have a key binding
 (global-set-key "\C-hz" 'apropos-variable)
 
+;; Allow shift-mouse-1 to select point to cursor
+;; Must disable font dialog for this to work
+(define-key global-map (kbd "<S-down-mouse-1>") 'ignore)
+(define-key global-map (kbd "<S-mouse-1>") 'mouse-save-then-kill)
+
 (defun my-revert-buffer ()
   (interactive)
   (revert-buffer t t))
