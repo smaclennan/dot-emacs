@@ -30,10 +30,10 @@
   (when console-white
     ;; for some reason bright-white doesn't always work... even on
     ;; machines that report they have bright-white
-    (set-background-color "#FFFFFF")
-    (set-face-background 'default "#FFFFFF")
     (set-foreground-color "black")
-    (set-face-foreground 'default "black")))
+    (set-face-foreground 'default "black")
+    (set-background-color "#FFFFFF")
+    (set-face-background 'default "#FFFFFF")))
 
 ;; --------------------------------------------
 ;; iswitchb - yes `switch-to-buffer' is considered a window function.
