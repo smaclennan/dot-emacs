@@ -767,6 +767,44 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+#elif defined(__QNX__) && (defined(__aarch64__) || defined(__arm__))
+int main(int argc, char *argv[])
+{
+	FILE *pfp = popen("pidin info", "r");
+	if (!pfp) {
+		perror("pidin");
+		exit(1);
+	}
+
+	char line[128];
+	while (fgets(line, sizeof(line), pfp)) {
+		if (strncmp(line, "Processor1:", 11) == 0) {
+			char *model;
+			strtol(line + 11, &model, 16);
+			while (*model == ' ') ++model;
+			printf("Model Name : %s", model);
+		} else if (strncmp(line, "CPU:", 4) == 0) {
+			char *p = line + 4;
+			while (*p == ' ') ++p;
+			fputs("Vendor     : ", stdout);
+			while (*p != ' ') {
+				putchar(*p);
+				++p;
+			}
+			putchar('\n');
+		}
+	}
+
+	pclose(pfp);
+
+	puts("Family     : 0");
+	puts("Model      : 0");
+	puts("Stepping   : 0");
+	puts("Flags      : ");
+
+	return 0;
+}
+
 #else
 int main(int argc, char *argv[])
 {
@@ -776,7 +814,11 @@ int main(int argc, char *argv[])
 #endif
 
 /*
- * Local Variables:
  * compile-command: "gcc -O2 -Wall cpuid.c -o cpuid"
+ */
+
+/*
+ * Local Variables:
+ * compile-command: "ntoaarch64-gcc -O2 -Wall cpuid.c -o cpuid"
  * End:
  */

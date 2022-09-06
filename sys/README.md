@@ -51,12 +51,21 @@ Basic system info in human readable form.
 
 ### sys-cpuinfo
 
-The output currently only works for x86 everywhere and arm Linux.
+The output currently only works for x86 everywhere and arm Linux and QNX.
+
+The problem with arm is that the `cpuid` equivalent is a privileged
+instruction, you are not allowed to know what CPU you are running. 
 
 Sample x86_64 output: model_name, vendor, family, model, stepping
 
     ("Intel(R) Core(TM) i7-3630QM CPU @ 2.40GHz" "Intel" 6 58 9)
 
-Sample arm output: model_name, vendor id, architecture, variant, part
+Sample Linux arm output: model_name, vendor id, architecture, variant, part
 
     ("ARMv7 Processor rev 0 (v7l)" "ARM" 7 0 3081)
+
+Sample QNX arm output: model_name, vendor, 0, 0, 0:
+
+    ("Cortex-A72 1500MHz FPU" "AARCH64" 0 0 0)
+
+
