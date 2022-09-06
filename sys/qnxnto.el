@@ -3,7 +3,10 @@
 
 ;; Currently the QNX libregex does not support \b
 ;; The stock git grep is compiled against libregex
-;;(setq git-grep-full-regexp nil)
+(setq git-grep-full-regexp nil)
+
+;; Does not work with git grep
+(setq grep-use-null-device nil)
 
 ;; toybox grep does support \b, so use that
 (setq my-grep-prog "toybox grep -nH")
