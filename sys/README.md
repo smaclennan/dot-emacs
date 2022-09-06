@@ -23,7 +23,9 @@ releases. We cannot guarantee that previous releases work fully.
 ## Basic functions
 
 * sys-os
-  * os (distro for Linux) and release
+  * os and release
+* sys-linux-distro
+  * Linux distro
 * sys-nproc
   * number of cpus (Linux definition of cpu)
 * sys-mem
@@ -42,6 +44,10 @@ releases. We cannot guarantee that previous releases work fully.
 * sysctl
   * return sysctl arg as a number
   * not supported on Windows
+
+### sys-info
+
+Basic system info in human readable form.
 
 ### sys-cpuinfo
 

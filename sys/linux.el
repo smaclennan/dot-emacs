@@ -1,18 +1,17 @@
 (load "unix" nil noninteractive)
 
-(defun linux-os (file)
-  (if (file-exists-p file)
-      (with-temp-buffer
-	(insert-file-contents file)
-	(re-search-forward "^NAME=\"?\\([^\"]+\\)\"?$")
-	(let ((distro (car (split-string (match-string 1)))))
-	  (if (equal distro "Red") (setq distro "Red Hat"))
-	  (re-search-forward "^VERSION=\"\\([^\"]+\\)\"$")
-	  (list distro (match-string 1))))
-    (list (uname "-s") (uname "-r"))))
-
 ;;;###autoload
-(defun sys-os () (linux-os "/etc/os-release"))
+(defun sys-linux-distro (&optional file)
+  "Return Linux distro from os-release file."
+  (unless file (setq file "/etc/os-release"))
+  (when (file-exists-p file)
+    (with-temp-buffer
+      (insert-file-contents file)
+      (re-search-forward "^NAME=\"?\\([^\"]+\\)\"?$")
+      (let ((distro (car (split-string (match-string 1)))))
+	(if (equal distro "Red") (setq distro "Red Hat"))
+	(re-search-forward "^VERSION=\"\\([^\"]+\\)\"$")
+	(list distro (match-string 1))))))
 
 ;;;###autoload
 (defun sys-nproc ()

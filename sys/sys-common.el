@@ -44,9 +44,10 @@
   "System info in human readable form."
   (interactive)
   (with-output-to-temp-buffer "*sys-info*"
-    (let ((os (sys-os)) (mem (sys-mem)))
+    (let ((os (sys-os)) (mem (sys-mem)) (distro (sys-linux-distro)))
       (princ (concat
 	      (if (sys-is-guest) "Guest ") (car os) " " (cadr os) "\n"
+	      (if distro (concat (car distro) " " (cadr distro)  "\n"))
 	      (car (sys-cpuinfo)) " (" (number-to-string (sys-nproc)) ")\n"
 	      "Memory: " (mem-human-readable (car mem))
 	      "  free " (mem-human-readable (cadr mem))
