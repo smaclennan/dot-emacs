@@ -777,10 +777,11 @@ int main(int argc, char *argv[])
 	}
 
 	char line[128];
+	unsigned midr_el1 = 0;
 	while (fgets(line, sizeof(line), pfp)) {
 		if (strncmp(line, "Processor1:", 11) == 0) {
 			char *model;
-			strtol(line + 11, &model, 16);
+			midr_el1 = strtol(line + 11, &model, 10);
 			while (*model == ' ') ++model;
 			printf("Model Name : %s", model);
 		} else if (strncmp(line, "CPU:", 4) == 0) {
@@ -797,9 +798,16 @@ int main(int argc, char *argv[])
 
 	pclose(pfp);
 
-	puts("Family     : 0");
-	puts("Model      : 0");
-	puts("Stepping   : 0");
+	/* midr_el1
+	 * Implementer  [31-24]
+	 * Variant      [23-20]
+	 * Architecture [19-16]
+	 * PartNum      [15-4]
+	 * Revision     [3-0]
+	 */
+	printf("Family     : %u\n", (midr_el1 >> 16) & 0xf); // Arch
+	printf("Model      : %u\n", (midr_el1 >> 20) & 0xf); // Variant
+	printf("Stepping   : %u\n", (midr_el1 >> 4) & 0xfff); // Part
 	puts("Flags      : ");
 
 	return 0;

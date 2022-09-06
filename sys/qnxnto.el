@@ -19,16 +19,21 @@
     (setq sys-nproc (count-matches "^Processor"))))
 
 (defun pidin-cpuinfo ()
-  "Returns a list of model and arch."
   (with-temp-buffer
     (call-process "pidin" nil t nil "info")
     (goto-char (point-min))
-    (let (model arch)
+    (let (model midr-el1 arch)
       (re-search-forward "^CPU: *\\([^ ]+\\)")
       (setq arch (match-string 1))
-      (re-search-forward "^Processor1: [0-9]+ \\(.+\\)$")
-      (setq model (match-string 1))
-      (list model arch))))
+      (re-search-forward "^Processor1: \\([0-9]+\\) \\(.+\\)$")
+      (setq midr-el1 (string-to-number (match-string 1)))
+      (setq model (match-string 2))
+      (list model arch
+	    (logand (ash midr-el1 -16) #xf)
+	    (logand (ash midr-el1 -20) #xf)
+	    (logand (ash midr-el1 -4)  #xfff)
+	    (logand midr-el1 #xf)
+	    ))))
 
 ;;;###autoload
 (defun sys-nproc ()
@@ -53,4 +58,5 @@
       (cpuid-cpuinfo)
     ;; Fall back to pidin
     (let ((pidin-info (pidin-cpuinfo)))
-      (list (car pidin-info) (cadr pidin-info) 0 0 0))))
+      (list (nth 0 pidin-info) (nth 1 pidin-info) (nth 2 pidin-info)
+	    (nth 3 pidin-info) (nth 4 pidin-info)))))
