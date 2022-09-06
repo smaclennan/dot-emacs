@@ -118,6 +118,19 @@ Returns the kloc project directory or nil."
 	  (insert "%s has no project directory" (car flist)))
 	(setq flist (cdr flist)))))
 
+(defun kloc-do-project (file edit)
+  (let ((kdir (kloc-project-dir file)))
+    (when kdir
+      (let ((cmd (format "kwcheck run %s -pd=%s" kloc-args kdir)))
+	(when edit
+	  (setq cmd (read-string "Cmd: " cmd)))
+	(insert "# " cmd "\n")
+	(save-excursion
+	  (call-process-shell-command cmd nil '(t t) t)))
+
+      (kloc-parse-one file))
+    kdir))
+
 ;;;###autoload
 (defun kloc (edit &optional raw)
   "Check the current buffer with klocwork.
@@ -140,6 +153,18 @@ If RAW is non-nil, gives raw output. Next error will not work."
 (defun kloc-raw (edit)
   (interactive "P")
   (kloc edit t))
+
+;;;###autoload
+(defun kloc-project (edit)
+  (interactive "P")
+  (let ((file buffer-file-name))
+    (with-current-buffer (get-buffer-create "*kloc*")
+      (erase-buffer)
+      (display-buffer "*kloc*")
+      
+      (unless (kloc-do-project file edit)
+	(error "No project directory found")))
+    (message "kloc done.")))
 
 (defun kloc-run (cmd)
   "Trivial helper function."
