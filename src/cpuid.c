@@ -822,11 +822,7 @@ int main(int argc, char *argv[])
 #endif
 
 /*
- * compile-command: "gcc -O2 -Wall cpuid.c -o cpuid"
- */
-
-/*
  * Local Variables:
- * compile-command: "ntoaarch64-gcc -O2 -Wall cpuid.c -o cpuid"
+ * compile-command: "gcc -O2 -Wall cpuid.c -o cpuid"
  * End:
  */

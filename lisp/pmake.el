@@ -36,9 +36,9 @@ If a command fails, the failing command will be the car of the list.
 Example: Run a make clean then make subdirs lisp and src in parallel.
 
 (setq pmake-stages
-      '(\"make clean\"
+      \\='(\"make clean\"
 	(\"subdirs\" (\"lisp\" \"make -C lisp\") (\"src\" \"make -C src\"))))
-(add-hook 'pmake-done-hook 'pmake-verbose-hook)
+(add-hook \\='pmake-done-hook \\='pmake-verbose-hook)
 (pmake-run)")
 
 
@@ -46,15 +46,15 @@ Example: Run a make clean then make subdirs lisp and src in parallel.
   "Hook(s) to run when pmakes done.
 
 It will be passed three args: TYPE, DESC, PROC.
-TYPE will be one of 'start, 'stage, 'pmake, 'done.
+TYPE will be one of \\='start, \\='stage, \\='pmake, \\='done.
 DESC will be always be set.
-PROC will only be set for 'pmake.
+PROC will only be set for \\='pmake.
 
 A usable example `pmake-verbose-hook' is provided.")
 
 (defvar pmake-debug t
   "Non-nil for debugging `pmake-run'. Will create *pmake-dbg* buffer.
-If set to 'error, will error out after creating the buffer.")
+If set to \\='error, will error out after creating the buffer.")
 
 (defvar pmake-times nil
   "Non-nil to print individual pmake times.

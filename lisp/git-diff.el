@@ -36,7 +36,7 @@ The name of the temporary buffer will be displayed."
 (defun git-ediff (rev)
   "Perform a git diff against the current buffer using ediff.
 With a prefix arg, ask for the revision. With two prefix args,
-use 'master'. Otherwise defaults to HEAD."
+use `master'. Otherwise defaults to HEAD."
   (interactive "P")
   (when rev
     (if (eq (car rev) 16)

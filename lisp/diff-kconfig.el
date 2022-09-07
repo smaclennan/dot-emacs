@@ -58,3 +58,5 @@
       )
     (ediff-buffers buf1 buf2)
   ))
+
+(require 'trim)

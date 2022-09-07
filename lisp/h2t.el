@@ -28,7 +28,7 @@
 (defvar h2t-fancy-lists nil
   "* If non-nil use add * to lists.")
 (defvar h2t-li-indent 'tab
-  "* Indent level in spaces. If set to 'tab then use tabs instead.")
+  "* Indent level in spaces. If set to \\='tab then use tabs instead.")
 
 (defvar h2t-keymap (make-sparse-keymap "h2t"))
 

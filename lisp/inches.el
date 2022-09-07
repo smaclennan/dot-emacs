@@ -27,7 +27,7 @@ If DENOM is nil, defaults to 16ths. Interactively a
 universal-prefix sets the DENOM.
 If FIXED is non-nil, does not reduce the fraction.
 
-When non-interactive returns a list '(feet inches fraction denom)."
+When non-interactive returns a list (feet inches fraction denom)."
   (interactive "P\nnInches: ")
   (unless denom (setq denom 16))
   (let ((feet (floor (/ inches 12)))

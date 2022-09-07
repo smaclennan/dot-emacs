@@ -150,7 +150,8 @@ Also see `require-final-newline'."
      (replace-match ""))))
 
 (defun ws-butler-maybe-trim-eob-lines (last-modified-pos)
-  "Delete extra newlines at end of buffer if LAST-MODIFIED-POS is in the patch of excess newlines."
+  "Delete extra newlines at end of buffer if LAST-MODIFIED-POS is
+ in the patch of excess newlines."
   (interactive (list nil))
   (unless buffer-read-only
     (unless last-modified-pos
