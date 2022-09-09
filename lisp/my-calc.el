@@ -112,11 +112,11 @@ or M, g or G, and p or P. The p suffix is for 4k pages."
     (when n
       (replace-match "N")
       (cond
-       ((looking-at "[kK]") (setq n (lsh n 10)) (replace-match ""))
-       ((looking-at "[mM]") (setq n (lsh n 20)) (replace-match ""))
-       ((looking-at "[gG]") (setq n (lsh n 30)) (replace-match ""))
-       ((looking-at "[tT]") (setq n (lsh n 40)) (replace-match ""))
-       ((looking-at "[pP]") (setq n (lsh n 12)) (replace-match ""))))
+       ((looking-at "[kK]") (setq n (ash n 10)) (replace-match ""))
+       ((looking-at "[mM]") (setq n (ash n 20)) (replace-match ""))
+       ((looking-at "[gG]") (setq n (ash n 30)) (replace-match ""))
+       ((looking-at "[tT]") (setq n (ash n 40)) (replace-match ""))
+       ((looking-at "[pP]") (setq n (ash n 12)) (replace-match ""))))
     n))
 
 (defun my-calc-comma (n)

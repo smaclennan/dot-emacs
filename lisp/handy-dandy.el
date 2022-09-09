@@ -124,7 +124,7 @@ Hint: The output from the Unix date command works."
   (let ((diff (time-subtract end (date-to-time start)))
 	hours days weeks)
     (when (listp diff)
-      (setq diff (+ (lsh (car diff) 16) (cadr diff))))
+      (setq diff (+ (ash (car diff) 16) (cadr diff))))
     (setq hours (/ diff 3600))
     (setq days (/ hours 24))
     (setq weeks (/ days 7))
