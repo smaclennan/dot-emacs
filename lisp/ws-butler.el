@@ -185,7 +185,7 @@ replaced by spaces, and vice versa if t."
      (when (and ws-butler-convert-leading-tabs-or-spaces
                 (not (bound-and-true-p smart-tabs-mode)))
        ;; convert leading tabs to spaces or v.v.
-       (let ((eol (point-at-eol)))
+       (let ((eol (pos-eol)))
          (if indent-tabs-mode
              (progn
                (skip-chars-forward "\t" eol)
@@ -244,11 +244,11 @@ ensure point doesn't jump due to white space trimming."
      (lambda (_prop beg end)
        (save-excursion
          (setq beg (progn (goto-char beg)
-                          (point-at-bol))
+                          (pos-bol))
                ;; Subtract one from end to overcome Emacs bug #17784, since we
                ;; always expand to end of line anyway, this should be OK.
                end (progn (goto-char (1- end))
-                          (point-at-eol))))
+                          (pos-eol))))
        (when (funcall ws-butler-trim-predicate beg end)
          (ws-butler-clean-region beg end))
        (setq last-end end)))
@@ -318,11 +318,14 @@ for lines modified by you."
     (remove-hook 'after-revert-hook 'ws-butler-after-save t)
     (remove-hook 'edit-server-done-hook 'ws-butler-before-save t)))
 
+;; SAM FIXME? The apply #' causes a docstring warning
+(with-no-warnings
 ;;;###autoload
 (define-globalized-minor-mode ws-butler-global-mode ws-butler-mode
   (lambda ()
     (unless (apply #'derived-mode-p ws-butler-global-exempt-modes)
       (ws-butler-mode))))
+)
 
 (provide 'ws-butler)
 

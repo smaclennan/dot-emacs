@@ -22,6 +22,9 @@
   (defalias 'cl-rotatef 'rotatef)
   )
 
+(defalias 'pos-bol 'point-at-bol)
+(defalias 'pos-eol 'point-at-eol)
+
 ;; xref compatibility functions
 
 (defun xref-find-definitions (identifier)
