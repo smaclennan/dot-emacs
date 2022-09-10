@@ -69,6 +69,11 @@ definition."
 (defmacro setq-local (var val)
   `(set (make-variable-buffer-local ,var) ,val))
 
-(defun make-directory-autoloads (dir output-file)
-  (let ((generated-autoload-file output-file))
-    (update-directory-autoloads dir)))
+(defun loaddefs-generate (dir output-file &optional excluded-files extra-data include-package-version generate-full)
+  (if excluded-files
+      ;; Hack for sys directory
+      (let ((generated-autoload-file output-file))
+	(update-file-autoloads (concat sys-type ".el") t)
+	(update-file-autoloads "sys-common.el" t))
+    (let ((generated-autoload-file output-file))
+      (update-directory-autoloads dir))))

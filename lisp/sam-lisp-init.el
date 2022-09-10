@@ -10,14 +10,17 @@
     ;; lisp dir
     (unless (file-exists-p generated-autoload-file)
       (message "Create %s..." generated-autoload-file)
-      (make-directory-autoloads dir generated-autoload-file))
+      (loaddefs-generate dir generated-autoload-file))
 
     (add-to-list 'load-path dir t)
     (load generated-autoload-file t t)
 
     ;; sys dir
     (unless (file-exists-p sys-autoload)
-      (update-file-autoloads (concat sys-dir sys ".el") t sys-autoload))
+      (let ((exclude (directory-files "." nil ".*\\.el")))
+	(setq exclude (delete "sys-common.el" exclude))
+	(setq exclude (delete (concat sys-type ".el") exclude))
+	(loaddefs-generate default-directory (concat sys-dir sys ".el") exclude)))
 
     (add-to-list 'load-path sys-dir t)
     (load sys t)

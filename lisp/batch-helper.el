@@ -9,17 +9,16 @@
 (load (format "compat-%d" emacs-major-version) t noninteractive)
 (load sys-type nil noninteractive) ;; should always exist
 
-(eval-when-compile (require 'autoload))
-
 (defun update-loadfile ()
   "This is meant to be called in batch mode. You must specify the loadfile."
-  (make-directory-autoloads default-directory
-			    (expand-file-name (car command-line-args-left))))
+  (loaddefs-generate default-directory
+  		     (expand-file-name (car command-line-args-left))))
 
 (defun update-sys ()
-  (let ((generated-autoload-file (expand-file-name "sys-loaddefs.el")))
-    (update-file-autoloads (concat sys-type ".el") t)
-    (update-file-autoloads "sys-common.el" t)))
+  (let ((exclude (directory-files "." nil ".*\\.el")))
+    (setq exclude (delete "sys-common.el" exclude))
+    (setq exclude (delete (concat sys-type ".el") exclude))
+    (loaddefs-generate default-directory (expand-file-name "sys-loaddefs.el") exclude)))
 
 (defun would-like (pkg)
   "Helper for building rc files. Some modes do not have a provide."
