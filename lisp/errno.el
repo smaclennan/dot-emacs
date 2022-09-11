@@ -1,3 +1,4 @@
+;; 7.2k according to `memory-report-object-size'
 (defvar errno-strings
   '("SUCCESS"
     "EPERM"
@@ -134,7 +135,9 @@
     "ENOTRECOVERABLE"
     "ERFKILL"
     "EHWPOISON"
-    ))
+    )
+  "Linux errno strings.
+(nth errno errno-strings) is either the errno string or nil.")
 
 (eval-and-compile (require 'cl-macs))
 
