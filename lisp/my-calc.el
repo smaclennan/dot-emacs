@@ -138,7 +138,6 @@ or M, g or G, and p or P. The p suffix is for 4k pages."
 
 (defun my-calc-hex (x)
   (let ((in (format "%x" x)) out need-space)
-    (message "%s" in) ;; SAM
     (while (string-match "[0-9a-fA-F]\\{1,4\\}$" in)
       (if need-space
 	  (setq out (concat (match-string 0 in) " " out))
