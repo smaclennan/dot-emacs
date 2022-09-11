@@ -1,6 +1,6 @@
 ;; 7.2k according to `memory-report-object-size'
 (defvar errno-strings
-  '("SUCCESS"
+  '(nil
     "EPERM"
     "ENOENT"
     "ESRCH"
@@ -134,7 +134,7 @@
     "EOWNERDEAD"
     "ENOTRECOVERABLE"
     "ERFKILL"
-    "EHWPOISON"
+    "EHWPOISON"	;; 133
     )
   "Linux errno strings.
 (nth errno errno-strings) is either the errno string or nil.")
@@ -160,5 +160,45 @@ should be a string."
     (if (and str pos)
 	(message "%s %d" str pos)
       (error "Not found"))))
+
+(defun errno-check-one-file (fname list-copy)
+  (with-temp-buffer
+    (insert-file-contents fname)
+    (goto-char (point-min))
+
+    ;; Skips EWOULDBLOCK on purpose
+    (while (re-search-forward "^#define[ \t]\\([A-Z0-9]+\\)[ \t]*\\([0-9]+\\)" nil t)
+      (let* ((errstr (match-string 1))
+	     (errno (string-to-number (match-string 2)))
+	     (lookup (nth errno errno-strings)))
+	(if lookup
+	    (progn
+	      (unless (string= errstr lookup)
+		(message "PROBS %s %d != %s" errstr errno lookup))
+	      (setq list-copy (delete lookup list-copy)))
+	  (error "MISSING %s %d" errstr errno))))
+
+    ;; Verify EWOULDBLOCK
+    (when (string-match "errno.h$" fname)
+      (goto-char (point-min))
+      (re-search-forward "^#define	EWOULDBLOCK	EAGAIN")))
+
+  ;; Return updated list
+  list-copy)
+
+(defun errno-check ()
+  (interactive)
+  (let ((list-copy (seq-filter (lambda (elt) elt) errno-strings)))
+    (setq list-copy
+	  (errno-check-one-file
+	   "/usr/include/asm-generic/errno-base.h" list-copy))
+    (setq list-copy
+	  (errno-check-one-file
+	   "/usr/include/asm-generic/errno.h" list-copy))
+
+    (when list-copy
+      (error "Not defined %S" list-copy))
+
+    (message "It checks out")))
 
 (provide 'errno)
