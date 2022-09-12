@@ -174,7 +174,7 @@ should be a string."
 	(if lookup
 	    (progn
 	      (unless (string= errstr lookup)
-		(message "PROBS %s %d != %s" errstr errno lookup))
+		(error "PROBS %s %d != %s" errstr errno lookup))
 	      (setq list-copy (delete lookup list-copy)))
 	  (error "MISSING %s %d" errstr errno))))
 
