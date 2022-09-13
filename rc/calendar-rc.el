@@ -3,6 +3,11 @@
 
 (require 'holidays)
 
+;; Covid-19
+;; First WFH Tue March 17 2020
+;; First WFO Mon April 25 2022
+;; Declared pandemic by WHO March 11
+
 (setq calendar-mark-holidays-flag t)
 
 (defun corrected-dow (date)
