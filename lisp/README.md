@@ -2,9 +2,6 @@
 
 This directory contains files I wrote... except:
 
-* fill-column-indicator.el
-  * https://github.com/alpaker/fill-column-indicator
-  
 * rcfiles.el
   * https://github.com/didierverna/el-rcfiles
   
