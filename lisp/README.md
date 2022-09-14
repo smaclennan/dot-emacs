@@ -1,5 +1,4 @@
-Lisp code
----------
+# Lisp code
 
 This directory contains files I wrote... except:
 
