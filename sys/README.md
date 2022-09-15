@@ -49,6 +49,19 @@ releases. We cannot guarantee that previous releases work fully.
 
 Basic system info in human readable form.
 
+Sample Linux output:
+
+    Linux 5.15.63
+    Ubuntu 20.04.5 LTS (Focal Fossa)
+    Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz (8)
+    Memory: 15.5G  free 618.4M  avail 13.5G
+	
+Sample non-Linux output:
+
+    QNX 7.1.0
+    Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz (4)
+    Memory: 7.9G  free 7.6G
+
 ### sys-cpuinfo
 
 The output currently only works for x86 everywhere and arm Linux and QNX.
