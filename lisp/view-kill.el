@@ -33,7 +33,7 @@
 ;;  (load "view-kill")
 ;; OR, it's short enough, just copy the whole function into your .emacs file
 
-
+;;;###autoload
 (defun view-kill ()
   (interactive)
   (save-excursion
