@@ -1,6 +1,6 @@
 (add-hook 'prog-mode-hook #'ws-butler-mode)
 (add-hook 'prog-mode-hook #'flyspell-prog-mode)
-(add-hook 'prog-mode-hook #'elide-head)
+(add-hook 'prog-mode-hook #'elide-head-mode)
 
 (show-paren-mode)
 

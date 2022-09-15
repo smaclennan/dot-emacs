@@ -49,7 +49,7 @@
 
 (defvar laptop-mode nil
   "When non-nil set laptop mode (`laptop-mode-font-size').
-With X, setting laptop mode to 'auto turns on laptop mode if
+With X, setting laptop mode to \\='auto turns on laptop mode if
 you have only one monitor.")
 
 (defvar laptop-mode-font-size

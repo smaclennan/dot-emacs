@@ -1,5 +1,12 @@
+;; WARNING: compat-26,27,28 are linked together!!!
+;; WARNING: compat-24,25 include this file
+
+;; All these changes where introduced in 29
+
 (defalias 'pos-bol 'point-at-bol)
 (defalias 'pos-eol 'point-at-eol)
+
+(defalias 'elide-head-mode 'elide-head)
 
 (defun loaddefs-generate (dir output-file &optional excluded-files extra-data include-package-version generate-full)
   (if excluded-files
