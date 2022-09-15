@@ -19,6 +19,8 @@ ELCS ?= $(LISP:.el=.elc)
 # To override this rule, put a rule: before including Rules.mk
 all:	$(LOADFILE) $(ELCS)
 
+loadfile: $(LOADFILE)
+
 $(LOADFILE): $(LISP)
 	@echo "Update  $(LOADFILE)"
 	@$(EMACS) -batch -Q $(HELPER) -f update-loadfile $(LOADFILE)
