@@ -38,7 +38,7 @@ An ARG comments out the old line."
       (insert line "\n"))))
 
 (defvar mine-not
-  (concat "/elpa/\\|/ws-butler.el\\|rcfiles.el\\|custom.el\\|"
+  (concat "/elpa/\\|rcfiles.el\\|custom.el\\|"
 	  "-loaddefs\\|view-kill.el"))
 
 (defun mine (&optional all)

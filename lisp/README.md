@@ -8,11 +8,6 @@ This directory contains files I wrote... except:
 * view-kill.el
   * https://www.emacswiki.org/emacs/view-kill.el
 
-* ws-butler
-  * https://github.com/lewang/ws-butler
-  * melpa
-
-
 ## iswitchb.elc
 
 You may have noticed a link to iswitchb.elc. From iswitchb.el:
