@@ -9,11 +9,10 @@
 (add-to-list 'load-path (concat user-emacs-directory "sys"))
 
 (load "lisp-loaddefs" t t)
-(load "sys-loaddefs" t t)
+(load "sys-loaddefs"  t t)
 
 ;; Load backward compatibility and system specific files
-(load (format "compat-%d" emacs-major-version) t)
-(load (if (eq system-type 'gnu/linux) "linux" (symbol-name system-type)))
+(sys-load-sys)
 
 ;; The user-init file allows for user/machine specific init. It must
 ;; be very early for variables like `laptop-mode' to work. Use
