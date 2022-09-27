@@ -7,7 +7,7 @@
   (setenv var new))
 
 ;;;###autoload
-(defun source (filename)
+(defun source (filename &optional no-remove)
   "Update environment variables from a shell script."
   (interactive "fSource: ")
   (message "Sourcing %s..." filename)
@@ -27,10 +27,11 @@
 		    (source-setenv "Update" var val val))
 		  (setq envs (delq env envs)))
 	      (source-setenv "New" var val val))))))
-    (dolist (rm envs)
-      (let ((var (car rm)))
-	(unless (member var source-exclude-list)
-	  (source-setenv "Remove" var var nil)))))
+    (unless no-remove
+      (dolist (rm envs)
+	(let ((var (car rm)))
+	  (unless (member var source-exclude-list)
+	    (source-setenv "Remove" var var nil))))))
   (message "Sourcing %s...done." filename))
 
 (provide 'source)
