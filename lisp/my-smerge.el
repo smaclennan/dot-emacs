@@ -127,6 +127,7 @@ regular expressions.")
     (setq dir1 (read-directory-name "Directory 1: " nil nil t)))
   (unless dir2
     (setq dir2 (read-directory-name "Directory 2: " nil nil t)))
+  (run-hooks 'my-smerge-mode-hook)
   (switch-to-buffer my-smerge-buffer) ;; Yes I want to be in the output buffer
   (setq buffer-read-only nil) ;; writable
   (setq my-smerge-mode t)
