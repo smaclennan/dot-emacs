@@ -107,3 +107,5 @@ the identifier."
   (transpose-subr 'forward-symbol arg))
 
 (global-set-key "\M-t" 'my-transpose-symbols)
+
+(global-set-key (kbd "C-x M-c M-b") `butterfly)

@@ -1,3 +1,4 @@
+;;;###autoload
 (defun butterfly ()
   (interactive)
   (unless (and
@@ -12,4 +13,5 @@
 	   (message "I hope you know what you are doing"))
     (error "Loser")))
 
-(global-set-key (kbd "C-x M-c M-b") `butterfly)
+;; Put this key binding somewhere
+;; (global-set-key (kbd "C-x M-c M-b") `butterfly)
