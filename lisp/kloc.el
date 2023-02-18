@@ -46,7 +46,9 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
 	    (when (string-match (car one) dir)
 	      (setq kdir (cadr one))
 	      (throw 'found t)))
-	    (throw 'outer nil)))
+	  (when (file-exists-p "buildspec.out")
+	    (throw 'outer ""))
+	  (throw 'outer nil)))
       ;; Absolute - make sure it exists
       (when (eq (string-to-char  kdir) ?/)
 	(throw 'outer (if (file-exists-p kdir) kdir nil)))
