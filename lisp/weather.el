@@ -14,10 +14,12 @@ Only works for X11.")
       (re-search-forward "src=\"/\\(weathericons/[0-9]+\\.gif\\)\" alt=\"\\([^\"]+\\)")
       (setq gif (match-string 1))
       (setq conditions (match-string 2))
-      (re-search-forward "class=\"wxo-metric-hide\">\\(-?[0-9]+\\)")
-      (setq tempc (match-string 1))
-      (re-search-forward "class=\"wxo-imperial-hide wxo-city-hidden\">\\(-?[0-9]+\\)")
-      (setq tempf (match-string 1)))
+      (re-search-forward "mrgn-bttm-sm lead mrgn-tp-sm")
+      (re-search-forward "<span data-v-[0-9a-f]+>\\([0-9]+\\)")
+      (setq tempc (match-string 1)))
+
+    (setq tempf (+ (/ (* (string-to-number tempc) 9) 5) 32))
+    (setq tempf (number-to-string tempf))
 
     (if (and weather-fancy (eq window-system 'x))
 	(progn
