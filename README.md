@@ -15,8 +15,6 @@ A brief rundown:
 * user-init.el (optional)
   * This is used to tweak per machine settings such as email address
     and laptop-mode.
-* ~/work/emacs/init.el (optional)
-  * This is for work related setup.
 
 ## lisp/
 
@@ -34,6 +32,9 @@ times, but groups the configuration variables nicely.
 Non-lisp files associated with Emacs in some way
 
 ## sys/
+
+This is my attempt at dealing with different OSes and Emacs
+versions. See the README.md in the sys directory for details.
 
 * compat-\<emacs major version\>.el
 * \<system-type\>.el

@@ -122,3 +122,10 @@ meaning as in `git-grep'."
   (message "Git top of tree %s"
 	   (if git-grep-top-of-tree "enabled" "disabled"))
   git-grep-top-of-tree)
+
+(defun git-grep-tools-hook ()
+  (when git-grep-filter
+    (princ (format "%-22s %S\n" "git-grep-filter:" git-grep-filter)))
+  (unless git-grep-top-of-tree
+    (princ (format "%-22s disabled" "git-grep-top-of-tree"))))
+(add-hook 'my-tools-hooks 'git-grep-tools-hook)
