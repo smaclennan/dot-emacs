@@ -3,11 +3,24 @@
 This directory is an attempt to put system and Emacs version specific
 code in one place.
 
-Currently supported: Linux, QNX, BSD, and Windows.
-
 We try to support GNU Emacs >= 24. The basic strategy is to keep up to
 date with the latest version and backport changes to previous
 releases. We cannot guarantee that previous releases work fully.
+
+## Supported Systems
+
+Linux: Is fully supported since I use Emacs on it every day. ARM Linux
+       is experimental.
+
+QNX: Is supported, but I don't use it as often.
+
+BSD: I very rarely use any more. FreeBSD probably has the best
+     support.
+
+Windows: My laptop died years ago. 'Nuff said.
+
+Mac: I have never run Emacs on a Mac. The darwin.el code is
+     experimental.
 
 ## Basic variables
 
