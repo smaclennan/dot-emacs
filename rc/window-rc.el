@@ -25,8 +25,7 @@
       (global-set-key [(control insert)] 'clipboard-kill-ring-save)
       (global-set-key [(shift insert)] 'clipboard-yank)
 
-      (defadvice save-buffers-kill-emacs (before ask-first activate)
-	(y-or-n-p "Do you have to go? ")))
+      (setq confirm-kill-emacs `y-or-n-p))
   (when console-white
     ;; for some reason bright-white doesn't always work... even on
     ;; machines that report they have bright-white
