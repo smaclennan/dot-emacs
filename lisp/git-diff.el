@@ -2,6 +2,9 @@
 (require 'my-grep)
 (eval-when-compile (require 'ediff))
 
+(defvar git-master "master"
+  "With the change to main, allow overriding master")
+
 ;;;autoload
 (defun git-cmd (cmd &rest args)
   "Apply the git command CMD with ARGS and output to the current buffer.
@@ -36,11 +39,11 @@ The name of the temporary buffer will be displayed."
 (defun git-ediff (rev)
   "Perform a git diff against the current buffer using ediff.
 With a prefix arg, ask for the revision. With two prefix args,
-use `master'. Otherwise defaults to HEAD."
+use `git-master'. Otherwise defaults to HEAD."
   (interactive "P")
   (when rev
     (if (eq (car rev) 16)
-	(setq rev "master")
+	(setq rev git-master)
       (setq rev (read-from-minibuffer "Revision: "))))
   (ediff-buffers (current-buffer) (git-cat-doit rev)))
 
