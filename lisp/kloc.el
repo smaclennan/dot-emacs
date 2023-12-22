@@ -26,6 +26,10 @@ This runs from the kloc output buffer.")
 (defvar kloc-remote-cmd "~/Tools/kwinstall-18.2.0.1113-cmdline/bin/kwcheck"
   "The remote kwcheck command.")
 
+(defvar kloc-sort-by-lines nil
+  "Kloc seems to sort by error type.
+This sorts by line number.")
+
 ;; Defined in rc/compile.el
 (defvar make-clean-command nil)
 
@@ -59,6 +63,21 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
 	;; This removes the last directory
 	(setq dir (file-name-directory (directory-file-name dir)))))))
 
+(defun kloc-sort-cmp (a b) (< (car a) (car b)))
+
+(defun kloc-sort-by-lines ()
+  (goto-char (point-min))
+
+  (let (list line)
+    (while (re-search-forward "^[0-9]+;[^;]+;\\([^;]+\\);.*\n" nil t)
+      (setq line (string-to-number (match-string 1)))
+      (setq list (cons (list line (match-string 0)) list))
+      (replace-match ""))
+    (setq list (sort list 'kloc-sort-cmp))
+    (dolist (one list)
+      (insert (cadr one)))
+    ))
+
 (defun kloc-parse-one (file &optional no-parse-compile raw)
   (let ((start (point)))
     (unless raw
@@ -75,7 +94,11 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
 	(when (re-search-forward "^[0-9]+;" nil t)
 	  (kill-region start (match-beginning 0))))
 
+      (when kloc-sort-by-lines
+	(kloc-sort-by-lines))
+
       ;; Fixup the lines for compilation
+      (goto-char (point-min))
       (while (re-search-forward "^[0-9]+;\\([^;]+\\);\\([0-9]+\\);\\([0-9]+\\);" nil t)
 	(replace-match
 	 (concat (match-string 1) ":" (match-string 2) ":" (match-string 3) ": ")))
