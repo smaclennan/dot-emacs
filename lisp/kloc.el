@@ -68,6 +68,13 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
 	(end-of-line) (forward-char))
       (kill-region start (point))
 
+      ;; Deal with potential errors
+      (when (looking-at "^ERROR")
+	(message "ERROR")
+	(setq start (point))
+	(when (re-search-forward "^[0-9]+;" nil t)
+	  (kill-region start (match-beginning 0))))
+
       ;; Fixup the lines for compilation
       (while (re-search-forward "^[0-9]+;\\([^;]+\\);\\([0-9]+\\);\\([0-9]+\\);" nil t)
 	(replace-match
