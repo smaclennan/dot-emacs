@@ -193,4 +193,3 @@
 (defun lxr-keystroke ()
   (interactive)
   (lxr-doit (point)))
-

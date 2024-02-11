@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; SAM -*- lexical-binding: nil -*- tags-completion-table
 
 ;; find /usr/include -name "*.h" | etags --no-members -o ~/.INCLUDE-TAGS -
 

@@ -9,7 +9,7 @@
 (defmacro my-interactive-p () `(called-interactively-p 'interactive))
 
 ;;;###autoload
-(defmacro event-point (_event) `(cl-cadadr _event))
+(defmacro event-point (event) `(cl-cadadr ,event))
 
 ;;;###autoload
 (defmacro basename (name)
