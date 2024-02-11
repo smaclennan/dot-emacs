@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; SAM -*- lexical-binding: nil -*- need to match a callback
 ;;; pmake.el --- Run parallel (or not) commands.
 
 ;; Copyright (C) 2019 Sean MacLennan

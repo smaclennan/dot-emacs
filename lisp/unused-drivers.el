@@ -62,7 +62,6 @@ devices."
 		  (read-string (format "Release [%s]: " rel) nil nil rel))))
   (let ((used-list (build-lsmod-list))
 	(driver-list (build-drivers-list release))
-	(kdir (concat "/lib/modules/" release "/kernel/"))
 	dcount ucount fcount)
     (setq dcount (length driver-list) ucount (length used-list))
     (dolist (mod used-list)

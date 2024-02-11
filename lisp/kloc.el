@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; SAM -*- lexical-binding: nil -*- need to work out the unused arg
 
 (defvar kloc-args "-F scriptable"
   "Args passed to kwcheck command. -pd is added automagically.")

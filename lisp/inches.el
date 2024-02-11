@@ -62,7 +62,8 @@ If DENOM is 1000, show as inch decimal in thousandths."
 (defun mm2inches-64ths (denom mm)
   "Print millimeters as 64ths of an inch."
   (interactive "P\nnmm: ")
-  (inches-print (inches-decimal-to-fraction 64 (* mm 0.0393701) t)))
+  (unless denom (setq denom 64))
+  (inches-print (inches-decimal-to-fraction denom (* mm 0.0393701) t)))
 
 ;;;###autoload
 (defun cm2inches (denom cm)

@@ -149,24 +149,22 @@ regular expressions.")
   (my-smerge my-smerge-flags my-smerge-dir1 my-smerge-dir2))
 
 (defun my-smerge-recursive-diff ()
-  (let (rc)
-    (erase-buffer)
-    (dolist (exclude my-smerge-diff-excludes) (insert (concat exclude "\n")))
-    (write-region (point-min) (point-max) my-smerge-exclude-file nil 'no-message)
-    (erase-buffer)
-    (let ((diff-options (concat "--exclude-from=" my-smerge-exclude-file
+  (erase-buffer)
+  (dolist (exclude my-smerge-diff-excludes) (insert (concat exclude "\n")))
+  (write-region (point-min) (point-max) my-smerge-exclude-file nil 'no-message)
+  (erase-buffer)
+  (let ((diff-options (concat "--exclude-from=" my-smerge-exclude-file
 			      " -r" " --brief " my-smerge-diff-options)))
-      ;; Since we are tightly coupled with ediff, use their program!
-      ;; This erases the diff buffer automatically.
-      (ediff-exec-process my-smerge-diff-program
-			  (current-buffer)
-			  'synchronize
-			  diff-options
-			  my-smerge-dir1 my-smerge-dir2))
-    (delete-file my-smerge-exclude-file)
-    (when my-smerge-raw-diff-output
-      (write-region (point-min) (point-max) my-smerge-raw-diff-output))
-    (and (numberp rc) (eq rc 0))))
+    ;; Since we are tightly coupled with ediff, use their program!
+    ;; This erases the diff buffer automatically.
+    (ediff-exec-process my-smerge-diff-program
+			(current-buffer)
+			'synchronize
+			diff-options
+			my-smerge-dir1 my-smerge-dir2))
+  (delete-file my-smerge-exclude-file)
+  (when my-smerge-raw-diff-output
+    (write-region (point-min) (point-max) my-smerge-raw-diff-output)))
 
 (defun my-smerge-fixup-filenames ()
   "Diff splits the `Only in' files into directory and filename.

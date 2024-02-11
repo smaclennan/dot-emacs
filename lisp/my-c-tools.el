@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; SAM -*- lexical-binding: nil -*- we need to match a callback
 ;;; my-c-tools.el - Various C programming tools/utilities.
 ;; Copyright (C) 2010-2012 Sean MacLennan
 

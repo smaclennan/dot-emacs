@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; SAM -*- lexical-binding: nil -*- need to match a callback
 ;; my-compile.el - compile command helper
 
 ;; Copyright (C) 1996-2020 Sean MacLennan

@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; SAM -*- lexical-binding: nil -*- until I work out the warning
 ;;; rcfiles.el --- Unix-like rc files for Emacs Lisp libraries
 
 ;; Copyright (C) 2006, 2007, 2012, 2013 Didier Verna

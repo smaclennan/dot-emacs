@@ -32,7 +32,7 @@
 
 (defcustom ogrok-base nil "*Local base for opengrok files" :type 'string)
 
-(defcustom ogrok-smart nil "*Try to be smart about matching rather than precise." :type 'bool)
+(defcustom ogrok-smart nil "*Try to be smart about matching rather than precise." :type 'boolean)
 
 (provide 'ogrok)
 
@@ -40,7 +40,7 @@
 (require 'etags)
 
 
-(defun ogrok-compilation-parse (mode)
+(defun ogrok-compilation-parse ()
   ;; I tried to use compilation but it only worked 90% of the time.
   (setq buffer-read-only nil)
   (compilation--parse-region (point-min) (point-max))
@@ -133,7 +133,7 @@
       (when more (insert "\nMore...\n"))
       (compilation-mode "ogrok")
       (setq default-directory ogrok-base)
-      (ogrok-compilation-parse "ogrok"))
+      (ogrok-compilation-parse))
     ogrok-list))
 
 (defun ogrok-strip-tags (line)

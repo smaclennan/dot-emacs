@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; SAM -*- lexical-binding: nil -*- until I work out the warning
 ;;; sam-common.el --- SAM's Common macros
 
 ;; Copyright (C) 2011-2020 Sean MacLennan
