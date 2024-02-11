@@ -172,6 +172,7 @@ Numbers can also have a suffix:
 	k or K	for kilobyte (1024)
 	m or M	for megabyte (1024 * 1024)
 	g or G	for gigabyte (1024 * 1024 * 1024)
+	t or T	for terabyte (1024 * 1024 * 1024 * 1024)
 	p or P  for page     (4096)
 
 If you put =suffix at the end of the command, it outputs the
@@ -235,6 +236,7 @@ Output goes to the *calc* buffer and the echo line."
 		 ((looking-at "[pP]") (format " %.3fP" (/ result 4096.0)))
 		 ((looking-at "[mM]") (format " %.3fM" (/ result 1048576.0)))
 		 ((looking-at "[gG]") (format " %.3fG" (/ result 1073741824.0)))
+		 ((looking-at "[tT]") (format " %.3fT" (/ result 1099511627776.0)))
 		 (t "")))
 	  (setq str (format "%s = %d (%x %o)%s\n" command result result result format))
 	  (message "%s (%s  %o)%s"  (my-calc-comma result) (my-calc-hex result) result format))
