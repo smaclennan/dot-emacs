@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; pmake.el --- Run parallel (or not) commands.
 
 ;; Copyright (C) 2019 Sean MacLennan

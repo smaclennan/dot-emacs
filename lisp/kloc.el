@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (defvar kloc-args "-F scriptable"
   "Args passed to kwcheck command. -pd is added automagically.")
 

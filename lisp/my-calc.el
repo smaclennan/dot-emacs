@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; my-calc.el --- A simple calculator
 
 ;; Copyright (C) 1997-2016 Sean MacLennan

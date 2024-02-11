@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (defvar my-grep-prog "grep -nH"
   "*The grep program")
 

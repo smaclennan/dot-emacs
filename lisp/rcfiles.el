@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; rcfiles.el --- Unix-like rc files for Emacs Lisp libraries
 
 ;; Copyright (C) 2006, 2007, 2012, 2013 Didier Verna

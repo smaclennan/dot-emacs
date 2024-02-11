@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; my-cscope.el --- Yet another cscope interface... but it is mine.
 ;; Copyright (C) 2017-2018 Sean MacLennan
 ;; This program is free software; you can redistribute it and/or modify

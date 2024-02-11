@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (require 'my-compile)
 
 (defvar kfs-bufname "*find-selects*"

@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (defun sam-lisp-init (&optional compile)
   (interactive "P")
   (let* ((dir (file-name-directory (symbol-file 'sam-lisp-init 'defun)))

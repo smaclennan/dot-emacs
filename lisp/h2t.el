@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; h2t.el --- Convert html to text
 
 ;; Copyright (C) 2001-2010 Sean MacLennan

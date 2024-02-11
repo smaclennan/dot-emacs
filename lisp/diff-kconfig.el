@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; diff-kconfig.el - A vain attempt to make diffing kernel config files easier
 ;;; Copyright (C) 2016 Sean MacLennan
 

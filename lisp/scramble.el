@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; My wife likes to do the "ryhmes with bumble" in the newspaper.
 ;; This helps to unscramble the words she can't get.
 ;; It works great up to 8 chars... which is more than enough.

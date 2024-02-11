@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; my-smerge.el --- SAM's Merge layer on top of ediff
 
 ;; Copyright (C) 2002-2019 Sean MacLennan

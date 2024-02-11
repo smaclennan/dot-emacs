@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (defvar filter-f nil)
 (defvar filter-c nil)
 (defvar filter-r nil)

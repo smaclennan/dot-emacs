@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (require 'sam-common) ;; my-interactive-p
 
 (defun inches-print (list)

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; 7.2k according to `memory-report-object-size'
 (defvar errno-strings
   '(nil

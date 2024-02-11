@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; lxr.el --- interface to lxr source browser
 
 ;; Copyright (C) 2000-2020 Sean MacLennan

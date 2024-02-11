@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; Use:
 ;; 1) `bisect-start' or `bisect-start-list'
 ;; 2) `bisect-good' or `bisect-bad' as the case may be

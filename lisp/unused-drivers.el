@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; Very Linux specific
 ;; Hint to self: Self, you cannot scp /proc/modules.
 

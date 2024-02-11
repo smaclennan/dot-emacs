@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (defvar source-exclude-list nil
   "List of environment variables to ignore.")
 

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; my-compile.el - compile command helper
 
 ;; Copyright (C) 1996-2020 Sean MacLennan

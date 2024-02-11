@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; my-c-tools.el - Various C programming tools/utilities.
 ;; Copyright (C) 2010-2012 Sean MacLennan
 

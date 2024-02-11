@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; Some handy functions for dealing with IPv4
 
 (require 'cl-macs)

@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 ;;;###autoload
 (defun directory-dirs-recursive (dir)
   "Return a list of directories in DIR recursively descending all

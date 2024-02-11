@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (provide 'git-diff)
 (require 'my-grep)
 (eval-when-compile (require 'ediff))

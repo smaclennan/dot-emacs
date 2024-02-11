@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; sam-common.el --- SAM's Common macros
 
 ;; Copyright (C) 2011-2020 Sean MacLennan

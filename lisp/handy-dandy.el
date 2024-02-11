@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; Handy Dandy(tm) Functions
 
 ;;;###autoload

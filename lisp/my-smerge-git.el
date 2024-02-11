@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (require 'my-smerge)
 
 ;; Tested with git version 2.17.1

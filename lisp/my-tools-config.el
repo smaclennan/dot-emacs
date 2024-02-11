@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (require 'cc-mode)
 
 (require 'git-diff)

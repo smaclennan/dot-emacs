@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; gpl.el - Add a GPL notice to a file
 ;; Copyright (C) 2010 Sean MacLennan <seanm@seanm.ca>
 ;;

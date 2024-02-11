@@ -1,4 +1,4 @@
-;;;
+;; -*- lexical-binding: t -*-
 
 ;; VIEW-KILL
 ;; Displays the entire kill ring as a single page menu of numbered items.

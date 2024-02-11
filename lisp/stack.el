@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; LIFO stack macros
 
 ;; At the cost of a sentinel ('STACK) at the start of the stack we can

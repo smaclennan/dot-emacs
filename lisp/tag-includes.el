@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 
 ;; find /usr/include -name "*.h" | etags --no-members -o ~/.INCLUDE-TAGS -
 

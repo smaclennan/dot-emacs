@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; trim.el --- Various multi-line operations
 
 ;; Copyright (C) 1998,2002 Sean MacLennan

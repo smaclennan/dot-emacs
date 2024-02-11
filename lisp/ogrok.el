@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; ogrok.el --- Emacs interface to OpenGrok source browser
 ;; Copyright (C) 2017 Sean MacLennan
 ;; Revision:   0.3

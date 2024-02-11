@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (defvar weather-url "https://weather.gc.ca/city/pages/on-118_metric_e.html"
   "The url for the weather. Must be weather.gc.ca.")
 
