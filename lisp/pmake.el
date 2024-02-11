@@ -1,4 +1,4 @@
-;; SAM -*- lexical-binding: nil -*- need to match a callback
+;; -*- lexical-binding: t -*-
 ;;; pmake.el --- Run parallel (or not) commands.
 
 ;; Copyright (C) 2019 Sean MacLennan
@@ -107,7 +107,7 @@ You cannot assume that `pmake-done-hook' is clean."
   (when error-out
     (error "Created *pmake-dbg* buffer")))
 
-(defun pmake-stage-finish (buffer desc)
+(defun pmake-stage-finish (_buffer desc)
   "Stage finished sentinel function."
   (run-hook-with-args 'pmake-done-hook 'stage desc nil)
   (unless (equal desc "finished\n")

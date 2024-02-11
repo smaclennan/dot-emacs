@@ -1,4 +1,4 @@
-;; SAM -*- lexical-binding: nil -*- we need to match a callback
+;; -*- lexical-binding: t -*-
 ;;; my-c-tools.el - Various C programming tools/utilities.
 ;; Copyright (C) 2010-2012 Sean MacLennan
 
@@ -102,7 +102,7 @@ compilation buffer so that `next-error' will work."
     (setq cmd (format "%s %s %s" my-checkpatch-prog args (buffer-file-name)))
     (my-do-compile cmd)))
 
-(defun my-checkpatch-cleanup (buf status)
+(defun my-checkpatch-cleanup (buf _status)
   "Massage the checkpatch compilation buffer. This removes a final
 false match."
   (save-current-buffer

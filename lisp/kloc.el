@@ -1,4 +1,4 @@
-;; SAM -*- lexical-binding: nil -*- need to work out the unused arg
+;; -*- lexical-binding: t -*-
 
 (defvar kloc-args "-F scriptable"
   "Args passed to kwcheck command. -pd is added automagically.")
@@ -80,7 +80,7 @@ Checks `kloc-dir' and then `kloc-dirs-list'."
       (insert (cadr one)))
     ))
 
-(defun kloc-parse-one (file &optional no-parse-compile raw)
+(defun kloc-parse-one (_file &optional no-parse-compile raw)
   (let ((start (point)))
     (unless raw
       ;; Delete the header

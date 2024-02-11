@@ -1,4 +1,4 @@
-;; SAM -*- lexical-binding: nil -*- callback
+;; -*- lexical-binding: t -*-
 ;;; lxr.el --- interface to lxr source browser
 
 ;; Copyright (C) 2000-2020 Sean MacLennan
@@ -139,7 +139,7 @@
    (lxr-get-callback nil "*lxr*")
    ))
 
-(defun lxr-get-callback (status buffer)
+(defun lxr-get-callback (_status buffer)
   ;; First make sure the http command succeeded
   (goto-char (point-min))
   (unless (looking-at "HTTP/[1-9]\\.[0-9]+ 200")

@@ -1,4 +1,4 @@
-;; SAM -*- lexical-binding: nil -*- until I work out the warning
+;; -*- lexical-binding: t -*-
 ;;; sam-common.el --- SAM's Common macros
 
 ;; Copyright (C) 2011-2020 Sean MacLennan
@@ -9,7 +9,7 @@
 (defmacro my-interactive-p () `(called-interactively-p 'interactive))
 
 ;;;###autoload
-(defmacro event-point (event) `(cl-cadadr event))
+(defmacro event-point (_event) `(cl-cadadr _event))
 
 ;;;###autoload
 (defmacro basename (name)

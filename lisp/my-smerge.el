@@ -248,8 +248,6 @@ Top level directories end in /, subdirs do not."
     (if (re-search-forward "\\w" nil t) (forward-char -1))
     ))
 
-(autoload 'defadvice "advice" nil nil 'macro)
-
 (defun next-overlay (extent)
   (let* ((pos (1- (overlay-end extent)))
 	 (next (next-overlay-change pos))
@@ -260,7 +258,7 @@ Top level directories end in /, subdirs do not."
       )
     overlay))
 
-(defadvice ediff-quit (after my-smerge activate)
+(defun my-smerge-ediff-quit (_unused)
   (when (overlayp my-smerge-extent)
     (overlay-put my-smerge-extent 'face 'my-smerge-merged-face)
     (delete-other-windows)
@@ -274,6 +272,8 @@ Top level directories end in /, subdirs do not."
 	))
     (setq my-smerge-extent nil) ;; done
     ))
+
+(advice-add `ediff-quit :after #'my-smerge-ediff-quit)
 
 (defun my-smerge-file (extent)
   "Given a my-smerge extent, return the file name."

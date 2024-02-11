@@ -1,4 +1,4 @@
-;; SAM -*- lexical-binding: nil -*- need to match a callback
+;; -*- lexical-binding: t -*-
 ;; my-compile.el - compile command helper
 
 ;; Copyright (C) 1996-2020 Sean MacLennan
@@ -95,7 +95,7 @@ Go through the `my-compile-dir-list' looking for a match."
        ((fboundp func-or-style)
 	(funcall func-or-style dir arg))))))
 
-(defun gdb-func (matched-dir target)
+(defun gdb-func (matched-dir _target)
   (setq-local compile-command (concat "make " make-j " -C " matched-dir "/build/objdir"))
   (c-set-style "gnu"))
 

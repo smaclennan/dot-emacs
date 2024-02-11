@@ -1,4 +1,4 @@
-;; SAM -*- lexical-binding: nil -*- until I work out the warning
+;; -*- lexical-binding: t -*-
 ;;; rcfiles.el --- Unix-like rc files for Emacs Lisp libraries
 
 ;; Copyright (C) 2006, 2007, 2012, 2013 Didier Verna
@@ -114,7 +114,7 @@ File names are expanded but their extension is removed."
 
 (defun rcfiles-try-load (rcfile)
   "Attempt to load RCFILE. If loading fails, throw a warning."
-  (condition-case ignore (load rcfile)
+  (condition-case _ignore (load rcfile)
     (error (warn (format "Unable to load %s.
 Maybe you need to call RCFILES-REGISTER-RC-FILES again?"
 			 rcfile)))))
