@@ -11,7 +11,8 @@
   "Apply the git command CMD with ARGS and output to the current buffer.
 Error out if it fails."
   (unless (eq (apply 'call-process "git" nil t nil cmd args) 0)
-    (error "git %s failed" cmd)))
+    (error "git %s failed. Check %s Dir was %s"
+	   cmd (buffer-name) default-directory)))
 
 (defun git-cat-doit (&optional rev)
   "Perform a git cat on the current buffer into a temporary buffer.
