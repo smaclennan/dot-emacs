@@ -2,7 +2,6 @@
 ;; Shifted function keys: [(shift f1)] == [XF86_Switch_VT_1]
 (global-set-key [f1]            'find-file)
 (global-set-key [(shift f1)]    'update-local-compile-command)
-(global-set-key [(control f1)]  'add-local-compile-command)
 (global-set-key [f2]		'undo)
 (global-set-key [f3]		'isearch-repeat-forward)
 (global-set-key [(shift f3)]    'isearch-repeat-backward)
