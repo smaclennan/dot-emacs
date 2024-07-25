@@ -16,21 +16,21 @@ WHAT can be:
 * a file name
 * --analyze-scm-modified
 * --analyze-captured-source"
-  (let ((curdir default-directory))
+  (let ((curdir default-directory)
+	(compilation-scroll-output t))
     (with-current-buffer (get-buffer-create "*cov*")
       (setq default-directory curdir)
       (erase-buffer)
+      (compilation-mode "cov")
       (display-buffer "*cov*")
+      (setq buffer-read-only nil)
       (let ((cmd (concat "cov-run-desktop " cov-args " " what)))
 	(when edit
-	  (setq cmd (read-string "Cmd: " cmd))
-	  (message "%s" cmd))
-	(save-excursion
-	  (call-process-shell-command cmd nil t t)))
-
-      (compilation-mode "cov")
-      (setq buffer-read-only nil)
-      (compilation--parse-region (point-min) (point-max))))
+	  (setq cmd (read-string "Cmd: " cmd)))
+	(let ((fill-column 80))
+	  (insert "# " cmd "\n\n")
+	  (fill-region (point-min) (point)))
+	(call-process-shell-command cmd nil t t))))
   (message "coverity done."))
 
 ;;## autoload
