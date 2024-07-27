@@ -147,6 +147,14 @@ or M, g or G, and p or P. The p suffix is for 4k pages."
       (setq need-space t))
     out))
 
+(defun clean-format (fmt result div)
+  ;; If the result is a multiple of div, return just the integer. If
+  ;; not, return a float. This lets you know if it is exact.
+  ;; e.g. 0x7ff = 1.999k 0x800 = 2K 0x801 = 2.001K
+  (if (eq (mod result div) 0)
+      (format " %d%s" (/ result div) fmt)
+    (format " %.3f%s" (/ result (float div)) fmt)))
+
 ;;;###autoload
 (defun my-calc (command)
   "Simple calculator.
@@ -233,11 +241,11 @@ Output goes to the *calc* buffer and the echo line."
 	 ((integerp result)
 	  (setq format
 		(cond
-		 ((looking-at "[kK]") (format " %.3fK" (/ result 1024.0)))
-		 ((looking-at "[pP]") (format " %.3fP" (/ result 4096.0)))
-		 ((looking-at "[mM]") (format " %.3fM" (/ result 1048576.0)))
-		 ((looking-at "[gG]") (format " %.3fG" (/ result 1073741824.0)))
-		 ((looking-at "[tT]") (format " %.3fT" (/ result 1099511627776.0)))
+		 ((looking-at "[kK]") (clean-format "K" result 1024))
+		 ((looking-at "[pP]") (clean-format "P" result 4096))
+		 ((looking-at "[mM]") (clean-format "M" result 1048576))
+		 ((looking-at "[gG]") (clean-format "G" result 1073741824))
+		 ((looking-at "[tT]") (clean-format "T" result 1099511627776))
 		 (t "")))
 	  (setq str (format "%s = %d (%x %o)%s\n" command result result result format))
 	  (message "%s (%s  %o)%s"  (my-calc-comma result) (my-calc-hex result) result format))
