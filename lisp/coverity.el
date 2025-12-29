@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t -*-
 
 (require 'compile)
+(provide 'coverity)
 
 (defvar cov-args "--whole-program \
 --include-missing-locally true \
@@ -55,7 +56,8 @@ All meaning the files coverity knows about."
 
 ;;## autoload
 (defun cov-setup ()
-  "coverity setup."
+  "coverity setup.
+Don't forget the coverity.conf file."
   (interactive)
   (let ((curdir default-directory))
     (with-current-buffer (get-buffer-create "*cov*")
