@@ -6,3 +6,5 @@
 (menu-bar-mode 0)
 
 (setq package-enable-at-startup nil)
+
+(setq warning-suppress-log-types '((files missing-lexbind-cookie)))
