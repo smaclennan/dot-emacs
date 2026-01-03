@@ -1,22 +1,6 @@
 ;; -*- lexical-binding: t -*-
 ;;; my-smerge.el --- SAM's Merge layer on top of ediff
-
-;; Copyright (C) 2002-2019 Sean MacLennan
-
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
+;; Copyright (C) 2002 Sean MacLennan
 
 ;; 			      Introduction
 ;;
@@ -27,15 +11,16 @@
 ;; the place. You spend too much time descending into directories with no
 ;; changes.
 ;;
-;; So I wrote my-smerge. My-Smerge handles finding all the changes between two
-;; directories. It then uses ediff to do the real work.
+;; So I wrote smerge. It handled finding all the changes between two
+;; directories. It then uses ediff to do the real work. However, GNU
+;; then introduced a smerge, so I had to rename it to my-smerge.
 ;;
 ;; 			      How it Works
 ;;
-;; You give my-smerge two directories to start with. It then calls `diff -r
-;; --brief' on the two directories. The output is post-processed into three
-;; columns: only in directory 1, in both but different, only in directory
-;; 2.
+;; You give my-smerge two directories to start with. It then calls
+;; `diff -r --brief' on the two directories. The output is processed
+;; into three columns: only in directory 1, in both but different,
+;; only in directory 2.
 ;;
 ;; In the left and right columns, you can copy the file to the other
 ;; directory. In the middle column, mouse 1 and mouse 2 call ediff on the
