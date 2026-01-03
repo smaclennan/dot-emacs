@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-;
 ;; Common variables and functions for Unix(ish) systems.
 
 (eval-and-compile (require 'sam-common)) ;; for uname

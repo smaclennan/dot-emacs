@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-;
+
 (load "unix" nil noninteractive)
 
 ;;;###autoload
