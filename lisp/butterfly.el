@@ -12,7 +12,7 @@
 	   (equal (read-key-sequence "C-x M-c M-butterf") "l")
 	   (equal (read-key-sequence "C-x M-c M-butterfl") "y")
 	   (message "I hope you know what you are doing"))
-    (error "Loser")))
+    (error "sorry")))
 
 ;; Put this key binding somewhere
 ;; (global-set-key (kbd "C-x M-c M-b") `butterfly)
