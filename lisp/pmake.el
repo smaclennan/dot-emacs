@@ -48,7 +48,7 @@ Example: Run a make clean then make subdirs lisp and src in parallel.
 
 It will be passed three args: TYPE, DESC, PROC.
 TYPE will be one of \\='start, \\='stage, \\='pmake, \\='done.
-DESC will be always be set.
+DESC will always be set.
 PROC will only be set for \\='pmake.
 
 A usable example `pmake-verbose-hook' is provided.")
