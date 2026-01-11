@@ -49,12 +49,11 @@
   `(let ((dir (locate-dominating-file default-directory ".git")))
      (when dir (expand-file-name dir))))
 
-;;;###autoload
+;;;### autoload
 (defmacro days-since (start &optional end)
   "How many days from START to END.
-Both START and END are in `encode-time' format.
-If end is nil, it is set to `current-time'."
-  `(- (time-to-days (if ,end (encode-time ,end) (current-time)))
-      (time-to-days (encode-time ,start))))
+If end is nil, it is set to `current-time'.
+Both START and END are in `encode-time' format."
+  `(- (time-to-days (if ,end ,end (current-time))) (time-to-days ,start)))
 
 (provide 'sam-common)
