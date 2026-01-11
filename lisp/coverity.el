@@ -34,27 +34,27 @@ WHAT can be:
 	(call-process-shell-command cmd nil t t))))
   (message "coverity done."))
 
-;;## autoload
+;;;###autoload
 (defun cov-run (edit)
   "Run coverity on all modified files.
 You must have scm and project_root set in the config file."
   (interactive "P")
   (cov-run-one "--analyze-scm-modified" edit))
 
-;;## autoload
+;;;###autoload
 (defun cov-run-file (edit)
   "Run coverity on the current file only."
   (interactive "P")
   (cov-run-one buffer-file-name edit))
 
-;;## autoload
+;;;###autoload
 (defun cov-run-all (edit)
   "Run coverity on all the files in this project.
 All meaning the files coverity knows about."
   (interactive "P")
   (cov-run-one "--analyze-captured-source" edit))
 
-;;## autoload
+;;;###autoload
 (defun cov-setup ()
   "coverity setup.
 Don't forget the coverity.conf file."
