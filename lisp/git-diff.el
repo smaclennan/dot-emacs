@@ -91,7 +91,7 @@ If `git-grep-top-of-tree' is non-nil, then the grep starts at the top
 of the git dir. Else it starts at the current directory.
 
 A prefix arg allows you to edit the grep command"
-  (interactive "P\nsRegexp: ")
+  (interactive "P\nsgit regexp: ")
   (let ((cmd (concat "git --no-pager grep " git-grep-args " '" str "'" git-grep-filter)))
     (when git-grep-pipe-cmd
       (setq cmd (concat cmd " | " git-grep-pipe-cmd)))
