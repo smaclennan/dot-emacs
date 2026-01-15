@@ -142,3 +142,10 @@ Hint: The output from the Unix date command works."
   (if (> age 16) (setq age (+ age 4)))  ;; second year 5
   (if (> age 21) (setq age (+ age (* (- age 21) 3)))) ;; other years 4
   (message "Cat years %d" age))
+
+;;;###autoload
+(defun emacs-full-version ()
+  (interactive)
+  (let ((full (concat emacs-version " " (substring emacs-repository-version 0 8))))
+    (when (my-interactive-p) (message "Version %s" full))
+    full))
