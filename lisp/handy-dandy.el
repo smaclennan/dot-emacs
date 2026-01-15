@@ -146,6 +146,9 @@ Hint: The output from the Unix date command works."
 ;;;###autoload
 (defun emacs-full-version ()
   (interactive)
-  (let ((full (concat emacs-version " " (substring emacs-repository-version 0 8))))
+  (let ((full (concat emacs-version " "
+		      (if emacs-repository-version
+			  (substring emacs-repository-version 0 8)
+			nil))))
     (when (my-interactive-p) (message "Version %s" full))
     full))
