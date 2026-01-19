@@ -53,7 +53,7 @@
 (defmacro days-since (start &optional end)
   "How many days from START to END.
 If end is nil, it is set to `current-time'.
-Both START and END are in `encode-time' format."
-  `(- (time-to-days (if ,end ,end (current-time))) (time-to-days ,start)))
+Both START and END are in time str format."
+  `(- (time-to-days (if ,end (date-to-time ,end) nil)) (time-to-days (date-to-time ,start))))
 
 (provide 'sam-common)
