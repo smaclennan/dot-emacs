@@ -27,3 +27,4 @@ $(LOADFILE): $(LISP)
 
 clean:
 	rm -f *.elc TAGS *~ $(LOADFILE) $(CLEAN)
+	make $(LOADFILE)

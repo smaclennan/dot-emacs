@@ -8,6 +8,7 @@
 --local-status-regex local \
 --text-output-style oneline \
 --print-path-events false \
+--sort line \
 --MISRA-category-regex 'Required|Mandatory'"
   "Args passed to cov-run-desktop command.")
 

@@ -16,6 +16,7 @@ clean:
 	$(MAKE) -C lisp $(MFLAGS) clean
 	$(MAKE) -C sys  $(MFLAGS) clean
 	$(MAKE) -C rc   $(MFLAGS) clean
+	$(MAKE) loadfiles
 
 realclean: clean
 	$(MAKE) -C src  $(MFLAGS) clean
