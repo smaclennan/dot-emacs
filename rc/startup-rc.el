@@ -27,15 +27,12 @@
   (run-at-time 0.250 nil
 	       (lambda ()
 		 (let ((hour (nth 2 (decode-time))))
-		   (message "Good %s %s"
-			    (cond ((< hour 12) "morning")
-				  ((< hour 18) "afternoon")
-				  (t           "evening"))
-			    (concat (user-full-name)
-				    (if (server-running-p)
-					" with no service."
-				      (server-start) nil)
-				    (let ((time (round (string-to-number (emacs-init-time)))))
-				      (if (> time 4)
-					  (format " init took %d" time)
-					nil))))))))
+		   (message (concat
+			     "Good"
+			     (cond ((< hour 12) " morning ")
+				   ((< hour 18) " afternoon ")
+				   (t           " evening "))
+			     (user-full-name)
+			     (if (server-running-p)
+				 " with no service."
+			       (server-start) nil)))))))
