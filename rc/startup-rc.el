@@ -34,4 +34,8 @@
 			    (concat (user-full-name)
 				    (if (server-running-p)
 					" with no service."
-				      (server-start) nil)))))))
+				      (server-start) nil)
+				    (let ((time (round (string-to-number (emacs-init-time)))))
+				      (if (> time 4)
+					  (format " init took %d" time)
+					nil))))))))
