@@ -34,13 +34,6 @@
     (set-background-color "#FFFFFF")
     (set-face-background 'default "#FFFFFF")))
 
-;; --------------------------------------------
-;; iswitchb - yes `switch-to-buffer' is considered a window function.
-;; This gets rid of the iswitchb deprecated message by moving it out
-;; of the obsolete directory.
-(let ((to (concat user-emacs-directory "lisp/iswitchb.elc")))
-  (unless (file-exists-p to)
-    (make-symbolic-link (locate-library "iswitchb") to t)))
 (with-no-warnings (iswitchb-mode))
 
 ;; --------------------------------------------
@@ -51,11 +44,7 @@
 With X, setting laptop mode to \\='auto turns on laptop mode if
 you have only one monitor.")
 
-(defvar laptop-mode-font-size
-  ;; Input Mono seems larger than other fonts
-  (if (and window-system (string-match "Input Mono" (face-font 'default)))
-      110
-    120)
+(defvar laptop-mode-font-size 120
   "The font size to use for laptop mode in pixels.
 When a list, it is the sizes for normal and laptop
 mode. Generally you don't need to setup the list, laptop-mode
