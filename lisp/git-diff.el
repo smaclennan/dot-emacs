@@ -54,10 +54,41 @@ use `git-master'. Otherwise defaults to HEAD."
 
 ;;;###autoload
 (defun git-status ()
+  "Call `git status' with output to buffer `*git status*'."
   (interactive)
-  (with-current-buffer (get-buffer-create "*git status*")
-    (erase-buffer)
-    (git-cmd "status")))
+  (let ((dir default-directory))
+    (with-current-buffer (get-buffer-create "*git status*")
+      (setq default-directory dir)
+      (erase-buffer)
+      (git-cmd "status"))))
+
+(defun delete-file-or-dir (file-or-dir &optional dry-run)
+  (if (string-match "/$" file-or-dir)
+      (if dry-run
+	  (message "dir  %s" file-or-dir)
+	(delete-directory file-or-dir t t))
+    (if dry-run
+	(message "file %s" file-or-dir)
+      (delete-file file-or-dir t))))
+
+;;;###autoload
+(defun git-rm-untracked (dry-run git-dir)
+  "Delete all untracked git files for GIT-DIR.
+
+When called interactively asks for he directory, defaulting to the
+current directory. A prefix arg only lists the files in the *Messages*
+buffer without deleting them.
+
+Note that you don't need to be at the root of the git repository, just
+anywhere in the tree."
+  (interactive "P\nDgit dir: ")
+  (let ((default-directory git-dir))
+    (git-status)
+    (with-current-buffer "*git status*"
+      (goto-char (point-min))
+      (re-search-forward "^Untracked files:$")
+      (while (re-search-forward "^\t\\(.*\\)" nil t)
+	(delete-file-or-dir (match-string 1) dry-run)))))
 
 ;;;------ git grep
 
