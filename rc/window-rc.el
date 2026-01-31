@@ -21,7 +21,11 @@
       (set-scroll-bar-mode 'right)
 
       (tool-bar-mode 0)
-      
+
+      ;; Less aggressive tool tips
+      (setq tooltip-delay 2)	  ; slower to start
+      (setq tooltip-hide-delay 2) ; faster to go
+
       (global-set-key [(control insert)] 'clipboard-kill-ring-save)
       (global-set-key [(shift insert)] 'clipboard-yank)
 
