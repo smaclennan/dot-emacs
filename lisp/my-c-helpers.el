@@ -124,15 +124,17 @@ Will not overwrite current variables if they exist."
     (setq-local compile-command cmd)))
 
 ;;;###autoload
-(defun update-local-compile-command ()
+(defun update-local-compile-command (no-error)
   "If you update the local compile command string, call this to
 actually update the associated `compile-command' variable."
-  (interactive)
+  (interactive "P")
   (save-excursion
     (goto-char (point-max))
     (if (re-search-backward " \* compile-command: \"\\(.*\\)\"" nil t)
 	(setq-local compile-command (match-string 1))
-      (error "No compile command found."))))
+      (unless no-error
+	(error "No compile command found."))))
+  compile-command)
 
 ;;;###autoload
 (defun set-local-compile-command ()
