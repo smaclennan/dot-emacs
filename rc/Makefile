@@ -1,5 +1,7 @@
 .PHONY: all clean
 
+# SAM Broke this with the change to user-lisp-directory
+
 LISP := $(wildcard *-rc.el)
 ELCS = $(LISP:.el=.elc)
 

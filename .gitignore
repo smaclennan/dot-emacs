@@ -1,6 +1,7 @@
 *.elc
 user-init.el
-*-loaddefs.el
+*loaddefs.el
+.user-lisp-autoloads.el
 *~
 ido.last
 diary
@@ -11,5 +12,5 @@ url
 custom.el
 games
 eshell
-.user-lisp-autoloads.el
-loaddefs.el
+# Yes, ignore new dirs put here
+user-lisp

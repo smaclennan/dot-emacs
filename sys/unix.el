@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-;
 ;; Common variables and functions for Unix(ish) systems.
 
-(eval-and-compile (require 'sam-common)) ;; for uname
+(eval-when-compile (require 'sam-common)) ;; for uname
 
 (defvar sys-nproc nil "Total number of processors.")
 
