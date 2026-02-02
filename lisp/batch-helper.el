@@ -1,6 +1,8 @@
 ;; -*- lexical-binding: t -*-
 ;; This is used to compile lisp files in batch mode.
 
+;; SAM FIXME
+
 (defvar sys-type (replace-regexp-in-string "gnu/" "" (symbol-name system-type))
   "Simplified version of `system-type'.")
 

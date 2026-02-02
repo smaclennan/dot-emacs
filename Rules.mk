@@ -9,7 +9,8 @@ LOADFILE := $(SUBDIR)-loaddefs.el
 
 EMACS ?= emacs
 
-LISP ?= $(filter-out $(LOADFILE),$(wildcard *.el))
+# SAM LISP ?= $(filter-out $(LOADFILE),$(wildcard *.el))
+LISP ?= $(wildcard *.el)
 ELCS ?= $(LISP:.el=.elc)
 
 .el.elc:
@@ -17,7 +18,7 @@ ELCS ?= $(LISP:.el=.elc)
 	@$(EMACS) -batch -Q $(HELPER) -f batch-byte-compile $<
 
 # To override this rule, put a rule: before including Rules.mk
-all:	$(LOADFILE) $(ELCS)
+all:	$(ELCS)
 
 loadfile: $(LOADFILE)
 
@@ -26,5 +27,4 @@ $(LOADFILE): $(LISP)
 	@$(EMACS) -batch -Q $(HELPER) -f update-loadfile $(LOADFILE)
 
 clean:
-	rm -f *.elc TAGS *~ $(LOADFILE) $(CLEAN)
-	make $(LOADFILE)
+	rm -f *.elc TAGS *~ loaddefs.el $(CLEAN)

@@ -4,15 +4,17 @@
 ;; This is the one key binding I must have... switch ASAP
 (global-set-key "\C-x\C-b" 'switch-to-buffer)
 
-;; Add our sub-directories to the load-path
-(add-to-list 'load-path (concat user-emacs-directory "lisp"))
-(add-to-list 'load-path (concat user-emacs-directory "sys"))
-
-(load "lisp-loaddefs" t t)
-(load "sys-loaddefs"  t t)
+(when (< emacs-major-version 31)
+  ;; Add our lisp subdir to the load-path and load it
+  (let ((dir (concat user-emacs-directory "lisp/")))
+    (loaddefs-generate dir (concat dir "loaddefs.el"))
+    (add-to-list 'load-path dir)
+    (load "loaddefs" t t)))
 
 ;; Load backward compatibility and system specific files
-(sys-load-sys)
+(let ((load-path (cons (concat user-emacs-directory "sys") load-path)))
+  (load (format "compat-%d" emacs-major-version) t)
+  (load (if (eq system-type 'gnu/linux) "linux" (symbol-name system-type))))
 
 ;; The user-init file allows for user/machine specific init. It must
 ;; be very early for variables like `laptop-mode' to work. Use

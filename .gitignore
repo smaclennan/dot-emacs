@@ -11,3 +11,5 @@ url
 custom.el
 games
 eshell
+.user-lisp-autoloads.el
+loaddefs.el

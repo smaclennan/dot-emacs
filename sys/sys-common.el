@@ -1,12 +1,6 @@
 ;; Functions that rely on the sys functions
 
 ;;;###autoload
-(defun sys-load-sys ()
-  "Called at init time to load compat and sys files."
-  (load (format "compat-%d" emacs-major-version) t)
-  (load (if (eq system-type 'gnu/linux) "linux" (symbol-name system-type))))
-
-;;;###autoload
 (defun cpuinfo ()
   "Describes the current cpus."
   (interactive)
