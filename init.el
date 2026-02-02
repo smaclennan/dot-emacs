@@ -32,4 +32,7 @@
 ;; Everything else is configured through rc files
 (rcfiles-register-rc-files)
 
+;; I have to work
+(load "~/work/emacs/work-init" t)
+
 ;; end of .emacs "May the `(' be with `)'"
