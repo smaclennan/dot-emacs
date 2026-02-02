@@ -40,7 +40,7 @@ An ARG comments out the old line."
 
 (defvar mine-not
   (concat "/elpa/\\|/ws-butler.el\\|rcfiles.el\\|custom.el\\|"
-	  "-loaddefs\\|view-kill.el"))
+	  "loaddefs\\|view-kill.el\\|iswitchb.el"))
 
 (defun mine (&optional all)
   "Return a list of all my .el files.
