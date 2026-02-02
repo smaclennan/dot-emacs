@@ -1,7 +1,11 @@
 ;; -*- lexical-binding: t -*-;
 ;; Common variables and functions for Unix(ish) systems.
 
-(eval-when-compile (require 'sam-common)) ;; for uname
+;; So we don't need sam-common.el
+(defmacro uname (arg)
+  `(with-temp-buffer
+    (call-process "uname" nil t nil ,arg)
+    (buffer-substring (point-min) (1- (point-max)))))
 
 (defvar sys-nproc nil "Total number of processors.")
 
