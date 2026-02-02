@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; find-file is files
 
 ;; When was the last time you wanted to edit a .elc file?

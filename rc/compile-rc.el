@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (setq compilation-read-command   nil
       compilation-ask-about-save nil
       compilation-window-height  16)

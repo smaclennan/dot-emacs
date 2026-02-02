@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; From hide-copyleft.el on which elide-head is based:
 ;; If you're sure you're not gonna get sued, you can do something like this
 ;; in your .emacs file.

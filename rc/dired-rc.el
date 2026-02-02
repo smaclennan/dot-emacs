@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (define-key dired-mode-map "\C-cu" 'dired-do-du)
 (define-key dired-mode-map "\C-ca" 'dired-toggle-all)
 

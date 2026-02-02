@@ -12,7 +12,19 @@
 (load (format "compat-%d" emacs-major-version) t noninteractive)
 (load sys-type nil noninteractive) ;; should always exist
 
-;; SAM FIXME
-(defun would-like (pkg)
-  "Helper for building rc files. Some modes do not have a provide."
-  (condition-case nil (require pkg) (error nil)))
+;; This is for the rc directory
+;;
+;; They are meant to be run when the mode is loaded, so everything
+;; should be resolved. So do the load here.
+(when (string= default-directory (concat user-emacs-directory "rc/"))
+  (defun comment-warn (mode &optional re)
+    "Helper for making comments matching RE in MODE bold.
+If RE is nil, it is assumed the comment character is #."
+    (unless re (setq re "# ?\\<SAM\\>.*"))
+    (let ((keyword (list (list re 0 (quote `font-lock-comment-warn-face) t))))
+      (font-lock-add-keywords mode keyword)))
+
+  (let ((fname (car (last command-line-args-left))) pkg)
+    (string-match "\\(.*\\)-rc.el" fname)
+    (setq pkg (match-string 1 fname))
+    (load pkg t)))

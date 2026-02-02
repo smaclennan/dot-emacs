@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; I use doorknob everywhere... so default to sendmail
 (when (eq send-mail-function 'sendmail-query-once)
   (setq send-mail-function 'sendmail-send-it))

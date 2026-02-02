@@ -1,4 +1,4 @@
-;;; ----------------------------------------------
+;; -*- lexical-binding: t -*-
 ;; Calendar
 
 (require 'holidays)
@@ -71,14 +71,3 @@
 		       "New Year's Day (S)"))
        ;; Allow local holidays
        holiday-local-holidays))
-
-;; -------------------------
-;; Diary is part of calendar
-
-;; Handy function for those who work Monday to Friday
-(defun diary-workday (&optional time)
-  (memq (nth 6 (decode-time time)) '(1 2 3 4 5)))
-
-(setq diary-comment-start "#")
-
-(add-hook 'diary-list-entries-hook 'diary-sort-entries t)

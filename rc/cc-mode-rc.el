@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; -------------------------------------------------------------------------
 ;; CC-MODE
 ;; Customizations for c-mode, c++-mode, java-mode, etc.

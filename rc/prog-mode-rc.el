@@ -1,4 +1,5 @@
-(add-hook 'prog-mode-hook #'ws-butler-mode)
+;; -*- lexical-binding: t -*-
+
 (add-hook 'prog-mode-hook #'flyspell-prog-mode)
 (add-hook 'prog-mode-hook #'elide-head-mode)
 

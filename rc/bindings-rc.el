@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;;; Function keys.
 ;; Shifted function keys: [(shift f1)] == [XF86_Switch_VT_1]
 (global-set-key [f1]            'find-file)

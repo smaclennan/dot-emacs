@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (cond
  ((executable-find "smu")
   ;; https://github.com/karlb/smu

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; You cannot just add key definitions to `iswitchb-mode-map' since
 ;; `iswitchb-read-buffer' creates a new map every time it is called.
 ;; So instead you add to this hook that is run after the new map is

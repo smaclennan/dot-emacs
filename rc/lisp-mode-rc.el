@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (defun makefile-exists-p ()
   (or (file-exists-p "Makefile")
       (file-exists-p "makefile")

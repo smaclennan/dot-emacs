@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (setq ispell-silently-savep t)
 
 (unless ispell-really-hunspell

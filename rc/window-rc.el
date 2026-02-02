@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; Called for window systems and console mode
 
 (setq frame-title-format '("Emacs " emacs-version " " system-name ":"
