@@ -89,6 +89,19 @@
       ad-do-it
     (error (goto-char (point-max)))))
 
+;; Too dangerous to advise
+(defun end-of-the-line (arg)
+  "Like `move-end-of-line' but moves to the end of the next line if called
+multiple times in a row."
+  (interactive "^p")
+  (and (eq last-command 'end-of-the-line)
+       (or (= arg 1) (not arg))
+       (forward-char 1))
+  (move-end-of-line arg))
+
+(global-set-key "\C-e" 'end-of-the-line)
+(global-set-key (kbd "<end>") 'end-of-the-line)
+
 (defun where-am-i ()
   "Interactive version of `buffer-file-name'. Useful on console."
   (interactive)
