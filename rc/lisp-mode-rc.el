@@ -46,3 +46,8 @@ allows lisp code to be compiled while doing another compile."
 	 (string-match "\\berror\\b" str)
 	 (setf (cl-cdadr face) (list 'font-lock-keyword-face))))
   (setq lisp-el-font-lock-keywords-2 mine))
+
+;; greedy-delete
+(require 'greedy-delete)
+(setq gd-indicator-string "/g")
+(gd-add-to-mode)
