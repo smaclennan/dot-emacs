@@ -152,3 +152,11 @@ Hint: The output from the Unix date command works."
 			nil))))
     (when (my-interactive-p) (message "Version %s" full))
     full))
+
+;;;###autoload
+(defun sec2minsec (seconds)
+  "Convert seconds to minutes:seconds."
+  (interactive "nSeconds: ")
+  (let* ((minutes (truncate (/ seconds 60.0)))
+	 (remaining (- seconds (* minutes 60))))
+    (message "%d:%d" minutes remaining)))
