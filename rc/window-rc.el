@@ -10,6 +10,11 @@
 (menu-bar-mode 0)
 (delete-selection-mode)
 
+;; Disable tooltip output...
+;; First the popups, then the text
+(tooltip-mode 0)
+(setq show-help-function nil)
+
 (blink-cursor-mode 0)
 (set-cursor-color "red")
 
