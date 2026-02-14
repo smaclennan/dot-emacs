@@ -6,6 +6,60 @@
 			   "psnap" "p8022" ;; bridge
 			   "psmouse"
 			   "isofs" "qnx6"
+			   "tun" "tap"
+			   "mmc_core"
+			   "udp_tunnel" ;; might use
+			   "bareudp" ;; might use
+			   "efibc" ;; EFI_BOOTLOADER_CONTROL looks interesting
+			   "snd_soc_core" ;; SAM can't disable, need snd_soc_apci?
+
+			   ;; USB audio
+			   "snd_rawmidi"
+			   "snd_usb_audio"
+			   "snd_usbmidi_lib"
+			   "snd_seq_device"
+			   ;; lambda has midi
+			   "snd_seq_midi"
+			   "snd_seq_midi_event"
+
+			   ;; ss tool
+			   "af_packet_diag"
+			   "unix_diag"
+			   "raw_diag"
+			   "udp_diag"
+			   "tcp_diag"
+			   "inet_diag"
+
+			   ;; Recommended
+			   ;; Some probably not needed marked ???
+			   "kyber_iosched"
+			   "bfq"
+			   "af_key"
+			   "dmi_sysfs"
+			   "serport"
+
+			   ;; No disable (i.e. M/y)
+			   "echainiv"
+			   "amd_rng"
+
+			   ;; Can't disable
+			   "reed_solomon"  ;; pstore
+			   "gpio_generic"
+			   "ip_tunnel"
+			   "cdc_ncm"
+			   "i2c_mux"
+			   "regmap_i2c"
+			   "v4l2_fwnode"
+			   "v4l2_async"
+			   "esp4"
+			   "ah4"
+			   "snd_acp5x_pcm_dma" ;; set by ACP5X
+			   "snd_acp5x_i2s"
+			   "snd_intel_sdw_acpi" ;; set by SND_HDA_CORE
+
+
+			   ;; can't find
+			   "v4l2_dv_timings"
 			   )
   "*Vetted modules to whitelist.
 If this is the first run, you might want to nil this out.
@@ -69,7 +123,8 @@ devices."
     (setq fcount (length driver-list))
     ;; Sanity check
     (unless (eq dcount (+ ucount fcount))
-      (error "dcount %d != ucount %d + fcount %d" dcount ucount fcount))
+      (warn "drivers before %d != used %d + after %d" dcount ucount fcount)
+      (sit-for 2))
 
     ;; Remove the whitelisted modules - do this after counts
     (dolist (mod module-whitelist)
@@ -91,8 +146,9 @@ devices."
       (erase-buffer)
       (dolist (mod driver-list)
 	(insert (concat mod "\n")))
-      (insert (format "\n%d unused drivers\n" (length driver-list))))
+      (insert (format "\n%d whitelisted\n" (length module-whitelist)))
+      (insert (format "%d unused drivers\n" (length driver-list))))
 
     (if driver-list
 	(display-buffer "*driver list*")
-      (message "No unused drivers."))))
+      (message "No unused drivers. %d whitelisted." (length module-whitelist)))))
