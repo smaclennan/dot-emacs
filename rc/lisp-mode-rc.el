@@ -63,3 +63,22 @@ allows lisp code to be compiled while doing another compile."
 (require 'greedy-delete)
 (setq gd-indicator-string "/g")
 (add-hook 'emacs-lisp-mode-hook (lambda () (gd-add-to-mode)))
+
+
+(defun sighhhh ()
+  "Insert lexical-binding.
+WARNING: Assumes lexical-binding does not exist."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (if (looking-at "\\(;+ -\\*-.*\\)-\\*-$")
+	(progn
+	  (goto-char (match-end 1))
+	  (skip-chars-backward " ")
+	  (unless (eq (char-before) ?\;) (insert ";"))
+	  (insert " lexical-binding: t;")
+	  )
+      (insert ";; -*- lexical-binding: t; -*-\n")
+      (unless (looking-at "^[[:blank:]]*$") (insert "\n")))))
+
+(define-key emacs-lisp-mode-map "\C-cl" 'sighhhh)
