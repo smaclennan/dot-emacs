@@ -14,6 +14,10 @@
   (setq c-tab-always-indent 'other) ;; real tabs in strings and comments
   (setq case-fold-search nil) ;; C is case sensitive
 
+  ;; _ is part of a word
+  (modify-syntax-entry ?_ "w" c-mode-syntax-table)
+  ;;(superword-mode)
+  
   (let ((tags (expand-file-name "TAGS")))
     (if (file-exists-p tags) (visit-tags-table tags t)))
 

@@ -25,8 +25,7 @@
 (global-set-key [(shift f10)]   'pop-tag-mark)
 (global-set-key [(control f10)] 'xref-find-references)
 (global-set-key [f11] nil) ;; I keep f11 free for temporary bindings
-(global-set-key [(shift f11)]	(lambda () (interactive)
-				  (switch-to-buffer-other-window "*Messages*")))
+(global-set-key [(shift f11)]	'my-display-messages)
 (global-set-key [f12]		'my-revert-buffer)
 (global-set-key [(shift f12)]	'where-am-i)
 
@@ -51,6 +50,11 @@
 
 ;; For some reason this doesn't have a key binding
 (global-set-key "\C-hz" 'apropos-variable)
+
+(when (not window-system)
+  ;; Most of the shift F functions aren't bindable
+  (global-set-key "\M-[23" 'my-display-messages)
+  )
 
 ;; Allow shift-mouse-1 to select point to cursor
 ;; Must disable font dialog for this to work
@@ -118,6 +122,11 @@ the identifier."
   "Same as `transpose-words' but with symbols."
   (interactive "*p")
   (transpose-subr 'forward-symbol arg))
+
+(defun my-display-messages ()
+  (interactive)
+  ;; (switch-to-buffer-other-window "*Messages*")
+  (display-buffer "*Messages*"))  
 
 (global-set-key "\M-t" 'my-transpose-symbols)
 
