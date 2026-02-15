@@ -40,7 +40,7 @@ An ARG comments out the old line."
 
 (defvar mine-not
   (concat "/elpa/\\|/ws-butler.el\\|rcfiles.el\\|custom.el\\|"
-	  "loaddefs\\|view-kill.el\\|iswitchb.el"))
+	  "loaddefs\\|view-kill.el\\|iswitchb.el\\|greedy-delete.el"))
 
 (defun mine (&optional all)
   "Return a list of all my .el files.
@@ -61,11 +61,11 @@ If ALL is non-nil, returns all .el files."
       (dolist (file files)
 	(insert-file-contents file))
       (goto-char (point-min))
-      (while (re-search-forward "(\\(defun\\|defmacro\\|defalias\\) " nil t)
+      (while (re-search-forward "(\\(defun\\|defmacro\\) " nil t)
 	(setq count (1+ count)))
       (goto-char (point-max))
       (setq lines (count-lines (point-min) (point-max))))
-    (message "files %d lines %d count %d" (length files) lines count)))
+    (message "files %d lines %d defuns %d" (length files) lines count)))
 
 ;;;###autoload
 (defun swap-in-word ()
