@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 ;;; greedy-delete.el --- minor mode for a better backspace
 
 ;; Copyright (C) 1997 Free Software Foundation, Inc.
@@ -59,8 +61,8 @@
 
 (defvar gd-how-much 'all
   "*Controls how much preceding whitespace to consume.
-The value 'all says to consume all whitespace preceding point.  The
-value 'line says to only consume preceding whitespace up the the
+The value \\='all says to consume all whitespace preceding point.  The
+value \\='line says to only consume preceding whitespace up the the
 beginning of the current line.")
 
 (defvar gd-delete-function 'backward-delete-char-untabify
