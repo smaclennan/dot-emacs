@@ -56,4 +56,7 @@ If end is nil, it is set to `current-time'.
 Both START and END are in time str format (see `parse-time-string')."
   `(- (time-to-days (if ,end (date-to-time ,end) nil)) (time-to-days (date-to-time ,start))))
 
+;;;###autoload
+(defmacro touch (filename) `(write-region "" nil ,filename))
+
 (provide 'sam-common)
