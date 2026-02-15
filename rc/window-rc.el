@@ -22,6 +22,32 @@
 
 (defvar console-white t "Set to non-nil for a white console")
 
+(defun my-display-buffer-at-bottom (buffer alist)
+  "Try to keep all '*<name>*' windows at the bottom.
+1. If we find the buffer in a window, use it (prefer bottom).
+2. If there is a bottom window (i.e more than one), use it.
+3. Split the current window and use the bottom one.
+"
+  (let (saw-window found bottom)
+    (walk-window-tree
+     (lambda (window)
+       (when (eq (window-buffer window) buffer)
+	 (setq found window))
+       (when saw-window
+	 (setq bottom window))
+       (setq saw-window t))
+     nil nil 'nomini)
+    (if found
+	;; Exact match - use it
+	(window--display-buffer buffer found 'reuse alist)
+      (if bottom
+	  ;; At least two windows, use the bottom one
+	  (window--display-buffer buffer bottom 'reuse alist)
+	;; One window, let this do the heavy work of splitting
+	(display-buffer-at-bottom buffer alist)))))
+
+(setq display-buffer-alist '(("^\*" my-display-buffer-at-bottom)))
+
 (if window-system
     (progn
       (set-scroll-bar-mode 'right)
@@ -36,6 +62,7 @@
       (global-set-key [(shift insert)] 'clipboard-yank)
 
       (setq confirm-kill-emacs `y-or-n-p))
+  (setq visable-cursor nil) ;; Needed for, at least, urxvt
   (when console-white
     ;; for some reason bright-white doesn't always work... even on
     ;; machines that report they have bright-white
