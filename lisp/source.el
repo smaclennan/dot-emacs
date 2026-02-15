@@ -5,7 +5,8 @@
 
 (defun source-setenv (str var val new)
   "Helper program for nice messages."
-  (message "%s %s = %s" str var val)
+  (when (my-interactive-p)
+    (message "%s %s = %s" str var val))
   (setenv var new))
 
 ;;;###autoload
