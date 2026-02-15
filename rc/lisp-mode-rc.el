@@ -1,4 +1,14 @@
 ;; -*- lexical-binding: t -*-
+
+;; lisp-mode vs elisp-mode vs emacs-lisp-mode vs lisp-interactive-mode, oh my.
+;;
+;; The mode for .el files is officially called emacs-lisp-mode with
+;; elisp-mode as an alias. But only elisp-mode-rc.el gets called. That
+;; is why elisp-mode always references emacs-lisp-mode.
+;;
+;; I have decided to keep the code here for historical
+;; reasons. lisp-mode-rc is always called.
+
 (defun makefile-exists-p ()
   (or (file-exists-p "Makefile")
       (file-exists-p "makefile")
@@ -39,6 +49,7 @@ allows lisp code to be compiled while doing another compile."
 ;; I don't like the warning-face used in GNU Emacs for functions like `error'.
 ;; However, the keywords are a defconst, so we must work around that by
 ;; making a copy.
+(when nil ;; SAM not working
 (let ((mine (copy-tree lisp-el-font-lock-keywords-2)) str)
   (dolist (face mine)
     (setq str (car face))
@@ -46,8 +57,9 @@ allows lisp code to be compiled while doing another compile."
 	 (string-match "\\berror\\b" str)
 	 (setf (cl-cdadr face) (list 'font-lock-keyword-face))))
   (setq lisp-el-font-lock-keywords-2 mine))
+)
 
 ;; greedy-delete
 (require 'greedy-delete)
 (setq gd-indicator-string "/g")
-(gd-add-to-mode)
+(add-hook 'emacs-lisp-mode-hook (lambda () (gd-add-to-mode)))
