@@ -2,7 +2,9 @@
 ;; early-init.el is new in 27.1. This shaves a good 1/4 second off the init time.
 ;; emacs-init-time
 
-(when window-system (tool-bar-mode 0))
+;; Too early for 'window-system' to be set
+(set-scroll-bar-mode 'right)
+(tool-bar-mode 0)
 (menu-bar-mode 0)
 
 (setq package-enable-at-startup nil)

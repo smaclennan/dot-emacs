@@ -62,9 +62,10 @@
   :group 'emacs)
 
 (defcustom rcfiles-directory
-  (if (featurep 'sxemacs) "~/.sxemacs/rc"
-    (if (featurep 'xemacs) "~/.xemacs/rc"
-      "~/.emacs.d/rc"))
+  (cond
+   ((featurep 'sxemacs) "~/.sxemacs/rc")
+   ((featurep 'xemacs)  "~/.xemacs/rc")
+   ((featurep 'emacs)   "~/.emacs.d/rc"))
   "Directory where el-rcfiles looks for configuration files."
   :group 'rcfiles
   :type 'string)
