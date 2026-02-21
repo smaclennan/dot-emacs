@@ -1,5 +1,8 @@
+;; Used in Slackware 15
 ;; WARNING: compat-26,27,28 are linked together!!!
 ;; WARNING: compat-24,25 include this file
+
+(load "compat-30")
 
 ;; All these changes where introduced in 29
 

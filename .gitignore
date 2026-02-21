@@ -1,6 +1,6 @@
 *.elc
 user-init.el
-*loaddefs.el
+my-loaddefs.el
 .user-lisp-autoloads.el
 *~
 ido.last
