@@ -45,7 +45,7 @@
     (insert "(setq drinks-list '" (prin1-to-string drinks-list) ")\n"))
 
   (drinks-show))
-(global-set-key "\C-ca" 'drinks-add)
+;; (global-set-key "\C-ca" 'drinks-add) in bindings-rc
 
 ;;;###autoload
 (defun drinks-show ()

@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t -*-
 ;;;###autoload
 (defun butterfly ()
+  "See https://xkcd.com/378/"
   (interactive)
   (unless (and
 	   (equal (read-key-sequence "C-x M-c M-b") "u")

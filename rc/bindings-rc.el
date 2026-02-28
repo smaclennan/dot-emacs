@@ -131,3 +131,5 @@ the identifier."
 (global-set-key "\M-t" 'my-transpose-symbols)
 
 (global-set-key (kbd "C-x M-c M-b") `butterfly)
+
+(global-set-key "\C-ca" 'drinks-add)
