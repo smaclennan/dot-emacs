@@ -23,7 +23,10 @@
 
 ;; This must come before configurations of installed packages
 (if (file-directory-p (concat user-emacs-directory "elpa"))
-    (package-initialize)
+    (progn
+      (add-to-list 'package-archives
+		   '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+      (package-initialize))
   (defun package-installed-p (pkg) nil))
 
 ;; Everything else is configured through rc files
