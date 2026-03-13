@@ -125,8 +125,10 @@ the identifier."
 
 (defun my-display-messages ()
   (interactive)
+  (set-buffer "*Messages*")
+  (goto-char (point-max))
   ;; (switch-to-buffer-other-window "*Messages*")
-  (display-buffer "*Messages*"))  
+  (display-buffer "*Messages*"))
 
 (global-set-key "\M-t" 'my-transpose-symbols)
 
