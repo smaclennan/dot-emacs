@@ -3,9 +3,13 @@
 
 ;;;###autoload
 (defun unixtime (seconds)
-  "Convert SECONDS in Unix time to human readable date."
-  (interactive "nTime: ")
-  (message (format-time-string "%a %b %d %T %Z %Y" (seconds-to-time seconds))))
+  "Convert SECONDS in Unix time to human readable date.
+With a universal arg display the current unix time."
+  (interactive
+   (list (if (not current-prefix-arg) (read-number "Time: "))))
+  (if seconds
+      (message (format-time-string "%a %b %d %T %Z %Y" (seconds-to-time seconds)))
+    (message "%.0f" (float-time))))
 
 ;; For when you need a good excuse...
 ;; From BOFH
@@ -14,7 +18,7 @@
 
 ;;;###autoload
 (defun excuse (&optional insert)
-  "Return or display a random excuse.  With prefix arg, insert it."
+  "Return or display a random excuse.  With universal arg, insert it."
   (interactive "P")
   (let ((case-fold-search nil)
 	(excuse (concat (cookie excuse-phrase-file "I didn't" "do it"))))
