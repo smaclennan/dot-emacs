@@ -33,19 +33,28 @@ When non-interactive returns a list (feet inches fraction denom)."
   (unless denom (setq denom 16))
   (let ((feet (floor (/ inches 12)))
 	(frac (round (* (mod inches 1) denom)))
-	out)
+	common out)
     (when (> feet 0)
       (setq inches (- inches (* feet 12))))
     (setq inches (floor inches))
     (unless fixed
       (if (> frac 0)
-	  (while (eq (logand frac 1) 0)
-	    (setq frac (/ frac 2))
-	    (setq denom (/ denom 2)))
+	  (setq common (cl-gcd frac denom)
+		frac   (/ frac  common)
+		denom  (/ denom common))
 	(setq denom 0)))
     (setq out (list feet inches frac denom))
     (when (my-interactive-p) (inches-print out))
     out))
+
+;;;###autoload
+(defun feet-decimal (feet)
+  (interactive "nFeet (decimal): ")
+  (let* ((inches (* feet 12))
+	 (denom 4)
+	 (frac (round (* (mod inches 1) denom))))
+    (when (eq frac 2) (setq frac 1 denom 2))
+    (inches-print (list (floor feet) (mod inches 12) frac denom))))
 
 ;;;###autoload
 (defun mm2inches (denom mm)
