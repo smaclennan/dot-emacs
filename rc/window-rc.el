@@ -18,6 +18,8 @@
 (blink-cursor-mode 0)
 (set-cursor-color "red")
 
+(setq scroll-margin 3)
+
 (setq visible-bell t)
 
 (defvar console-white t "Set to non-nil for a white console")
