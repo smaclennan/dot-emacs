@@ -61,4 +61,9 @@ Both START and END are in time str format (see `parse-time-string')."
 ;;;###autoload
 (defmacro touch (filename) `(write-region "" nil ,filename))
 
+;;;###autoload
+(defmacro would-like (feature)
+  "A less strident `require'."
+  `(condition-case nil (require ,feature) (error nil)))
+
 (provide 'sam-common)
