@@ -2,6 +2,8 @@
 
 (add-hook 'prog-mode-hook #'flyspell-prog-mode)
 (add-hook 'prog-mode-hook #'elide-head-mode)
+(when (would-like 'ws-butler)
+  (add-hook 'prog-mode-hook #'ws-butler-mode))
 
 (show-paren-mode)
 
