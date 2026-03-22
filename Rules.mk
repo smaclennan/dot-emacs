@@ -13,7 +13,7 @@ HELPER ?= -l ~/.emacs.d/lisp/batch-helper
 	@$(EMACS) -batch -Q $(HELPER) -f batch-byte-compile $<
 
 # To override this rule, put a rule: before including Rules.mk
-all:	$(ELCS)
+all:	$(ELCS) $(EXTRA)
 
 clean:
 	rm -f *.elc TAGS *~ *loaddefs.el $(CLEAN)
