@@ -4,7 +4,7 @@
 ;;; -------------------------------------------------------------------------
 
 (defvar include-list
-  '("stdio.h" "stdlib.h" "stdint.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "errno.h")
+  '("stdio.h" "stdlib.h" "stdint.h" "string.h" "unistd.h" "fcntl.h" "ctype.h" "err.h" "assert.h")
   "* List of include files added by `c-template'.")
 
 (defvar c++-extra
