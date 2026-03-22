@@ -4,10 +4,11 @@
 (defvar filter-c nil)
 (defvar filter-r nil)
 
-(defconst filter-pi 3.14159)
+(defconst filter-pi float-pi)
 
-(defun filter-calc (a b)
-  (/ 1.0 (* a b 2 filter-pi)))
+(defun filter-calc (c r)
+  "Frequency cutoff."
+  (/ 1.0 (* 2 filter-pi r c)))
 
 ;;;###autoload
 (defun filter ()
