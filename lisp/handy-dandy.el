@@ -164,3 +164,11 @@ Hint: The output from the Unix date command works."
   (let* ((minutes (truncate (/ seconds 60.0)))
 	 (remaining (- seconds (* minutes 60))))
     (message "%d:%d" minutes remaining)))
+
+;;;###autoload
+(defun min2hours (minutes)
+  "Convert minutes to hours:minutes."
+  (interactive "nMinutes: ")
+  (let* ((hours (truncate (/ minutes 60.0)))
+	 (remaining (-  minutes (* hours 60))))
+    (message "%d:%d" hours remaining)))
