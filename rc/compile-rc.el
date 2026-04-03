@@ -3,6 +3,9 @@
       compilation-ask-about-save nil
       compilation-window-height  16)
 
+;; Hint: for errors only on next-error
+;;  (setq compilation-skip-threshold 2)
+
 ;; If a file was opened from the command line, any make command was
 ;; overwritten so use setq-default.
 (setq-default compile-command "make ")
