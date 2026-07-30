@@ -48,7 +48,6 @@
 (defmacro git-dir ()
   "Fast `git rev-parse --show-toplevel'"
   `(let ((dir (locate-dominating-file default-directory ".git")))
-     (message "dir %S %S" dir (expand-file-name dir)) ;; SAM DBG
      (when dir (expand-file-name dir))))
 
 ;;;### autoload
