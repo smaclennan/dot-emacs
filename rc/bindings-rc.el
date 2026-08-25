@@ -130,6 +130,13 @@ the identifier."
   ;; (switch-to-buffer-other-window "*Messages*")
   (display-buffer "*Messages*"))
 
+(defun exactly-two-windows ()
+  "C-X 1 + C-X 2 = C-X 3"
+  (interactive)
+  (delete-other-windows)
+  (split-window-below))
+(global-set-key "\C-x3" 'exactly-two-windows)
+
 (global-set-key "\M-t" 'my-transpose-symbols)
 
 (global-set-key (kbd "C-x M-c M-b") `butterfly)
