@@ -13,6 +13,11 @@
 
 ;;;###autoload
 (defmacro basename (name)
+  "`basename' is a slightly slower `file-name-nondirectory'.
+
+The difference is that `basename' handles directory names ending in `/'
+correctly. e.g. For \"/home/nobody/\" `basename' will return \"nobody\"
+and `f-n-n' will return \"\"."
   `(if (string-match "/\\([^/]+\\)/?$" ,name)
        (match-string 1 ,name)
      ,name))
