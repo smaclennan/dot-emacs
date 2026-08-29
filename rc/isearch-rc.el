@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 ;; Warning: If you change this binding, change `my-isearch-word-forward'
 (define-key isearch-mode-map "\C-w"		'my-isearch-yank-word)
 

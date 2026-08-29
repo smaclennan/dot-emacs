@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 (cond
  ((executable-find "smu")
   ;; https://github.com/karlb/smu

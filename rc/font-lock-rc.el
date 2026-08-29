@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 ;; From the XEmacs font-lock.el:
 ;; It's called font-lock-mode here because on the Lispms it was called
 ;; "Electric Font Lock Mode."  It was called that because there was an older

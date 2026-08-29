@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 ;; Use (diary) to display it
 (setq appt-display-diary nil)
 

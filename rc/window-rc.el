@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 ;; Called for window systems and console mode
 
 (setq frame-title-format '("Emacs " emacs-version " " system-name ":"

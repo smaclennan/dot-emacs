@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 ;; Diary was part of calendar
 
 ;; Handy function for those who work Monday to Friday

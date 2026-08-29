@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 (defun whitespace-long-lines (off)
   "Enable displaying long lines in whitespace mode.
 With a prefix arg, disable it."

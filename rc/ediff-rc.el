@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 ;; If you use dwm and tabbed Emacs, you want to make the ediff frame floating:
 ;; Add to rules[]
 ;; { "Emacs",    "Ediff",    NULL,       0,            1,           -1 },

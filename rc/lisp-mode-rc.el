@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 
 ;; lisp-mode vs elisp-mode vs emacs-lisp-mode vs lisp-interactive-mode, oh my.
 ;;

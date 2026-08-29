@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 (setq compilation-read-command   nil
       compilation-ask-about-save nil
       compilation-window-height  16)

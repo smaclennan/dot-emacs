@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 (when (fboundp 'bbdb-initialize)
   (bbdb-initialize 'message)
   ;; M-tab taken by flyspell

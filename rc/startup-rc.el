@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 (setq inhibit-default-init t
       inhibit-startup-screen t
       initial-scratch-message ";; This buffer is for goofing around in.\n\n"

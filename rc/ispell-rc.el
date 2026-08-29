@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 (setq ispell-silently-savep t)
 
 (unless ispell-really-hunspell

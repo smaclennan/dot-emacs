@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; no-byte-compile: t -*-
 (add-hook 'asm-mode-hook 'my-compile-command)
 
 ;; We only want _ as a symbol constituent
