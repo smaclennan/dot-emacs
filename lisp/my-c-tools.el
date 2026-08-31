@@ -30,7 +30,12 @@
 (defvar my-sparse-args (if (eq system-type 'gnu/linux) "-D__linux__" nil)
   "*Args to pass to sparse")
 
-(require 'my-compile)
+(eval-when-compile
+  ;; my-compile.el
+  (defvar my-kernel-vers)
+  (defvar my-kernel-dir)
+  )
+
 (require 'cc-mode)
 
 (defun my-do-compile (cmd)
@@ -81,6 +86,7 @@ work."
 (defvar my-checkpatch-ignores "SPDX_LICENSE_TAG,LINE_SPACING"
   "--ignore arg to pass to checkpatch (can be nil). Separating
 this from `my-checkpatch-args' allows easier buffer local values.")
+(put 'my-checkpatch-ignores 'safe-local-variable #'stringp)
 
 ;;;###autoload
 (defun my-checkpatch ()

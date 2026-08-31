@@ -3,6 +3,8 @@
 
 ;; Tested with git version 2.17.1
 
+(require 'sam-common)
+
 (defvar my-smerge-git-buffer "*my-smerge git diff*"
   "The buffer to use for `my-smerge-git' or nil for unique buffers.
 

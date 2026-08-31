@@ -1,6 +1,8 @@
 ;; -*- lexical-binding: t -*-
 ;; Handy Dandy(tm) Functions
 
+(require 'sam-common)
+
 ;;;###autoload
 (defun unixtime (seconds)
   "Convert SECONDS in Unix time to human readable date.

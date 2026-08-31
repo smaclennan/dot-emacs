@@ -3,6 +3,8 @@
 (defvar source-exclude-list nil
   "List of environment variables to ignore.")
 
+(require 'sam-common)
+
 (defun source-setenv (str var val new)
   "Helper program for nice messages."
   (when (my-interactive-p)

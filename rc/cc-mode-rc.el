@@ -24,14 +24,8 @@
   (my-compile-command))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
-(require 'my-compile)
-
 ;; Turn off gcc colours
 (setenv "GCC_COLORS" "")
-
-;; Some safe local variables
-(put 'compile-command 'safe-local-variable #'stringp)
-(put 'my-checkpatch-ignores 'safe-local-variable #'stringp)
 
 ;; Bold SAM comments
 (dolist (mode '(c-mode c++-mode))

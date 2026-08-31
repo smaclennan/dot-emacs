@@ -11,6 +11,7 @@ clean:
 	$(MAKE) -C lisp $(MFLAGS) clean
 	$(MAKE) -C sys  $(MFLAGS) clean
 	$(MAKE) -C rc   $(MFLAGS) clean
+	rm -f user-lisp/.user-lisp-autoloads.el
 
 realclean: clean
 	$(MAKE) -C src  $(MFLAGS) clean

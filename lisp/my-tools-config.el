@@ -2,6 +2,7 @@
 (require 'cc-mode)
 
 (require 'git-diff)
+(require 'sam-common)
 
 (defvar my-tools-hooks nil
   "Hooks to call during `my-tools-config'.

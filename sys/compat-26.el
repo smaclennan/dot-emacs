@@ -13,6 +13,9 @@
 
 (defalias 'elide-head-mode 'elide-head)
 
+(defvar sys-type (replace-regexp-in-string "gnu/" "" (symbol-name system-type))
+  "Simplified version of `system-type'.")
+
 (defun loaddefs-generate (dir output-file &optional excluded-files extra-data include-package-version generate-full)
   (if excluded-files
       ;; Hack for sys directory

@@ -5,8 +5,8 @@ EMACS ?= emacs
 LISP ?= $(wildcard *.el)
 ELCS ?= $(LISP:.el=.elc)
 
-# This needs to be absolute
-HELPER ?= -l ~/.emacs.d/lisp/batch-helper
+# Need to add lisp dir to load-path
+HELPER = --eval='(add-to-list (quote load-path) (concat user-emacs-directory "lisp"))'
 
 .el.elc:
 	@echo Compile $<

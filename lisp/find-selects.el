@@ -1,5 +1,4 @@
 ;; -*- lexical-binding: t -*-
-(require 'my-compile)
 
 (defvar kfs-bufname "*find-selects*"
   "*Name of buffer to use for `kernel-find-selects' and friends.")

@@ -30,8 +30,12 @@
 ;; The `my-compile-command' function is meant to be called from the
 ;; `c-mode-common-hook'.
 
-(require 'sam-common)
-(eval-when-compile (require 'cc-vars))
+(eval-when-compile
+  (require 'cc-vars)
+  (require 'sam-common)
+  (declare-function sys-nproc nil ())
+  )
+
 (require 'cc-defs) ;; for c-buffer-is-cc-mode
 
 (defvar my-kernel-vers (uname "-r")

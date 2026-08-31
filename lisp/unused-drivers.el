@@ -2,6 +2,8 @@
 ;; Very Linux specific
 ;; Hint to self: Self, you cannot scp /proc/modules.
 
+(require 'sam-common)
+
 (defvar module-whitelist '("usb_storage" "uas" "mmc_block"
 			   "psnap" "p8022" ;; bridge
 			   "psmouse"

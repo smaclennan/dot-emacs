@@ -1,5 +1,8 @@
 ;; -*- lexical-binding: t -*-
 
+(defvar sys-type (replace-regexp-in-string "gnu/" "" (symbol-name system-type))
+  "Simplified version of `system-type'.")
+
 (defun sam-lisp-init (&optional compile)
   (interactive "P")
   (let* ((dir (file-name-directory (symbol-file 'sam-lisp-init 'defun)))

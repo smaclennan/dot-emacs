@@ -1,7 +1,10 @@
 ;; -*- lexical-binding: t -*-
 (provide 'git-diff)
 (require 'my-grep)
-(eval-when-compile (require 'ediff))
+(eval-when-compile
+  (require 'ediff)
+  (require 'sam-common)
+  )
 
 (defvar git-master "master"
   "With the change to main, allow overriding master")
