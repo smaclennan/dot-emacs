@@ -11,7 +11,8 @@
 
 ;; We must deal with this outside the let binding of load-path
 (when (fboundp 'deal-with-loaddefs)
-  (deal-with-loaddefs (concat user-emacs-directory "lisp/")))
+  (deal-with-loaddefs (concat user-emacs-directory "lisp/"))
+  (deal-with-loaddefs (concat user-emacs-directory "sys/")))
 
 ;; The user-init file allows for user/machine specific init. It must
 ;; be very early for variables like `laptop-mode' to work. Use
