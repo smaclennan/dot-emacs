@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; no-byte-compile: t -*-
+
 ;; WARNING: This file is untested. This is just some information I
 ;; gleaned off the net and didn't want to lose.
 

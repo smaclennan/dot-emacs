@@ -1,4 +1,5 @@
-;; -*- lexical-binding: t -*-;
+;; -*- lexical-binding: t; no-byte-compile: t -*-
+
 ;; Common variables and functions for Unix(ish) systems.
 
 ;; So we don't need sam-common.el

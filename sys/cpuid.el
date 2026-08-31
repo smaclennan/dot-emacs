@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; no-byte-compile: t -*-
+
 (defvar cpuid-exe nil "The location of cpuid.")
 
 (defun cpuid-cpuinfo-exe ()

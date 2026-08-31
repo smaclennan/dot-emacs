@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; no-byte-compile: t -*-
+
 ;; If you have cygwin installed, add something like the following to
 ;; user-init.el
 ;; (add-to-list 'exec-path "<cygwin-dir>/bin" t)

@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; no-byte-compile: t -*-
+
 (setq-default compile-command "gmake ")
 (setq make-clean-command "gmake clean all")
 

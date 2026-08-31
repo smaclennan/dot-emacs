@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; no-byte-compile: t -*-
+
 (load "cpuid" nil noninteractive)
 (load "unix"  nil noninteractive)
 

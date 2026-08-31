@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; no-byte-compile: t -*-
+
 ;; Functions that rely on the sys functions
 
 ;;;###autoload
