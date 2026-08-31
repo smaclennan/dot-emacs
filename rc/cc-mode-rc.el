@@ -27,6 +27,9 @@
 ;; Turn off gcc colours
 (setenv "GCC_COLORS" "")
 
+;; Safe local variable when string.
+(put 'compile-command 'safe-local-variable #'stringp)
+
 ;; Bold SAM comments
 (dolist (mode '(c-mode c++-mode))
   (comment-warn mode "\\(/\\*\\|//\\) ?\\<SAM\\>.*"))
