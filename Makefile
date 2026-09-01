@@ -3,15 +3,16 @@
 MFLAGS += -s
 
 all:
-	$(MAKE) -C lisp $(MFLAGS) all
-	$(MAKE) -C sys  $(MFLAGS) all
-	$(MAKE) -C rc   $(MFLAGS) all
+	@$(MAKE) -C lisp $(MFLAGS) all
+	@$(MAKE) -C sys  $(MFLAGS) all
+	@$(MAKE) -C rc   $(MFLAGS) all
+	@$(MAKE) -C user-lisp $(MFLAGS) all
 
 clean:
-	$(MAKE) -C lisp $(MFLAGS) clean
-	$(MAKE) -C sys  $(MFLAGS) clean
-	$(MAKE) -C rc   $(MFLAGS) clean
-	rm -f user-lisp/.user-lisp-autoloads.el
+	@$(MAKE) -C lisp $(MFLAGS) clean
+	@$(MAKE) -C sys  $(MFLAGS) clean
+	@$(MAKE) -C rc   $(MFLAGS) clean
+	@$(MAKE) -C user-lisp $(MFLAGS) clean
 
 realclean: clean
 	$(MAKE) -C src  $(MFLAGS) clean

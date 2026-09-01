@@ -4,10 +4,8 @@
 (eval-when-compile
   (require 'ediff)
   (require 'sam-common)
+  (defvar git-master)
   )
-
-(defvar git-master "master"
-  "With the change to main, allow overriding master")
 
 ;;;autoload
 (defun git-cmd (cmd &rest args)
