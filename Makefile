@@ -3,9 +3,9 @@
 MFLAGS += -s
 
 all:
-	@$(MAKE) -C lisp $(MFLAGS) all
-#	@$(MAKE) -C sys  $(MFLAGS) all
-#	@$(MAKE) -C rc   $(MFLAGS) all
+	$(MAKE) -C lisp $(MFLAGS) all
+	$(MAKE) -C sys  $(MFLAGS) all
+	$(MAKE) -C rc   $(MFLAGS) all
 
 clean:
 	$(MAKE) -C lisp $(MFLAGS) clean
