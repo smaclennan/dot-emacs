@@ -15,7 +15,6 @@
 (defun source (filename &optional no-remove)
   "Update environment variables from a shell script."
   (interactive "fSource: ")
-  (message "Sourcing %s..." filename)
   (let ((envs (mapcar (lambda (one)
 			(string-match "^\\([^=]+\\)=?\\(.*\\)" one)
 			(list (match-string 1 one) (match-string 2 one)))
@@ -36,7 +35,6 @@
       (dolist (rm envs)
 	(let ((var (car rm)))
 	  (unless (member var source-exclude-list)
-	    (source-setenv "Remove" var var nil))))))
-  (message "Sourcing %s...done." filename))
+	    (source-setenv "Remove" var var nil)))))))
 
 (provide 'source)
