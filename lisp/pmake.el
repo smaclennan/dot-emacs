@@ -179,6 +179,6 @@ You cannot assume that `pmake-done-hook' is clean."
    ((eq type 'done)
     (if pmake-run-rc
 	(message "Success! %s" (pmake-time-since pmake-run-start))
-      (message "FAILED.")))))
+      (message "FAILED. %s" (pmake-time-since pmake-run-start))))))
 
 (provide 'pmake)

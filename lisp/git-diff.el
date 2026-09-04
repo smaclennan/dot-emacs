@@ -124,7 +124,7 @@ of the git dir. Else it starts at the current directory.
 
 A prefix arg allows you to edit the grep command"
   (interactive "P\nsgit regexp: ")
-  (let ((cmd (concat "git --no-pager grep " git-grep-args " '" str "'" git-grep-filter)))
+  (let ((cmd (concat "git --no-pager grep " git-grep-args " -- '" str "'" git-grep-filter)))
     (when git-grep-pipe-cmd
       (setq cmd (concat cmd " | " git-grep-pipe-cmd)))
     (when arg

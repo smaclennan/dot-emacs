@@ -130,12 +130,22 @@ the identifier."
   ;; (switch-to-buffer-other-window "*Messages*")
   (display-buffer "*Messages*"))
 
-(defun exactly-two-windows ()
-  "C-X 1 + C-X 2 = C-X 3"
+(defun three-windows ()
+  "Split the frame into three windows.
+First window is half, second is 1/4, and third is 1/4.
+First and second window contain the buffer you started from.
+Third window contains the message buffer because why not?
+You are left where you started."
   (interactive)
   (delete-other-windows)
-  (split-window-below))
-(global-set-key "\C-x3" 'exactly-two-windows)
+  (split-window-below)
+  (other-window 1)
+  (split-window-below)
+  (other-window 1)
+  (switch-to-buffer "*Messages*")
+  (other-window 1) ;; back to first window
+  )
+(global-set-key "\C-x3" 'three-windows)
 
 (global-set-key "\M-t" 'my-transpose-symbols)
 
